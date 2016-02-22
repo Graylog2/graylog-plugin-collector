@@ -185,6 +185,17 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     }
 
     @POST
+    @Path("/configurations")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Create new collector configuration")
+    public CollectorConfiguration createConfiguration(@ApiParam(name = "JSON body", required = true)
+                                                      @Valid @NotNull CollectorConfiguration request) {
+        CollectorConfiguration collectorConfiguration = collectorConfigurationService.fromRequest(request);
+        collectorConfigurationService.save(collectorConfiguration);
+        return collectorConfiguration;
+    }
+
+    @POST
     @Path("/configurations/{id}/outputs")
     @ApiOperation(value = "Create a configuration output",
             notes = "This is a stateless method which inserts a collector output")

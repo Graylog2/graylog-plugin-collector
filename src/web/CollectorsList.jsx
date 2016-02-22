@@ -83,8 +83,7 @@ const CollectorsList = React.createClass({
             return (
                 <Row className="content">
                     <Col md={6}>
-                        <a onClick={this.toggleShowInactive} className="btn btn-primary pull-right">{showOrHideInactive} inactive collectors</a>
-
+                        <a onClick={this.toggleShowInactive} className="btn btn-xs btn-primary pull-right">{showOrHideInactive} inactive collectors</a>
                         <form className="form-inline collectors-filter-form" onSubmit={(evt) => evt.preventDefault() }>
                             <div className="form-group form-group-sm">
                                 <label htmlFor="collectorsfilter" className="control-label">Filter collectors:</label>

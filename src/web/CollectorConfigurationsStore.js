@@ -59,6 +59,29 @@ const CollectorConfigurationsStore = Reflux.createStore({
         CollectorConfigurationsActions.getConfiguration.promise(promise);
     },
 
+    createConfiguration(name) {
+        let url =  URLUtils.qualifyUrl(this.sourceUrl);
+        let method = 'POST';
+        var configuration = {};
+        configuration.name = name;
+        configuration.tags = [];
+        configuration.inputs = [];
+        configuration.outputs = [];
+        configuration.snippets = [];
+
+        const promise = fetch(method, url, configuration);
+        promise
+            .then(() => {
+                var message = "Configuration successfully created";
+                UserNotification.success(message);
+            }, (error) => {
+                UserNotification.error("Creating configuration failed with status: " + error.message,
+                    "Could not save configuration");
+            });
+
+        CollectorConfigurationsActions.createConfiguration.promise(promise);
+    },
+
     saveTags(tags, configurationId) {
         const requestTags = {
             tags: tags,

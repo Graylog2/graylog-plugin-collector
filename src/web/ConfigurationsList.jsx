@@ -7,6 +7,7 @@ import {Spinner} from 'components/common';
 import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
+import CreateConfigurationModal from './CreateConfigurationModal';
 
 const ConfigurationsList = React.createClass({
     mixins: [Reflux.connect(CollectorConfigurationsStore)],
@@ -23,7 +24,7 @@ const ConfigurationsList = React.createClass({
     },
 
     _reloadConfiguration(){
-        CollectorConfigurationsActions.list();
+        CollectorConfigurationsActions.list.triggerPromise()
     },
 
     _formatEmptyListAlert() {
@@ -54,6 +55,19 @@ const ConfigurationsList = React.createClass({
         );
     },
 
+    _validConfigurationName(name) {
+        // Check if configurations already contain a configuration with the given name.
+        return !this.state.configurations.some((configuration) => configuration.name === name);
+    },
+
+    _createConfiguration(configuration, callback) {
+        CollectorConfigurationsActions.createConfiguration.triggerPromise(configuration.name)
+            .then(() => {
+                callback();
+                this._reloadConfiguration();
+            });
+    },
+
     _onDelete(configuration) {
         CollectorConfigurationsActions.delete.triggerPromise(configuration)
             .then(() => {
@@ -82,6 +96,7 @@ const ConfigurationsList = React.createClass({
 
             return (
                     <div>
+                        <CreateConfigurationModal name="" saveConfiguration={this._createConfiguration} validConfigurationName={this._validConfigurationName}/>
                         <form className="form-inline configurations-filter-form" onSubmit={(evt) => evt.preventDefault() }>
                             <div className="form-group form-group-sm">
                                 <label htmlFor="configurationsfilter" className="control-label">Filter configurations:</label>

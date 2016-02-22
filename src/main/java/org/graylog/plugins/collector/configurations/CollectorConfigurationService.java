@@ -161,6 +161,11 @@ public class CollectorConfigurationService {
         return tags;
     }
 
+    public CollectorConfiguration fromRequest(CollectorConfiguration request) {
+        CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(request.name(),
+                request.tags(), request.inputs(), request.outputs(), request.snippets());
+        return collectorConfiguration;
+    }
 
     public CollectorConfiguration withInputFromRequest(String id, CollectorInput input) {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));

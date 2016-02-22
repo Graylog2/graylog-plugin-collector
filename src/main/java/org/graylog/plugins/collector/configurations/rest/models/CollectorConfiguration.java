@@ -6,19 +6,21 @@ import com.google.auto.value.AutoValue;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.mongojack.ObjectId;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 
 @AutoValue
 public abstract class CollectorConfiguration {
     @JsonProperty("_id")
+    @Nullable
     @ObjectId
     public abstract String getId();
 
     @JsonProperty("name")
     public abstract String name();
 
-    @JsonProperty("tags")
+    @JsonProperty
     public abstract List<String> tags();
 
     @JsonProperty
