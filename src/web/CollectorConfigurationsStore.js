@@ -105,7 +105,8 @@ const CollectorConfigurationsStore = Reflux.createStore({
 
     saveOutput(output, configurationId) {
         const requestOutput = {
-            type: 'nxlog',
+            backend: output.backend,
+            type: output.type,
             name: output.name,
             properties: output.properties,
         };

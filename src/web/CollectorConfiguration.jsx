@@ -92,10 +92,10 @@ const CollectorConfiguration = React.createClass({
                 <td>{output.name}</td>
                 <td>{output.type}</td>
                 <td>{output.properties.Module || "none"}</td>
-                <td style={{width: 140}}><EditOutputModal id={output.output_id} name={output.name}
-                                                        properties={output.properties} create={false}
-                                                        reload={this._reloadConfiguration} saveOutput={this._saveOutput}
-                                                        validOutputName={this._validOutputName}/>
+                <td style={{width: 140}}><EditOutputModal id={output.output_id} name={output.name} backend={output.backend}
+                                                          type={output.type} properties={output.properties} create={false}
+                                                          reload={this._reloadConfiguration} saveOutput={this._saveOutput}
+                                                          validOutputName={this._validOutputName}/>
                                         <DeleteOutputButton output={output} onClick={this._deleteOutput}/></td>
             </tr>
         );

@@ -1,13 +1,18 @@
 import React from 'react';
 import { Input } from 'react-bootstrap';
+import Select from 'react-select';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 import { KeyValueTable } from 'components/common';
+
+import EditOutputFields from 'EditOutputFields';
 
 const EditOutputModal = React.createClass({
     propTypes: {
         id: React.PropTypes.string,
         name: React.PropTypes.string,
+        backend: React.PropTypes.string,
+        type: React.PropTypes.string,
         properties: React.PropTypes.object,
         create: React.PropTypes.bool,
         saveOutput: React.PropTypes.func.isRequired,
@@ -18,7 +23,10 @@ const EditOutputModal = React.createClass({
         return {
             id: this.props.id,
             name: this.props.name,
+            backend: this.props.backend,
+            type: this.props.type,
             properties: this.props.properties,
+            selectedType: {value: this.props.backend + ':' + this.props.type},
             error: false,
             error_message: '',
         };
@@ -39,7 +47,7 @@ const EditOutputModal = React.createClass({
     _saved() {
         this._closeModal();
         if (this.props.create) {
-            this.setState({name: '', properties: ''});
+            this.setState({name: '', backend: '', type: '', selectedType: '', properties: {}});
         }
     },
 
@@ -59,6 +67,19 @@ const EditOutputModal = React.createClass({
         this.setState({properties: properties})
     },
 
+    _injectProperties(key, event) {
+        let properties = this.state.properties;
+        if(properties) {
+            properties[key] = event.target.value;
+        }
+        this.setState({properties: properties});
+    },
+
+    _changeType(type) {
+        const backendAndType = type.value.split(/:/, 2);
+        this.setState({selectedType: type, backend: backendAndType[0], type: backendAndType[1]});
+    },
+
     render() {
         let triggerButtonContent;
         if (this.props.create) {
@@ -66,6 +87,10 @@ const EditOutputModal = React.createClass({
         } else {
             triggerButtonContent = <span>Edit</span>;
         }
+        const types = [
+            { value: 'nxlog:gelf-udp', label: '[NXLog] GELF output' }
+        ];
+
         return (
         <span>
                 <button onClick={this.openModal}
@@ -86,7 +111,13 @@ const EditOutputModal = React.createClass({
                                help={this.state.error ? this.state.error_message : null}
                                autoFocus
                                required/>
-                        <KeyValueTable pairs={this.state.properties} onChange={this._changeProperties} editable />
+                        <Select ref="select-type"
+                            options={types}
+                            value={this.state.selectedType ? this.state.selectedType.value : null}
+                            onChange={(type) => this._changeType(type)}
+                            placeholder="Choose output type..."
+                        />
+                        <EditOutputFields type={this.state.selectedType} properties={this.props.properties} injectProperties={this._injectProperties} />
                     </fieldset>
                 </BootstrapModalForm>
             </span>
