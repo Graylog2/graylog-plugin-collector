@@ -16,6 +16,9 @@ public abstract class CollectorInput {
     public abstract String inputId();
 
     @JsonProperty
+    public abstract String backend();
+
+    @JsonProperty
     public abstract String type();
 
     @JsonProperty
@@ -30,6 +33,7 @@ public abstract class CollectorInput {
 
     @JsonCreator
     public static CollectorInput create(@JsonProperty("input_id") String inputId,
+                                        @JsonProperty("backend") String backend,
                                         @JsonProperty("type") String type,
                                         @JsonProperty("name") String name,
                                         @JsonProperty("forward_to") String forwardTo,
@@ -37,13 +41,14 @@ public abstract class CollectorInput {
         if (inputId == null) {
             inputId = org.bson.types.ObjectId.get().toString();
         }
-        return new AutoValue_CollectorInput(inputId, type, name, forwardTo, properties);
+        return new AutoValue_CollectorInput(inputId, backend, type, name, forwardTo, properties);
     }
 
     public static CollectorInput create(@NotEmpty String type,
+                                        @NotEmpty String backend,
                                         @NotEmpty String name,
                                         @NotEmpty String forwardTo,
                                         @NotEmpty Map<String, Object> properties) {
-        return create(org.bson.types.ObjectId.get().toString(), type, name, forwardTo, properties);
+        return create(org.bson.types.ObjectId.get().toString(), backend, type, name, forwardTo, properties);
     }
 }

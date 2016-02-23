@@ -77,10 +77,11 @@ const CollectorConfiguration = React.createClass({
                 <td>{input.type}</td>
                 <td>{input.properties.Module || "none"}</td>
                 <td>{input.forward_to}</td>
-                <td style={{width: 130}}><EditInputModal id={input.input_id} name={input.name}
-                                                        properties={input.properties} create={false}
-                                                        reload={this._reloadConfiguration} saveInput={this._saveInput}
-                                                        validInputName={this._validInputName}/>
+                <td style={{width: 130}}><EditInputModal id={input.input_id} name={input.name} forwardto={input.forward_to}
+                                                         backend={input.backend} type={input.type}
+                                                         properties={input.properties} outputs={this.state.outputs}
+                                                         create={false} reload={this._reloadConfiguration}
+                                                         saveInput={this._saveInput} validInputName={this._validInputName}/>
                                         <DeleteInputButton input={input} onClick={this._deleteInput}/></td>
             </tr>
         );

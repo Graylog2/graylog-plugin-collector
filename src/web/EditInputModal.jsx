@@ -1,15 +1,17 @@
 import React from 'react';
 import { Input } from 'react-bootstrap';
+import Select from 'react-select';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
-import { KeyValueTable, Select } from 'components/common';
 
-import CollectorsActions from './CollectorsActions';
+import EditInputFields from './EditInputFields';
 
 const EditInputModal = React.createClass({
     propTypes: {
         id: React.PropTypes.string,
         name: React.PropTypes.string,
+        backend: React.PropTypes.string,
+        type: React.PropTypes.string,
         forwardto: React.PropTypes.string,
         properties: React.PropTypes.object,
         outputs: React.PropTypes.array,
@@ -22,8 +24,11 @@ const EditInputModal = React.createClass({
         return {
             id: this.props.id,
             name: this.props.name,
-            forwardto: this.props.forwardto,
+            backend: this.props.backend,
+            type: this.props.type,
+            forwardto: {value: this.props.forwardto},
             properties: this.props.properties,
+            selectedType: {value: this.props.backend + ':' + this.props.type},
             error: false,
             error_message: '',
         };
@@ -44,7 +49,7 @@ const EditInputModal = React.createClass({
     _saved() {
         this._closeModal();
         if (this.props.create) {
-            this.setState({name: '', forwardto: '', properties: {}});
+            this.setState({name: '', backend: '', type: '', selectedType: '', forwardto: {}, properties: {}});
         }
     },
 
@@ -61,11 +66,24 @@ const EditInputModal = React.createClass({
     },
 
     _changeForwardtoDropdown(selectedValue) {
-        this.setState({forwardto: selectedValue});
+        this.setState({forwardto: {value: selectedValue.value}});
     },
 
     _changeProperties(properties) {
         this.setState({properties: properties});
+    },
+
+    _injectProperties(key, event) {
+        let properties = this.state.properties;
+        if(properties) {
+            properties[key] = event.target.value;
+        }
+        this.setState({properties: properties});
+    },
+
+    _changeType(type) {
+        const backendAndType = type.value.split(/:/, 2);
+        this.setState({selectedType: type, backend: backendAndType[0], type: backendAndType[1]});
     },
 
     _formatDropdownOptions() {
@@ -90,6 +108,10 @@ const EditInputModal = React.createClass({
         } else {
             triggerButtonContent = <span>Edit</span>;
         }
+        const types = [
+            { value: 'nxlog:file', label: '[NXLog] file input' },
+            { value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
+        ];
 
         return (
         <span>
@@ -110,11 +132,21 @@ const EditInputModal = React.createClass({
                                bsStyle={this.state.error ? 'error' : null}
                                help={this.state.error ? this.state.error_message : null}
                                autoFocus
-                               required/>
-                        <Select placeholder="Forward to output"
-                                options={this._formatDropdownOptions()} matchProp="label"
-                                onValueChange={this._changeForwardtoDropdown} value={''} />
-                        <KeyValueTable pairs={this.state.properties} onChange={this._changeProperties} editable />
+                               required
+                        />
+                        <Select ref="select-forwardto"
+                                options={this._formatDropdownOptions()}
+                                value={this.state.forwardto ? this.state.forwardto.value : null}
+                                onChange={this._changeForwardtoDropdown}
+                                placeholder="Forward to output"
+                        />
+                        <Select ref="select-type"
+                                options={types}
+                                value={this.state.selectedType ? this.state.selectedType.value : null}
+                                onChange={(type) => this._changeType(type)}
+                                placeholder="Choose input type..."
+                        />
+                        <EditInputFields type={this.state.selectedType} properties={this.props.properties} injectProperties={this._injectProperties} />
                     </fieldset>
                 </BootstrapModalForm>
             </span>

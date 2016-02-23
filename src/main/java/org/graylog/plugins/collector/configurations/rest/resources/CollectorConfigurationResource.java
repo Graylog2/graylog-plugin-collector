@@ -26,20 +26,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.mail.internet.AddressException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -352,72 +344,6 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                               @PathParam("id") String id,
                               @PathParam("snippetId") String snippetId) throws NotFoundException {
         collectorConfigurationService.deleteSnippet(id, snippetId);
-    }
-
-    // development helper; TODO: delete this!
-    @GET
-    @Path("/configuration/{name}/new")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Create new collector configuration")
-    public CollectorConfiguration newConfiguration(@ApiParam(name = "name", required = true)
-                                                   @PathParam("name") String name) {
-        String ip;
-        try {
-            InetAddress inetAddr = getLocalAddress();
-            if (inetAddr != null) {
-                ip = inetAddr.toString().replace("/", "");
-            } else {
-                throw new AddressException();
-            }
-        } catch (SocketException e) {
-            log.warn("Can not get address for eth0");
-            return null;
-        } catch (AddressException e) {
-            log.warn("Can not get address for eth0");
-            return null;
-        }
-
-        List<String> tags = new ArrayList<>();
-        List<CollectorInput> collectorInputs = new ArrayList<>();
-        List<CollectorOutput> collectorOutputs = new ArrayList<>();
-        List<CollectorConfigurationSnippet> collectorConfigurationSnippets = new ArrayList<>();
-
-        HashMap<String, Object> inputProperties = new HashMap<>();
-        inputProperties.put("Module", "im_msvistalog");
-        collectorInputs.add(CollectorInput.create("nxlog", "windows-eventlog", "gelf-udp", inputProperties));
-
-        HashMap<String, Object> outputProperties = new HashMap<>();
-        outputProperties.put("Module", "om_udp");
-        outputProperties.put("Host", ip);
-        outputProperties.put("Port", "12201");
-        outputProperties.put("OutputType", "GELF");
-        collectorOutputs.add(CollectorOutput.create("nxlog", "gelf-udp", "gelf-udp-output", outputProperties));
-
-        CollectorConfiguration newConfiguration = CollectorConfiguration.create(name, tags, collectorInputs,
-                collectorOutputs, collectorConfigurationSnippets);
-        collectorConfigurationService.save(newConfiguration);
-
-        return newConfiguration;
-    }
-
-    private static InetAddress getLocalAddress() throws SocketException {
-        Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-        while( ifaces.hasMoreElements() )
-        {
-          NetworkInterface iface = ifaces.nextElement();
-          Enumeration<InetAddress> addresses = iface.getInetAddresses();
-
-          while( addresses.hasMoreElements() )
-          {
-            InetAddress addr = addresses.nextElement();
-            if( addr instanceof Inet4Address && !addr.isLoopbackAddress() )
-            {
-              return addr;
-            }
-          }
-        }
-
-        return null;
     }
 
     protected static class LostCollectorFunction implements Function<Collector, Boolean> {

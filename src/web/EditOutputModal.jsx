@@ -5,7 +5,7 @@ import Select from 'react-select';
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 import { KeyValueTable } from 'components/common';
 
-import EditOutputFields from 'EditOutputFields';
+import EditOutputFields from './EditOutputFields';
 
 const EditOutputModal = React.createClass({
     propTypes: {

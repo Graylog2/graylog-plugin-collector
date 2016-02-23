@@ -1,8 +1,6 @@
 import React from 'react';
 import { Input } from 'react-bootstrap';
 
-import { KeyValueTable } from 'components/common';
-
 const EditOutputFields = React.createClass({
     propTypes: {
         type: React.PropTypes.object,
@@ -21,20 +19,20 @@ const EditOutputFields = React.createClass({
                     return (
                         <div>
                             <Input type="text"
-                                id={this._getId('gelf-udp-server')}
-                                label="Server IP"
-                                defaultValue={this.props.properties.server}
-                                onChange={(prop) => this.props.injectProperties("server", prop)}
-                                help={null}
-                                required/>
+                                   id={this._getId('gelf-udp-server')}
+                                   label="Server IP"
+                                   defaultValue={this.props.properties.server}
+                                   onChange={(prop) => this.props.injectProperties("server", prop)}
+                                   help={null}
+                                   required/>
                             <Input type="text"
-                                id={this._getId('gelf-udp-port')}
-                                label="Port"
-                                defaultValue={this.props.properties.port}
-                                onChange={(prop) => this.props.injectProperties("port", prop)}
-                                help={null}
-                                required/>
-                            </div>)
+                                   id={this._getId('gelf-udp-port')}
+                                   label="Port"
+                                   defaultValue={this.props.properties.port}
+                                   onChange={(prop) => this.props.injectProperties("port", prop)}
+                                   help={null}
+                                   required/>
+                            </div>);
             }
         }
         return (null)
