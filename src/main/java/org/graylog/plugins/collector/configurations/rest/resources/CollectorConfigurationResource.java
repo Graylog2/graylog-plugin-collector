@@ -184,6 +184,63 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         return collectorConfiguration;
     }
 
+    @PUT
+    @Path("/configurations/{id}/outputs/{output_id}")
+    @ApiOperation(value = "Update a configuration output",
+            notes = "This is a stateless method which updates a collector output")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+    })
+    public Response updateOutput(@ApiParam(name = "id", required = true)
+                                 @PathParam("id") @NotEmpty String id,
+                                 @ApiParam(name = "output_id", required = true)
+                                 @PathParam("output_id") @NotEmpty String outputId,
+                                 @ApiParam(name = "JSON body", required = true)
+                                 @Valid @NotNull CollectorOutput request) {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateOutputFromRequest(id, outputId, request);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
+    @PUT
+    @Path("/configurations/{id}/inputs/{input_id}")
+    @ApiOperation(value = "Update a configuration input",
+            notes = "This is a stateless method which updates a collector input")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+    })
+    public Response updateInput(@ApiParam(name = "id", required = true)
+                                 @PathParam("id") @NotEmpty String id,
+                                 @ApiParam(name = "input_id", required = true)
+                                 @PathParam("input_id") @NotEmpty String inputId,
+                                 @ApiParam(name = "JSON body", required = true)
+                                 @Valid @NotNull CollectorInput request) {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateInputFromRequest(id, inputId, request);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
+    @PUT
+    @Path("/configurations/{id}/snippets/{snippet_id}")
+    @ApiOperation(value = "Update a configuration snippet",
+            notes = "This is a stateless method which updates a collector snippet")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+    })
+    public Response updateSnippet(@ApiParam(name = "id", required = true)
+                                 @PathParam("id") @NotEmpty String id,
+                                 @ApiParam(name = "snippet_id", required = true)
+                                 @PathParam("snippet_id") @NotEmpty String snippetId,
+                                 @ApiParam(name = "JSON body", required = true)
+                                 @Valid @NotNull CollectorConfigurationSnippet request) {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateSnippetFromRequest(id, snippetId, request);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
     @POST
     @Path("/configurations")
     @Produces(MediaType.APPLICATION_JSON)

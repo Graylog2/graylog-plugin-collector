@@ -19,6 +19,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 @Singleton
 public class CollectorConfigurationService {
@@ -191,4 +192,47 @@ public class CollectorConfigurationService {
         collectorConfiguration.tags().addAll(tags);
         return collectorConfiguration;
     }
+
+    public CollectorConfiguration updateInputFromRequest(String id, String inputId, CollectorInput request) {
+        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+
+        ListIterator<CollectorInput> inputIterator = collectorConfiguration.inputs().listIterator();
+        while (inputIterator.hasNext()) {
+            int i = inputIterator.nextIndex();
+            CollectorInput input = inputIterator.next();
+            if(input.inputId().equals(inputId)){
+                collectorConfiguration.inputs().set(i, request);
+            }
+        }
+        return collectorConfiguration;
+    }
+
+    public CollectorConfiguration updateOutputFromRequest(String id, String outputId, CollectorOutput request) {
+        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+
+        ListIterator<CollectorOutput> outputIterator = collectorConfiguration.outputs().listIterator();
+        while (outputIterator.hasNext()) {
+            int i = outputIterator.nextIndex();
+            CollectorOutput output = outputIterator.next();
+            if(output.outputId().equals(outputId)){
+                collectorConfiguration.outputs().set(i, request);
+            }
+        }
+        return collectorConfiguration;
+    }
+
+    public CollectorConfiguration updateSnippetFromRequest(String id, String snippetId, CollectorConfigurationSnippet request) {
+        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+
+        ListIterator<CollectorConfigurationSnippet> snippetIterator = collectorConfiguration.snippets().listIterator();
+        while (snippetIterator.hasNext()) {
+            int i = snippetIterator.nextIndex();
+            CollectorConfigurationSnippet snippet = snippetIterator.next();
+            if(snippet.snippetId().equals(snippetId)){
+                collectorConfiguration.snippets().set(i, request);
+            }
+        }
+        return collectorConfiguration;
+    }
+
 }
