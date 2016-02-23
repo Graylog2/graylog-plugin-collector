@@ -391,7 +391,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         outputProperties.put("Host", ip);
         outputProperties.put("Port", "12201");
         outputProperties.put("OutputType", "GELF");
-        collectorOutputs.add(CollectorOutput.create("nxlog", "gelf-udp", outputProperties));
+        collectorOutputs.add(CollectorOutput.create("nxlog", "gelf-udp", "gelf-udp-output", outputProperties));
 
         CollectorConfiguration newConfiguration = CollectorConfiguration.create(name, tags, collectorInputs,
                 collectorOutputs, collectorConfigurationSnippets);

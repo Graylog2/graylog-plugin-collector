@@ -16,6 +16,9 @@ public abstract class CollectorOutput {
     public abstract String outputId();
 
     @JsonProperty
+    public abstract String backend();
+
+    @JsonProperty
     public abstract String type();
 
     @JsonProperty
@@ -27,19 +30,21 @@ public abstract class CollectorOutput {
 
     @JsonCreator
     public static CollectorOutput create(@JsonProperty("output_id") String outputId,
+                                         @JsonProperty("backend") String backend,
                                          @JsonProperty("type") String type,
                                          @JsonProperty("name") String name,
                                          @JsonProperty("properties") Map<String, Object> properties) {
         if (outputId == null) {
             outputId = org.bson.types.ObjectId.get().toString();
         }
-        return new AutoValue_CollectorOutput(outputId, type, name, properties);
+        return new AutoValue_CollectorOutput(outputId, backend, type, name, properties);
     }
 
-    public static CollectorOutput create(@NotEmpty String type,
+    public static CollectorOutput create(@NotEmpty String backend,
+                                         @NotEmpty String type,
                                          @NotEmpty String name,
                                          @NotEmpty Map<String, Object> properties) {
-        return create(org.bson.types.ObjectId.get().toString(), type, name, properties);
+        return create(org.bson.types.ObjectId.get().toString(), backend, type, name, properties);
     }
 
 }
