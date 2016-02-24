@@ -57,7 +57,7 @@ const CreateConfigurationModal = React.createClass({
         return (
             <span>
                 <button onClick={this.openModal}
-                        className='btn btn-success btn-xs pull-right'>
+                        className='btn btn-success btn-md pull-right'>
                     Create configuration
                 </button>
                 <BootstrapModalForm ref="modal"

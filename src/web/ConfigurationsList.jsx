@@ -95,16 +95,11 @@ const ConfigurationsList = React.createClass({
             const configurationList = (configurations.length > 0 ? this._formatConfigurationList(configurations) : this._formatEmptyListAlert());
 
             return (
-                    <div>
-                        <CreateConfigurationModal name="" saveConfiguration={this._createConfiguration} validConfigurationName={this._validConfigurationName}/>
-                        <form className="form-inline configurations-filter-form" onSubmit={(evt) => evt.preventDefault() }>
-                            <div className="form-group form-group-sm">
-                                <label htmlFor="configurationsfilter" className="control-label">Filter configurations:</label>
-                                <input type="text" name="filter" id="configurationsfilter" className="form-control" value={this.state.filter} onChange={(event) => {this.setState({filter: event.target.value});}} />
-                            </div>
-                        </form>
-                        {configurationList}
-                    </div>
+                <div>
+                    <CreateConfigurationModal name="" saveConfiguration={this._createConfiguration}
+                                              validConfigurationName={this._validConfigurationName}/>
+                    {configurationList}
+                </div>
             );
         }
     },

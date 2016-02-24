@@ -25,7 +25,7 @@ const ConfigurationRow = React.createClass({
         return (
             <tr>
                 <td className="limited">
-                    <LinkContainer to={`/configurations/${configuration._id}`}>
+                    <LinkContainer to={`/collectors/configurations/${configuration._id}`}>
                         <a>{configuration.name}</a>
                     </LinkContainer>
                 </td>

@@ -1,7 +1,8 @@
 import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
-import CollectorsList from './CollectorsList';
+import CollectorsPage from './CollectorsPage';
+import ConfigurationsPage from './ConfigurationsPage';
 import CollectorConfiguration from './CollectorConfiguration';
 
 PluginStore.register(new PluginManifest(packageJson, {
@@ -13,8 +14,9 @@ PluginStore.register(new PluginManifest(packageJson, {
   // Adding a route to /sample, rendering YourReactComponent when called:
 
   routes: [
-      { path: '/collectors', component: CollectorsList },
-      { path: '/configurations/:id', component: CollectorConfiguration},
+      { path: '/collectors', component: CollectorsPage },
+      { path: '/collectors/configurations', component: ConfigurationsPage },
+      { path: '/collectors/configurations/:id', component: CollectorConfiguration}
   ],
 
   // Adding an element to the top navigation pointing to /sample named "Sample":

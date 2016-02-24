@@ -1,6 +1,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 import { Button, Input, Col, Row } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import {DataTable, PageHeader, Spinner} from 'components/common';
 import RoleList from 'components/users/RoleList';
@@ -224,6 +225,11 @@ const CollectorConfiguration = React.createClass({
                         This is a list of inputs and outputs configured for the current collector.
                     </span>
                     {null}
+                    <span>
+                        <LinkContainer to={'/collectors/configurations'}>
+                            <a className="btn btn-info">Manage Configurations</a>
+                        </LinkContainer>
+                    </span>
                 </PageHeader>
                 <Row className="content">
                     <Col md={8}>
