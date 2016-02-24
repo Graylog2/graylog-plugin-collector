@@ -21,7 +21,7 @@ PluginStore.register(new PluginManifest(packageJson, {
 
   // Adding an element to the top navigation pointing to /sample named "Sample":
 
-  navigation: [
-      { path: '/collectors', description: 'Collector Manager' },
+  systemnavigation: [
+      { path: '/collectors', description: 'Collectors' },
   ]
 }));
