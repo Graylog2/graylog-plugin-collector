@@ -10,8 +10,8 @@ const EditSnippetModal = React.createClass({
     propTypes: {
         id: React.PropTypes.string,
         name: React.PropTypes.string,
-        type: React.PropTypes.string,
         snippet: React.PropTypes.string,
+        backend: React.PropTypes.string,
         create: React.PropTypes.bool,
         saveSnippet: React.PropTypes.func.isRequired,
         validSnippetName: React.PropTypes.func.isRequired,
@@ -21,8 +21,8 @@ const EditSnippetModal = React.createClass({
         return {
             id: this.props.id,
             name: this.props.name,
-            type: this.props.type,
             snippet: this.props.snippet,
+            backend: "nxlog",
             error: false,
             error_message: '',
         };
@@ -57,10 +57,6 @@ const EditSnippetModal = React.createClass({
 
     _changeName(event) {
         this.setState({name: event.target.value});
-    },
-
-    _changeType(event) {
-        this.setState({type: event.target.value});
     },
 
     _changeSnippet(event) {
@@ -98,6 +94,7 @@ const EditSnippetModal = React.createClass({
                         <Input type="textarea"
                                id={this._getId('snippet-content')}
                                label="Snippet"
+                               rows="10"
                                defaultValue={this.state.snippet}
                                onChange={this._changeSnippet}
                                bsStyle={this.state.error ? 'error' : null}
