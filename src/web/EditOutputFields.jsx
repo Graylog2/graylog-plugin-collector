@@ -32,7 +32,7 @@ const EditOutputFields = React.createClass({
                                    onChange={(prop) => this.props.injectProperties("port", prop)}
                                    help={null}
                                    required/>
-                            </div>);
+                        </div>);
             }
         }
         return (null)

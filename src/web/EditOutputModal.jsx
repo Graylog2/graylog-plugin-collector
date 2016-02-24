@@ -111,12 +111,14 @@ const EditOutputModal = React.createClass({
                                help={this.state.error ? this.state.error_message : null}
                                autoFocus
                                required/>
-                        <Select ref="select-type"
-                            options={types}
-                            value={this.state.selectedType ? this.state.selectedType.value : null}
-                            onChange={(type) => this._changeType(type)}
-                            placeholder="Choose output type..."
-                        />
+                        <Input id={this._getId('output-type')} label="Type">
+                            <Select ref="select-type"
+                                    options={types}
+                                    value={this.state.selectedType ? this.state.selectedType.value : null}
+                                    onChange={(type) => this._changeType(type)}
+                                    placeholder="Choose output type..."
+                            />
+                        </Input>
                         <EditOutputFields type={this.state.selectedType} properties={this.props.properties} injectProperties={this._injectProperties} />
                     </fieldset>
                 </BootstrapModalForm>

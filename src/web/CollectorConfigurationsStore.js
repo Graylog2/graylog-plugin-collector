@@ -170,7 +170,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
 
     saveSnippet(snippet, configurationId) {
         const requestSnippet = {
-            type: 'nxlog',
+            backend: snippet.backend,
             name: snippet.name,
             snippet: snippet.snippet,
         };

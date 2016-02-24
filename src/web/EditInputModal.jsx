@@ -134,18 +134,22 @@ const EditInputModal = React.createClass({
                                autoFocus
                                required
                         />
-                        <Select ref="select-forwardto"
-                                options={this._formatDropdownOptions()}
-                                value={this.state.forwardto ? this.state.forwardto.value : null}
-                                onChange={this._changeForwardtoDropdown}
-                                placeholder="Forward to output"
-                        />
-                        <Select ref="select-type"
-                                options={types}
-                                value={this.state.selectedType ? this.state.selectedType.value : null}
-                                onChange={(type) => this._changeType(type)}
-                                placeholder="Choose input type..."
-                        />
+                        <Input id={this._getId('input-foward-to')} label="Forward to">
+                            <Select ref="select-forwardto"
+                                    options={this._formatDropdownOptions()}
+                                    value={this.state.forwardto ? this.state.forwardto.value : null}
+                                    onChange={this._changeForwardtoDropdown}
+                                    placeholder="Forward to output"
+                            />
+                        </Input>
+                        <Input id={this._getId('input-type')} label="Type">
+                            <Select ref="select-type"
+                                    options={types}
+                                    value={this.state.selectedType ? this.state.selectedType.value : null}
+                                    onChange={(type) => this._changeType(type)}
+                                    placeholder="Choose input type..."
+                            />
+                        </Input>
                         <EditInputFields type={this.state.selectedType} properties={this.props.properties} injectProperties={this._injectProperties} />
                     </fieldset>
                 </BootstrapModalForm>

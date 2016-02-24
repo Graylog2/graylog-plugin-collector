@@ -77,12 +77,15 @@ const CollectorConfiguration = React.createClass({
                 <td>{input.type}</td>
                 <td>{input.properties.Module || "none"}</td>
                 <td>{input.forward_to}</td>
-                <td style={{width: 130}}><EditInputModal id={input.input_id} name={input.name} forwardto={input.forward_to}
-                                                         backend={input.backend} type={input.type}
-                                                         properties={input.properties} outputs={this.state.outputs}
-                                                         create={false} reload={this._reloadConfiguration}
-                                                         saveInput={this._saveInput} validInputName={this._validInputName}/>
-                                        <DeleteInputButton input={input} onClick={this._deleteInput}/></td>
+                <td style={{width: 155}}>
+                    <EditInputModal id={input.input_id} name={input.name} forwardto={input.forward_to}
+                                    backend={input.backend} type={input.type}
+                                    properties={input.properties} outputs={this.state.outputs}
+                                    create={false} reload={this._reloadConfiguration}
+                                    saveInput={this._saveInput} validInputName={this._validInputName}/>
+                    &nbsp;
+                    <DeleteInputButton input={input} onClick={this._deleteInput}/>
+                </td>
             </tr>
         );
     },
@@ -93,11 +96,17 @@ const CollectorConfiguration = React.createClass({
                 <td>{output.name}</td>
                 <td>{output.type}</td>
                 <td>{output.properties.Module || "none"}</td>
-                <td style={{width: 140}}><EditOutputModal id={output.output_id} name={output.name} backend={output.backend}
-                                                          type={output.type} properties={output.properties} create={false}
-                                                          reload={this._reloadConfiguration} saveOutput={this._saveOutput}
+                <td style={{width: 155}}>
+                    <EditOutputModal id={output.output_id} name={output.name}
+                                                          backend={output.backend}
+                                                          type={output.type} properties={output.properties}
+                                                          create={false}
+                                                          reload={this._reloadConfiguration}
+                                                          saveOutput={this._saveOutput}
                                                           validOutputName={this._validOutputName}/>
-                                        <DeleteOutputButton output={output} onClick={this._deleteOutput}/></td>
+                    &nbsp;
+                    <DeleteOutputButton output={output} onClick={this._deleteOutput}/>
+                </td>
             </tr>
         );
     },
@@ -107,10 +116,13 @@ const CollectorConfiguration = React.createClass({
             <tr key={snippet.snippet_id}>
                 <td>{snippet.name}</td>
                 <td>{snippet.type}</td>
-                <td style={{width: 150}}><EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
+                <td style={{width: 155}}>
+                    <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
                                                            create={false} reload={this._reloadConfiguration}
                                                            saveSnippet={this._saveSnippet} validSnippetName={this._validSnippetName}/>
-                    <DeleteSnippetButton snippet={snippet} onClick={this._deleteSnippet}/></td>
+                    &nbsp;
+                    <DeleteSnippetButton snippet={snippet} onClick={this._deleteSnippet}/>
+                </td>
             </tr>
         );
     },
@@ -214,20 +226,22 @@ const CollectorConfiguration = React.createClass({
                     {null}
                 </PageHeader>
                 <Row className="content">
-                    <Col md={4}>
+                    <Col md={8}>
                         <h2>Change tags</h2>
                         <form className="form-horizontal" style={{marginTop: '10px'}} onSubmit={this._updateTags}>
                             <Input label="Tags" help={tagHelp}
                                    labelClassName="col-sm-2" wrapperClassName="col-sm-10">
-                                <TagsSelect ref="tags" availableTags={availableTags} tags={this.state.tags} className="form-control"/>
+                                <Row>
+                                    <Col md={6}>
+                                        <TagsSelect ref="tags" availableTags={availableTags} tags={this.state.tags} className="form-control"/>
+                                    </Col>
+                                    <Col md={6} style={{paddingLeft: 0}}>
+                                        <Button bsStyle="success" type="submit">
+                                            Update tags
+                                        </Button>
+                                    </Col>
+                                </Row>
                             </Input>
-                            <div className="form-group">
-                                <Col smOffset={2}>
-                                    <Button bsStyle="success" type="submit">
-                                        Update tags
-                                    </Button>
-                                </Col>
-                            </div>
                         </form>
                     </Col>
                 </Row>
