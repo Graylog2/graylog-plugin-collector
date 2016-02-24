@@ -3,18 +3,18 @@ import { Input } from 'react-bootstrap';
 
 const EditInputFields = React.createClass({
     propTypes: {
-        type: React.PropTypes.object,
+        type: React.PropTypes.string.isRequired,
         properties: React.PropTypes.object,
         injectProperties: React.PropTypes.func.isRequired,
     },
 
     _getId(prefixIdName) {
-        return this.props.type.value !== undefined ? prefixIdName + this.props.type.value : prefixIdName;
+        return this.props.type !== undefined ? prefixIdName + this.props.type : prefixIdName;
     },
 
     render() {
         if (this.props.type) {
-            switch (this.props.type.value) {
+            switch (this.props.type) {
                 case "nxlog:file":
                     return (
                         <div>
