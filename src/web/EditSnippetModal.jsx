@@ -22,7 +22,7 @@ const EditSnippetModal = React.createClass({
             id: this.props.id,
             name: this.props.name,
             snippet: this.props.snippet,
-            backend: "nxlog",
+            backend: this.props.backend,
             error: false,
             error_message: '',
         };
@@ -59,6 +59,10 @@ const EditSnippetModal = React.createClass({
         this.setState({name: event.target.value});
     },
 
+    _changeBackend(selectedBackend) {
+        this.setState({backend: selectedBackend});
+    },
+
     _changeSnippet(event) {
         this.setState({snippet: event.target.value});
     },
@@ -70,6 +74,9 @@ const EditSnippetModal = React.createClass({
         } else {
             triggerButtonContent = <span>Edit</span>;
         }
+        const backends = [
+            { value: 'nxlog', label: 'NXLog' },
+        ];
 
         return (
             <span>
@@ -91,6 +98,15 @@ const EditSnippetModal = React.createClass({
                                help={this.state.error ? this.state.error_message : null}
                                autoFocus
                                required/>
+                        <Input id={this._getId('snippet-backend')}
+                               label="Backend">
+                                <Select ref="select-backend"
+                                    options={backends}
+                                    value={this.state.backend}
+                                    onChange={this._changeBackend}
+                                    placeholder="Backend collector type"
+                                 />
+                        </Input>
                         <Input type="textarea"
                                id={this._getId('snippet-content')}
                                label="Snippet"
