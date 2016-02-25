@@ -28,7 +28,7 @@ const ConfigurationsList = React.createClass({
     },
 
     _formatEmptyListAlert() {
-        return <Alert>There are no configurations to show.</Alert>;
+        return <Col md={3}><Alert>There are no configurations to show.</Alert></Col>;
     },
 
     _getFilteredConfigurations() {

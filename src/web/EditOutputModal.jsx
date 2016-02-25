@@ -87,7 +87,7 @@ const EditOutputModal = React.createClass({
             triggerButtonContent = <span>Edit</span>;
         }
         const types = [
-            { value: 'nxlog:gelf-udp', label: '[NXLog] GELF output' }
+            { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' }
         ];
 
         return (
@@ -111,12 +111,12 @@ const EditOutputModal = React.createClass({
                                autoFocus
                                required/>
                         <Input id={this._getId('output-type')} label="Type">
-                            <Select ref="select-type"
+                                <Select ref="select-type"
                                     options={types}
                                     value={this.state.selectedType}
                                     onValueChange={this._changeType}
                                     placeholder="Choose output type..."
-                            />
+                                />
                         </Input>
                         <EditOutputFields type={this.state.selectedType} properties={this.props.properties} injectProperties={this._injectProperties} />
                     </fieldset>

@@ -117,8 +117,8 @@ const CollectorConfiguration = React.createClass({
                 <td>{snippet.backend}</td>
                 <td style={{width: 155}}>
                     <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
-                                                           create={false} reload={this._reloadConfiguration}
-                                                           saveSnippet={this._saveSnippet} validSnippetName={this._validSnippetName}/>
+                                      backend={snippet.backend} create={false} reload={this._reloadConfiguration}
+                                      saveSnippet={this._saveSnippet} validSnippetName={this._validSnippetName}/>
                     &nbsp;
                     <DeleteSnippetButton snippet={snippet} onClick={this._deleteSnippet}/>
                 </td>

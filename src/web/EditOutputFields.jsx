@@ -3,7 +3,7 @@ import { Input } from 'react-bootstrap';
 
 const EditOutputFields = React.createClass({
     propTypes: {
-        type: React.PropTypes.string.isRequired,
+        type: React.PropTypes.string,
         properties: React.PropTypes.object,
         injectProperties: React.PropTypes.func.isRequired,
     },
