@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from 'react-bootstrap';
-import Select from 'react-select';
+import { Select } from 'components/common';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 
@@ -12,7 +12,7 @@ const EditInputModal = React.createClass({
         name: React.PropTypes.string,
         backend: React.PropTypes.string,
         type: React.PropTypes.string,
-        forwardto: React.PropTypes.string,
+        forwardTo: React.PropTypes.string,
         properties: React.PropTypes.object,
         outputs: React.PropTypes.array,
         create: React.PropTypes.bool,
@@ -26,9 +26,9 @@ const EditInputModal = React.createClass({
             name: this.props.name,
             backend: this.props.backend,
             type: this.props.type,
-            forwardto: {value: this.props.forwardto},
+            forwardTo: this.props.forwardTo,
             properties: this.props.properties,
-            selectedType: {value: this.props.backend + ':' + this.props.type},
+            selectedType: (this.props.backend && this.props.type) ? this.props.backend + ':' + this.props.type : undefined,
             error: false,
             error_message: '',
         };
@@ -49,7 +49,7 @@ const EditInputModal = React.createClass({
     _saved() {
         this._closeModal();
         if (this.props.create) {
-            this.setState({name: '', backend: '', type: '', selectedType: '', forwardto: {}, properties: {}});
+            this.setState({name: '', backend: '', type: '', selectedType: '', forwardTo: '', properties: {}});
         }
     },
 
@@ -66,7 +66,7 @@ const EditInputModal = React.createClass({
     },
 
     _changeForwardtoDropdown(selectedValue) {
-        this.setState({forwardto: {value: selectedValue.value}});
+        this.setState({forwardTo: selectedValue});
     },
 
     _changeProperties(properties) {
@@ -82,7 +82,7 @@ const EditInputModal = React.createClass({
     },
 
     _changeType(type) {
-        const backendAndType = type.value.split(/:/, 2);
+        const backendAndType = type.split(/:/, 2);
         this.setState({selectedType: type, backend: backendAndType[0], type: backendAndType[1]});
     },
 
@@ -92,7 +92,7 @@ const EditInputModal = React.createClass({
         if (this.props.outputs) {
             var outputCount = this.props.outputs.length;
             for (var i = 0; i < outputCount; i++) {
-                options.push({value: this.props.outputs[i].name, label: this.props.outputs[i].name});
+                options.push({value: this.props.outputs[i].output_id, label: this.props.outputs[i].name});
             }
         } else {
             options.push({value: 'none', label: 'No outputs available', disable: true});
@@ -137,7 +137,7 @@ const EditInputModal = React.createClass({
                         <Input id={this._getId('input-foward-to')} label="Forward to">
                             <Select ref="select-forwardto"
                                     options={this._formatDropdownOptions()}
-                                    value={this.state.forwardto ? this.state.forwardto.value : null}
+                                    value={this.state.forwardTo}
                                     onChange={this._changeForwardtoDropdown}
                                     placeholder="Forward to output"
                             />
@@ -145,8 +145,8 @@ const EditInputModal = React.createClass({
                         <Input id={this._getId('input-type')} label="Type">
                             <Select ref="select-type"
                                     options={types}
-                                    value={this.state.selectedType ? this.state.selectedType.value : null}
-                                    onChange={(type) => this._changeType(type)}
+                                    value={this.state.selectedType}
+                                    onChange={this._changeType}
                                     placeholder="Choose input type..."
                             />
                         </Input>

@@ -24,7 +24,7 @@ public abstract class CollectorInput {
     @JsonProperty
     public abstract String name();
 
-    @JsonProperty
+    @JsonProperty("forward_to")
     public abstract String forwardTo();
 
     @JsonProperty

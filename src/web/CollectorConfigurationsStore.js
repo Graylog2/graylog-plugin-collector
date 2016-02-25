@@ -140,7 +140,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
             backend: input.backend,
             type: input.type,
             name: input.name,
-            forward_to: input.forwardto.value,
+            forward_to: input.forwardTo,
             properties: input.properties,
         };
 

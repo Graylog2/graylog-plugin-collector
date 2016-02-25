@@ -1,9 +1,8 @@
 import React from 'react';
 import { Input } from 'react-bootstrap';
-import Select from 'react-select';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
-import { KeyValueTable } from 'components/common';
+import { Select } from 'components/common';
 
 import EditOutputFields from './EditOutputFields';
 
@@ -26,7 +25,7 @@ const EditOutputModal = React.createClass({
             backend: this.props.backend,
             type: this.props.type,
             properties: this.props.properties,
-            selectedType: {value: this.props.backend + ':' + this.props.type},
+            selectedType: (this.props.backend && this.props.type) ? this.props.backend + ':' + this.props.type : undefined,
             error: false,
             error_message: '',
         };
@@ -76,7 +75,7 @@ const EditOutputModal = React.createClass({
     },
 
     _changeType(type) {
-        const backendAndType = type.value.split(/:/, 2);
+        const backendAndType = type.split(/:/, 2);
         this.setState({selectedType: type, backend: backendAndType[0], type: backendAndType[1]});
     },
 
@@ -114,8 +113,8 @@ const EditOutputModal = React.createClass({
                         <Input id={this._getId('output-type')} label="Type">
                             <Select ref="select-type"
                                     options={types}
-                                    value={this.state.selectedType ? this.state.selectedType.value : null}
-                                    onChange={(type) => this._changeType(type)}
+                                    value={this.state.selectedType}
+                                    onValueChange={this._changeType}
                                     placeholder="Choose output type..."
                             />
                         </Input>
