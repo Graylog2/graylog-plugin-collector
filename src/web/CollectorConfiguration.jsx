@@ -77,7 +77,7 @@ const CollectorConfiguration = React.createClass({
                 <td>{input.name}</td>
                 <td>{input.type}</td>
                 <td>{input.properties.Module || "none"}</td>
-                <td>{input.forward_to}</td>
+                <td>{this._getOutputById(input.forward_to).name}</td>
                 <td style={{width: 155}}>
                     <EditInputModal id={input.input_id} name={input.name} forwardTo={input.forward_to}
                                     backend={input.backend} type={input.type}
@@ -196,6 +196,10 @@ const CollectorConfiguration = React.createClass({
             .then(() => {
                 this._reloadConfiguration();
             });
+    },
+
+    _getOutputById(id) {
+        return this.state.outputs.find((output) => output.output_id === id);
     },
 
     _isLoading() {
