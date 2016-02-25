@@ -71,12 +71,31 @@ const CollectorConfiguration = React.createClass({
         return formattedHeaderCell;
     },
 
+    _outputFormatter(output) {
+        return (
+            <tr key={output.input_id}>
+                <td>{output.name}</td>
+                <td>{output.type}</td>
+                <td style={{width: 155}}>
+                    <EditOutputModal id={output.output_id} name={output.name}
+                                     backend={output.backend}
+                                     type={output.type} properties={output.properties}
+                                     create={false}
+                                     reload={this._reloadConfiguration}
+                                     saveOutput={this._saveOutput}
+                                     validOutputName={this._validOutputName}/>
+                    &nbsp;
+                    <DeleteOutputButton output={output} onClick={this._deleteOutput}/>
+                </td>
+            </tr>
+        );
+    },
+
     _inputFormatter(input) {
         return (
             <tr key={input.input_id}>
                 <td>{input.name}</td>
                 <td>{input.type}</td>
-                <td>{input.properties.Module || "none"}</td>
                 <td>{this._getOutputById(input.forward_to).name}</td>
                 <td style={{width: 155}}>
                     <EditInputModal id={input.input_id} name={input.name} forwardTo={input.forward_to}
@@ -91,32 +110,11 @@ const CollectorConfiguration = React.createClass({
         );
     },
 
-    _outputFormatter(output) {
-        return (
-            <tr key={output.input_id}>
-                <td>{output.name}</td>
-                <td>{output.type}</td>
-                <td>{output.properties.Module || "none"}</td>
-                <td style={{width: 155}}>
-                    <EditOutputModal id={output.output_id} name={output.name}
-                                                          backend={output.backend}
-                                                          type={output.type} properties={output.properties}
-                                                          create={false}
-                                                          reload={this._reloadConfiguration}
-                                                          saveOutput={this._saveOutput}
-                                                          validOutputName={this._validOutputName}/>
-                    &nbsp;
-                    <DeleteOutputButton output={output} onClick={this._deleteOutput}/>
-                </td>
-            </tr>
-        );
-    },
-
     _snippetFormatter(snippet) {
         return (
             <tr key={snippet.snippet_id}>
                 <td>{snippet.name}</td>
-                <td>{snippet.type}</td>
+                <td>{snippet.backend}</td>
                 <td style={{width: 155}}>
                     <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
                                                            create={false} reload={this._reloadConfiguration}
@@ -211,9 +209,9 @@ const CollectorConfiguration = React.createClass({
             return <Spinner/>;
         }
 
-        const inputHeaders = ['Input', 'Type', 'Module', 'Forward To', 'Actions'];
-        const outputHeaders = ['Output', 'Type', 'Module', 'Actions'];
-        const snippetHeaders = ['Name', 'Type', 'Actions'];
+        const outputHeaders = ['Output', 'Type', 'Actions'];
+        const inputHeaders = ['Input', 'Type', 'Forward To', 'Actions'];
+        const snippetHeaders = ['Name', 'Backend', 'Actions'];
         const filterKeys = [];
         const availableTags = this.state.availableTags.map((tag) => {return {name: tag}});
         const tagHelp = (
