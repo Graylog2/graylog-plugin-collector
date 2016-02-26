@@ -3,24 +3,15 @@ package org.graylog.plugins.collector.configurations.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.joschi.jadconfig.util.Duration;
-import com.google.common.base.Function;
-import com.google.common.primitives.Ints;
 import com.wordnik.swagger.annotations.*;
-import org.graylog.plugins.collector.collectors.Collector;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
-import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
-import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog.plugins.collector.configurations.rest.models.*;
 import org.graylog.plugins.collector.configurations.rest.responses.CollectorConfigurationListResponse;
-import org.graylog.plugins.collector.configurations.rest.responses.CollectorInputListResponse;
-import org.graylog.plugins.collector.configurations.rest.responses.CollectorOutputListResponse;
-import org.graylog.plugins.collector.configurations.rest.responses.CollectorSnippetListResponse;
 import org.graylog2.database.NotFoundException;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +33,6 @@ import java.util.stream.Collectors;
 public class CollectorConfigurationResource extends RestResource implements PluginRestResource {
     private static final Logger log = LoggerFactory.getLogger(CollectorConfigurationResource.class);
     private final ObjectMapper mapper = new ObjectMapper();
-    private final LostCollectorFunction lostCollectorFunction;
 
     private final CollectorConfigurationService collectorConfigurationService;
     private final CollectorServiceImpl serverCollectorService;
@@ -53,22 +43,12 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                           @Named("collector_inactive_threshold") Duration inactiveThreshold) {
         this.collectorConfigurationService = collectorConfigurationService;
         this.serverCollectorService = serverCollectorService;
-        this.lostCollectorFunction = new LostCollectorFunction(inactiveThreshold.toSeconds());
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all collectors")
-    public CollectorList listCollectors() {
-        final List<Collector> collectors = serverCollectorService.all();
-        final List<CollectorSummary> collectorSummaries = org.graylog.plugins.collector.collectors.Collectors.toSummaryList(collectors, lostCollectorFunction);
-        return CollectorList.create(collectorSummaries);
     }
 
     @GET
     @Path("/{collectorId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Get single collector configuration")
+    @ApiOperation(value = "Get a single collector configuration")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Collector not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
@@ -91,48 +71,6 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         }
 
         return collectorConfiguration;
-    }
-
-    @GET
-    @Path("/{id}/inputs")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List configuration inputs")
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Configuration not found."),
-            @ApiResponse(code = 400, message = "Invalid ObjectId.")
-    })
-    public CollectorInputListResponse getInputs(@ApiParam(name = "id", required = true)
-                                                @PathParam("id") String id) throws NotFoundException {
-        final List<CollectorInput> collectorInputs = collectorConfigurationService.loadAllInputs(id);
-        return CollectorInputListResponse.create(collectorInputs.size(), collectorInputs);
-    }
-
-    @GET
-    @Path("/{collectorId}/outputs")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List collector outputs")
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Collector not found."),
-            @ApiResponse(code = 400, message = "Invalid ObjectId.")
-    })
-    public CollectorOutputListResponse getOutputs(@ApiParam(name = "collectorId", required = true)
-                                                  @PathParam("collectorId") String collectorId) throws NotFoundException {
-        final List<CollectorOutput> collectorOutputs = collectorConfigurationService.loadAllOutputs(collectorId);
-        return CollectorOutputListResponse.create(collectorOutputs.size(), collectorOutputs);
-    }
-
-    @GET
-    @Path("/{collectorId}/snippets")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List collector configuration snippets")
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Collector not found."),
-            @ApiResponse(code = 400, message = "Invalid ObjectId.")
-    })
-    public CollectorSnippetListResponse getSnippets(@ApiParam(name = "collectorId", required = true)
-                                                    @PathParam("collectorId") String collectorId) throws NotFoundException {
-        final List<CollectorConfigurationSnippet> collectorSnippets = collectorConfigurationService.loadAllSnippets(collectorId);
-        return CollectorSnippetListResponse.create(collectorSnippets.size(), collectorSnippets);
     }
 
     @GET
@@ -169,8 +107,8 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CollectorConfiguration updateTags(@ApiParam(name = "id", required = true)
-                           @PathParam("id") String id,
-                           @ApiParam(name = "JSON body", required = true) List<String> tags) {
+                                             @PathParam("id") String id,
+                                             @ApiParam(name = "JSON body", required = true) List<String> tags) {
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.withTagsFromRequest(id, tags);
         collectorConfigurationService.save(collectorConfiguration);
         return collectorConfiguration;
@@ -203,11 +141,10 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
     public Response updateInput(@ApiParam(name = "id", required = true)
-                                 @PathParam("id") @NotEmpty String id,
-                                 @ApiParam(name = "input_id", required = true)
-                                 @PathParam("input_id") @NotEmpty String inputId,
-                                 @ApiParam(name = "JSON body", required = true)
-                                 @Valid @NotNull CollectorInput request) {
+                                @PathParam("id") @NotEmpty String id,
+                                @ApiParam(name = "input_id", required = true)
+                                @PathParam("input_id") @NotEmpty String inputId,
+                                @ApiParam(name = "JSON body", required = true) @Valid @NotNull CollectorInput request) {
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateInputFromRequest(id, inputId, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -222,11 +159,11 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
     public Response updateSnippet(@ApiParam(name = "id", required = true)
-                                 @PathParam("id") @NotEmpty String id,
-                                 @ApiParam(name = "snippet_id", required = true)
-                                 @PathParam("snippet_id") @NotEmpty String snippetId,
-                                 @ApiParam(name = "JSON body", required = true)
-                                 @Valid @NotNull CollectorConfigurationSnippet request) {
+                                  @PathParam("id") @NotEmpty String id,
+                                  @ApiParam(name = "snippet_id", required = true)
+                                  @PathParam("snippet_id") @NotEmpty String snippetId,
+                                  @ApiParam(name = "JSON body", required = true)
+                                  @Valid @NotNull CollectorConfigurationSnippet request) {
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateSnippetFromRequest(id, snippetId, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -344,21 +281,6 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                               @PathParam("id") String id,
                               @PathParam("snippetId") String snippetId) throws NotFoundException {
         collectorConfigurationService.deleteSnippet(id, snippetId);
-    }
-
-    protected static class LostCollectorFunction implements Function<Collector, Boolean> {
-        private final long timeOutInSeconds;
-
-        @Inject
-        public LostCollectorFunction(long timeOutInSeconds) {
-            this.timeOutInSeconds = timeOutInSeconds;
-        }
-
-        @Override
-        public Boolean apply(Collector collector) {
-            final DateTime threshold = DateTime.now().minusSeconds(Ints.saturatedCast(timeOutInSeconds));
-            return collector.getLastSeen().isAfter(threshold);
-        }
     }
 
     private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {
