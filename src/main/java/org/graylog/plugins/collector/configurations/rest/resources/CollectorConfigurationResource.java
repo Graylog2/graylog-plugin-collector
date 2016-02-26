@@ -174,9 +174,16 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @Path("/configurations")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector configuration")
-    public CollectorConfiguration createConfiguration(@ApiParam(name = "JSON body", required = true)
+    public CollectorConfiguration createConfiguration(@ApiParam(name = "createDefaults")
+                                                      @QueryParam("createDefaults") RestBoolean createDefaults,
+                                                      @ApiParam(name = "JSON body", required = true)
                                                       @Valid @NotNull CollectorConfiguration request) {
-        CollectorConfiguration collectorConfiguration = collectorConfigurationService.fromRequest(request);
+        CollectorConfiguration collectorConfiguration;
+        if(createDefaults != null && createDefaults.getValue()) {
+            collectorConfiguration = collectorConfigurationService.fromRequestWithDefaultSnippets(request);
+        } else {
+            collectorConfiguration = collectorConfigurationService.fromRequest(request);
+        }
         collectorConfigurationService.save(collectorConfiguration);
         return collectorConfiguration;
     }
@@ -300,5 +307,32 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             }
         }
         return tags;
+    }
+
+    public static class RestBoolean {
+        private static final RestBoolean FALSE = new RestBoolean(false);
+        private static final RestBoolean TRUE = new RestBoolean(true);
+        private boolean value;
+
+        private RestBoolean(boolean value) {
+            this.value = value;
+        }
+
+        public boolean getValue() {
+            return this.value;
+        }
+
+        public static RestBoolean valueOf(String value) {
+            switch (value.toLowerCase()) {
+                case "true":
+                case "yes":
+                case "y": {
+                    return RestBoolean.TRUE;
+                }
+                default: {
+                    return RestBoolean.FALSE;
+                }
+            }
+        }
     }
 }

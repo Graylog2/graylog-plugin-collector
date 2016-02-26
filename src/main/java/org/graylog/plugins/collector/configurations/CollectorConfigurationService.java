@@ -3,6 +3,7 @@ package org.graylog.plugins.collector.configurations;
 
 import com.google.common.collect.Iterables;
 import com.mongodb.BasicDBObject;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorConfigurationSnippet;
@@ -16,6 +17,7 @@ import org.mongojack.JacksonDBCollection;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.ListIterator;
 public class CollectorConfigurationService {
     private static final String COLLECTION_NAME = "collector_configurations";
 
+    private final ClassLoader classLoader = this.getClass().getClassLoader();
     private final JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection;
 
     @Inject
@@ -166,6 +169,22 @@ public class CollectorConfigurationService {
         CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(request.name(),
                 request.tags(), request.inputs(), request.outputs(), request.snippets());
         return collectorConfiguration;
+    }
+
+    public CollectorConfiguration fromRequestWithDefaultSnippets(CollectorConfiguration request) {
+        String nxlogDefaults;
+        List<CollectorConfigurationSnippet> defaultSnippets = new ArrayList<>();
+
+        try {
+            nxlogDefaults = IOUtils.toString(classLoader.getResourceAsStream("snippets/defaults/nxlog.tmpl"));
+        } catch (IOException e) {
+            nxlogDefaults = "";
+        }
+        CollectorConfigurationSnippet nxlogSnippet = CollectorConfigurationSnippet.create("nxlog", "nxlog-defaults", nxlogDefaults);
+        defaultSnippets.add(nxlogSnippet);
+
+        return CollectorConfiguration.create(request.name(),
+                request.tags(), request.inputs(), request.outputs(), defaultSnippets);
     }
 
     public CollectorConfiguration withInputFromRequest(String id, CollectorInput input) {

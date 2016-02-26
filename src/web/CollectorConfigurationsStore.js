@@ -60,7 +60,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     },
 
     createConfiguration(name) {
-        let url =  URLUtils.qualifyUrl(this.sourceUrl);
+        let url =  URLUtils.qualifyUrl(this.sourceUrl + "?createDefaults=true");
         let method = 'POST';
         var configuration = {};
         configuration.name = name;
