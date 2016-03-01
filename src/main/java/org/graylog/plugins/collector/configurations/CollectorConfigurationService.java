@@ -140,21 +140,6 @@ public class CollectorConfigurationService {
         return deleted;
     }
 
-    public List<CollectorInput> loadAllInputs(String id) {
-        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
-        return collectorConfiguration.inputs();
-    }
-
-    public List<CollectorOutput> loadAllOutputs(String id) {
-        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
-        return collectorConfiguration.outputs();
-    }
-
-    public List<CollectorConfigurationSnippet> loadAllSnippets(String id) {
-        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
-        return collectorConfiguration.snippets();
-    }
-
     public List<String> loadAllTags() {
         List<String> tags = new ArrayList<>();
         DBCursor cursor = dbCollection.find();
