@@ -220,8 +220,12 @@ const CollectorConfigurationsStore = Reflux.createStore({
             .then(() => {
                 UserNotification.success("Output \"" + output.name + "\" successfully deleted");
             }, (error) => {
-                UserNotification.error("Deleting Output \"" + output.name + "\" failed with status: " + error.message,
-                    "Could not delete Output");
+                if (error.additional.status === 412) {
+                    UserNotification.error("Deleting Output \"" + output.name + "\" failed: Still inputs assigned to it.");
+                } else {
+                    UserNotification.error("Deleting Output \"" + output.name + "\" failed with status: " + error.message,
+                        "Could not delete Output");
+                }
             });
 
         CollectorConfigurationsActions.deleteOutput.promise(promise);

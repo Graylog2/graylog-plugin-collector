@@ -285,12 +285,20 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiOperation(value = "Delete output from configuration")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Configuration or Output not found."),
-            @ApiResponse(code = 400, message = "Invalid ObjectId.")
+            @ApiResponse(code = 400, message = "Invalid ObjectId."),
+            @ApiResponse(code = 412, message = "Still inputs assigned to output")
     })
-    public void deleteOutput(@ApiParam(name = "id", required = true)
+    public Response deleteOutput(@ApiParam(name = "id", required = true)
                              @PathParam("id") String id,
                              @PathParam("outputId") String outputId) throws NotFoundException {
-        collectorConfigurationService.deleteOutput(id, outputId);
+        int deleted = collectorConfigurationService.deleteOutput(id, outputId);
+        switch (deleted) {
+            case 0:
+                return Response.status(Response.Status.NOT_FOUND).build();
+            case -1:
+                return Response.status(Response.Status.PRECONDITION_FAILED).build();
+        }
+        return Response.ok().build();
     }
 
     @DELETE

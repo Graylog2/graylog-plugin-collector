@@ -14,6 +14,8 @@ import org.graylog2.database.MongoConnection;
 import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,6 +27,8 @@ import java.util.ListIterator;
 
 @Singleton
 public class CollectorConfigurationService {
+    private static final Logger log = LoggerFactory.getLogger(CollectorConfigurationService.class);
+
     private static final String COLLECTION_NAME = "collector_configurations";
 
     private final ClassLoader classLoader = this.getClass().getClassLoader();
@@ -109,6 +113,10 @@ public class CollectorConfigurationService {
     public int deleteOutput(String id, String outputId) {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
         List<CollectorOutput> outputList = collectorConfiguration.outputs();
+        List<CollectorInput> inputList = collectorConfiguration.inputs();
+        if (inputList.stream().filter(input -> input.forwardTo().equals(outputId)).count() != 0){
+            return -1;
+        }
         int deleted = 0;
         if (outputList != null) {
             for (int i = 0; i < outputList.size(); i++) {
