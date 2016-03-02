@@ -3,13 +3,22 @@ package org.graylog.plugins.collector.configurations.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.joschi.jadconfig.util.Duration;
-import com.wordnik.swagger.annotations.*;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
-import org.graylog.plugins.collector.configurations.rest.models.*;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorConfiguration;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorConfigurationSnippet;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorConfigurationSummary;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorInput;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorOutput;
 import org.graylog.plugins.collector.configurations.rest.responses.CollectorConfigurationListResponse;
+import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.database.NotFoundException;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
@@ -22,7 +31,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -114,7 +131,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @PUT
     @Path("/configurations/{id}/tags")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public CollectorConfiguration updateTags(@ApiParam(name = "id", required = true)
@@ -128,7 +145,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @PUT
     @Path("/configurations/{id}/outputs/{output_id}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @ApiOperation(value = "Update a configuration output",
             notes = "This is a stateless method which updates a collector output")
     @ApiResponses(value = {
@@ -149,7 +166,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @PUT
     @Path("/configurations/{id}/inputs/{input_id}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @ApiOperation(value = "Update a configuration input",
             notes = "This is a stateless method which updates a collector input")
     @ApiResponses(value = {
@@ -169,7 +186,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @PUT
     @Path("/configurations/{id}/snippets/{snippet_id}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @ApiOperation(value = "Update a configuration snippet",
             notes = "This is a stateless method which updates a collector snippet")
     @ApiResponses(value = {
@@ -190,7 +207,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @POST
     @Path("/configurations")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector configuration")
     public CollectorConfiguration createConfiguration(@ApiParam(name = "createDefaults")
@@ -210,7 +227,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @POST
     @Path("/configurations/{id}/outputs")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @ApiOperation(value = "Create a configuration output",
             notes = "This is a stateless method which inserts a collector output")
     @ApiResponses(value = {
@@ -229,7 +246,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @POST
     @Path("/configurations/{id}/inputs")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @ApiOperation(value = "Create a configuration input",
             notes = "This is a stateless method which inserts a collector input")
     @ApiResponses(value = {
@@ -248,7 +265,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @POST
     @Path("/configurations/{id}/snippets")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @ApiOperation(value = "Create a configuration snippet",
             notes = "This is a stateless method which inserts a collector configuration snippet")
     @ApiResponses(value = {
@@ -267,7 +284,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @DELETE
     @Path("/configurations/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_DELETE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
     @ApiOperation(value = "Delete a collector configuration")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Configuration not found."),
@@ -281,7 +298,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @DELETE
     @Path("/configurations/{id}/outputs/{outputId}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_DELETE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
     @ApiOperation(value = "Delete output from configuration")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Configuration or Output not found."),
@@ -304,7 +321,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @DELETE
     @Path("/configurations/{id}/inputs/{inputId}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_DELETE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
     @ApiOperation(value = "Delete input form configuration")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Configuration or Input not found."),
@@ -319,7 +336,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @DELETE
     @Path("/configurations/{id}/snippets/{snippetId}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_DELETE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
     @ApiOperation(value = "Delete snippet from configuration")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Configuration or Snippet not found."),

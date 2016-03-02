@@ -5,6 +5,7 @@ import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.collectors.rest.CollectorResource;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog.plugins.collector.configurations.rest.resources.CollectorConfigurationResource;
+import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.PluginModule;
 
 public class CollectorModule extends PluginModule {
@@ -15,6 +16,7 @@ public class CollectorModule extends PluginModule {
 
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
+        addPermissions(CollectorRestPermissions.class);
 
         addConfigBeans();
     }
