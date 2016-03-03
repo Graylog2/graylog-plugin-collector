@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(value = "Collector configuration", description = "Manage collector configurations")
+@Api(value = "CollectorConfiguration", description = "Manage collector configurations")
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
