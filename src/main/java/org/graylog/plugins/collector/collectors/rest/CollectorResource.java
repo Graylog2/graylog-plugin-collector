@@ -57,7 +57,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Api(value = "System/Collectors", description = "Management of Graylog Collectors.")
-@Path("/system/collectors")
+@Path("/collectors")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CollectorResource extends RestResource implements PluginRestResource {

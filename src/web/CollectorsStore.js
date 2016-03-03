@@ -7,7 +7,7 @@ import CollectorsActions from './CollectorsActions';
 
 const CollectorsStore = Reflux.createStore({
     listenables: [CollectorsActions],
-    sourceUrl: '/plugins/org.graylog.plugins.collector/system/collectors',
+    sourceUrl: '/plugins/org.graylog.plugins.collector/collectors',
     collectors: undefined,
 
     init() {
