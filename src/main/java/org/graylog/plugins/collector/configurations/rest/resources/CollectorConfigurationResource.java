@@ -22,7 +22,6 @@ import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.database.NotFoundException;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
-import org.graylog2.shared.security.RestPermissions;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +95,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @GET
     @Path("/configurations")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
     public CollectorConfigurationListResponse listConfigurations() {
@@ -110,7 +109,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @GET
     @Path("/configurations/tags")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all used tags")
     public List<String> getTags() {
@@ -120,7 +119,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @GET
     @Path("/configurations/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector configuration details")
     public CollectorConfiguration getConfigurations(@ApiParam(name = "id", required = true)

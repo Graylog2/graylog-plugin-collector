@@ -21,7 +21,11 @@ import com.github.joschi.jadconfig.util.Duration;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.primitives.Ints;
-import com.wordnik.swagger.annotations.*;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.collectors.Collector;
@@ -30,9 +34,9 @@ import org.graylog.plugins.collector.collectors.Collectors;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
+import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
-import org.graylog2.shared.security.RestPermissions;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
@@ -40,7 +44,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -63,7 +74,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Timed
     @ApiOperation(value = "Lists all existing collector registrations")
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorList list() {
         final List<Collector> collectors = collectorService.all();
         final List<CollectorSummary> collectorSummaries = Collectors.toSummaryList(collectors, lostCollectorFunction);
@@ -78,7 +89,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
             @ApiResponse(code = 404, message = "No collector with the specified id exists")
     })
     @RequiresAuthentication
-    @RequiresPermissions(RestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorSummary get(@ApiParam(name = "collectorId", required = true)
                                 @PathParam("collectorId") @NotEmpty String collectorId) {
         final Collector collector = collectorService.findById(collectorId);
