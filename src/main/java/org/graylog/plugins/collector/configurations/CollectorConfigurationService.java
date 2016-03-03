@@ -86,7 +86,7 @@ public class CollectorConfigurationService {
     }
 
     public CollectorConfiguration save(CollectorConfiguration configuration) {
-        return dbCollection.findAndModify(DBQuery.is("_id", configuration.getId()), new BasicDBObject(),
+        return dbCollection.findAndModify(DBQuery.is("_id", configuration.id()), new BasicDBObject(),
                 new BasicDBObject(), false, configuration, true, true);
     }
 

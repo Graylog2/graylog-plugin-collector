@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 import javax.annotation.Nullable;
@@ -28,10 +29,11 @@ import java.util.List;
 
 @AutoValue
 public abstract class CollectorConfiguration {
-    @JsonProperty("_id")
+    @JsonProperty("id")
     @Nullable
+    @Id
     @ObjectId
-    public abstract String getId();
+    public abstract String id();
 
     @JsonProperty("name")
     public abstract String name();
@@ -49,7 +51,7 @@ public abstract class CollectorConfiguration {
     public abstract List<CollectorConfigurationSnippet> snippets();
 
     @JsonCreator
-    public static CollectorConfiguration create(@JsonProperty("_id") String id,
+    public static CollectorConfiguration create(@JsonProperty("id") @Id @ObjectId String id,
                                                 @JsonProperty("name") String name,
                                                 @JsonProperty("tags") List<String> tags,
                                                 @JsonProperty("inputs") List<CollectorInput> inputs,

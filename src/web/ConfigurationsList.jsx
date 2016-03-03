@@ -34,7 +34,7 @@ const ConfigurationsList = React.createClass({
 
     _getFilteredConfigurations() {
         const filter = this.state.filter.toLowerCase().trim();
-        return this.state.configurations.filter((configuration) => { return !filter || configuration._id.toLowerCase().indexOf(filter) !== -1; });
+        return this.state.configurations.filter((configuration) => { return !filter || configuration.id.toLowerCase().indexOf(filter) !== -1; });
     },
 
     _formatConfigurationList(configurations) {
@@ -89,7 +89,7 @@ const ConfigurationsList = React.createClass({
             const configurations = this._getFilteredConfigurations()
                 .sort(this._bySortField)
                 .map((configuration) => {
-                        return <ConfigurationRow key={configuration._id} configuration={configuration} onDelete={this._onDelete}/>;
+                        return <ConfigurationRow key={configuration.id} configuration={configuration} onDelete={this._onDelete}/>;
                     }
                 );
 

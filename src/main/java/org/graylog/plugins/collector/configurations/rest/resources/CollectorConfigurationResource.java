@@ -364,7 +364,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     }
 
     private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {
-        return CollectorConfigurationSummary.create(collectorConfiguration.getId(),
+        return CollectorConfigurationSummary.create(collectorConfiguration.id(),
                 collectorConfiguration.name(),
                 collectorConfiguration.tags());
     }
