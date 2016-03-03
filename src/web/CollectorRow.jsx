@@ -1,6 +1,7 @@
 import React from 'react';
 import jsRoutes from 'routing/jsRoutes';
 import {Timestamp} from 'components/common';
+import {} from '!style!css!./CollectorStyles.css';
 
 const CollectorRow = React.createClass({
     propTypes: {

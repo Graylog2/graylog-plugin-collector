@@ -7,6 +7,7 @@ import { Spinner } from 'components/common';
 import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
+import {} from '!style!css!./CollectorStyles.css';
 
 const CollectorList = React.createClass({
     mixins: [Reflux.connect(CollectorsStore)],
