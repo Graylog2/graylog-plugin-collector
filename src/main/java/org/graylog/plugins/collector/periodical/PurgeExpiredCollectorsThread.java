@@ -18,8 +18,8 @@ package org.graylog.plugins.collector.periodical;
 
 import com.github.joschi.jadconfig.util.Duration;
 import com.google.common.primitives.Ints;
+import org.graylog.plugins.collector.CollectorPluginConfiguration;
 import org.graylog.plugins.collector.collectors.CollectorService;
-import org.graylog2.Configuration;
 import org.graylog2.plugin.periodical.Periodical;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +29,11 @@ import javax.inject.Inject;
 public class PurgeExpiredCollectorsThread extends Periodical {
     private static final Logger LOG = LoggerFactory.getLogger(PurgeExpiredCollectorsThread.class);
     private final CollectorService collectorService;
-    private final Configuration configuration;
+    private final CollectorPluginConfiguration configuration;
 
     @Inject
     public PurgeExpiredCollectorsThread(CollectorService collectorService,
-                                        Configuration configuration) {
+                                        CollectorPluginConfiguration configuration) {
         this.collectorService = collectorService;
         this.configuration = configuration;
     }
