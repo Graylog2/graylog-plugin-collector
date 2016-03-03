@@ -64,7 +64,7 @@ public class CollectorConfigurationService {
         final DBCursor<CollectorConfiguration> cursor = dbCollection.find();
         final List<CollectorConfiguration> collectorConfigurationList = new ArrayList<>();
         Iterables.addAll(collectorConfigurationList, cursor);
-       return collectorConfigurationList;
+        return collectorConfigurationList;
     }
 
     public CollectorConfiguration findById(String id) {
@@ -130,7 +130,7 @@ public class CollectorConfigurationService {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
         List<CollectorOutput> outputList = collectorConfiguration.outputs();
         List<CollectorInput> inputList = collectorConfiguration.inputs();
-        if (inputList.stream().filter(input -> input.forwardTo().equals(outputId)).count() != 0){
+        if (inputList.stream().filter(input -> input.forwardTo().equals(outputId)).count() != 0) {
             return -1;
         }
         int deleted = 0;
@@ -228,7 +228,7 @@ public class CollectorConfigurationService {
         while (inputIterator.hasNext()) {
             int i = inputIterator.nextIndex();
             CollectorInput input = inputIterator.next();
-            if(input.inputId().equals(inputId)){
+            if (input.inputId().equals(inputId)) {
                 collectorConfiguration.inputs().set(i, request);
             }
         }
@@ -242,7 +242,7 @@ public class CollectorConfigurationService {
         while (outputIterator.hasNext()) {
             int i = outputIterator.nextIndex();
             CollectorOutput output = outputIterator.next();
-            if(output.outputId().equals(outputId)){
+            if (output.outputId().equals(outputId)) {
                 collectorConfiguration.outputs().set(i, request);
             }
         }
@@ -256,7 +256,7 @@ public class CollectorConfigurationService {
         while (snippetIterator.hasNext()) {
             int i = snippetIterator.nextIndex();
             CollectorConfigurationSnippet snippet = snippetIterator.next();
-            if(snippet.snippetId().equals(snippetId)){
+            if (snippet.snippetId().equals(snippetId)) {
                 collectorConfiguration.snippets().set(i, request);
             }
         }

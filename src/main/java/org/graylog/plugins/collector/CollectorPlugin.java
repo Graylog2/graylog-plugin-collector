@@ -33,7 +33,7 @@ public class CollectorPlugin implements Plugin {
     }
 
     @Override
-    public Collection<PluginModule> modules () {
+    public Collection<PluginModule> modules() {
         return Collections.<PluginModule>singleton(new CollectorModule());
     }
 }

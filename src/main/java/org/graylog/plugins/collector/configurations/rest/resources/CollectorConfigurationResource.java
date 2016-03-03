@@ -230,7 +230,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                                       @ApiParam(name = "JSON body", required = true)
                                                       @Valid @NotNull CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration;
-        if(createDefaults != null && createDefaults.getValue()) {
+        if (createDefaults != null && createDefaults.getValue()) {
             collectorConfiguration = collectorConfigurationService.fromRequestWithDefaultSnippets(request);
         } else {
             collectorConfiguration = collectorConfigurationService.fromRequest(request);
@@ -321,8 +321,8 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 412, message = "Still inputs assigned to output")
     })
     public Response deleteOutput(@ApiParam(name = "id", required = true)
-                             @PathParam("id") String id,
-                             @PathParam("outputId") String outputId) throws NotFoundException {
+                                 @PathParam("id") String id,
+                                 @PathParam("outputId") String outputId) throws NotFoundException {
         int deleted = collectorConfigurationService.deleteOutput(id, outputId);
         switch (deleted) {
             case 0:
@@ -365,8 +365,8 @@ public class CollectorConfigurationResource extends RestResource implements Plug
 
     private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {
         return CollectorConfigurationSummary.create(collectorConfiguration.getId(),
-                                                    collectorConfiguration.name(),
-                                                    collectorConfiguration.tags());
+                collectorConfiguration.name(),
+                collectorConfiguration.tags());
     }
 
     private List<String> parseQueryTags(String queryTags) {

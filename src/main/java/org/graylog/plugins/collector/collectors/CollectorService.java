@@ -23,11 +23,17 @@ import java.util.concurrent.TimeUnit;
 
 public interface CollectorService {
     long count();
+
     Collector save(Collector collector);
+
     List<Collector> all();
+
     Collector findById(String id);
+
     List<Collector> findByNodeId(String nodeId);
+
     int destroy(Collector collector);
+
     int destroyExpired(int time, TimeUnit unit);
 
     Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion);

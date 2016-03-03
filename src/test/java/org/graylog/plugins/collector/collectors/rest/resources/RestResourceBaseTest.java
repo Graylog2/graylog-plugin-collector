@@ -66,6 +66,7 @@ public class RestResourceBaseTest {
             return isAnyPermitted(new String[]{"a:b", "a:c"}, "instance");
         }
     }
+
     private static class AllPermissionsGrantedResource extends RestResource {
         @Override
         protected Subject getSubject() {
@@ -78,6 +79,7 @@ public class RestResourceBaseTest {
             return isAnyPermitted(new String[]{"a:b", "a:c"}, "instance");
         }
     }
+
     private static class SomePermissionsGrantedResource extends RestResource {
         @Override
         protected Subject getSubject() {
@@ -92,7 +94,8 @@ public class RestResourceBaseTest {
     }
 
     static class MyVarargMatcher implements VarargMatcher, ArgumentMatcher<String[]> {
-        @Override public boolean matches(Object varargArgument) {
+        @Override
+        public boolean matches(Object varargArgument) {
             return /* does it match? */ true;
         }
     }

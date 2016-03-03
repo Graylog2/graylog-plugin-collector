@@ -34,7 +34,7 @@ public class ResponseAssert extends AbstractAssert<ResponseAssert, Response> {
 
         final Response.Status.Family statusFamily = actual.getStatusInfo().getFamily();
 
-        if(statusFamily != Response.Status.Family.SUCCESSFUL) {
+        if (statusFamily != Response.Status.Family.SUCCESSFUL) {
             failWithMessage("Response was expected to be a success, but is <%s>", statusFamily);
         }
 

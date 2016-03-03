@@ -47,11 +47,11 @@ public abstract class CollectorSummary {
 
     @JsonCreator
     public static CollectorSummary create(@JsonProperty("id") String id,
-                                      @JsonProperty("node_id") String nodeId,
-                                      @JsonProperty("node_details") CollectorNodeDetailsSummary nodeDetails,
-                                      @JsonProperty("last_seen") DateTime lastSeen,
-                                      @JsonProperty("collector_version") String collectorVersion,
-                                      @JsonProperty("active") boolean active) {
+                                          @JsonProperty("node_id") String nodeId,
+                                          @JsonProperty("node_details") CollectorNodeDetailsSummary nodeDetails,
+                                          @JsonProperty("last_seen") DateTime lastSeen,
+                                          @JsonProperty("collector_version") String collectorVersion,
+                                          @JsonProperty("active") boolean active) {
         return new AutoValue_CollectorSummary(id, nodeId, nodeDetails, lastSeen, collectorVersion, active);
     }
 }

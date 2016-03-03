@@ -57,11 +57,11 @@ public abstract class CollectorImpl implements Collector {
 
     @JsonCreator
     public static CollectorImpl create(@JsonProperty("_id") String objectId,
-                                   @JsonProperty("id") String id,
-                                   @JsonProperty("node_id") String nodeId,
-                                   @JsonProperty("node_details") CollectorNodeDetails collectorNodeDetails,
-                                   @JsonProperty("collector_version") String collectorVersion,
-                                   @JsonProperty("last_seen") DateTime lastSeen) {
+                                       @JsonProperty("id") String id,
+                                       @JsonProperty("node_id") String nodeId,
+                                       @JsonProperty("node_details") CollectorNodeDetails collectorNodeDetails,
+                                       @JsonProperty("collector_version") String collectorVersion,
+                                       @JsonProperty("last_seen") DateTime lastSeen) {
         return new AutoValue_CollectorImpl(id, nodeId, collectorNodeDetails, collectorVersion, lastSeen);
     }
 

@@ -70,7 +70,7 @@ public class PurgeExpiredCollectorsThread extends Periodical {
 
     @Override
     public int getPeriodSeconds() {
-        return 60*60;
+        return 60 * 60;
     }
 
     @Override
