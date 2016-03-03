@@ -18,7 +18,7 @@ const ConfigurationsPage = React.createClass({
                     </span>
                     {null}
                     <span>
-                        <LinkContainer to={'/collectors/'}>
+                        <LinkContainer to={'/system/collectors/'}>
                             <a className="btn btn-info">Show Collectors</a>
                         </LinkContainer>
                     </span>

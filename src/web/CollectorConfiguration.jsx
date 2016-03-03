@@ -228,7 +228,7 @@ const CollectorConfiguration = React.createClass({
                     </span>
                     {null}
                     <span>
-                        <LinkContainer to={'/collectors/configurations'}>
+                        <LinkContainer to={'/system/collectors/configurations'}>
                             <a className="btn btn-info">Manage Configurations</a>
                         </LinkContainer>
                     </span>
