@@ -21,6 +21,7 @@ import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.collectors.rest.CollectorResource;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog.plugins.collector.configurations.rest.resources.CollectorConfigurationResource;
+import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
@@ -39,6 +40,7 @@ public class CollectorModule extends PluginModule {
         bind(CollectorService.class).to(CollectorServiceImpl.class);
         bind(CollectorConfigurationService.class).asEagerSingleton();
 
+        addPeriodical(PurgeExpiredCollectorsThread.class);
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
         addPermissions(CollectorRestPermissions.class);
