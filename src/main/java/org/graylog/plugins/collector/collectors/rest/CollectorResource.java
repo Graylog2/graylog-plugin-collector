@@ -20,7 +20,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import com.google.common.primitives.Ints;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -40,6 +39,7 @@ import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -67,7 +67,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Inject
     public CollectorResource(CollectorService collectorService, Supplier<CollectorSystemConfiguration> configSupplier) {
         this.collectorService = collectorService;
-        this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold().getSeconds());
+        this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
     }
 
     @GET
@@ -122,16 +122,16 @@ public class CollectorResource extends RestResource implements PluginRestResourc
 
     @VisibleForTesting
     protected static class LostCollectorFunction implements Function<Collector, Boolean> {
-        private final long timeOutInSeconds;
+        private final Period timeoutPeriod;
 
         @Inject
-        public LostCollectorFunction(long timeOutInSeconds) {
-            this.timeOutInSeconds = timeOutInSeconds;
+        public LostCollectorFunction(Period timeoutPeriod) {
+            this.timeoutPeriod = timeoutPeriod;
         }
 
         @Override
         public Boolean apply(Collector collector) {
-            final DateTime threshold = DateTime.now().minusSeconds(Ints.saturatedCast(timeOutInSeconds));
+            final DateTime threshold = DateTime.now().minus(timeoutPeriod);
             return collector.getLastSeen().isAfter(threshold);
         }
     }
