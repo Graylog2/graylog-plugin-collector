@@ -1,10 +1,8 @@
 import React from 'react';
-import Reflux from 'reflux';
 import { Button, Input, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import {DataTable, PageHeader, Spinner} from 'components/common';
-import RoleList from 'components/users/RoleList';
 
 import EditInputModal from './EditInputModal';
 import EditOutputModal from './EditOutputModal';
@@ -12,8 +10,6 @@ import EditSnippetModal from './EditSnippetModal';
 import DeleteInputButton from './DeleteInputButton'
 import DeleteOutputButton from './DeleteOutputButton'
 import DeleteSnippetButton from './DeleteSnippetButton'
-import CollectorsActions from './CollectorsActions';
-import CollectorsStore from './CollectorsStore';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 import TagsSelect from './TagsSelect';
 
@@ -255,13 +251,13 @@ const CollectorConfiguration = React.createClass({
                 </Row>
                 <Row className="content">
                     <Col md={12}>
-                        <h2>Configure Outputs</h2>
                         <div className="pull-right">
                             <EditOutputModal id={""} name={""} properties={{}} create
                                             reload={this._reloadConfiguration}
                                             saveOutput={this._saveOutput}
                                             validOutputName={this._validOutputName}/>
                         </div>
+                        <h2>Configure Outputs</h2>
                         <DataTable id="collector-outputs-list"
                                    className="table-striped table-hover"
                                    headers={outputHeaders}
@@ -275,13 +271,13 @@ const CollectorConfiguration = React.createClass({
                 </Row>
                 <Row className="content">
                     <Col md={12}>
-                        <h2>Configure Inputs</h2>
                         <div className="pull-right">
                             <EditInputModal id={""} name={""} properties={{}} outputs={this.state.outputs} create
                                             reload={this._reloadConfiguration}
                                             saveInput={this._saveInput}
                                             validInputName={this._validInputName}/>
                         </div>
+                        <h2>Configure Inputs</h2>
                         <DataTable id="collector-inputs-list"
                                    className="table-striped table-hover"
                                    headers={inputHeaders}
@@ -295,13 +291,13 @@ const CollectorConfiguration = React.createClass({
                 </Row>
                 <Row className="content">
                     <Col md={12}>
-                        <h2>Define Snippets</h2>
                         <div className="pull-right">
                             <EditSnippetModal id={""} name={""} create
                                             reload={this._reloadConfiguration}
                                             saveSnippet={this._saveSnippet}
                                             validSnippetName={this._validSnippetName}/>
                         </div>
+                        <h2>Define Snippets</h2>
                         <DataTable id="collector-snippets-list"
                                    className="table-striped table-hover"
                                    headers={snippetHeaders}
