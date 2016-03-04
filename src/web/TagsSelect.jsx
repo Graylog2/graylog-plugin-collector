@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MultiSelect from './MultiSelect';
+import MultiSelect from 'components/common/MultiSelect';
 
 const TagsSelect = React.createClass({
     propTypes: {
@@ -29,6 +29,7 @@ const TagsSelect = React.createClass({
                 options={tagsOptions}
                 value={tagsValue}
                 placeholder="Choose tags..."
+                allowCreate
             />
         );
     },
