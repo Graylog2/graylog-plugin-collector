@@ -1,5 +1,4 @@
 import React from 'react';
-import jsRoutes from 'routing/jsRoutes';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Button } from 'react-bootstrap';
 

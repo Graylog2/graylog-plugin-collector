@@ -1,5 +1,5 @@
 import React from 'react';
-import jsRoutes from 'routing/jsRoutes';
+import ApiRoutes from 'routing/ApiRoutes';
 import {Timestamp} from 'components/common';
 import {} from '!style!css!./CollectorStyles.css';
 
@@ -55,7 +55,7 @@ const CollectorRow = React.createClass({
                     {collector.collector_version}
                 </td>
                 <td className="limited">
-                    <a href={jsRoutes.controllers.SearchController.index('gl2_source_collector:' + collector.id, 'relative', 28800).url}
+                    <a href={ApiRoutes.SearchController.index('gl2_source_collector:' + collector.id, 'relative', 28800).url}
                        className="btn btn-info btn-xs">Show messages</a>
                 </td>
             </tr>
