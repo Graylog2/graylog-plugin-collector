@@ -13,8 +13,8 @@
   "keywords": [
     "graylog"
   ],
-  "author": "Marius Sturm <marius@graylog.com>",
-  "license": "MIT",
+  "author": "Graylog, Inc. <hello@graylog.com>",
+  "license": "GPL-3.0",
   "dependencies": {
     "history": "^1.17.0",
     "react": "0.14.x",
