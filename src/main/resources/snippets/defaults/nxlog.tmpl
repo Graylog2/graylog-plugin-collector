@@ -2,9 +2,9 @@
 User nxlog
 Group nxlog
 Moduledir /usr/lib/nxlog/modules
-CacheDir /var/spool/nxlog
-PidFile /var/run/nxlog/nxlog.pid
-LogFile /var/log/nxlog/nxlog.log
+CacheDir /var/spool/collector-sidecar/nxlog
+PidFile /var/run/graylog/collector-sidecar/nxlog.pid
+LogFile /var/log/graylog/collector-sidecar/nxlog.log
 LogLevel INFO
 {{end}}
 {{if .Windows}}
