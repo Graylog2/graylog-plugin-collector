@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'react-bootstrap';
+import { Row, Col, Button, Input } from 'react-bootstrap';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 
@@ -55,11 +55,12 @@ const CreateConfigurationModal = React.createClass({
 
     render() {
         return (
-            <span>
-                <button onClick={this.openModal}
-                        className='btn btn-success btn-md pull-right'>
-                    Create configuration
-                </button>
+            <div>
+                <div className="text-right">
+                    <Button onClick={this.openModal} bsStyle="success">
+                        Create configuration
+                    </Button>
+                </div>
                 <BootstrapModalForm ref="modal"
                                     title={`Create Configuration ${this.state.name}`}
                                     onSubmitForm={this._save}
@@ -76,7 +77,7 @@ const CreateConfigurationModal = React.createClass({
                                required/>
                     </fieldset>
                 </BootstrapModalForm>
-            </span>
+            </div>
         );
     },
 });

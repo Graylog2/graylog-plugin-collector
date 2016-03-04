@@ -29,7 +29,7 @@ const ConfigurationsList = React.createClass({
     },
 
     _formatEmptyListAlert() {
-        return <Col md={3}><Alert>There are no configurations to show.</Alert></Col>;
+        return <Alert><i className="fa fa-info-circle" />&nbsp;There are no configurations to show.</Alert>;
     },
 
     _getFilteredConfigurations() {
