@@ -16,16 +16,6 @@ and can be configured in your `graylog.conf` file.
 
 Restart `graylog-server` and you are done.
 
-Configuration Options
----------------------
-
-The following configuration options can be added to your `graylog.conf`.
-
-| Name                             | Default         | Description                                                                  |
-|----------------------------------|-----------------|------------------------------------------------------------------------------|
-| `collector_expiration_threshold` | `1m` (1 minute) | Amount of time of inactivity after which collectors are flagged as inactive. |
-| `collector_inactive_threshold`   | `14d` (14 days) | Amount of time after which inactive collectors are purged.                   |
-
 Development
 -----------
 

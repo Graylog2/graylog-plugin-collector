@@ -18,7 +18,6 @@ package org.graylog.plugins.collector.configurations.rest.resources;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.joschi.jadconfig.util.Duration;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -43,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -74,8 +72,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
 
     @Inject
     public CollectorConfigurationResource(CollectorConfigurationService collectorConfigurationService,
-                                          CollectorServiceImpl serverCollectorService,
-                                          @Named("collector_inactive_threshold") Duration inactiveThreshold) {
+                                          CollectorServiceImpl serverCollectorService) {
         this.collectorConfigurationService = collectorConfigurationService;
         this.serverCollectorService = serverCollectorService;
     }

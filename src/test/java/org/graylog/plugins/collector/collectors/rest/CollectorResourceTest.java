@@ -16,7 +16,6 @@
  */
 package org.graylog.plugins.collector.collectors.rest;
 
-import com.github.joschi.jadconfig.util.Duration;
 import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.collectors.Collector;
 import org.graylog.plugins.collector.collectors.CollectorNodeDetails;
@@ -25,6 +24,8 @@ import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRe
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
+import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -57,7 +58,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Before
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
-        this.resource = new CollectorResource(collectorService, Duration.minutes(1));
+        this.resource = new CollectorResource(collectorService, new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()));
         when(collectorService.all()).thenReturn(collectors);
     }
 

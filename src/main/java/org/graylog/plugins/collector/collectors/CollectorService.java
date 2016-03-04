@@ -17,9 +17,9 @@
 package org.graylog.plugins.collector.collectors;
 
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
+import org.joda.time.Period;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public interface CollectorService {
     long count();
@@ -34,7 +34,7 @@ public interface CollectorService {
 
     int destroy(Collector collector);
 
-    int destroyExpired(int time, TimeUnit unit);
+    int destroyExpired(Period period);
 
     Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion);
 }

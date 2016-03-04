@@ -17,9 +17,9 @@
 package org.graylog.plugins.collector.collectors.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.github.joschi.jadconfig.util.Duration;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import com.google.common.primitives.Ints;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -35,13 +35,13 @@ import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRe
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -65,9 +65,9 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     private final LostCollectorFunction lostCollectorFunction;
 
     @Inject
-    public CollectorResource(CollectorService collectorService, @Named("collector_inactive_threshold") Duration inactiveThreshold) {
+    public CollectorResource(CollectorService collectorService, Supplier<CollectorSystemConfiguration> configSupplier) {
         this.collectorService = collectorService;
-        this.lostCollectorFunction = new LostCollectorFunction(inactiveThreshold.toSeconds());
+        this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold().getSeconds());
     }
 
     @GET

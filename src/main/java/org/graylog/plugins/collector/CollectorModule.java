@@ -16,6 +16,8 @@
  */
 package org.graylog.plugins.collector;
 
+import com.google.common.base.Supplier;
+import com.google.inject.TypeLiteral;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.collectors.rest.CollectorResource;
@@ -23,28 +25,20 @@ import org.graylog.plugins.collector.configurations.CollectorConfigurationServic
 import org.graylog.plugins.collector.configurations.rest.resources.CollectorConfigurationResource;
 import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
-import org.graylog2.plugin.PluginConfigBean;
+import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
 import org.graylog2.plugin.PluginModule;
 
-import java.util.Collections;
-import java.util.Set;
-
 public class CollectorModule extends PluginModule {
-    @Override
-    public Set<? extends PluginConfigBean> getConfigBeans() {
-        return Collections.singleton(new CollectorPluginConfiguration());
-    }
-
     @Override
     protected void configure() {
         bind(CollectorService.class).to(CollectorServiceImpl.class);
         bind(CollectorConfigurationService.class).asEagerSingleton();
+        bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
 
         addPeriodical(PurgeExpiredCollectorsThread.class);
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
         addPermissions(CollectorRestPermissions.class);
-
-        addConfigBeans();
     }
 }

@@ -16,10 +16,9 @@
  */
 package org.graylog.plugins.collector.periodical;
 
-import com.github.joschi.jadconfig.util.Duration;
-import com.google.common.primitives.Ints;
-import org.graylog.plugins.collector.CollectorPluginConfiguration;
+import com.google.common.base.Supplier;
 import org.graylog.plugins.collector.collectors.CollectorService;
+import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.plugin.periodical.Periodical;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +27,15 @@ import javax.inject.Inject;
 
 public class PurgeExpiredCollectorsThread extends Periodical {
     private static final Logger LOG = LoggerFactory.getLogger(PurgeExpiredCollectorsThread.class);
+
     private final CollectorService collectorService;
-    private final CollectorPluginConfiguration configuration;
+    private final Supplier<CollectorSystemConfiguration> configSupplier;
 
     @Inject
     public PurgeExpiredCollectorsThread(CollectorService collectorService,
-                                        CollectorPluginConfiguration configuration) {
+                                        Supplier<CollectorSystemConfiguration> configSupplier) {
         this.collectorService = collectorService;
-        this.configuration = configuration;
+        this.configSupplier = configSupplier;
     }
 
     @Override
@@ -80,8 +80,7 @@ public class PurgeExpiredCollectorsThread extends Periodical {
 
     @Override
     public void doRun() {
-        final Duration threshold = configuration.getCollectorExpirationThreshold();
-        final int purgedCollectors = collectorService.destroyExpired(Ints.checkedCast(threshold.getQuantity()), threshold.getUnit());
+        final int purgedCollectors = collectorService.destroyExpired(configSupplier.get().collectorExpirationThreshold());
         LOG.debug("Purged {} inactive collectors.", purgedCollectors);
     }
 }

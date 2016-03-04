@@ -4,6 +4,7 @@ import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 import CollectorsPage from './CollectorsPage';
 import ConfigurationsPage from './ConfigurationsPage';
 import CollectorConfiguration from './CollectorConfiguration';
+import CollectorSystemConfiguration from './CollectorSystemConfiguration';
 
 PluginStore.register(new PluginManifest(packageJson, {
   routes: [
@@ -16,5 +17,12 @@ PluginStore.register(new PluginManifest(packageJson, {
 
   systemnavigation: [
       { path: '/system/collectors', description: 'Collectors' },
-  ]
+  ],
+
+  systemConfigurations: [
+    {
+      component: CollectorSystemConfiguration,
+      configType: 'org.graylog.plugins.collector.system.CollectorSystemConfiguration',
+    },
+  ],
 }));

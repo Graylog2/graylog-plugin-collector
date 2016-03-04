@@ -17,7 +17,6 @@
 package org.graylog.plugins.collector.collectors;
 
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Ints;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
@@ -26,6 +25,7 @@ import org.graylog2.database.CollectionName;
 import org.graylog2.database.MongoConnection;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Period;
 import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
@@ -35,7 +35,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class CollectorServiceImpl implements CollectorService {
 
@@ -93,9 +92,9 @@ public class CollectorServiceImpl implements CollectorService {
     }
 
     @Override
-    public int destroyExpired(int time, TimeUnit unit) {
+    public int destroyExpired(Period period) {
         int count = 0;
-        final DateTime threshold = DateTime.now(DateTimeZone.UTC).minusSeconds(Ints.checkedCast(unit.toSeconds(time)));
+        final DateTime threshold = DateTime.now(DateTimeZone.UTC).minusSeconds(period.getSeconds());
         for (Collector collector : all())
             if (collector.getLastSeen().isBefore(threshold))
                 count += destroy(collector);
