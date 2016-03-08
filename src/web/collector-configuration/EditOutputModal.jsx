@@ -7,121 +7,122 @@ import { Select } from 'components/common';
 import EditOutputFields from './EditOutputFields';
 
 const EditOutputModal = React.createClass({
-    propTypes: {
-        id: React.PropTypes.string,
-        name: React.PropTypes.string,
-        backend: React.PropTypes.string,
-        type: React.PropTypes.string,
-        properties: React.PropTypes.object,
-        create: React.PropTypes.bool,
-        saveOutput: React.PropTypes.func.isRequired,
-        validOutputName: React.PropTypes.func.isRequired,
-    },
+  propTypes: {
+    id: React.PropTypes.string,
+    name: React.PropTypes.string,
+    backend: React.PropTypes.string,
+    type: React.PropTypes.string,
+    properties: React.PropTypes.object,
+    create: React.PropTypes.bool,
+    saveOutput: React.PropTypes.func.isRequired,
+    validOutputName: React.PropTypes.func.isRequired,
+  },
 
-    getInitialState() {
-        return {
-            id: this.props.id,
-            name: this.props.name,
-            backend: this.props.backend,
-            type: this.props.type,
-            properties: this.props.properties,
-            selectedType: (this.props.backend && this.props.type) ? this.props.backend + ':' + this.props.type : undefined,
-            error: false,
-            error_message: '',
-        };
-    },
+  getInitialState() {
+    return {
+      id: this.props.id,
+      name: this.props.name,
+      backend: this.props.backend,
+      type: this.props.type,
+      properties: this.props.properties,
+      selectedType: (this.props.backend && this.props.type) ? `${this.props.backend}:${this.props.type}` : undefined,
+      error: false,
+      error_message: '',
+    };
+  },
 
-    openModal() {
-        this.refs.modal.open();
-    },
+  openModal() {
+    this.refs.modal.open();
+  },
 
-    _getId(prefixIdName) {
-        return this.state.name !== undefined ? prefixIdName + this.state.name : prefixIdName;
-    },
+  _getId(prefixIdName) {
+    return typeof this.state.name !== 'undefined' ? prefixIdName + this.state.name : prefixIdName;
+  },
 
-    _closeModal() {
-        this.refs.modal.close();
-    },
+  _closeModal() {
+    this.refs.modal.close();
+  },
 
-    _saved() {
-        this._closeModal();
-        if (this.props.create) {
-            this.setState({name: '', backend: '', type: '', selectedType: '', properties: {}});
-        }
-    },
+  _saved() {
+    this._closeModal();
+    if (this.props.create) {
+      this.setState({ name: '', backend: '', type: '', selectedType: '', properties: {} });
+    }
+  },
 
-    _save() {
-        const configuration = this.state;
+  _save() {
+    const configuration = this.state;
 
-        if (!configuration.error) {
-            this.props.saveOutput(configuration, this._saved);
-        }
-    },
+    if (!configuration.error) {
+      this.props.saveOutput(configuration, this._saved);
+    }
+  },
 
-    _changeName(event) {
-        this.setState({name: event.target.value})
-    },
+  _changeName(event) {
+    this.setState({ name: event.target.value });
+  },
 
-    _changeProperties(properties) {
-        this.setState({properties: properties})
-    },
+  _changeProperties(properties) {
+    this.setState({ properties });
+  },
 
-    _injectProperties(key, event) {
-        let properties = this.state.properties;
-        if(properties) {
-            properties[key] = event.target.value;
-        }
-        this.setState({properties: properties});
-    },
+  _injectProperties(key, event) {
+    const properties = this.state.properties;
+    if (properties) {
+      properties[key] = event.target.value;
+    }
+    this.setState({ properties });
+  },
 
-    _changeType(type) {
-        const backendAndType = type.split(/:/, 2);
-        this.setState({selectedType: type, backend: backendAndType[0], type: backendAndType[1]});
-    },
+  _changeType(type) {
+    const backendAndType = type.split(/:/, 2);
+    this.setState({ selectedType: type, backend: backendAndType[0], type: backendAndType[1] });
+  },
 
-    render() {
-        let triggerButtonContent;
-        if (this.props.create) {
-            triggerButtonContent = 'Create output';
-        } else {
-            triggerButtonContent = <span>Edit</span>;
-        }
-        const types = [
-            { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' }
-        ];
+  render() {
+    let triggerButtonContent;
+    if (this.props.create) {
+      triggerButtonContent = 'Create output';
+    } else {
+      triggerButtonContent = <span>Edit</span>;
+    }
+    const types = [
+      { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
+    ];
 
-        return (
-        <span>
-                <button onClick={this.openModal}
-                        className={this.props.create ? 'btn btn-success' : 'btn btn-info btn-xs'}>
-                    {triggerButtonContent}
-                </button>
-                <BootstrapModalForm ref="modal"
-                                    title={`${this.props.create ? 'Create' : 'Edit'} Output ${this.state.name}`}
-                                    onSubmitForm={this._save}
-                                    submitButtonText="Save">
-                    <fieldset>
-                        <Input type="text"
-                               id={this._getId('output-name')}
-                               label="Name"
-                               defaultValue={this.state.name}
-                               onChange={this._changeName}
-                               bsStyle={this.state.error ? 'error' : null}
-                               help={this.state.error ? this.state.error_message : null}
-                               autoFocus
-                               required/>
-                        <Input id={this._getId('output-type')} label="Type">
-                                <Select ref="select-type"
-                                    options={types}
-                                    value={this.state.selectedType}
-                                    onValueChange={this._changeType}
-                                    placeholder="Choose output type..."
-                                />
-                        </Input>
-                        <EditOutputFields type={this.state.selectedType} properties={this.props.properties} injectProperties={this._injectProperties} />
-                    </fieldset>
-                </BootstrapModalForm>
-            </span>
+    return (
+      <span>
+        <button onClick={this.openModal}
+                className={this.props.create ? 'btn btn-success' : 'btn btn-info btn-xs'}>
+          {triggerButtonContent}
+        </button>
+        <BootstrapModalForm ref="modal"
+                            title={`${this.props.create ? 'Create' : 'Edit'} Output ${this.state.name}`}
+                            onSubmitForm={this._save}
+                            submitButtonText="Save">
+          <fieldset>
+            <Input type="text"
+                   id={this._getId('output-name')}
+                   label="Name"
+                   defaultValue={this.state.name}
+                   onChange={this._changeName}
+                   bsStyle={this.state.error ? 'error' : null}
+                   help={this.state.error ? this.state.error_message : null}
+                   autoFocus
+                   required />
+            <Input id={this._getId('output-type')} label="Type">
+              <Select ref="select-type"
+                      options={types}
+                      value={this.state.selectedType}
+                      onValueChange={this._changeType}
+                      placeholder="Choose output type..."
+              />
+            </Input>
+            <EditOutputFields type={this.state.selectedType} properties={this.props.properties}
+                              injectProperties={this._injectProperties} />
+          </fieldset>
+        </BootstrapModalForm>
+      </span>
     );
   },
 });

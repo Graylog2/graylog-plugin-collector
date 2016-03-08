@@ -31,7 +31,7 @@ const CollectorSystemConfiguration = React.createClass({
   },
 
   componentWillReceiveProps(newProps) {
-    this.setState({config: ObjectUtils.clone(newProps.config)});
+    this.setState({ config: ObjectUtils.clone(newProps.config) });
   },
 
   _openModal() {
@@ -57,8 +57,16 @@ const CollectorSystemConfiguration = React.createClass({
     return (value) => {
       const update = ObjectUtils.clone(this.state.config);
       update[field] = value;
-      this.setState({config: update});
+      this.setState({ config: update });
     };
+  },
+
+  _inactiveThresholdValidator(milliseconds) {
+    return milliseconds >= 1000;
+  },
+
+  _expirationThresholdValidator(milliseconds) {
+    return milliseconds >= 60 * 1000;
   },
 
   render() {
@@ -87,7 +95,7 @@ const CollectorSystemConfiguration = React.createClass({
                               update={this._onUpdate('collector_inactive_threshold')}
                               label="Inactive threshold (as ISO8601 Duration)"
                               help="Amount of time of inactivity after which collectors are flagged as inactive."
-                              validator={(milliseconds) => milliseconds >= 1000}
+                              validator={this._inactiveThresholdValidator}
                               errorText="invalid (min: 1 second)"
                               required />
 
@@ -95,7 +103,7 @@ const CollectorSystemConfiguration = React.createClass({
                               update={this._onUpdate('collector_expiration_threshold')}
                               label="Expiration threshold (as ISO8601 Duration)"
                               help="Amount of time after which inactive collectors are purged from the database."
-                              validator={(milliseconds) => milliseconds >= 60 * 1000}
+                              validator={this._expirationThresholdValidator}
                               errorText="invalid (min: 1 minute)"
                               required />
           </fieldset>

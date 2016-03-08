@@ -1,85 +1,90 @@
 import React from 'react';
-import { Row, Col, Button, Input } from 'react-bootstrap';
+import { Button, Input } from 'react-bootstrap';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 
-import CollectorConfigurationsActions from './CollectorConfigurationsActions';
-
 const CreateConfigurationModal = React.createClass({
-    propTypes: {
-        saveConfiguration: React.PropTypes.func.isRequired,
-        validConfigurationName: React.PropTypes.func.isRequired,
-    },
+  propTypes: {
+    name: React.PropTypes.string,
+    saveConfiguration: React.PropTypes.func.isRequired,
+    validConfigurationName: React.PropTypes.func.isRequired,
+  },
 
-    getInitialState() {
-        return {
-            name: this.props.name,
-            error: false,
-            error_message: '',
-        };
-    },
+  getDefaultProps() {
+    return {
+      name: '',
+    };
+  },
 
-    openModal() {
-        this.refs.modal.open();
-    },
+  getInitialState() {
+    return {
+      name: this.props.name,
+      error: false,
+      error_message: '',
+    };
+  },
 
-    _closeModal() {
-        this.refs.modal.close();
-    },
+  openModal() {
+    this.refs.modal.open();
+  },
 
-    _getId(prefixIdName) {
-        return this.state.name !== undefined ? prefixIdName + this.state.name : prefixIdName;
-    },
+  _closeModal() {
+    this.refs.modal.close();
+  },
 
-    _saved() {
-        this._closeModal();
-        this.setState({name: '', type: ''});
-    },
+  _getId(prefixIdName) {
+    return typeof this.state.name !== 'undefined' ? (prefixIdName + this.state.name) : prefixIdName;
+  },
 
-    _save() {
-        const configuration = this.state;
+  _saved() {
+    this._closeModal();
+    this.setState({ name: '', type: '' });
+  },
 
-        if (!configuration.error) {
-            this.props.saveConfiguration(configuration, this._saved);
-        }
-    },
+  _save() {
+    const configuration = this.state;
 
-    _changeName(event) {
-        const name = event.target.value;
-        if (!this.props.validConfigurationName(name)) {
-            this.setState({name: name, error: true, error_message: 'Configuration with that name already exists!'});
-        } else {
-            this.setState({name: name, error: false, error_message: ''});
-        }
-    },
+    if (!configuration.error) {
+      this.props.saveConfiguration(configuration, this._saved);
+    }
+  },
 
-    render() {
-        return (
-            <div>
-                <div className="text-right">
-                    <Button onClick={this.openModal} bsStyle="success">
-                        Create configuration
-                    </Button>
-                </div>
-                <BootstrapModalForm ref="modal"
-                                    title={`Create Configuration ${this.state.name}`}
-                                    onSubmitForm={this._save}
-                                    submitButtonText="Save">
-                    <fieldset>
-                        <Input type="text"
-                               id={this._getId('configuration-name')}
-                               label="Name"
-                               defaultValue={this.state.name}
-                               onChange={this._changeName}
-                               bsStyle={this.state.error ? 'error' : null}
-                               help={this.state.error ? this.state.error_message : null}
-                               autoFocus
-                               required/>
-                    </fieldset>
-                </BootstrapModalForm>
-            </div>
-        );
-    },
+  _changeName(event) {
+    const name = event.target.value;
+    if (!this.props.validConfigurationName(name)) {
+      this.setState({ name, error: true, error_message: 'Configuration with that name already exists!' });
+    } else {
+      this.setState({ name, error: false, error_message: '' });
+    }
+  },
+
+  render() {
+    return (
+      <div>
+        <div className="text-right">
+          <Button onClick={this.openModal} bsStyle="success">
+            Create configuration
+          </Button>
+        </div>
+        <BootstrapModalForm ref="modal"
+                            title={`Create Configuration ${this.state.name}`}
+                            onSubmitForm={this._save}
+                            submitButtonText="Save">
+          <fieldset>
+            <Input type="text"
+                   id={this._getId('configuration-name')}
+                   label="Name"
+                   defaultValue={this.state.name}
+                   onChange={this._changeName}
+                   bsStyle={this.state.error ? 'error' : null}
+                   help={this.state.error ? this.state.error_message : null}
+                   autoFocus
+                   required />
+          </fieldset>
+        </BootstrapModalForm>
+      </div>
+    );
+  },
 });
 
 export default CreateConfigurationModal;
