@@ -1,7 +1,8 @@
 import React from 'react';
+import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import DeleteConfigurationButton from './DeleteConfigurationButton';
+import {} from 'styles/CollectorStyles.css';
 
 const ConfigurationRow = React.createClass({
   propTypes: {
@@ -9,15 +10,22 @@ const ConfigurationRow = React.createClass({
     onDelete: React.PropTypes.func.isRequired,
   },
 
+  _handleClick() {
+    const configuration = this.props.configuration;
+    if (window.confirm(`You are about to delete configuration "${configuration.name}". Are you sure?`)) {
+      this.props.onDelete(configuration);
+    }
+  },
+
   render() {
     const configuration = this.props.configuration;
     const tagBadges = configuration.tags.map((tag) => {
-      return <span key={tag} className="label label-default" style={{ marginRight: 5 }}>{tag}</span>;
+      return <Label key={tag} bsStyle="default" className="configuration-tag">{tag}</Label>;
     });
 
     return (
       <tr>
-        <td className="limited">
+        <td className="name limited">
           <LinkContainer to={`/system/collectors/configurations/${configuration.id}`}>
             <a>{configuration.name}</a>
           </LinkContainer>
@@ -26,7 +34,9 @@ const ConfigurationRow = React.createClass({
           {tagBadges}
         </td>
         <td className="actions">
-          <DeleteConfigurationButton configuration={configuration} onClick={this.props.onDelete} />
+          <Button bsStyle="primary" bsSize="xsmall" onClick={this.handleClick}>
+            Delete
+          </Button>
         </td>
       </tr>
     );

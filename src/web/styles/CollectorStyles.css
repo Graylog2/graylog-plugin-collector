@@ -11,3 +11,11 @@ table.collectors-list {
     margin-top: 15px;
     margin-bottom: 0px;
 }
+
+.name {
+    width: 300px;
+}
+
+.configuration-tag {
+    margin-right: 5px;
+}
