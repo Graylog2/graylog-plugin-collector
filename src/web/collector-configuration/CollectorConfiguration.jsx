@@ -7,9 +7,7 @@ import { DataTable } from 'components/common';
 import EditInputModal from './EditInputModal';
 import EditOutputModal from './EditOutputModal';
 import EditSnippetModal from './EditSnippetModal';
-import DeleteInputButton from './DeleteInputButton';
-import DeleteOutputButton from './DeleteOutputButton';
-import DeleteSnippetButton from './DeleteSnippetButton';
+import DeleteConfirmButton from './DeleteConfirmButton';
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import TagsSelect from './TagsSelect';
 
@@ -45,15 +43,15 @@ const CollectorConfiguration = React.createClass({
       <tr key={output.output_id}>
         <td>{output.name}</td>
         <td>{output.type}</td>
-        <td style={{ width: 155 }}>
+        <td>
+          <DeleteConfirmButton entity={output} type="output" onClick={this._deleteOutput} />
+          &nbsp;
           <EditOutputModal id={output.output_id} name={output.name}
                            backend={output.backend}
                            type={output.type} properties={output.properties}
                            create={false}
                            saveOutput={this._saveOutput}
                            validOutputName={this._validOutputName} />
-          &nbsp;
-          <DeleteOutputButton output={output} onClick={this._deleteOutput} />
         </td>
       </tr>
     );
@@ -65,14 +63,14 @@ const CollectorConfiguration = React.createClass({
         <td>{input.name}</td>
         <td>{input.type}</td>
         <td>{this._getOutputById(input.forward_to).name}</td>
-        <td style={{ width: 155 }}>
+        <td>
+          <DeleteConfirmButton entity={input} type="input" onClick={this._deleteInput} />
+          &nbsp;
           <EditInputModal id={input.input_id} name={input.name} forwardTo={input.forward_to}
                           backend={input.backend} type={input.type}
                           properties={input.properties} outputs={this.props.configuration.outputs}
                           create={false}
                           saveInput={this._saveInput} validInputName={this._validInputName} />
-          &nbsp;
-          <DeleteInputButton input={input} onClick={this._deleteInput} />
         </td>
       </tr>
     );
@@ -83,12 +81,12 @@ const CollectorConfiguration = React.createClass({
       <tr key={snippet.snippet_id}>
         <td>{snippet.name}</td>
         <td>{snippet.backend}</td>
-        <td style={{ width: 155 }}>
+        <td>
+          <DeleteConfirmButton entity={snippet} type="snippet" onClick={this._deleteSnippet} />
+          &nbsp;
           <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
                             backend={snippet.backend} create={false}
                             saveSnippet={this._saveSnippet} validSnippetName={this._validSnippetName} />
-          &nbsp;
-          <DeleteSnippetButton snippet={snippet} onClick={this._deleteSnippet} />
         </td>
       </tr>
     );
