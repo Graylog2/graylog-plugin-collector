@@ -15,8 +15,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   list() {
-    const promise = fetch('GET', URLUtils.qualifyUrl(this.sourceUrl));
-    promise
+    const promise = fetch('GET', URLUtils.qualifyUrl(this.sourceUrl))
       .then(
         response => {
           this.configurations = response.configurations;
@@ -34,13 +33,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   listTags() {
     const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/tags`));
     promise
-      .then(
-        response => {
-          this.configurations = response.configurations;
-          this.trigger({ configurations: this.configurations });
-
-          return this.configurations;
-        },
+      .catch(
         error => {
           UserNotification.error(`Fetching configuration tags failed with status: ${error}`,
             'Could not retrieve tags');
