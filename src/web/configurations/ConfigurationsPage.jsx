@@ -11,12 +11,15 @@ const ConfigurationsPage = React.createClass({
   render() {
     return (
       <span>
-        <PageHeader title="Collector Configuration List" titleSize={8} buttonSize={4}
-                    buttonStyle={{ textAlign: 'right', marginTop: 10 }}>
+        <PageHeader title="Collector Sidecar Configurations">
           <span>
-            Create sidecar configurations.
+            The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can manage the Sidecar configurations.
           </span>
-          {null}
+
+          <span>
+            Read more about the collector sidecar in the <a>Graylog documentation</a>.
+          </span>
+
           <span>
             <LinkContainer to={'/system/collectors/'}>
               <Button bsStyle="info">Show Collectors</Button>
