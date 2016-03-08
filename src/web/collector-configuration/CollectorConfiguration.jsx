@@ -41,7 +41,7 @@ const CollectorConfiguration = React.createClass({
 
   _outputFormatter(output) {
     return (
-      <tr key={output.onput_id}>
+      <tr key={output.output_id}>
         <td>{output.name}</td>
         <td>{output.type}</td>
         <td style={{ width: 155 }}>
