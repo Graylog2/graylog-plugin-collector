@@ -19,23 +19,28 @@ const CollectorConfiguration = React.createClass({
   },
 
   _headerCellFormatter(header) {
-    let formattedHeaderCell;
+    let className;
 
-    switch (header.toLocaleLowerCase()) {
+    switch (header.toLowerCase()) {
       case 'name':
-        formattedHeaderCell = <th className="name">{header}</th>;
+      case 'input':
+      case 'output':
+        className = 'name';
         break;
       case 'type':
-        formattedHeaderCell = <th className="type">{header}</th>;
+        className = 'type';
         break;
       case 'forward_to':
-        formattedHeaderCell = <th className="forwardTo">{header}</th>;
+        className = 'forwardTo';
+        break;
+      case 'actions':
+        className = 'actions';
         break;
       default:
-        formattedHeaderCell = <th>{header}</th>;
+        // Do nothing
     }
 
-    return formattedHeaderCell;
+    return <th className={className}>{header}</th>;
   },
 
   _outputFormatter(output) {
