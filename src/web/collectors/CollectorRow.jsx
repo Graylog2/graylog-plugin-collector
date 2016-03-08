@@ -15,13 +15,11 @@ const CollectorRow = React.createClass({
   _getOsGlyph(operatingSystem) {
     let glyphClass = 'fa-question-circle';
     const os = operatingSystem.trim().toLowerCase();
-    if (os.indexOf('mac os') > -1) {
+    if (os.indexOf('darwin') !== -1 || os.indexOf('mac os') !== -1) {
       glyphClass = 'fa-apple';
-    }
-    if (os.indexOf('linux') > -1) {
+    } else if (os.indexOf('linux') !== -1) {
       glyphClass = 'fa-linux';
-    }
-    if (os.indexOf('win') > -1) {
+    } else if (os.indexOf('win') !== -1) {
       glyphClass = 'fa-windows';
     }
 
