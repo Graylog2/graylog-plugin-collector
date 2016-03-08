@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button, Input, Col, Row } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 
-import { DataTable, PageHeader, Spinner } from 'components/common';
+import { DataTable } from 'components/common';
 
 import EditInputModal from './EditInputModal';
 import EditOutputModal from './EditOutputModal';
@@ -15,42 +14,9 @@ import TagsSelect from './TagsSelect';
 
 const CollectorConfiguration = React.createClass({
   propTypes: {
-    params: React.PropTypes.object.isRequired,
-  },
-
-  getInitialState() {
-    return {
-      inputs: undefined,
-      outputs: undefined,
-      snippets: undefined,
-      tags: undefined,
-      availableTags: undefined,
-    };
-  },
-
-  componentDidMount() {
-    this._reloadConfiguration();
-    this._loadTags();
-  },
-
-  _reloadConfiguration() {
-    CollectorConfigurationsActions.getConfiguration.triggerPromise(this.props.params.id).then(this._setConfiguration);
-  },
-
-  _setConfiguration(configuration) {
-    this.setState({
-      inputs: configuration.inputs,
-      outputs: configuration.outputs,
-      snippets: configuration.snippets,
-      tags: configuration.tags,
-    });
-  },
-
-  _loadTags() {
-    CollectorConfigurationsActions.listTags.triggerPromise()
-      .then((tags) => {
-        this.setState({ availableTags: tags });
-      });
+    configuration: React.PropTypes.object.isRequired,
+    tags: React.PropTypes.array.isRequired,
+    onConfigurationChange: React.PropTypes.func.isRequired,
   },
 
   _headerCellFormatter(header) {
@@ -75,7 +41,7 @@ const CollectorConfiguration = React.createClass({
 
   _outputFormatter(output) {
     return (
-      <tr key={output.input_id}>
+      <tr key={output.onput_id}>
         <td>{output.name}</td>
         <td>{output.type}</td>
         <td style={{ width: 155 }}>
@@ -83,7 +49,6 @@ const CollectorConfiguration = React.createClass({
                            backend={output.backend}
                            type={output.type} properties={output.properties}
                            create={false}
-                           reload={this._reloadConfiguration}
                            saveOutput={this._saveOutput}
                            validOutputName={this._validOutputName} />
           &nbsp;
@@ -102,8 +67,8 @@ const CollectorConfiguration = React.createClass({
         <td style={{ width: 155 }}>
           <EditInputModal id={input.input_id} name={input.name} forwardTo={input.forward_to}
                           backend={input.backend} type={input.type}
-                          properties={input.properties} outputs={this.state.outputs}
-                          create={false} reload={this._reloadConfiguration}
+                          properties={input.properties} outputs={this.props.configuration.outputs}
+                          create={false}
                           saveInput={this._saveInput} validInputName={this._validInputName} />
           &nbsp;
           <DeleteInputButton input={input} onClick={this._deleteInput} />
@@ -119,7 +84,7 @@ const CollectorConfiguration = React.createClass({
         <td>{snippet.backend}</td>
         <td style={{ width: 155 }}>
           <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
-                            backend={snippet.backend} create={false} reload={this._reloadConfiguration}
+                            backend={snippet.backend} create={false}
                             saveSnippet={this._saveSnippet} validSnippetName={this._validSnippetName} />
           &nbsp;
           <DeleteSnippetButton snippet={snippet} onClick={this._deleteSnippet} />
@@ -128,93 +93,75 @@ const CollectorConfiguration = React.createClass({
     );
   },
 
+  _onSuccessfulUpdate(callback) {
+    if (typeof callback === 'function') {
+      callback();
+    }
+    this.props.onConfigurationChange();
+  },
+
   _saveOutput(output, callback) {
-    CollectorConfigurationsActions.saveOutput.triggerPromise(output, this.props.params.id)
-      .then(() => {
-        callback();
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.saveOutput.triggerPromise(output, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate(callback));
   },
 
   _saveInput(input, callback) {
-    CollectorConfigurationsActions.saveInput.triggerPromise(input, this.props.params.id)
-      .then(() => {
-        callback();
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.saveInput.triggerPromise(input, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate(callback));
   },
 
   _saveSnippet(snippet, callback) {
-    CollectorConfigurationsActions.saveSnippet.triggerPromise(snippet, this.props.params.id)
-      .then(() => {
-        callback();
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.saveSnippet.triggerPromise(snippet, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate(callback));
   },
 
   _deleteOutput(output) {
-    CollectorConfigurationsActions.deleteOutput.triggerPromise(output, this.props.params.id)
-      .then(() => {
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.deleteOutput.triggerPromise(output, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate());
   },
 
   _deleteInput(input) {
-    CollectorConfigurationsActions.deleteInput.triggerPromise(input, this.props.params.id)
-      .then(() => {
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.deleteInput.triggerPromise(input, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate());
   },
 
   _deleteSnippet(snippet) {
-    CollectorConfigurationsActions.deleteSnippet.triggerPromise(snippet, this.props.params.id)
-      .then(() => {
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.deleteSnippet.triggerPromise(snippet, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate());
   },
 
   _validInputName(name) {
     // Check if inputs already contain an input with the given name.
-    return !this.state.inputs.some((input) => input.name === name);
+    return !this.props.configuration.inputs.some((input) => input.name === name);
   },
 
   _validOutputName(name) {
     // Check if outputs already contain an output with the given name.
-    return !this.state.outputs.some((output) => output.name === name);
+    return !this.props.configuration.outputs.some((output) => output.name === name);
   },
 
   _validSnippetName(name) {
     // Check if snippets already contain an snippet with the given name.
-    return !this.state.snippets.some((snippet) => snippet.name === name);
+    return !this.props.configuration.snippets.some((snippet) => snippet.name === name);
   },
 
   _updateTags(event) {
     event.preventDefault();
     const tags = this.refs.tags.getValue().filter((value) => value !== '');
-    CollectorConfigurationsActions.updateTags(tags, this.props.params.id)
-      .then(() => {
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.updateTags(tags, this.props.configuration.id)
+      .then(() => this._onSuccessfulUpdate());
   },
 
   _getOutputById(id) {
-    return this.state.outputs.find((output) => output.output_id === id);
-  },
-
-  _isLoading() {
-    return !(this.state.inputs && this.state.outputs && this.state.snippets && this.state.availableTags);
+    return this.props.configuration.outputs.find((output) => output.output_id === id);
   },
 
   render() {
-    if (this._isLoading()) {
-      return <Spinner />;
-    }
-
     const outputHeaders = ['Output', 'Type', 'Actions'];
     const inputHeaders = ['Input', 'Type', 'Forward To', 'Actions'];
     const snippetHeaders = ['Name', 'Backend', 'Actions'];
     const filterKeys = [];
-    const availableTags = this.state.availableTags.map((tag) => {
+    const availableTags = this.props.tags.map((tag) => {
       return { name: tag };
     });
     const tagHelp = (
@@ -225,18 +172,6 @@ const CollectorConfiguration = React.createClass({
 
     return (
       <div>
-        <PageHeader title="Collector Configuration" titleSize={8} buttonSize={4}
-                    buttonStyle={{ textAlign: 'right', marginTop: 10 }}>
-          <span>
-            This is a list of inputs and outputs configured for the current collector.
-          </span>
-          {null}
-          <span>
-            <LinkContainer to={'/system/collectors/configurations'}>
-              <a className="btn btn-info">Manage Configurations</a>
-            </LinkContainer>
-          </span>
-        </PageHeader>
         <Row className="content">
           <Col md={8}>
             <h2>Change tags</h2>
@@ -245,7 +180,7 @@ const CollectorConfiguration = React.createClass({
                      labelClassName="col-sm-2" wrapperClassName="col-sm-10">
                 <Row>
                   <Col md={6}>
-                    <TagsSelect ref="tags" availableTags={availableTags} tags={this.state.tags}
+                    <TagsSelect ref="tags" availableTags={availableTags} tags={this.props.configuration.tags}
                                 className="form-control" />
                   </Col>
                   <Col md={6} style={{ paddingLeft: 0 }}>
@@ -258,11 +193,11 @@ const CollectorConfiguration = React.createClass({
             </form>
           </Col>
         </Row>
+
         <Row className="content">
           <Col md={12}>
             <div className="pull-right">
               <EditOutputModal id={""} name={""} properties={{}} create
-                               reload={this._reloadConfiguration}
                                saveOutput={this._saveOutput}
                                validOutputName={this._validOutputName} />
             </div>
@@ -272,18 +207,18 @@ const CollectorConfiguration = React.createClass({
                        headers={outputHeaders}
                        headerCellFormatter={this._headerCellFormatter}
                        sortByKey={"type"}
-                       rows={this.state.outputs}
+                       rows={this.props.configuration.outputs}
                        noDataText="There are not any configured outputs."
                        dataRowFormatter={this._outputFormatter}
                        filterLabel="Filter outputs"
                        filterKeys={filterKeys} />
           </Col>
         </Row>
+
         <Row className="content">
           <Col md={12}>
             <div className="pull-right">
-              <EditInputModal id={""} name={""} properties={{}} outputs={this.state.outputs} create
-                              reload={this._reloadConfiguration}
+              <EditInputModal id={""} name={""} properties={{}} outputs={this.props.configuration.outputs} create
                               saveInput={this._saveInput}
                               validInputName={this._validInputName} />
             </div>
@@ -293,18 +228,18 @@ const CollectorConfiguration = React.createClass({
                        headers={inputHeaders}
                        headerCellFormatter={this._headerCellFormatter}
                        sortByKey={"type"}
-                       rows={this.state.inputs}
+                       rows={this.props.configuration.inputs}
                        noDataText="There are not any configured inputs."
                        dataRowFormatter={this._inputFormatter}
                        filterLabel="Filter inputs"
                        filterKeys={filterKeys} />
           </Col>
         </Row>
+
         <Row className="content">
           <Col md={12}>
             <div className="pull-right">
               <EditSnippetModal id={""} name={""} create
-                                reload={this._reloadConfiguration}
                                 saveSnippet={this._saveSnippet}
                                 validSnippetName={this._validSnippetName} />
             </div>
@@ -314,7 +249,7 @@ const CollectorConfiguration = React.createClass({
                        headers={snippetHeaders}
                        headerCellFormatter={this._headerCellFormatter}
                        sortByKey={"backend"}
-                       rows={this.state.snippets}
+                       rows={this.props.configuration.snippets}
                        noDataText="There are not any defined snippets."
                        dataRowFormatter={this._snippetFormatter}
                        filterLabel="Filter snippets"
