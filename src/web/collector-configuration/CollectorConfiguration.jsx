@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Input, Col, Row } from 'react-bootstrap';
+import naturalSort from 'javascript-natural-sort';
 
 import { DataTable } from 'components/common';
 
@@ -207,7 +208,7 @@ const CollectorConfiguration = React.createClass({
                        headers={outputHeaders}
                        headerCellFormatter={this._headerCellFormatter}
                        sortByKey={"type"}
-                       rows={this.props.configuration.outputs}
+                       rows={this.props.configuration.outputs.sort((o1, o2) => naturalSort(o1.name, o2.name))}
                        noDataText="There are not any configured outputs."
                        dataRowFormatter={this._outputFormatter}
                        filterLabel="Filter outputs"
@@ -228,7 +229,7 @@ const CollectorConfiguration = React.createClass({
                        headers={inputHeaders}
                        headerCellFormatter={this._headerCellFormatter}
                        sortByKey={"type"}
-                       rows={this.props.configuration.inputs}
+                       rows={this.props.configuration.inputs.sort((i1, i2) => naturalSort(i1.name, i2.name))}
                        noDataText="There are not any configured inputs."
                        dataRowFormatter={this._inputFormatter}
                        filterLabel="Filter inputs"
@@ -249,7 +250,7 @@ const CollectorConfiguration = React.createClass({
                        headers={snippetHeaders}
                        headerCellFormatter={this._headerCellFormatter}
                        sortByKey={"backend"}
-                       rows={this.props.configuration.snippets}
+                       rows={this.props.configuration.snippets.sort((s1, s2) => naturalSort(s1.name, s2.name))}
                        noDataText="There are not any defined snippets."
                        dataRowFormatter={this._snippetFormatter}
                        filterLabel="Filter snippets"
