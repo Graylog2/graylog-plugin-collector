@@ -34,7 +34,7 @@ const ConfigurationRow = React.createClass({
           {tagBadges}
         </td>
         <td className="actions">
-          <Button bsStyle="primary" bsSize="xsmall" onClick={this.handleClick}>
+          <Button bsStyle="primary" bsSize="xsmall" onClick={this._handleClick}>
             Delete
           </Button>
         </td>
