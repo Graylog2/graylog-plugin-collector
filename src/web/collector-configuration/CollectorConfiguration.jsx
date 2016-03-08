@@ -168,26 +168,23 @@ const CollectorConfiguration = React.createClass({
     const availableTags = this.props.tags.map((tag) => {
       return { name: tag };
     });
-    const tagHelp = (
-      <span className="help-block">
-        Assign the relevant tags to this configuration to make them available to the collectors with the same tag.<br />
-      </span>
-    );
 
     return (
       <div>
         <Row className="content">
           <Col md={8}>
-            <h2>Change tags</h2>
+            <h2>Configuration tags</h2>
+            <p>Assigning tags to a configuration let you automatically apply it to all collectors using one of those tags.</p>
             <form className="form-horizontal" style={{ marginTop: 10 }} onSubmit={this._updateTags}>
-              <Input label="Tags" help={tagHelp}
+              <Input label="Tags"
+                     help="Choose the tags to use for this configuration. You can create new tags by typing their name."
                      labelClassName="col-sm-2" wrapperClassName="col-sm-10">
                 <Row>
-                  <Col md={6}>
+                  <Col md={7}>
                     <TagsSelect ref="tags" availableTags={availableTags} tags={this.props.configuration.tags}
                                 className="form-control" />
                   </Col>
-                  <Col md={6} style={{ paddingLeft: 0 }}>
+                  <Col md={5} style={{ paddingLeft: 0 }}>
                     <Button bsStyle="success" type="submit">
                       Update tags
                     </Button>
