@@ -10,7 +10,7 @@ import EditSnippetModal from './EditSnippetModal';
 import DeleteInputButton from './DeleteInputButton'
 import DeleteOutputButton from './DeleteOutputButton'
 import DeleteSnippetButton from './DeleteSnippetButton'
-import CollectorConfigurationsActions from './CollectorConfigurationsActions';
+import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import TagsSelect from './TagsSelect';
 
 const CollectorConfiguration = React.createClass({

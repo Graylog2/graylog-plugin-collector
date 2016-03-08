@@ -1,7 +1,7 @@
 import React from 'react';
 import ApiRoutes from 'routing/ApiRoutes';
 import {Timestamp} from 'components/common';
-import {} from '!style!css!./CollectorStyles.css';
+import {} from '!style!css!styles/CollectorStyles.css';
 
 const CollectorRow = React.createClass({
     propTypes: {

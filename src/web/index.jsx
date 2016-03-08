@@ -1,10 +1,10 @@
 import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
-import CollectorsPage from './CollectorsPage';
-import ConfigurationsPage from './ConfigurationsPage';
-import CollectorConfiguration from './CollectorConfiguration';
-import CollectorSystemConfiguration from './CollectorSystemConfiguration';
+import CollectorsPage from 'collectors/CollectorsPage';
+import ConfigurationsPage from 'configurations/ConfigurationsPage';
+import CollectorConfiguration from 'collector-configuration/CollectorConfiguration';
+import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
 
 PluginStore.register(new PluginManifest(packageJson, {
   routes: [

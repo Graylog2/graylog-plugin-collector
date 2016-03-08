@@ -4,7 +4,7 @@ import { Input } from 'react-bootstrap';
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 import { KeyValueTable, Select } from 'components/common';
 
-import CollectorsActions from './CollectorsActions';
+import CollectorsActions from 'collectors/CollectorsActions';
 
 const EditSnippetModal = React.createClass({
     propTypes: {

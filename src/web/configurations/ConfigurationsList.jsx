@@ -8,7 +8,7 @@ import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 import CreateConfigurationModal from './CreateConfigurationModal';
-import {} from '!style!css!./CollectorStyles.css';
+import {} from '!style!css!styles/CollectorStyles.css';
 
 const ConfigurationsList = React.createClass({
     mixins: [Reflux.connect(CollectorConfigurationsStore)],
