@@ -1,6 +1,6 @@
 import React from 'react';
 import Reflux from 'reflux';
-import { Row, Col, Alert } from 'react-bootstrap';
+import { Row, Col, Alert, Button } from 'react-bootstrap';
 
 import { Spinner } from 'components/common';
 
@@ -59,7 +59,7 @@ const CollectorList = React.createClass({
               Collector Id
             </th>
             <th onClick={this.sortByCollectorVersion}>Collector Version</th>
-            <th style={{ width: 170 }}>&nbsp;</th>
+            <th className="actions">&nbsp;</th>
           </tr>
           </thead>
           <tbody>
@@ -135,9 +135,11 @@ const CollectorList = React.createClass({
       return (
         <Row>
           <Col md={12}>
-            <a onClick={this.toggleShowInactive} className="btn btn-sm btn-primary pull-right">
-              {showOrHideInactive} inactive collectors
-            </a>
+            <div className="pull-right">
+              <Button bsStyle="primary" bsSize="small" onClick={this.toggleShowInactive}>
+                {showOrHideInactive} inactive collectors
+              </Button>
+            </div>
 
             <form className="form-inline collectors-filter-form" onSubmit={this._onSubmit}>
               <div className="form-group form-group-sm">

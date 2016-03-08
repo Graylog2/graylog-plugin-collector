@@ -1,4 +1,7 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+
 import ApiRoutes from 'routing/ApiRoutes';
 import { Timestamp } from 'components/common';
 import {} from '!style!css!styles/CollectorStyles.css';
@@ -52,9 +55,10 @@ const CollectorRow = React.createClass({
         <td className="limited">
           {collector.collector_version}
         </td>
-        <td className="limited">
-          <a href={ApiRoutes.SearchController.index(`gl2_source_collector:${collector.id}`, 'relative', 28800).url}
-             className="btn btn-info btn-xs">Show messages</a>
+        <td>
+          <LinkContainer to={ApiRoutes.SearchController.index(`gl2_source_collector:${collector.id}`, 'relative', 28800).url}>
+            <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
+          </LinkContainer>
         </td>
       </tr>
     );
