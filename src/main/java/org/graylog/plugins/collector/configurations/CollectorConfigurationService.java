@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 @Singleton
 public class CollectorConfigurationService {
@@ -169,7 +170,10 @@ public class CollectorConfigurationService {
         DBCursor cursor = dbCollection.find();
         while (cursor.hasNext()) {
             CollectorConfiguration collectorConfiguration = (CollectorConfiguration) cursor.next();
-            tags.addAll(collectorConfiguration.tags());
+            List<String> newTags = collectorConfiguration.tags().stream()
+                    .filter(t -> !tags.contains(t))
+                    .collect(Collectors.toList());
+            tags.addAll(newTags);
         }
         return tags;
     }
