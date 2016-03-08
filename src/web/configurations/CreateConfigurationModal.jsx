@@ -61,7 +61,7 @@ const CreateConfigurationModal = React.createClass({
   render() {
     return (
       <div>
-        <div className="text-right">
+        <div className="pull-right">
           <Button onClick={this.openModal} bsStyle="success">
             Create configuration
           </Button>
@@ -77,7 +77,7 @@ const CreateConfigurationModal = React.createClass({
                    defaultValue={this.state.name}
                    onChange={this._changeName}
                    bsStyle={this.state.error ? 'error' : null}
-                   help={this.state.error ? this.state.error_message : null}
+                   help={this.state.error ? this.state.error_message : 'Name for this configuration'}
                    autoFocus
                    required />
           </fieldset>

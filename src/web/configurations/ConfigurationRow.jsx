@@ -9,12 +9,6 @@ const ConfigurationRow = React.createClass({
     onDelete: React.PropTypes.func.isRequired,
   },
 
-  getInitialState() {
-    return {
-      null,
-    };
-  },
-
   render() {
     const configuration = this.props.configuration;
     const tagBadges = configuration.tags.map((tag) => {
@@ -31,7 +25,7 @@ const ConfigurationRow = React.createClass({
         <td className="limited">
           {tagBadges}
         </td>
-        <td className="limited">
+        <td className="actions">
           <DeleteConfigurationButton configuration={configuration} onClick={this.props.onDelete} />
         </td>
       </tr>

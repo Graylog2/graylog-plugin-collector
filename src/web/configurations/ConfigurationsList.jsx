@@ -1,8 +1,7 @@
 import React from 'react';
 import Reflux from 'reflux';
-import { Alert } from 'react-bootstrap';
 
-import { Spinner } from 'components/common';
+import { DataTable, Spinner } from 'components/common';
 
 import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
@@ -13,49 +12,12 @@ import {} from '!style!css!styles/CollectorStyles.css';
 const ConfigurationsList = React.createClass({
   mixins: [Reflux.connect(CollectorConfigurationsStore)],
 
-  getInitialState() {
-    return {
-      filter: '',
-      sort: undefined,
-    };
-  },
-
   componentDidMount() {
     this._reloadConfiguration();
   },
 
   _reloadConfiguration() {
-    CollectorConfigurationsActions.list.triggerPromise();
-  },
-
-  _formatEmptyListAlert() {
-    return <Alert><i className="fa fa-info-circle" />&nbsp;There are no configurations to show.</Alert>;
-  },
-
-  _getFilteredConfigurations() {
-    const filter = this.state.filter.toLowerCase().trim();
-    return this.state.configurations.filter((configuration) => {
-      return !filter || configuration.id.toLowerCase().indexOf(filter) !== -1;
-    });
-  },
-
-  _formatConfigurationList(configurations) {
-    return (
-      <div className="table-responsive">
-        <table className="table table-striped collectors-list">
-          <thead>
-          <tr>
-            <th onClick={this.sortByConfigurationId}>Configuration</th>
-            <th onClick={this.sortByTags}>Tags</th>
-            <th style={{ width: 85 }}>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          {configurations}
-          </tbody>
-        </table>
-      </div>
-    );
+    CollectorConfigurationsActions.list();
   },
 
   _validConfigurationName(name) {
@@ -78,6 +40,15 @@ const ConfigurationsList = React.createClass({
       });
   },
 
+  _headerCellFormatter(header) {
+    const className = (header === 'Actions' ? 'actions' : '');
+    return <th className={className}>{header}</th>;
+  },
+
+  _collectorConfigurationFormatter(configuration) {
+    return <ConfigurationRow key={configuration.id} configuration={configuration} onDelete={this._onDelete} />;
+  },
+
   _isLoading() {
     return !this.state.configurations;
   },
@@ -87,19 +58,25 @@ const ConfigurationsList = React.createClass({
       return <Spinner />;
     }
 
-    const configurations = this._getFilteredConfigurations()
-      .sort(this._bySortField)
-      .map((configuration) => {
-        return <ConfigurationRow key={configuration.id} configuration={configuration} onDelete={this._onDelete} />;
-      });
-
-    const configurationList = (configurations.length > 0 ? this._formatConfigurationList(configurations) : this._formatEmptyListAlert());
+    const headers = ['Configuration', 'Tags', 'Actions'];
+    const filterKeys = ['name', 'id'];
 
     return (
       <div>
-        <CreateConfigurationModal saveConfiguration={this._createConfiguration}
-                                  validConfigurationName={this._validConfigurationName} />
-        {configurationList}
+        <DataTable id="collector-configurations-list"
+                   className="table-hover"
+                   headers={headers}
+                   headerCellFormatter={this._headerCellFormatter}
+                   sortByKey="name"
+                   rows={this.state.configurations}
+                   filterBy="Name"
+                   dataRowFormatter={this._collectorConfigurationFormatter}
+                   filterLabel="Filter Configurations"
+                   noDataText="There are no configurations to display, why don't you create one?"
+                   filterKeys={filterKeys}>
+          <CreateConfigurationModal saveConfiguration={this._createConfiguration}
+                                    validConfigurationName={this._validConfigurationName} />
+        </DataTable>
       </div>
     );
   },
