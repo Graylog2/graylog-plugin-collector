@@ -8,8 +8,14 @@ const EditOutputFields = React.createClass({
     injectProperties: React.PropTypes.func.isRequired,
   },
 
+  getDefaultProps() {
+    return {
+      type: '',
+    };
+  },
+
   _getId(prefixIdName) {
-    return this.props.type !== undefined ? prefixIdName + this.props.type : prefixIdName;
+    return prefixIdName + this.props.type;
   },
 
   _injectProperty(name) {
