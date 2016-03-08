@@ -17,7 +17,20 @@ const ConfigurationsList = React.createClass({
   },
 
   _reloadConfiguration() {
-    CollectorConfigurationsActions.list();
+    CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {
+      const tags = configurations
+        .map(configuration => configuration.tags)
+        .reduce((uniqueTags, currentTags) => {
+          currentTags.forEach(tag => {
+            if (uniqueTags.indexOf(tag) === -1) {
+              uniqueTags.push(tag);
+            }
+          });
+
+          return uniqueTags;
+        }, []);
+      this.setState({ tags });
+    });
   },
 
   _validConfigurationName(name) {
@@ -69,7 +82,8 @@ const ConfigurationsList = React.createClass({
                    headerCellFormatter={this._headerCellFormatter}
                    sortByKey="name"
                    rows={this.state.configurations}
-                   filterBy="Name"
+                   filterBy="tag"
+                   filterSuggestions={this.state.tags}
                    dataRowFormatter={this._collectorConfigurationFormatter}
                    filterLabel="Filter Configurations"
                    noDataText="There are no configurations to display, why don't you create one?"
