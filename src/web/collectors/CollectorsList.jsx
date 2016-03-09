@@ -21,7 +21,7 @@ const CollectorList = React.createClass({
   },
   componentDidMount() {
     CollectorsActions.list();
-    this.interval = setTimeout(CollectorsStore.list, this.COLLECTOR_DATA_REFRESH);
+    this.interval = setInterval(CollectorsActions.list, this.COLLECTOR_DATA_REFRESH);
   },
   componentWillUnmount() {
     if (this.interval) {
