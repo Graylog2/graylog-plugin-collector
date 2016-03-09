@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'react-bootstrap';
+import { Button, Input } from 'react-bootstrap';
 import { Select } from 'components/common';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
@@ -112,7 +112,7 @@ const EditInputModal = React.createClass({
   render() {
     let triggerButtonContent;
     if (this.props.create) {
-      triggerButtonContent = 'Create input';
+      triggerButtonContent = 'Create Input';
     } else {
       triggerButtonContent = <span>Edit</span>;
     }
@@ -123,10 +123,11 @@ const EditInputModal = React.createClass({
 
     return (
       <span>
-        <button onClick={this.openModal}
-                className={this.props.create ? 'btn btn-success' : 'btn btn-info btn-xs'}>
+        <Button onClick={this.openModal}
+                bsStyle={this.props.create ? 'success' : 'info'}
+                bsSize={this.props.create ? null : 'xsmall'}>
           {triggerButtonContent}
-        </button>
+        </Button>
         <BootstrapModalForm ref="modal"
                             title={`${this.props.create ? 'Create' : 'Edit'} Input ${this.state.name}`}
                             onSubmitForm={this._save}
@@ -138,11 +139,12 @@ const EditInputModal = React.createClass({
                    defaultValue={this.state.name}
                    onChange={this._changeName}
                    bsStyle={this.state.error ? 'error' : null}
-                   help={this.state.error ? this.state.error_message : null}
+                   help={this.state.error ? this.state.error_message : 'Type a name for this input'}
                    autoFocus
                    required
             />
-            <Input id={this._getId('input-foward-to')} label="Forward to">
+            <Input id={this._getId('input-foward-to')} label="Forward to"
+                   help="Choose the collector output that will forward messages from this input">
               <Select ref="select-forwardto"
                       options={this._formatDropdownOptions()}
                       value={this.state.forwardTo}
@@ -150,7 +152,8 @@ const EditInputModal = React.createClass({
                       placeholder="Forward to output"
               />
             </Input>
-            <Input id={this._getId('input-type')} label="Type">
+            <Input id={this._getId('input-type')} label="Type"
+                  help="Choose the input type you want to configure">
               <Select ref="select-type"
                       options={types}
                       value={this.state.selectedType}

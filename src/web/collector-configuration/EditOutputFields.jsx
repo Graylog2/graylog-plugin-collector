@@ -33,14 +33,15 @@ const EditOutputFields = React.createClass({
                      label="Server IP"
                      defaultValue={this.props.properties.server}
                      onChange={this._injectProperty('server')}
-                     help={null}
+                     help="Type the server IP for this output"
                      required />
-              <Input type="text"
+              <Input type="number"
                      id={this._getId('gelf-udp-port')}
+                     min={0}
                      label="Port"
                      defaultValue={this.props.properties.port}
                      onChange={this._injectProperty('port')}
-                     help={null}
+                     help="Type a port number for this output"
                      required />
             </div>);
         default:

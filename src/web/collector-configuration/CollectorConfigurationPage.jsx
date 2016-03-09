@@ -54,10 +54,12 @@ const CollectorConfigurationPage = React.createClass({
                     titleSize={8} buttonSize={4}
                     buttonStyle={{ textAlign: 'right', marginTop: 10 }}>
           <span>
-            Use this page to review and manage the configuration for this collector sidecar.
+            Use this page to review and manage the configuration for this collector.
           </span>
 
-          {null}
+          <span>
+            Read more about collector configurations in the <a>Graylog documentation</a>.
+          </span>
 
           <span>
             <LinkContainer to={'/system/collectors/configurations'}>

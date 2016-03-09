@@ -33,7 +33,7 @@ const EditInputFields = React.createClass({
                      label="Path to Logfile"
                      defaultValue={this.props.properties.path}
                      onChange={this._injectProperty('path')}
-                     help={null}
+                     help="Location of the log file to use"
                      required />
             </div>);
         case 'nxlog:windows-event-log':

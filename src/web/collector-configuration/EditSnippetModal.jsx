@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'react-bootstrap';
+import { Button, Input } from 'react-bootstrap';
 
 import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 import { Select } from 'components/common';
@@ -75,7 +75,7 @@ const EditSnippetModal = React.createClass({
   render() {
     let triggerButtonContent;
     if (this.props.create) {
-      triggerButtonContent = 'Create snippet';
+      triggerButtonContent = 'Create Snippet';
     } else {
       triggerButtonContent = <span>Edit</span>;
     }
@@ -85,10 +85,11 @@ const EditSnippetModal = React.createClass({
 
     return (
       <span>
-        <button onClick={this.openModal}
-                className={this.props.create ? 'btn btn-success' : 'btn btn-info btn-xs'}>
+        <Button onClick={this.openModal}
+                bsStyle={this.props.create ? 'success' : 'info'}
+                bsSize={this.props.create ? null : 'xsmall'}>
           {triggerButtonContent}
-        </button>
+        </Button>
         <BootstrapModalForm ref="modal"
                             title={`${this.props.create ? 'Create' : 'Edit'} Snippet ${this.state.name}`}
                             onSubmitForm={this._save}
@@ -100,11 +101,12 @@ const EditSnippetModal = React.createClass({
                    defaultValue={this.state.name}
                    onChange={this._changeName}
                    bsStyle={this.state.error ? 'error' : null}
-                   help={this.state.error ? this.state.error_message : null}
+                   help={this.state.error ? this.state.error_message : 'Type a name for this snippet'}
                    autoFocus
                    required />
             <Input id={this._getId('snippet-backend')}
-                   label="Backend">
+                   label="Backend"
+                   help="Select the backend to use for your snippet">
               <Select ref="select-backend"
                       options={backends}
                       value={this.state.backend}
@@ -119,7 +121,7 @@ const EditSnippetModal = React.createClass({
                    defaultValue={this.state.snippet}
                    onChange={this._changeSnippet}
                    bsStyle={this.state.error ? 'error' : null}
-                   help={this.state.error ? this.state.error_message : null}
+                   help={this.state.error ? this.state.error_message : 'Write your verbatim configuration snippet'}
                    required />
           </fieldset>
         </BootstrapModalForm>

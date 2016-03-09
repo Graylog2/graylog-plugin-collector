@@ -174,10 +174,10 @@ const CollectorConfiguration = React.createClass({
         <Row className="content">
           <Col md={8}>
             <h2>Configuration tags</h2>
-            <p>Assigning tags to a configuration let you automatically apply it to all collectors using one of those tags.</p>
-            <form className="form-horizontal" style={{ marginTop: 10 }} onSubmit={this._updateTags}>
+            <p>Manage tags for this configuration. Collectors using one of these tags will automatically apply this configuration.</p>
+            <form className="form-horizontal" style={{ marginTop: 15 }} onSubmit={this._updateTags}>
               <Input label="Tags"
-                     help="Choose the tags to use for this configuration. You can create new tags by typing their name."
+                     help="Select a tag or create new ones by typing their name."
                      labelClassName="col-sm-2" wrapperClassName="col-sm-10">
                 <Row>
                   <Col md={7}>
@@ -202,7 +202,8 @@ const CollectorConfiguration = React.createClass({
                                saveOutput={this._saveOutput}
                                validOutputName={this._validOutputName} />
             </div>
-            <h2>Configure Outputs</h2>
+            <h2>Configure Collector Outputs</h2>
+            <p>Manage log destinations for collectors using this configuration.</p>
             <DataTable id="collector-outputs-list"
                        className="table-striped table-hover"
                        headers={outputHeaders}
@@ -223,7 +224,8 @@ const CollectorConfiguration = React.createClass({
                               saveInput={this._saveInput}
                               validInputName={this._validInputName} />
             </div>
-            <h2>Configure Inputs</h2>
+            <h2>Configure Collector Inputs</h2>
+            <p>Manage log sources for collectors using this configuration.</p>
             <DataTable id="collector-inputs-list"
                        className="table-striped table-hover"
                        headers={inputHeaders}
@@ -245,6 +247,7 @@ const CollectorConfiguration = React.createClass({
                                 validSnippetName={this._validSnippetName} />
             </div>
             <h2>Define Snippets</h2>
+            <p>Define your own configuration snippets to take advantage of advanced configuration.</p>
             <DataTable id="collector-snippets-list"
                        className="table-striped table-hover"
                        headers={snippetHeaders}
