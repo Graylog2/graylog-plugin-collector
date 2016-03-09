@@ -6,7 +6,7 @@ import { DataTable, Spinner } from 'components/common';
 import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
-import CreateConfigurationModal from './CreateConfigurationModal';
+import EditConfigurationModal from './EditConfigurationModal';
 import {} from '!style!css!styles/CollectorStyles.css';
 
 const ConfigurationsList = React.createClass({
@@ -46,6 +46,14 @@ const ConfigurationsList = React.createClass({
       });
   },
 
+  _updateConfiguration(configuration, callback) {
+    CollectorConfigurationsActions.updateConfiguration.triggerPromise(configuration)
+      .then(() => {
+        callback();
+        this._reloadConfiguration();
+      });
+  },
+
   _onDelete(configuration) {
     CollectorConfigurationsActions.delete.triggerPromise(configuration)
       .then(() => {
@@ -59,7 +67,11 @@ const ConfigurationsList = React.createClass({
   },
 
   _collectorConfigurationFormatter(configuration) {
-    return <ConfigurationRow key={configuration.id} configuration={configuration} onDelete={this._onDelete} />;
+    return (
+      <ConfigurationRow key={configuration.id} configuration={configuration} onUpdate={this._updateConfiguration}
+                        validateConfiguration={this._validConfigurationName}
+                        onDelete={this._onDelete} />
+    );
   },
 
   _isLoading() {
@@ -88,8 +100,10 @@ const ConfigurationsList = React.createClass({
                    filterLabel="Filter Configurations"
                    noDataText="There are no configurations to display, why don't you create one?"
                    filterKeys={filterKeys}>
-          <CreateConfigurationModal saveConfiguration={this._createConfiguration}
+          <div className="pull-right">
+            <EditConfigurationModal create updateConfiguration={this._createConfiguration}
                                     validConfigurationName={this._validConfigurationName} />
+          </div>
         </DataTable>
       </div>
     );

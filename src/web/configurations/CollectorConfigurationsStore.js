@@ -74,6 +74,29 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.createConfiguration.promise(promise);
   },
 
+  updateConfiguration(newConfiguration) {
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${newConfiguration.id}/name`);
+
+    const configuration = {};
+    configuration.id = newConfiguration.id;
+    configuration.name = newConfiguration.name;
+    configuration.tags = newConfiguration.tags || [];
+    configuration.inputs = newConfiguration.inputs || [];
+    configuration.outputs = newConfiguration.outputs || [];
+    configuration.snippets = newConfiguration.snippets || [];
+
+    const promise = fetch('PUT', url, configuration);
+    promise
+      .then(() => {
+        UserNotification.success('Configuration successfully updated');
+      }, (error) => {
+        UserNotification.error(`Updating configuration failed with status: ${error.message}`,
+          'Could not update configuration');
+      });
+
+    CollectorConfigurationsActions.updateConfiguration.promise(promise);
+  },
+
   saveTags(tags, configurationId) {
     const requestTags = { tags };
 

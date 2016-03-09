@@ -2,11 +2,15 @@ import React from 'react';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+import EditConfigurationModal from './EditConfigurationModal';
+
 import {} from 'styles/CollectorStyles.css';
 
 const ConfigurationRow = React.createClass({
   propTypes: {
     configuration: React.PropTypes.object.isRequired,
+    onUpdate: React.PropTypes.func.isRequired,
+    validateConfiguration: React.PropTypes.func.isRequired,
     onDelete: React.PropTypes.func.isRequired,
   },
 
@@ -37,6 +41,10 @@ const ConfigurationRow = React.createClass({
           <Button bsStyle="primary" bsSize="xsmall" onClick={this._handleClick}>
             Delete
           </Button>
+          &nbsp;
+          <EditConfigurationModal configuration={this.props.configuration}
+                                  updateConfiguration={this.props.onUpdate}
+                                  validConfigurationName={this.props.validateConfiguration} />
         </td>
       </tr>
     );

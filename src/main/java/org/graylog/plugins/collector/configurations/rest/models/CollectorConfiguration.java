@@ -57,7 +57,14 @@ public abstract class CollectorConfiguration {
                                                 @JsonProperty("inputs") List<CollectorInput> inputs,
                                                 @JsonProperty("outputs") List<CollectorOutput> outputs,
                                                 @JsonProperty("snippets") List<CollectorConfigurationSnippet> snippets) {
-        return new AutoValue_CollectorConfiguration(id, name, tags, inputs, outputs, snippets);
+        return builder()
+                .id(id)
+                .name(name)
+                .tags(tags)
+                .inputs(inputs)
+                .outputs(outputs)
+                .snippets(snippets)
+                .build();
     }
 
     public static CollectorConfiguration create(@NotEmpty String name,
@@ -72,5 +79,28 @@ public abstract class CollectorConfiguration {
         if (collectorConfiguration.inputs() != null) this.inputs().addAll(collectorConfiguration.inputs());
         if (collectorConfiguration.outputs() != null) this.outputs().addAll(collectorConfiguration.outputs());
         if (collectorConfiguration.snippets() != null) this.snippets().addAll(collectorConfiguration.snippets());
+    }
+
+    public static Builder builder() {
+        return new AutoValue_CollectorConfiguration.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract CollectorConfiguration build();
+
+        public abstract Builder id(String id);
+
+        public abstract Builder name(String name);
+
+        public abstract Builder tags(List<String> tags);
+
+        public abstract Builder inputs(List<CollectorInput> inputs);
+
+        public abstract Builder outputs(List<CollectorOutput> outputs);
+
+        public abstract Builder snippets(List<CollectorConfigurationSnippet> snippets);
     }
 }

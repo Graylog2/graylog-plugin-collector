@@ -236,6 +236,27 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         return collectorConfiguration;
     }
 
+    @PUT
+    @Path("/configurations/{id}/name")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Updates a collector configuration name")
+    public CollectorConfiguration updateConfigurationName(@ApiParam(name = "id")
+                                                          @PathParam("id") String id,
+                                                          @ApiParam(name = "JSON body", required = true)
+                                                          @Valid @NotNull CollectorConfiguration request) {
+        final CollectorConfiguration persistedConfiguration = collectorConfigurationService.findById(id);
+        final CollectorConfiguration newConfiguration = collectorConfigurationService.fromRequest(request);
+
+        final CollectorConfiguration updatedConfiguration = persistedConfiguration.toBuilder()
+                .name(newConfiguration.name())
+                .build();
+
+        collectorConfigurationService.save(updatedConfiguration);
+        return persistedConfiguration;
+    }
+
     @POST
     @Path("/configurations/{id}/outputs")
     @RequiresAuthentication
