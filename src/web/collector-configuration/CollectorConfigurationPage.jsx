@@ -50,9 +50,7 @@ const CollectorConfigurationPage = React.createClass({
 
     return (
       <div>
-        <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}
-                    titleSize={8} buttonSize={4}
-                    buttonStyle={{ textAlign: 'right', marginTop: 10 }}>
+        <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}>
           <span>
             Use this page to review and manage the configuration for this collector.
           </span>
