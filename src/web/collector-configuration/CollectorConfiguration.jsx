@@ -198,7 +198,7 @@ const CollectorConfiguration = React.createClass({
         <Row className="content">
           <Col md={12}>
             <div className="pull-right">
-              <EditOutputModal id={""} name={""} properties={{}} create
+              <EditOutputModal create
                                saveOutput={this._saveOutput}
                                validOutputName={this._validOutputName} />
             </div>
@@ -219,7 +219,7 @@ const CollectorConfiguration = React.createClass({
         <Row className="content">
           <Col md={12}>
             <div className="pull-right">
-              <EditInputModal id={""} name={""} properties={{}} outputs={this.props.configuration.outputs} create
+              <EditInputModal outputs={this.props.configuration.outputs} create
                               saveInput={this._saveInput}
                               validInputName={this._validInputName} />
             </div>
@@ -240,7 +240,7 @@ const CollectorConfiguration = React.createClass({
         <Row className="content">
           <Col md={12}>
             <div className="pull-right">
-              <EditSnippetModal id={""} name={""} create
+              <EditSnippetModal create
                                 saveSnippet={this._saveSnippet}
                                 validSnippetName={this._validSnippetName} />
             </div>

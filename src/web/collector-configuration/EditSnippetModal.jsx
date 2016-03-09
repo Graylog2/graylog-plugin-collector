@@ -15,6 +15,13 @@ const EditSnippetModal = React.createClass({
     validSnippetName: React.PropTypes.func.isRequired,
   },
 
+  getDefaultProps() {
+    return {
+      id: '',
+      name: '',
+    };
+  },
+
   getInitialState() {
     return {
       id: this.props.id,
@@ -31,7 +38,7 @@ const EditSnippetModal = React.createClass({
   },
 
   _getId(prefixIdName) {
-    return this.state.name !== undefined ? prefixIdName + this.state.name : prefixIdName;
+    return prefixIdName + this.state.name;
   },
 
   _closeModal() {

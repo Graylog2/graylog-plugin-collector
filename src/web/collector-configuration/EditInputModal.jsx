@@ -20,6 +20,14 @@ const EditInputModal = React.createClass({
     validInputName: React.PropTypes.func.isRequired,
   },
 
+  getDefaultProps() {
+    return {
+      id: '',
+      name: '',
+      properties: {},
+    };
+  },
+
   getInitialState() {
     return {
       id: this.props.id,
@@ -39,7 +47,7 @@ const EditInputModal = React.createClass({
   },
 
   _getId(prefixIdName) {
-    return typeof this.state.name !== 'undefined' ? prefixIdName + this.state.name : prefixIdName;
+    return prefixIdName + this.state.name;
   },
 
   _closeModal() {
