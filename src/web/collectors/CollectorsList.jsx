@@ -1,6 +1,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 import { Row, Col, Alert, Button } from 'react-bootstrap';
+import naturalSort from 'javascript-natural-sort';
 
 import { Spinner } from 'components/common';
 
@@ -15,7 +16,9 @@ const CollectorList = React.createClass({
   getInitialState() {
     return {
       filter: '',
-      sort: undefined,
+      sortBy: 'node_id',
+      sortDesc: false,
+      sort: (collector) => collector.node_id,
       showInactive: false,
     };
   },
@@ -37,28 +40,33 @@ const CollectorList = React.createClass({
     });
   },
   _bySortField(collector1, collector2) {
-    const sort = this.state.sort || ((collector) => collector.id);
+    const sort = this.state.sort;
     const field1 = sort(collector1);
     const field2 = sort(collector2);
-    if (typeof(field1) === 'number') {
-      return field2 - field1;
-    }
-
-    return field1.localeCompare(field2);
+    return (this.state.sortDesc ? naturalSort(field2, field1) : naturalSort(field1, field2));
   },
+
+  _getTableHeaderClassName(field) {
+    return (this.state.sortBy === field ? (this.state.sortDesc ? 'sort-desc' : 'sort-asc') : 'sortable');
+  },
+
   _formatCollectorList(collectors) {
     return (
       <div className="table-responsive">
         <table className="table table-striped collectors-list">
           <thead>
           <tr>
-            <th onClick={this.sortByNodeId}>Host Name</th>
-            <th onClick={this.sortByOperatingSystem}>Operating System</th>
-            <th onClick={this.sortByLastSeen}>Last Seen</th>
-            <th className="name" onClick={this.sortById}>
+            <th className={`name ${this._getTableHeaderClassName('node_id')}`} onClick={this.sortByNodeId}>Name</th>
+            <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
+              Operating System
+            </th>
+            <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
+            <th className={this._getTableHeaderClassName('id')} onClick={this.sortById}>
               Collector Id
             </th>
-            <th onClick={this.sortByCollectorVersion}>Collector Version</th>
+            <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortByCollectorVersion}>
+              Collector Version
+            </th>
             <th className="actions">&nbsp;</th>
           </tr>
           </thead>
@@ -74,6 +82,8 @@ const CollectorList = React.createClass({
   },
   sortById() {
     this.setState({
+      sortBy: 'id',
+      sortDesc: this.state.sortBy === 'id' && !this.state.sortDesc,
       sort: (collector) => {
         return collector.id;
       },
@@ -81,6 +91,8 @@ const CollectorList = React.createClass({
   },
   sortByNodeId() {
     this.setState({
+      sortBy: 'node_id',
+      sortDesc: this.state.sortBy === 'node_id' && !this.state.sortDesc,
       sort: (collector) => {
         return collector.node_id;
       },
@@ -88,6 +100,8 @@ const CollectorList = React.createClass({
   },
   sortByOperatingSystem() {
     this.setState({
+      sortBy: 'operating_system',
+      sortDesc: this.state.sortBy === 'operating_system' && !this.state.sortDesc,
       sort: (collector) => {
         return collector.node_details.operating_system;
       },
@@ -95,6 +109,8 @@ const CollectorList = React.createClass({
   },
   sortByLastSeen() {
     this.setState({
+      sortBy: 'last_seen',
+      sortDesc: this.state.sortBy === 'last_seen' && !this.state.sortDesc,
       sort: (collector) => {
         return collector.last_seen;
       },
@@ -102,6 +118,8 @@ const CollectorList = React.createClass({
   },
   sortByCollectorVersion() {
     this.setState({
+      sortBy: 'collector_version',
+      sortDesc: this.state.sortBy === 'collector_version' && !this.state.sortDesc,
       sort: (collector) => {
         return collector.collector_version;
       },
