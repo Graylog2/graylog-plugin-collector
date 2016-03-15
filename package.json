@@ -34,7 +34,7 @@
     "eslint-loader": "^1.0.0",
     "eslint-plugin-react": "^4.1.0",
     "file-loader": "^0.8.4",
-    "graylog-web-plugin": "~0.0.17",
+    "graylog-web-plugin": "latest",
     "graylog-web-manifests": "2.0.0-alpha.3",
     "json-loader": "^0.5.4",
     "less": "^2.5.3",
