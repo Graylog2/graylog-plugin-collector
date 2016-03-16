@@ -1,54 +1,54 @@
-.collector-os {
+:local(.collector-os) {
     margin-right: 5px;
     margin-left: 2px;
 }
 
-form.collectors-filter-form {
+:local(form.collectors-filter-form) {
     margin-top: 5px;
 }
 
-table.collectors-list {
+:local(table.collectors-list) {
     margin-top: 15px;
     margin-bottom: 0px;
 }
 
-th.sortable, th.sort-asc, th.sort-desc {
+:local(th.sortable, th.sort-asc, th.sort-desc) {
     cursor: pointer;
 }
 
 /* Dirty hack to avoid column widths to change */
-th.sortable:after {
+:local(th.sortable:after) {
     content: ' ';
     display: inline-block;
     margin-left: 5px;
     width: 12px;
 }
 
-th.sortable:hover:after {
+:local(th.sortable:hover:after) {
     content: "\f0dc";
     font-family: FontAwesome;
     line-height: 1;
     margin-left: 5px;
 }
 
-th.sort-asc:after {
+:local(th.sort-asc:after) {
     content: "\f160";
     font-family: FontAwesome;
     line-height: 1;
     margin-left: 5px;
 }
 
-th.sort-desc:after {
+:local(th.sort-desc:after) {
     content: "\f161";
     font-family: FontAwesome;
     line-height: 1;
     margin-left: 5px;
 }
 
-.name {
+:local(.name) {
     width: 300px;
 }
 
-.configuration-tag {
+:local(.configuration-tag) {
     margin-right: 5px;
 }
