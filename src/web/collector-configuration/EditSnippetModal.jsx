@@ -81,6 +81,7 @@ const EditSnippetModal = React.createClass({
     }
     const backends = [
       { value: 'nxlog', label: 'NXLog' },
+      { value: 'topbeats', label: 'TopBeats' },
     ];
 
     return (

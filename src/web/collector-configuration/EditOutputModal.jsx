@@ -74,17 +74,17 @@ const EditOutputModal = React.createClass({
     this.setState({ properties });
   },
 
-  _injectProperties(key, event) {
+  _injectProperties(key, value) {
     const properties = this.state.properties;
     if (properties) {
-      properties[key] = event.target.value;
+      properties[key] = value;
     }
     this.setState({ properties });
   },
 
   _changeType(type) {
     const backendAndType = type.split(/:/, 2);
-    this.setState({ selectedType: type, backend: backendAndType[0], type: backendAndType[1] });
+    this.setState({ selectedType: type, backend: backendAndType[0], type: backendAndType[1], properties: {} });
   },
 
   render() {
@@ -96,6 +96,8 @@ const EditOutputModal = React.createClass({
     }
     const types = [
       { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
+      { value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
+      { value: 'topbeat:logstash', label: '[TopBeat] Logstash output' },
     ];
 
     return (
@@ -127,7 +129,7 @@ const EditOutputModal = React.createClass({
                       placeholder="Choose output type..."
               />
             </Input>
-            <EditOutputFields type={this.state.selectedType} properties={this.props.properties}
+            <EditOutputFields type={this.state.selectedType} properties={this.state.properties}
                               injectProperties={this._injectProperties} />
           </fieldset>
         </BootstrapModalForm>

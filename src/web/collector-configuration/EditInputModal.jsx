@@ -81,17 +81,17 @@ const EditInputModal = React.createClass({
     this.setState({ properties });
   },
 
-  _injectProperties(key, event) {
+  _injectProperties(key, value) {
     const properties = this.state.properties;
     if (properties) {
-      properties[key] = event.target.value;
+      properties[key] = value;
     }
     this.setState({ properties });
   },
 
   _changeType(type) {
     const backendAndType = type.split(/:/, 2);
-    this.setState({ selectedType: type, backend: backendAndType[0], type: backendAndType[1] });
+    this.setState({ selectedType: type, backend: backendAndType[0], type: backendAndType[1], properties: {} });
   },
 
   _formatDropdownOptions() {
@@ -119,6 +119,7 @@ const EditInputModal = React.createClass({
     const types = [
       { value: 'nxlog:file', label: '[NXLog] file input' },
       { value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
+      { value: 'topbeat:topbeat', label: '[TopBeat] Metrics'},
     ];
 
     return (
@@ -161,7 +162,7 @@ const EditInputModal = React.createClass({
                       placeholder="Choose input type..."
               />
             </Input>
-            <EditInputFields type={this.state.selectedType} properties={this.props.properties}
+            <EditInputFields type={this.state.selectedType} properties={this.state.properties}
                              injectProperties={this._injectProperties} />
           </fieldset>
         </BootstrapModalForm>
