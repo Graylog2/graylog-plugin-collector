@@ -4,8 +4,6 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import EditConfigurationModal from './EditConfigurationModal';
 
-import {} from 'styles/CollectorStyles.css';
-
 const ConfigurationRow = React.createClass({
   propTypes: {
     configuration: React.PropTypes.object.isRequired,
@@ -13,6 +11,16 @@ const ConfigurationRow = React.createClass({
     validateConfiguration: React.PropTypes.func.isRequired,
     onDelete: React.PropTypes.func.isRequired,
   },
+
+  componentDidMount() {
+    this.style.use();
+  },
+
+  componentWillUnmount() {
+    this.style.unuse();
+  },
+
+  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _handleClick() {
     const configuration = this.props.configuration;

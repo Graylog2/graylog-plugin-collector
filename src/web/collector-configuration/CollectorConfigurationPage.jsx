@@ -20,9 +20,16 @@ const CollectorConfigurationPage = React.createClass({
   },
 
   componentDidMount() {
+    this.style.use();
     this._reloadConfiguration();
     this._loadTags();
   },
+
+  componentWillUnmount() {
+    this.style.unuse();
+  },
+
+  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.getConfiguration.triggerPromise(this.props.params.id).then(this._setConfiguration);

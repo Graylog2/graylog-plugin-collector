@@ -4,8 +4,6 @@ import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
 import { IfPermitted, ISODurationInput } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
 
-import style from '!style!css!components/configurations/ConfigurationStyles.css';
-
 const CollectorSystemConfiguration = React.createClass({
   propTypes: {
     config: React.PropTypes.shape({
@@ -74,7 +72,7 @@ const CollectorSystemConfiguration = React.createClass({
       <div>
         <h3>Collectors System</h3>
 
-        <dl className={style.deflist}>
+        <dl className="deflist">
           <dt>Inactive threshold:</dt>
           <dd>{this.state.config.collector_inactive_threshold}</dd>
           <dt>Expiration threshold:</dt>

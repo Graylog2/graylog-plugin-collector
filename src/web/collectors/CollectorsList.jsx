@@ -8,7 +8,6 @@ import { Spinner } from 'components/common';
 import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
-import {} from '!style!css!styles/CollectorStyles.css';
 
 const CollectorList = React.createClass({
   mixins: [Reflux.connect(CollectorsStore)],
@@ -23,14 +22,18 @@ const CollectorList = React.createClass({
     };
   },
   componentDidMount() {
+    this.style.use();
     CollectorsActions.list();
     this.interval = setInterval(CollectorsActions.list, this.COLLECTOR_DATA_REFRESH);
   },
   componentWillUnmount() {
+    this.style.unuse();
     if (this.interval) {
       clearInterval(this.interval);
     }
   },
+
+  style: require('!style/useable!css!styles/CollectorStyles.css'),
   COLLECTOR_DATA_REFRESH: 5 * 1000,
 
   _getFilteredCollectors() {

@@ -7,14 +7,20 @@ import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 import EditConfigurationModal from './EditConfigurationModal';
-import {} from '!style!css!styles/CollectorStyles.css';
 
 const ConfigurationsList = React.createClass({
   mixins: [Reflux.connect(CollectorConfigurationsStore)],
 
   componentDidMount() {
+    this.style.use();
     this._reloadConfiguration();
   },
+
+  componentWillUnmount() {
+    this.style.unuse();
+  },
+
+  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {

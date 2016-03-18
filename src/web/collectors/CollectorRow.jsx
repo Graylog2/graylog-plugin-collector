@@ -4,7 +4,6 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import ApiRoutes from 'routing/ApiRoutes';
 import { Timestamp } from 'components/common';
-import {} from '!style!css!styles/CollectorStyles.css';
 
 const CollectorRow = React.createClass({
   propTypes: {
@@ -15,6 +14,17 @@ const CollectorRow = React.createClass({
       showRelativeTime: true,
     };
   },
+
+  componentDidMount() {
+    this.style.use();
+  },
+
+  componentWillUnmount() {
+    this.style.unuse();
+  },
+
+  style: require('!style/useable!css!styles/CollectorStyles.css'),
+
   _getOsGlyph(operatingSystem) {
     let glyphClass = 'fa-question-circle';
     const os = operatingSystem.trim().toLowerCase();
