@@ -1,54 +1,54 @@
-:local(.collector-os) {
+.collector-os {
     margin-right: 5px;
     margin-left: 2px;
 }
 
-:local(form.collectors-filter-form) {
+form.collectors-filter-form {
     margin-top: 5px;
 }
 
-:local(table.collectors-list) {
+table.collectors-list {
     margin-top: 15px;
     margin-bottom: 0px;
 }
 
-:local(th.sortable, th.sort-asc, th.sort-desc) {
+th.sortable, th.sort-asc, th.sort-desc {
     cursor: pointer;
 }
 
 /* Dirty hack to avoid column widths to change */
-:local(th.sortable:after) {
+th.sortable:after {
     content: ' ';
     display: inline-block;
     margin-left: 5px;
     width: 12px;
 }
 
-:local(th.sortable:hover:after) {
+th.sortable:hover:after {
     content: "\f0dc";
     font-family: FontAwesome;
     line-height: 1;
     margin-left: 5px;
 }
 
-:local(th.sort-asc:after) {
+th.sort-asc:after {
     content: "\f160";
     font-family: FontAwesome;
     line-height: 1;
     margin-left: 5px;
 }
 
-:local(th.sort-desc:after) {
+th.sort-desc:after {
     content: "\f161";
     font-family: FontAwesome;
     line-height: 1;
     margin-left: 5px;
 }
 
-:local(.name) {
+.name {
     width: 300px;
 }
 
-:local(.configuration-tag) {
+.configuration-tag {
     margin-right: 5px;
 }
