@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CollectorConfigurationResource extends RestResource implements PluginRestResource {
-    private static final Logger log = LoggerFactory.getLogger(CollectorConfigurationResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CollectorConfigurationResource.class);
     private final ObjectMapper mapper = new ObjectMapper();
 
     private final CollectorConfigurationService collectorConfigurationService;
@@ -393,7 +393,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             try {
                 tags = mapper.readValue(queryTags, List.class);
             } catch (IOException e) {
-                log.error("Can not parse provided collector tags");
+                LOG.error("Can not parse provided collector tags: {}", queryTags);
                 tags = null;
             }
         }

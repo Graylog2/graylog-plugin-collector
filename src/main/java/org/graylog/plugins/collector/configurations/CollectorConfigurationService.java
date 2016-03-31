@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class CollectorConfigurationService {
-    private static final Logger log = LoggerFactory.getLogger(CollectorConfigurationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CollectorConfigurationService.class);
 
     private static final String COLLECTION_NAME = "collector_configurations";
 
@@ -77,8 +77,7 @@ public class CollectorConfigurationService {
     }
 
     public List<CollectorConfiguration> findByTags(List tags) {
-        final DBCursor<CollectorConfiguration> cursor = dbCollection.find(DBQuery.all("tags", tags));
-
+        final DBCursor<CollectorConfiguration> cursor = dbCollection.find().in("tags", tags);
         final List<CollectorConfiguration> result = new ArrayList<>();
         while (cursor.hasNext()) {
             result.add(cursor.next());
