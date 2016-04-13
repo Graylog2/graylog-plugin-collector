@@ -37,6 +37,19 @@ const EditOutputFields = React.createClass({
           this.props.injectProperties('hosts', '["localhost:5044"]');
         };
         break;
+      case 'filebeat:elasticsearch':
+        if (!value.hasOwnProperty('hosts')) {
+          this.props.injectProperties('hosts', '["localhost:9200"]');
+        };
+        if (!value.hasOwnProperty('indexname')) {
+          this.props.injectProperties('indexname', 'filebeat');
+        };
+        break;
+      case 'filebeat:logstash':
+        if (!value.hasOwnProperty('hosts')) {
+          this.props.injectProperties('hosts', '["localhost:5044"]');
+        };
+        break;
     }
   },
 
@@ -101,6 +114,37 @@ const EditOutputFields = React.createClass({
                        help="Array of hosts to connect to"
                        required />
                 </div>);
+          break;
+        case 'filebeat:elasticsearch':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('es-server')}
+                       label="Hosts"
+                       value={this.props.properties.hosts}
+                       onChange={this._injectProperty('hosts')}
+                       help="Array of hosts to connect to"
+                       required/>
+                <Input type="text"
+                       id={this._getId('es-index')}
+                       label="Index"
+                       value={this.props.properties.indexname}
+                       onChange={this._injectProperty('indexname')}
+                       help="Index name"
+                       required/>
+              </div>);
+          break;
+        case 'filebeat:logstash':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('logstash-server')}
+                       label="Hosts"
+                       value={this.props.properties.hosts}
+                       onChange={this._injectProperty('hosts')}
+                       help="Array of hosts to connect to"
+                       required />
+              </div>);
           break;
         default:
           // Nothing to see here

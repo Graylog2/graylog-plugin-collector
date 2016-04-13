@@ -32,6 +32,20 @@ const EditInputFields = React.createClass({
           this.props.injectProperties('procs', '[.*]');
         };
         break;
+      case 'filebeat:file':
+        if (!value.hasOwnProperty('paths')) {
+          this.props.injectProperties('paths', '["/var/log/*.log"]');
+        };
+        if (!value.hasOwnProperty('scan_frequency')) {
+          this.props.injectProperties('scan_frequency', '10s');
+        };
+        if (!value.hasOwnProperty('ignore_older')) {
+          this.props.injectProperties('ignore_older', '0');
+        };
+        if (!value.hasOwnProperty('document_type')) {
+          this.props.injectProperties('document_type', 'log');
+        };
+        break;
     }
   },
 
@@ -78,6 +92,38 @@ const EditInputFields = React.createClass({
                      help="Regular expression to match the processes that are monitored"
                      required />
             </div>);
+        case 'filebeat:file':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('file-paths')}
+                       label="Path to Logfile"
+                       value={this.props.properties.paths}
+                       onChange={this._injectProperty('paths')}
+                       help="Location of the log files to use"
+                       required />
+                <Input type="text"
+                       id={this._getId('scan-frequency')}
+                       label="Scan frequency in seconds"
+                       value={this.props.properties.scan_frequency}
+                       onChange={this._injectProperty('scan_frequency')}
+                       help="How often should files be checked for changes"
+                       required />
+                <Input type="text"
+                       id={this._getId('ignore-older')}
+                       label="Ignore files older then"
+                       value={this.props.properties.ignore_older}
+                       onChange={this._injectProperty('ignore_older')}
+                       help="Ignore files which were modified more then the defined timespan in the past (e.g 2h)"
+                       required />
+                <Input type="text"
+                       id={this._getId('document-type')}
+                       label="Type of input file"
+                       value={this.props.properties.document_type}
+                       onChange={this._injectProperty('document_type')}
+                       help="Type to be published in the 'type' field (e.g. 'log' or 'apache')"
+                       required />
+              </div>);
           break;
         default:
         // Do nothing
