@@ -119,8 +119,9 @@ const EditInputModal = React.createClass({
     const types = [
       { value: 'nxlog:file', label: '[NXLog] file input' },
       { value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
-      { value: 'topbeat:topbeat', label: '[TopBeat] Metrics'},
-      { value: 'filebeat:file', label: '[FileBeat] file input'}
+      //{ value: 'topbeat:topbeat', label: '[TopBeat] Metrics'},
+      //{ value: 'filebeat:file', label: '[FileBeat] file input'},
+      //{ value: 'winlogbeat:windows-event-log', label: '[WinLogBeat] Windows event log' },
     ];
 
     return (

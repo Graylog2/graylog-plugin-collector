@@ -96,10 +96,12 @@ const EditOutputModal = React.createClass({
     }
     const types = [
       { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
-      { value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
-      { value: 'topbeat:logstash', label: '[TopBeat] Logstash output' },
-      { value: 'filebeat:elasticsearch', label: '[FileBeat] Elasticsearch output' },
-      { value: 'filebeat:logstash', label: '[FileBeat] Logstash output' },
+      //{ value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
+      //{ value: 'topbeat:logstash', label: '[TopBeat] Logstash output' },
+      //{ value: 'filebeat:elasticsearch', label: '[FileBeat] Elasticsearch output' },
+      //{ value: 'filebeat:logstash', label: '[FileBeat] Logstash output' },
+      //{ value: 'winlogbeat:elasticsearch', label: '[WinLogBeat] Elasticsearch output' },
+      //{ value: 'winlogbeat:logstash', label: '[WinLogBeat] Logstash output' }
     ];
 
     return (
