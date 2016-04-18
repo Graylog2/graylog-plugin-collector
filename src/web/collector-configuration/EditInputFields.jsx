@@ -1,6 +1,8 @@
 import React from 'react';
 import { Input } from 'react-bootstrap';
 
+import FormUtils from 'util/FormsUtils';
+
 const EditInputFields = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
@@ -24,6 +26,23 @@ const EditInputFields = React.createClass({
 
   _setDefaultValue(type, value) {
     switch (type) {
+      case 'nxlog:file':
+        if (!value.hasOwnProperty('poll_interval')) {
+          this.props.injectProperties('poll_interval', '1');
+        };
+        if (!value.hasOwnProperty('save_position')) {
+          this.props.injectProperties('save_position', true);
+        };
+        if (!value.hasOwnProperty('read_last')) {
+          this.props.injectProperties('read_last', true);
+        };
+        if (!value.hasOwnProperty('recursive')) {
+          this.props.injectProperties('recursive', true);
+        };
+        if (!value.hasOwnProperty('rename_check')) {
+          this.props.injectProperties('rename_check', false);
+        };
+        break;
       case 'topbeat:topbeat':
         if (!value.hasOwnProperty('period')) {
           this.props.injectProperties('period', '10');
@@ -46,6 +65,11 @@ const EditInputFields = React.createClass({
           this.props.injectProperties('document_type', 'log');
         };
         break;
+      case 'winlogbeat:windows-event-log':
+        if (!value.hasOwnProperty('event')) {
+          this.props.injectProperties('event', '[{"name":"Application"}]');
+        };
+        break;
     }
   },
 
@@ -54,7 +78,7 @@ const EditInputFields = React.createClass({
   },
 
   _injectProperty(name) {
-    return (event) => this.props.injectProperties(name, event.target.value);
+    return (event) => this.props.injectProperties(name, FormUtils.getValueFromInput(event.target));
   },
 
   render() {
@@ -68,8 +92,39 @@ const EditInputFields = React.createClass({
                      label="Path to Logfile"
                      value={this.props.properties.path}
                      onChange={this._injectProperty('path')}
-                     help="Location of the log file to use"
+                     help="Location of the log file to use. Wildcards are supported in filenames, like '*' or '?'"
                      required />
+              <Input type="number"
+                     id={this._getId('poll-interval')}
+                     min={1}
+                     label="Poll Interval"
+                     value={this.props.properties.poll_interval}
+                     onChange={this._injectProperty('poll_interval')}
+                     help="In seconds how frequently the collector will check for new files and new log entries"/>
+              <Input type="checkbox"
+                     id={this._getId('save-position')}
+                     label="Save read position"
+                     checked={this.props.properties.save_position}
+                     onChange={this._injectProperty('save_position')}
+                     help="Restore read position in case of a collector restart"/>
+              <Input type="checkbox"
+                     id={this._getId('read-last')}
+                     label="Read since start"
+                     checked={this.props.properties.read_last}
+                     onChange={this._injectProperty('read_last')}
+                     help="Instructs the collector to only read logs which arrived after nxlog was started"/>
+              <Input type="checkbox"
+                     id={this._getId('recursive')}
+                     label="Recursive file lookup"
+                     checked={this.props.properties.recursive}
+                     onChange={this._injectProperty('recursive')}
+                     help="Specifies whether input files should be searched recursively under subdirectories"/>
+              <Input type="checkbox"
+                     id={this._getId('rename_check')}
+                     label="Rename check"
+                     checked={this.props.properties.rename_check}
+                     onChange={this._injectProperty('rename_check')}
+                     help="Whether input files should be monitored for possible file rotation via renaming"/>
             </div>);
         case 'nxlog:windows-event-log':
           return (null);
@@ -122,6 +177,17 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.document_type}
                        onChange={this._injectProperty('document_type')}
                        help="Type to be published in the 'type' field (e.g. 'log' or 'apache')"
+                       required />
+              </div>);
+        case 'winlogbeat:windows-event-log':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('event')}
+                       label="Event name"
+                       value={this.props.properties.event}
+                       onChange={this._injectProperty('event')}
+                       help="List of Windows events"
                        required />
               </div>);
           break;
