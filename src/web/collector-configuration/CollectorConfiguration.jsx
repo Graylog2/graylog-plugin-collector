@@ -48,6 +48,7 @@ const CollectorConfiguration = React.createClass({
       <tr key={output.output_id}>
         <td>{output.name}</td>
         <td>{output.type}</td>
+        <td>{output.output_id}</td>
         <td>
           <DeleteConfirmButton entity={output} type="output" onClick={this._deleteOutput} />
           &nbsp;
@@ -68,6 +69,7 @@ const CollectorConfiguration = React.createClass({
         <td>{input.name}</td>
         <td>{input.type}</td>
         <td>{this._getOutputById(input.forward_to).name}</td>
+        <td>{input.input_id}</td>
         <td>
           <DeleteConfirmButton entity={input} type="input" onClick={this._deleteInput} />
           &nbsp;
@@ -161,8 +163,8 @@ const CollectorConfiguration = React.createClass({
   },
 
   render() {
-    const outputHeaders = ['Output', 'Type', 'Actions'];
-    const inputHeaders = ['Input', 'Type', 'Forward To', 'Actions'];
+    const outputHeaders = ['Output', 'Type', 'Id', 'Actions'];
+    const inputHeaders = ['Input', 'Type', 'Forward To', 'Id', 'Actions'];
     const snippetHeaders = ['Name', 'Backend', 'Actions'];
     const filterKeys = [];
     const availableTags = this.props.tags.map((tag) => {
