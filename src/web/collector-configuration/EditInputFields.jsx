@@ -49,6 +49,17 @@ const EditInputFields = React.createClass({
           this.props.injectProperties('multiline_start', "/^-./");
         };
         break;
+      case 'nxlog:windows-event-log':
+        if (!value.hasOwnProperty('poll_interval')) {
+          this.props.injectProperties('poll_interval', '1');
+        };
+        if (!value.hasOwnProperty('save_position')) {
+          this.props.injectProperties('save_position', true);
+        };
+        if (!value.hasOwnProperty('read_last')) {
+          this.props.injectProperties('read_last', true);
+        };
+        break;
       case 'topbeat:topbeat':
         if (!value.hasOwnProperty('period')) {
           this.props.injectProperties('period', '10');
@@ -151,7 +162,40 @@ const EditInputFields = React.createClass({
                      help="RegEx stop pattern of a multiline"/>
             </div>);
         case 'nxlog:windows-event-log':
-          return (null);
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('channel')}
+                       label="Channel"
+                       value={this.props.properties.channel}
+                       onChange={this._injectProperty('channel')}
+                       help="The name of the Channel to query. If not specified, the module will read from all sources"/>
+                <Input type="text"
+                       id={this._getId('query')}
+                       label="Query"
+                       value={this.props.properties.query}
+                       onChange={this._injectProperty('query')}
+                       help="The query if one wishes to pull only specific eventlog sources"/>
+                <Input type="checkbox"
+                       id={this._getId('save-position')}
+                       label="Save read position"
+                       checked={this.props.properties.save_position}
+                       onChange={this._injectProperty('save_position')}
+                       help="Restore read position in case of a collector restart"/>
+                <Input type="checkbox"
+                       id={this._getId('read-last')}
+                       label="Read since start"
+                       checked={this.props.properties.read_last}
+                       onChange={this._injectProperty('read_last')}
+                       help="Instructs the collector to only read logs which arrived after nxlog was started"/>
+                <Input type="number"
+                       id={this._getId('poll-interval')}
+                       min={1}
+                       label="Poll Interval"
+                       value={this.props.properties.poll_interval}
+                       onChange={this._injectProperty('poll_interval')}
+                       help="In seconds how frequently the collector will check for new files and new log entries"/>
+              </div>);
         case 'topbeat:topbeat':
           return (
             <div>
