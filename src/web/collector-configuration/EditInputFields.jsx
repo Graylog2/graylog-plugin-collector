@@ -60,6 +60,22 @@ const EditInputFields = React.createClass({
           this.props.injectProperties('read_last', true);
         };
         break;
+      case 'nxlog:udp-syslog':
+        if (!value.hasOwnProperty('host')) {
+          this.props.injectProperties('host', '127.0.0.1');
+        };
+        if (!value.hasOwnProperty('port')) {
+          this.props.injectProperties('port', 514);
+        };
+        break;
+      case 'nxlog:tcp-syslog':
+        if (!value.hasOwnProperty('host')) {
+          this.props.injectProperties('host', '127.0.0.1');
+        };
+        if (!value.hasOwnProperty('port')) {
+          this.props.injectProperties('port', 514);
+        };
+        break;
       case 'topbeat:topbeat':
         if (!value.hasOwnProperty('period')) {
           this.props.injectProperties('period', '10');
@@ -195,6 +211,42 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.poll_interval}
                        onChange={this._injectProperty('poll_interval')}
                        help="In seconds how frequently the collector will check for new files and new log entries"/>
+              </div>);
+        case 'nxlog:udp-syslog':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('host')}
+                       label="Host"
+                       value={this.props.properties.host}
+                       onChange={this._injectProperty('host')}
+                       help="Listen address of the UDP port. 0.0.0.0 allows remote machines to use the collector as a relay"
+                       required/>
+                <Input type="number"
+                       id={this._getId('port')}
+                       label="Port"
+                       value={this.props.properties.port}
+                       onChange={this._injectProperty('port')}
+                       help="Port number of the UDP input"
+                       required/>
+              </div>);
+        case 'nxlog:tcp-syslog':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('host')}
+                       label="Host"
+                       value={this.props.properties.host}
+                       onChange={this._injectProperty('host')}
+                       help="Listen address of the TCP port. 0.0.0.0 allows remote machines to use the collector as a relay"
+                       required/>
+                <Input type="number"
+                       id={this._getId('port')}
+                       label="Port"
+                       value={this.props.properties.port}
+                       onChange={this._injectProperty('port')}
+                       help="Port number of the TCP input"
+                       required/>
               </div>);
         case 'topbeat:topbeat':
           return (
