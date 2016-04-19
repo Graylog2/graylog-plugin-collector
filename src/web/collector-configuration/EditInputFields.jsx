@@ -42,6 +42,12 @@ const EditInputFields = React.createClass({
         if (!value.hasOwnProperty('rename_check')) {
           this.props.injectProperties('rename_check', false);
         };
+        if (!value.hasOwnProperty('multiline')) {
+          this.props.injectProperties('multiline', false);
+        };
+        if (!value.hasOwnProperty('multiline_start')) {
+          this.props.injectProperties('multiline_start', "/^-./");
+        };
         break;
       case 'topbeat:topbeat':
         if (!value.hasOwnProperty('period')) {
@@ -125,6 +131,24 @@ const EditInputFields = React.createClass({
                      checked={this.props.properties.rename_check}
                      onChange={this._injectProperty('rename_check')}
                      help="Whether input files should be monitored for possible file rotation via renaming"/>
+              <Input type="checkbox"
+                     id={this._getId('multiline')}
+                     label="Enable Multiline"
+                     checked={this.props.properties.multiline}
+                     onChange={this._injectProperty('multiline')}
+                     help="Enable multiline extension"/>
+              <Input type="text"
+                     id={this._getId('multiline-start')}
+                     label="Start pattern of multiline"
+                     value={this.props.properties.multiline_start}
+                     onChange={this._injectProperty('multiline_start')}
+                     help="RegEx starting pattern of a multiline"/>
+              <Input type="text"
+                     id={this._getId('multiline-stop')}
+                     label="Stop pattern of multiline"
+                     value={this.props.properties.multiline_stop}
+                     onChange={this._injectProperty('multiline_stop')}
+                     help="RegEx stop pattern of a multiline"/>
             </div>);
         case 'nxlog:windows-event-log':
           return (null);
