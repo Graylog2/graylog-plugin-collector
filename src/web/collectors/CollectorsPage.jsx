@@ -13,7 +13,7 @@ const CollectorsPage = React.createClass({
   render() {
     return (
       <span>
-        <PageHeader title="Collectors in Cluster" titleSize={9} buttonSize={3}>
+        <PageHeader title="Collectors in Cluster">
           <span>
             The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
           </span>
