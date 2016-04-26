@@ -7,6 +7,9 @@ import CollectorConfiguration from './CollectorConfiguration';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
+import DocsHelper from 'util/DocsHelper';
+import DocumentationLink from 'components/support/DocumentationLink';
+
 const CollectorConfigurationPage = React.createClass({
   propTypes: {
     params: React.PropTypes.object.isRequired,
@@ -63,7 +66,8 @@ const CollectorConfigurationPage = React.createClass({
           </span>
 
           <span>
-            Read more about collector configurations in the <a>Graylog documentation</a>.
+            Read more about collector configurations in the{' '}
+            <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
           </span>
 
           <span>
