@@ -99,6 +99,26 @@ const EditOutputFields = React.createClass({
                      required />
             </div>);
             break;
+        case 'nxlog:gelf-tcp':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('gelf-tcp-server')}
+                       label="Server IP"
+                       value={this.props.properties.server}
+                       onChange={this._injectProperty('server')}
+                       help="Type the server IP for this output"
+                       required />
+                <Input type="number"
+                       id={this._getId('gelf-tcp-port')}
+                       min={0}
+                       label="Port"
+                       value={this.props.properties.port}
+                       onChange={this._injectProperty('port')}
+                       help="Type a port number for this output"
+                       required />
+              </div>);
+          break;
         case 'topbeat:elasticsearch':
           return (
               <div>
