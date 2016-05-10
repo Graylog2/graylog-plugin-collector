@@ -266,4 +266,36 @@ public class CollectorConfigurationService {
         return collectorConfiguration;
     }
 
+    public CollectorConfiguration copyOutput(String id, String outputId, String name) {
+        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        List<CollectorOutput> outputList = new ArrayList<>();
+
+        collectorConfiguration.outputs().stream()
+                .filter(output -> output.outputId().equals(outputId))
+                .forEach(output -> outputList.add(CollectorOutput.create(output.backend(), output.type(), name, output.properties())));
+        collectorConfiguration.outputs().addAll(outputList);
+        return collectorConfiguration;
+    }
+
+    public CollectorConfiguration copyInput(String id, String inputId, String name) {
+        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        List<CollectorInput> inputList = new ArrayList<>();
+
+        collectorConfiguration.inputs().stream()
+                .filter(input -> input.inputId().equals(inputId))
+                .forEach(input -> inputList.add(CollectorInput.create(input.type(), input.backend(), name, input.forwardTo(), input.properties())));
+        collectorConfiguration.inputs().addAll(inputList);
+        return collectorConfiguration;
+    }
+
+    public CollectorConfiguration copySnippet(String id, String snippetId, String name) {
+        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        List<CollectorConfigurationSnippet> snippetList = new ArrayList<>();
+
+        collectorConfiguration.snippets().stream()
+                .filter(snippet -> snippet.snippetId().equals(snippetId))
+                .forEach(snippet -> snippetList.add(CollectorConfigurationSnippet.create(snippet.backend(), name, snippet.snippet())));
+        collectorConfiguration.snippets().addAll(snippetList);
+        return collectorConfiguration;
+    }
 }

@@ -208,6 +208,54 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.saveSnippet.promise(promise);
   },
 
+  copyOutput(outputId, name, configurationId) {
+    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/outputs/${outputId}/${name}`);
+    let method = 'POST';
+
+    const promise = fetch(method, url);
+    promise
+        .then(() => {
+          UserNotification.success(`Configuration output "${outputId}" successfully copied`);
+        }, (error) => {
+          UserNotification.error(`Saving output "${name}" failed with status: ${error.message}`,
+              'Could not save Output');
+        });
+
+    CollectorConfigurationsActions.copyOutput.promise(promise);
+  },
+
+  copyInput(inputId, name, configurationId) {
+    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/inputs/${inputId}/${name}`);
+    let method = 'POST';
+
+    const promise = fetch(method, url);
+    promise
+        .then(() => {
+          UserNotification.success(`Configuration input "${inputId}" successfully copied`);
+        }, (error) => {
+          UserNotification.error(`Saving input "${name}" failed with status: ${error.message}`,
+              'Could not save Input');
+        });
+
+    CollectorConfigurationsActions.copyInput.promise(promise);
+  },
+
+  copySnippet(snippetId, name, configurationId) {
+    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/snippets/${snippetId}/${name}`);
+    let method = 'POST';
+
+    const promise = fetch(method, url);
+    promise
+        .then(() => {
+          UserNotification.success(`Configuration snippet "${snippetId}" successfully copied`);
+        }, (error) => {
+          UserNotification.error(`Saving snippet "${name}" failed with status: ${error.message}`,
+              'Could not save Output');
+        });
+
+    CollectorConfigurationsActions.copySnippet.promise(promise);
+  },
+
   delete(configuration) {
     const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configuration.id}`);
     const promise = fetch('DELETE', url);

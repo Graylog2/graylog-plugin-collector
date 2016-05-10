@@ -314,6 +314,66 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         return Response.accepted().build();
     }
 
+    @POST
+    @Path("/configurations/{id}/outputs/{outputId}/{name}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @ApiOperation(value = "Copy a configuration output",
+            notes = "This is a stateless method which copies a collector output to one with another name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Configuration or Output not found."),
+            @ApiResponse(code = 400, message = "Invalid ObjectId.")
+    })
+    public Response copyOutput(@ApiParam(name = "id", required = true)
+                               @PathParam("id") String id,
+                               @PathParam("outputId") String outputId,
+                               @PathParam("name") String name) throws NotFoundException {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copyOutput(id, outputId, name);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
+    @POST
+    @Path("/configurations/{id}/inputs/{inputId}/{name}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @ApiOperation(value = "Copy a configuration input",
+            notes = "This is a stateless method which copies a collector input to one with another name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Configuration or Input not found."),
+            @ApiResponse(code = 400, message = "Invalid ObjectId.")
+    })
+    public Response copyInput(@ApiParam(name = "id", required = true)
+                               @PathParam("id") String id,
+                               @PathParam("inputId") String inputId,
+                               @PathParam("name") String name) throws NotFoundException {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copyInput(id, inputId, name);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
+    @POST
+    @Path("/configurations/{id}/snippets/{snippetId}/{name}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @ApiOperation(value = "Copy a configuration snippet",
+            notes = "This is a stateless method which copies a collector snippet to one with another name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Configuration or Snippet not found."),
+            @ApiResponse(code = 400, message = "Invalid ObjectId.")
+    })
+    public Response copySnippet(@ApiParam(name = "id", required = true)
+                               @PathParam("id") String id,
+                               @PathParam("snippetId") String snippetId,
+                               @PathParam("name") String name) throws NotFoundException {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copySnippet(id, snippetId, name);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
     @DELETE
     @Path("/configurations/{id}")
     @RequiresAuthentication

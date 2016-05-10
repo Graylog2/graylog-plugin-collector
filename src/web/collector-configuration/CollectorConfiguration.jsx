@@ -4,6 +4,9 @@ import naturalSort from 'javascript-natural-sort';
 
 import { DataTable } from 'components/common';
 
+import CopyOutputModal from './CopyOutputModal';
+import CopyInputModal from './CopyInputModal';
+import CopySnippetModal from './CopySnippetModal';
 import EditInputModal from './EditInputModal';
 import EditOutputModal from './EditOutputModal';
 import EditSnippetModal from './EditSnippetModal';
@@ -52,6 +55,8 @@ const CollectorConfiguration = React.createClass({
         <td>
           <DeleteConfirmButton entity={output} type="output" onClick={this._deleteOutput} />
           &nbsp;
+          <CopyOutputModal id={output.output_id} validOutputName={this._validOutputName} copyOutput={this._copyOutput} />
+          &nbsp;
           <EditOutputModal id={output.output_id} name={output.name}
                            backend={output.backend}
                            type={output.type} properties={output.properties}
@@ -73,6 +78,8 @@ const CollectorConfiguration = React.createClass({
         <td>
           <DeleteConfirmButton entity={input} type="input" onClick={this._deleteInput} />
           &nbsp;
+          <CopyInputModal id={input.input_id} validInputName={this._validInputName} copyInput={this._copyInput} />
+          &nbsp;
           <EditInputModal id={input.input_id} name={input.name} forwardTo={input.forward_to}
                           backend={input.backend} type={input.type}
                           properties={input.properties} outputs={this.props.configuration.outputs}
@@ -90,6 +97,8 @@ const CollectorConfiguration = React.createClass({
         <td>{snippet.backend}</td>
         <td>
           <DeleteConfirmButton entity={snippet} type="snippet" onClick={this._deleteSnippet} />
+          &nbsp;
+          <CopySnippetModal id={snippet.snippet_id} validSnippetName={this._validSnippetName} copySnippet={this._copySnippet} />
           &nbsp;
           <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
                             backend={snippet.backend} create={false}
@@ -119,6 +128,31 @@ const CollectorConfiguration = React.createClass({
   _saveSnippet(snippet, callback) {
     CollectorConfigurationsActions.saveSnippet.triggerPromise(snippet, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate(callback));
+  },
+
+  _copyOutput(outputId, name, callback) {
+    CollectorConfigurationsActions.copyOutput.triggerPromise(outputId, name, this.props.configuration.id)
+        .then(() => this._onSuccessfulUpdate(callback));
+  },
+
+  _copyInput(inputId, name, callback) {
+    CollectorConfigurationsActions.copyInput.triggerPromise(inputId, name, this.props.configuration.id)
+        .then(() => this._onSuccessfulUpdate(callback));
+  },
+
+  _copySnippet(snippetId, name, callback) {
+    CollectorConfigurationsActions.copySnippet.triggerPromise(snippetId, name, this.props.configuration.id)
+        .then(() => this._onSuccessfulUpdate(callback));
+  },
+
+  _copyInput(inputId, name, callback) {
+    CollectorConfigurationsActions.copyInput.triggerPromise(inputId, name, this.props.configuration.id)
+        .then(() => this._onSuccessfulUpdate(callback));
+  },
+
+  _copySnippet(snippetId, name, callback) {
+    CollectorConfigurationsActions.copySnippet.triggerPromise(snippetId, name, this.props.configuration.id)
+        .then(() => this._onSuccessfulUpdate(callback));
   },
 
   _deleteOutput(output) {

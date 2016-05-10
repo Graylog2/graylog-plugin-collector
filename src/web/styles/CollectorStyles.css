@@ -52,3 +52,15 @@ th.sort-desc:after {
 .configuration-tag {
     margin-right: 5px;
 }
+
+#collector-outputs-list th.actions, td.actions {
+    width: 150px;
+}
+
+#collector-inputs-list th.actions, td.actions {
+    width: 150px;
+}
+
+#collector-snippets-list th.actions, td.actions {
+    width: 150px;
+}
