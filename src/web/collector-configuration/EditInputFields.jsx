@@ -2,6 +2,7 @@ import React from 'react';
 import { Input } from 'react-bootstrap';
 
 import FormUtils from 'util/FormsUtils';
+import { KeyValueTable } from 'components/common';
 
 const EditInputFields = React.createClass({
   propTypes: {
@@ -18,6 +19,11 @@ const EditInputFields = React.createClass({
 
   componentWillMount() {
     this._setDefaultValue(this.props.type, this.props.properties);
+    if (this.props.properties.fields) {
+      this.setState({fields: this.props.properties.fields});
+    } else {
+      this.setState({fields: {}});
+    }
   },
 
   componentWillUpdate(nextProps) {
@@ -114,6 +120,21 @@ const EditInputFields = React.createClass({
     return (event) => this.props.injectProperties(name, FormUtils.getValueFromInput(event.target));
   },
 
+  _changeFields(fields) {
+    for (var key in fields) {
+      if (key != this._validField(key)) {
+        return
+      }
+      fields[key] = this._validField(fields[key]);
+    };
+    this.setState({ fields: fields });
+    this.props.injectProperties('fields', fields);
+  },
+
+  _validField(value) {
+    return value.replace(/[^a-zA-Z0-9-._]/ig, '');
+  },
+
   render() {
     if (this.props.type) {
       switch (this.props.type) {
@@ -176,6 +197,12 @@ const EditInputFields = React.createClass({
                      value={this.props.properties.multiline_stop}
                      onChange={this._injectProperty('multiline_stop')}
                      help="RegEx stop pattern of a multiline"/>
+              <Input label="Additional Fields"
+                     help="Allowed characters: a-z0-9-_.">
+                <KeyValueTable pairs={this.state.fields}
+                               editable={true}
+                               onChange={this._changeFields} />
+                </Input>
             </div>);
         case 'nxlog:windows-event-log':
           return (
@@ -211,6 +238,12 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.poll_interval}
                        onChange={this._injectProperty('poll_interval')}
                        help="In seconds how frequently the collector will check for new files and new log entries"/>
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields} />
+                </Input>
               </div>);
         case 'nxlog:udp-syslog':
           return (
@@ -229,6 +262,12 @@ const EditInputFields = React.createClass({
                        onChange={this._injectProperty('port')}
                        help="Port number of the UDP input"
                        required/>
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields} />
+                </Input>
               </div>);
         case 'nxlog:tcp-syslog':
           return (
@@ -247,6 +286,12 @@ const EditInputFields = React.createClass({
                        onChange={this._injectProperty('port')}
                        help="Port number of the TCP input"
                        required/>
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields} />
+                </Input>
               </div>);
         case 'topbeat:topbeat':
           return (
