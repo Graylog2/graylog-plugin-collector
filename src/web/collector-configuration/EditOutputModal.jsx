@@ -97,6 +97,7 @@ const EditOutputModal = React.createClass({
     const types = [
       { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
       { value: 'nxlog:gelf-tcp', label: '[NXLog] GELF TCP output' },
+      { value: 'nxlog:gelf-tcp-tls', label: '[NXLog] GELF TCP/TLS output' },
       //{ value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
       //{ value: 'topbeat:logstash', label: '[TopBeat] Logstash output' },
       //{ value: 'filebeat:elasticsearch', label: '[FileBeat] Elasticsearch output' },

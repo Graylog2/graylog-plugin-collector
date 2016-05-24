@@ -119,6 +119,53 @@ const EditOutputFields = React.createClass({
                        required />
               </div>);
           break;
+        case 'nxlog:gelf-tcp-tls':
+          return (
+              <div>
+                <Input type="text"
+                       id={this._getId('gelf-tcp-tls-server')}
+                       label="Server IP"
+                       value={this.props.properties.server}
+                       onChange={this._injectProperty('server')}
+                       help="Type the server IP for this output"
+                       required />
+                <Input type="number"
+                       id={this._getId('gelf-tcp-tls-port')}
+                       min={0}
+                       label="Port"
+                       value={this.props.properties.port}
+                       onChange={this._injectProperty('port')}
+                       help="Type a port number for this output"
+                       required />
+                <Input type="text"
+                       id={this._getId('gelf-tcp-tls-ca-file')}
+                       label="CA File"
+                       value={this.props.properties.ca_file}
+                       onChange={this._injectProperty('ca_file')}
+                       help="The path of the certificate of the CA"
+                       required />
+                <Input type="text"
+                       id={this._getId('gelf-tcp-tls-cert-file')}
+                       label="Cert File"
+                       value={this.props.properties.cert_file}
+                       onChange={this._injectProperty('cert_file')}
+                       help="The path of the certificate file"
+                       required />
+                <Input type="text"
+                       id={this._getId('gelf-tcp-tls-key-file')}
+                       label="Key File"
+                       value={this.props.properties.cert_key_file}
+                       onChange={this._injectProperty('cert_key_file')}
+                       help="The path of the key file"
+                       required />
+                <Input type="checkbox"
+                       id={this._getId('gelf-tcp-tls-untrusted')}
+                       label="Allow untrusted certificate"
+                       checked={this.props.properties.allow_untrusted}
+                       onChange={this._injectProperty('allow_untrusted')}
+                       help="Specifies whether the connection should be allowed without certificate verification"/>
+              </div>);
+          break;
         case 'topbeat:elasticsearch':
           return (
               <div>
