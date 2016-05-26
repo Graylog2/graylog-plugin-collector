@@ -1,9 +1,16 @@
 {{if .Linux}}
 User nxlog
 Group nxlog
+{{if eq .LinuxPlatform "debian"}}
 Moduledir /usr/lib/nxlog/modules
 CacheDir /var/spool/collector-sidecar/nxlog
 PidFile /var/run/graylog/collector-sidecar/nxlog.pid
+{{end}}
+{{if eq .LinuxPlatform "redhat"}}
+Moduledir /usr/libexec/nxlog/modules
+CacheDir /var/spool/collector-sidecar/nxlog
+PidFile /var/run/graylog/collector-sidecar/nxlog.pid
+{{end}}
 define LOGFILE /var/log/graylog/collector-sidecar/nxlog.log
 LogFile %LOGFILE%
 LogLevel INFO
