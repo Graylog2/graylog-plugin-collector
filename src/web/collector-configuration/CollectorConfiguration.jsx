@@ -64,11 +64,12 @@ const CollectorConfiguration = React.createClass({
   },
 
   _inputFormatter(input) {
+    const output = this._getOutputById(input.forward_to);
     return (
       <tr key={input.input_id}>
         <td>{input.name}</td>
         <td>{input.type}</td>
-        <td>{this._getOutputById(input.forward_to).name}</td>
+        <td>{output ? output.name : <em>Unknown output</em>}</td>
         <td>{input.input_id}</td>
         <td>
           <DeleteConfirmButton entity={input} type="input" onClick={this._deleteInput} />
