@@ -13,6 +13,7 @@ const EditSnippetModal = React.createClass({
     create: React.PropTypes.bool,
     saveSnippet: React.PropTypes.func.isRequired,
     validSnippetName: React.PropTypes.func.isRequired,
+    selectedGroup: React.PropTypes.string.isRequired,
   },
 
   getDefaultProps() {
@@ -80,10 +81,10 @@ const EditSnippetModal = React.createClass({
       triggerButtonContent = <span>Edit</span>;
     }
     const backends = [
-      { value: 'nxlog', label: 'NXLog' },
-      //{ value: 'topbeats', label: 'TopBeats' },
-      //{ value: 'filebeat', label: 'FileBeat' },
-      //{ value: 'winlogbeat', label: 'WinLogBeat' },
+      { group: 'nxlog', value: 'nxlog', label: 'NXLog' },
+      { group: 'beat', value: 'topbeats', label: 'TopBeats' },
+      { group: 'beat', value: 'filebeat', label: 'FileBeat' },
+      { group: 'beat', value: 'winlogbeat', label: 'WinLogBeat' },
     ];
 
     return (
@@ -111,7 +112,7 @@ const EditSnippetModal = React.createClass({
                    label="Backend"
                    help="Select the backend to use for your snippet">
               <Select ref="select-backend"
-                      options={backends}
+                      options={backends.filter(backend => backend.group === this.props.selectedGroup)}
                       value={this.state.backend}
                       onChange={this._changeBackend}
                       placeholder="Backend collector type"

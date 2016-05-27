@@ -16,6 +16,7 @@ const EditOutputModal = React.createClass({
     create: React.PropTypes.bool,
     saveOutput: React.PropTypes.func.isRequired,
     validOutputName: React.PropTypes.func.isRequired,
+    selectedGroup: React.PropTypes.string.isRequired,
   },
 
   getDefaultProps() {
@@ -95,15 +96,15 @@ const EditOutputModal = React.createClass({
       triggerButtonContent = <span>Edit</span>;
     }
     const types = [
-      { value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
-      { value: 'nxlog:gelf-tcp', label: '[NXLog] GELF TCP output' },
-      { value: 'nxlog:gelf-tcp-tls', label: '[NXLog] GELF TCP/TLS output' },
-      //{ value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
-      //{ value: 'topbeat:logstash', label: '[TopBeat] Logstash output' },
-      //{ value: 'filebeat:elasticsearch', label: '[FileBeat] Elasticsearch output' },
-      //{ value: 'filebeat:logstash', label: '[FileBeat] Logstash output' },
-      //{ value: 'winlogbeat:elasticsearch', label: '[WinLogBeat] Elasticsearch output' },
-      //{ value: 'winlogbeat:logstash', label: '[WinLogBeat] Logstash output' }
+      { group: 'nxlog', value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
+      { group: 'nxlog', value: 'nxlog:gelf-tcp', label: '[NXLog] GELF TCP output' },
+      { group: 'nxlog', value: 'nxlog:gelf-tcp-tls', label: '[NXLog] GELF TCP/TLS output' },
+      { group: 'beat', value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
+      { group: 'beat', value: 'topbeat:logstash', label: '[TopBeat] Logstash output' },
+      { group: 'beat', value: 'filebeat:elasticsearch', label: '[FileBeat] Elasticsearch output' },
+      { group: 'beat', value: 'filebeat:logstash', label: '[FileBeat] Logstash output' },
+      { group: 'beat', value: 'winlogbeat:elasticsearch', label: '[WinLogBeat] Elasticsearch output' },
+      { group: 'beat', value: 'winlogbeat:logstash', label: '[WinLogBeat] Logstash output' }
     ];
 
     return (
@@ -129,7 +130,7 @@ const EditOutputModal = React.createClass({
                    required />
             <Input id={this._getId('output-type')} label="Type" help="Choose the output type you want to configure">
               <Select ref="select-type"
-                      options={types}
+                      options={types.filter(type => type.group === this.props.selectedGroup)}
                       value={this.state.selectedType}
                       onValueChange={this._changeType}
                       placeholder="Choose output type..."

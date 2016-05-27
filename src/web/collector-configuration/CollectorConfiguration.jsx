@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input, Col, Row } from 'react-bootstrap';
+import { Button, Input, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
 
 import { DataTable } from 'components/common';
@@ -19,6 +19,10 @@ const CollectorConfiguration = React.createClass({
     configuration: React.PropTypes.object.isRequired,
     tags: React.PropTypes.array.isRequired,
     onConfigurationChange: React.PropTypes.func.isRequired,
+  },
+
+  getInitialState() {
+    return {tab: "nxlog"};
   },
 
   _headerCellFormatter(header) {
@@ -60,7 +64,7 @@ const CollectorConfiguration = React.createClass({
           <EditOutputModal id={output.output_id} name={output.name}
                            backend={output.backend}
                            type={output.type} properties={output.properties}
-                           create={false}
+                           create={false} selectedGroup={this.state.tab}
                            saveOutput={this._saveOutput}
                            validOutputName={this._validOutputName} />
         </td>
@@ -69,6 +73,7 @@ const CollectorConfiguration = React.createClass({
   },
 
   _inputFormatter(input) {
+    var filterOutputs = this.props.configuration.outputs.filter(this._filterConfigurations);
     return (
       <tr key={input.input_id}>
         <td>{input.name}</td>
@@ -82,8 +87,8 @@ const CollectorConfiguration = React.createClass({
           &nbsp;
           <EditInputModal id={input.input_id} name={input.name} forwardTo={input.forward_to}
                           backend={input.backend} type={input.type}
-                          properties={input.properties} outputs={this.props.configuration.outputs}
-                          create={false}
+                          properties={input.properties} outputs={filterOutputs}
+                          create={false} selectedGroup={this.state.tab}
                           saveInput={this._saveInput} validInputName={this._validInputName} />
         </td>
       </tr>
@@ -101,7 +106,7 @@ const CollectorConfiguration = React.createClass({
           <CopySnippetModal id={snippet.snippet_id} validSnippetName={this._validSnippetName} copySnippet={this._copySnippet} />
           &nbsp;
           <EditSnippetModal id={snippet.snippet_id} name={snippet.name} snippet={snippet.snippet}
-                            backend={snippet.backend} create={false}
+                            backend={snippet.backend} create={false} selectedGroup={this.state.tab}
                             saveSnippet={this._saveSnippet} validSnippetName={this._validSnippetName} />
         </td>
       </tr>
@@ -196,6 +201,33 @@ const CollectorConfiguration = React.createClass({
     return this.props.configuration.outputs.find((output) => output.output_id === id);
   },
 
+  _tabSwitched(tabKey) {
+    this.setState({tab: tabKey});
+  },
+
+  _tabDisplayName() {
+    switch(this.state.tab) {
+      case 'nxlog':
+        return "NXLog";
+        break;
+      case 'beat':
+        return "Beats";
+        break;
+      default:
+        return "Collector";
+    }
+  },
+
+  _filterConfigurations(element) {
+    if (this.state.tab == "nxlog" && element.backend == "nxlog") {
+      return true;
+    }
+    if (this.state.tab == "beat" && element.backend.indexOf("beat") != -1) {
+      return true;
+    }
+    return false;
+  },
+
   render() {
     const outputHeaders = ['Output', 'Type', 'Id', 'Actions'];
     const inputHeaders = ['Input', 'Type', 'Forward To', 'Id', 'Actions'];
@@ -204,6 +236,9 @@ const CollectorConfiguration = React.createClass({
     const availableTags = this.props.tags.map((tag) => {
       return { name: tag };
     });
+    var filterOutputs = this.props.configuration.outputs.filter(this._filterConfigurations);
+    var filterInputs = this.props.configuration.inputs.filter(this._filterConfigurations);
+    var filterSnippets = this.props.configuration.snippets.filter(this._filterConfigurations);
 
     return (
       <div>
@@ -233,70 +268,88 @@ const CollectorConfiguration = React.createClass({
 
         <Row className="content">
           <Col md={12}>
-            <div className="pull-right">
-              <EditOutputModal create
-                               saveOutput={this._saveOutput}
-                               validOutputName={this._validOutputName} />
-            </div>
-            <h2>Configure Collector Outputs</h2>
-            <p>Manage log destinations for collectors using this configuration.</p>
-            <DataTable id="collector-outputs-list"
-                       className="table-striped table-hover"
-                       headers={outputHeaders}
-                       headerCellFormatter={this._headerCellFormatter}
-                       sortByKey={"type"}
-                       rows={this.props.configuration.outputs.sort((o1, o2) => naturalSort(o1.name, o2.name))}
-                       noDataText="There are not any configured outputs."
-                       dataRowFormatter={this._outputFormatter}
-                       filterLabel="Filter outputs"
-                       filterKeys={filterKeys} />
+            <Tabs activeKey={this.state.tab}
+                  animation={false}
+                  onSelect={this._tabSwitched}>
+              <Tab eventKey="nxlog" title="NXLog"/>
+              <Tab eventKey="beat" title="Beats"/>
+            </Tabs>
+
+            <Row>
+                <Col md={12}>
+                    <div style={{marginTop: 10}}>
+                      <div className="pull-right">
+                        <EditOutputModal create
+                                         saveOutput={this._saveOutput}
+                                         validOutputName={this._validOutputName}
+                                         selectedGroup={this.state.tab}/>
+                      </div>
+
+                      <h2>Configure {this._tabDisplayName()} Outputs</h2>
+                      <p>Manage log destinations for collectors using this configuration.</p>
+                      <DataTable id="collector-outputs-list"
+                                 className="table-striped table-hover"
+                                 headers={outputHeaders}
+                                 headerCellFormatter={this._headerCellFormatter}
+                                 sortByKey={"type"}
+                                 rows={filterOutputs.sort((o1, o2) => naturalSort(o1.name, o2.name))}
+                                 noDataText="There are not any configured outputs."
+                                 dataRowFormatter={this._outputFormatter}
+                                 filterLabel="Filter outputs"
+                                 filterKeys={filterKeys}/>
+                    </div>
+                </Col>
+              </Row>
+              <hr/>
+
+              <Row>
+                <Col md={12}>
+                  <div className="pull-right">
+                    <EditInputModal outputs={filterOutputs} create
+                                    saveInput={this._saveInput}
+                                    validInputName={this._validInputName}
+                                    selectedGroup={this.state.tab}/>
+                  </div>
+                  <h2>Configure {this._tabDisplayName()} Inputs</h2>
+                  <p>Manage log sources for collectors using this configuration.</p>
+                  <DataTable id="collector-inputs-list"
+                             className="table-striped table-hover"
+                             headers={inputHeaders}
+                             headerCellFormatter={this._headerCellFormatter}
+                             sortByKey={"type"}
+                             rows={filterInputs.sort((i1, i2) => naturalSort(i1.name, i2.name))}
+                             noDataText="There are not any configured inputs."
+                             dataRowFormatter={this._inputFormatter}
+                             filterLabel="Filter inputs"
+                             filterKeys={filterKeys}/>
+                </Col>
+              </Row>
+              <hr/>
+
+              <Row>
+                <Col md={12}>
+                  <div className="pull-right">
+                    <EditSnippetModal create
+                                      saveSnippet={this._saveSnippet}
+                                      validSnippetName={this._validSnippetName}
+                                      selectedGroup={this.state.tab}/>
+                  </div>
+                  <h2>Define {this._tabDisplayName()} Snippets</h2>
+                  <p>Define your own configuration snippets to take advantage of advanced configuration.</p>
+                  <DataTable id="collector-snippets-list"
+                             className="table-striped table-hover"
+                             headers={snippetHeaders}
+                             headerCellFormatter={this._headerCellFormatter}
+                             sortByKey={"backend"}
+                             rows={filterSnippets.sort((s1, s2) => naturalSort(s1.name, s2.name))}
+                             noDataText="There are not any defined snippets."
+                             dataRowFormatter={this._snippetFormatter}
+                             filterLabel="Filter snippets"
+                             filterKeys={filterKeys}/>
+                </Col>
+              </Row>
           </Col>
         </Row>
-
-        <Row className="content">
-          <Col md={12}>
-            <div className="pull-right">
-              <EditInputModal outputs={this.props.configuration.outputs} create
-                              saveInput={this._saveInput}
-                              validInputName={this._validInputName} />
-            </div>
-            <h2>Configure Collector Inputs</h2>
-            <p>Manage log sources for collectors using this configuration.</p>
-            <DataTable id="collector-inputs-list"
-                       className="table-striped table-hover"
-                       headers={inputHeaders}
-                       headerCellFormatter={this._headerCellFormatter}
-                       sortByKey={"type"}
-                       rows={this.props.configuration.inputs.sort((i1, i2) => naturalSort(i1.name, i2.name))}
-                       noDataText="There are not any configured inputs."
-                       dataRowFormatter={this._inputFormatter}
-                       filterLabel="Filter inputs"
-                       filterKeys={filterKeys} />
-          </Col>
-        </Row>
-
-        <Row className="content">
-          <Col md={12}>
-            <div className="pull-right">
-              <EditSnippetModal create
-                                saveSnippet={this._saveSnippet}
-                                validSnippetName={this._validSnippetName} />
-            </div>
-            <h2>Define Snippets</h2>
-            <p>Define your own configuration snippets to take advantage of advanced configuration.</p>
-            <DataTable id="collector-snippets-list"
-                       className="table-striped table-hover"
-                       headers={snippetHeaders}
-                       headerCellFormatter={this._headerCellFormatter}
-                       sortByKey={"backend"}
-                       rows={this.props.configuration.snippets.sort((s1, s2) => naturalSort(s1.name, s2.name))}
-                       noDataText="There are not any defined snippets."
-                       dataRowFormatter={this._snippetFormatter}
-                       filterLabel="Filter snippets"
-                       filterKeys={filterKeys} />
-          </Col>
-        </Row>
-
       </div>
     );
   },

@@ -18,6 +18,7 @@ const EditInputModal = React.createClass({
     create: React.PropTypes.bool,
     saveInput: React.PropTypes.func.isRequired,
     validInputName: React.PropTypes.func.isRequired,
+    selectedGroup: React.PropTypes.string.isRequired,
   },
 
   getDefaultProps() {
@@ -117,13 +118,13 @@ const EditInputModal = React.createClass({
       triggerButtonContent = <span>Edit</span>;
     }
     const types = [
-      { value: 'nxlog:file', label: '[NXLog] file input' },
-      { value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
-      { value: 'nxlog:udp-syslog', label: '[NXLog] UDP syslog listener' },
-      { value: 'nxlog:tcp-syslog', label: '[NXLog] TCP syslog listener' },
-      //{ value: 'topbeat:topbeat', label: '[TopBeat] Metrics'},
-      //{ value: 'filebeat:file', label: '[FileBeat] file input'},
-      //{ value: 'winlogbeat:windows-event-log', label: '[WinLogBeat] Windows event log' },
+      { group: 'nxlog', value: 'nxlog:file', label: '[NXLog] file input' },
+      { group: 'nxlog', value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
+      { group: 'nxlog', value: 'nxlog:udp-syslog', label: '[NXLog] UDP syslog listener' },
+      { group: 'nxlog', value: 'nxlog:tcp-syslog', label: '[NXLog] TCP syslog listener' },
+      { group: 'beat', value: 'topbeat:topbeat', label: '[TopBeat] Metrics'},
+      { group: 'beat', value: 'filebeat:file', label: '[FileBeat] file input'},
+      { group: 'beat', value: 'winlogbeat:windows-event-log', label: '[WinLogBeat] Windows event log' },
     ];
 
     return (
@@ -160,7 +161,7 @@ const EditInputModal = React.createClass({
             <Input id={this._getId('input-type')} label="Type"
                   help="Choose the input type you want to configure">
               <Select ref="select-type"
-                      options={types}
+                      options={types.filter(type => type.group === this.props.selectedGroup)}
                       value={this.state.selectedType}
                       onChange={this._changeType}
                       placeholder="Choose input type..."
