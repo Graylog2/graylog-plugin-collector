@@ -27,6 +27,7 @@ import org.graylog.plugins.collector.configurations.rest.models.CollectorInput;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorOutput;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
+import org.graylog2.database.NotFoundException;
 import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -199,8 +201,11 @@ public class CollectorConfigurationService {
                 request.tags(), request.inputs(), request.outputs(), defaultSnippets);
     }
 
-    public CollectorConfiguration withInputFromRequest(String id, CollectorInput input) {
+    public CollectorConfiguration withInputFromRequest(String id, CollectorInput input) throws NotFoundException {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        String outputId = input.forwardTo();
+        this.findOutput(collectorConfiguration, outputId).orElseThrow(() -> new NotFoundException("Could not find output " + outputId));
+
         collectorConfiguration.inputs().add(input);
         return collectorConfiguration;
     }
@@ -224,8 +229,10 @@ public class CollectorConfigurationService {
         return collectorConfiguration;
     }
 
-    public CollectorConfiguration updateInputFromRequest(String id, String inputId, CollectorInput request) {
+    public CollectorConfiguration updateInputFromRequest(String id, String inputId, CollectorInput request) throws NotFoundException {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        final String outputId = request.forwardTo();
+        this.findOutput(collectorConfiguration, outputId).orElseThrow(() -> new NotFoundException("Could not find output " + outputId));
 
         ListIterator<CollectorInput> inputIterator = collectorConfiguration.inputs().listIterator();
         while (inputIterator.hasNext()) {
@@ -264,6 +271,12 @@ public class CollectorConfigurationService {
             }
         }
         return collectorConfiguration;
+    }
+
+    private Optional<CollectorOutput> findOutput(CollectorConfiguration collectorConfiguration, String outputId) {
+        return collectorConfiguration.outputs().stream()
+                .filter(o -> o.outputId().equals(outputId))
+                .findAny();
     }
 
 }

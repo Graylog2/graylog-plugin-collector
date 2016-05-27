@@ -182,13 +182,14 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiOperation(value = "Update a configuration input",
             notes = "This is a stateless method which updates a collector input")
     @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+            @ApiResponse(code = 400, message = "The supplied request is not valid."),
+            @ApiResponse(code = 404, message = "Output assigned in forward_to does not exist.")
     })
     public Response updateInput(@ApiParam(name = "id", required = true)
                                 @PathParam("id") @NotEmpty String id,
                                 @ApiParam(name = "input_id", required = true)
                                 @PathParam("input_id") @NotEmpty String inputId,
-                                @ApiParam(name = "JSON body", required = true) @Valid @NotNull CollectorInput request) {
+                                @ApiParam(name = "JSON body", required = true) @Valid @NotNull CollectorInput request) throws NotFoundException {
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateInputFromRequest(id, inputId, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -283,12 +284,13 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiOperation(value = "Create a configuration input",
             notes = "This is a stateless method which inserts a collector input")
     @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+            @ApiResponse(code = 400, message = "The supplied request is not valid."),
+            @ApiResponse(code = 404, message = "Specified output in forward_to does not exist.")
     })
     public Response createInput(@ApiParam(name = "id", required = true)
                                 @PathParam("id") @NotEmpty String id,
                                 @ApiParam(name = "JSON body", required = true)
-                                @Valid @NotNull CollectorInput request) {
+                                @Valid @NotNull CollectorInput request) throws NotFoundException {
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.withInputFromRequest(id, request);
         collectorConfigurationService.save(collectorConfiguration);
 
