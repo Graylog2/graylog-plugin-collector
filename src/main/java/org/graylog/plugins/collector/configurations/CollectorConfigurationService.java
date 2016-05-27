@@ -234,12 +234,15 @@ public class CollectorConfigurationService {
         final String outputId = request.forwardTo();
         this.findOutput(collectorConfiguration, outputId).orElseThrow(() -> new NotFoundException("Could not find output " + outputId));
 
+        final CollectorInput toSave = CollectorInput.create(inputId, request.backend(), request.type(), request.name(), request.forwardTo(), request.properties());
+
+
         ListIterator<CollectorInput> inputIterator = collectorConfiguration.inputs().listIterator();
         while (inputIterator.hasNext()) {
             int i = inputIterator.nextIndex();
             CollectorInput input = inputIterator.next();
             if (input.inputId().equals(inputId)) {
-                collectorConfiguration.inputs().set(i, request);
+                collectorConfiguration.inputs().set(i, toSave);
             }
         }
         return collectorConfiguration;
@@ -247,13 +250,14 @@ public class CollectorConfigurationService {
 
     public CollectorConfiguration updateOutputFromRequest(String id, String outputId, CollectorOutput request) {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        final CollectorOutput toSave = CollectorOutput.create(outputId, request.backend(), request.type(), request.name(), request.properties());
 
         ListIterator<CollectorOutput> outputIterator = collectorConfiguration.outputs().listIterator();
         while (outputIterator.hasNext()) {
             int i = outputIterator.nextIndex();
             CollectorOutput output = outputIterator.next();
             if (output.outputId().equals(outputId)) {
-                collectorConfiguration.outputs().set(i, request);
+                collectorConfiguration.outputs().set(i, toSave);
             }
         }
         return collectorConfiguration;
@@ -261,13 +265,14 @@ public class CollectorConfigurationService {
 
     public CollectorConfiguration updateSnippetFromRequest(String id, String snippetId, CollectorConfigurationSnippet request) {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        final CollectorConfigurationSnippet toSave = CollectorConfigurationSnippet.create(snippetId, request.backend(), request.name(), request.snippet());
 
         ListIterator<CollectorConfigurationSnippet> snippetIterator = collectorConfiguration.snippets().listIterator();
         while (snippetIterator.hasNext()) {
             int i = snippetIterator.nextIndex();
             CollectorConfigurationSnippet snippet = snippetIterator.next();
             if (snippet.snippetId().equals(snippetId)) {
-                collectorConfiguration.snippets().set(i, request);
+                collectorConfiguration.snippets().set(i, toSave);
             }
         }
         return collectorConfiguration;
