@@ -103,6 +103,12 @@ const EditInputFields = React.createClass({
         if (!value.hasOwnProperty('document_type')) {
           this.props.injectProperties('document_type', 'log');
         };
+        if (!value.hasOwnProperty('exclude_lines')) {
+          this.props.injectProperties('exclude_lines', '[]');
+        };
+        if (!value.hasOwnProperty('include_lines')) {
+          this.props.injectProperties('include_lines', '[]');
+        };
         break;
       case 'winlogbeat:windows-event-log':
         if (!value.hasOwnProperty('event')) {
@@ -201,8 +207,8 @@ const EditInputFields = React.createClass({
                      help="Allowed characters: a-z0-9-_.">
                 <KeyValueTable pairs={this.state.fields}
                                editable={true}
-                               onChange={this._changeFields} />
-                </Input>
+                               onChange={this._changeFields}/>
+              </Input>
             </div>);
         case 'nxlog:windows-event-log':
           return (
@@ -343,6 +349,48 @@ const EditInputFields = React.createClass({
                        onChange={this._injectProperty('document_type')}
                        help="Type to be published in the 'type' field (e.g. 'log' or 'apache')"
                        required />
+                <Input type="text"
+                       id={this._getId('exclude-lines')}
+                       label="Lines that you want Filebeat to exclude"
+                       value={this.props.properties.exclude_lines}
+                       onChange={this._injectProperty('exclude_lines')}
+                       help="A list of regular expressions to match the lines that you want Filebeat to exclude" />
+                <Input type="text"
+                       id={this._getId('include-lines')}
+                       label="Lines that you want Filebeat to include"
+                       value={this.props.properties.include_lines}
+                       onChange={this._injectProperty('include_lines')}
+                       help="A list of regular expressions to match the lines that you want Filebeat to include" />
+                <Input type="checkbox"
+                       id={this._getId('multiline')}
+                       label="Enable Multiline"
+                       checked={this.props.properties.multiline}
+                       onChange={this._injectProperty('multiline')}
+                       help="Enable multiline support"/>
+                <Input type="text"
+                       id={this._getId('multiline-pattern')}
+                       label="Start pattern of a multiline message"
+                       value={this.props.properties.multiline_pattern}
+                       onChange={this._injectProperty('multiline_pattern')}
+                       help="Specifies the regular expression pattern to match"/>
+                <Input type="checkbox"
+                       id={this._getId('multiline-negate')}
+                       label="Multiline pattern is negated"
+                       checked={this.props.properties.multiline_negate}
+                       onChange={this._injectProperty('multiline_negate')}
+                       help="Defines whether the pattern is negated"/>
+                <Input type="text"
+                       id={this._getId('multiline-match')}
+                       label="How are matching lines combined into one event"
+                       value={this.props.properties.multiline_match}
+                       onChange={this._injectProperty('multiline_match')}
+                       help="Specifies how Filebeat combines matching lines into an event. Values are 'before' or 'after'"/>
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields}/>
+                </Input>
               </div>);
         case 'winlogbeat:windows-event-log':
           return (
