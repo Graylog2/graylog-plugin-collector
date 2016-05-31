@@ -176,7 +176,13 @@ const EditOutputFields = React.createClass({
                          value={this.props.properties.cert_key_file}
                          onChange={this._injectProperty('cert_key_file')}
                          help="The path of the key file" />
-                </div>);
+                  <Input type="checkbox"
+                         id={this._getId('logstash-tls-insecire')}
+                         label="Insecure TLS connection"
+                         checked={this.props.properties.tls_insecure}
+                         onChange={this._injectProperty('tls_insecure')}
+                         help="Controls whether the client verifies server certificates and host names"/>
+              </div>);
           break;
         case 'filebeat:logstash':
           return (
@@ -212,6 +218,12 @@ const EditOutputFields = React.createClass({
                          value={this.props.properties.cert_key_file}
                          onChange={this._injectProperty('cert_key_file')}
                          help="The path of the key file" />
+                  <Input type="checkbox"
+                         id={this._getId('logstash-tls-insecure')}
+                         label="Insecure TLS connection"
+                         checked={this.props.properties.tls_insecure}
+                         onChange={this._injectProperty('tls_insecure')}
+                         help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         case 'winlogbeat:logstash':
@@ -248,6 +260,12 @@ const EditOutputFields = React.createClass({
                          value={this.props.properties.cert_key_file}
                          onChange={this._injectProperty('cert_key_file')}
                          help="The path of the key file" />
+                  <Input type="checkbox"
+                         id={this._getId('logstash-tls-insecure')}
+                         label="Insecure TLS connection"
+                         checked={this.props.properties.tls_insecure}
+                         onChange={this._injectProperty('tls_insecure')}
+                         help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         default:
