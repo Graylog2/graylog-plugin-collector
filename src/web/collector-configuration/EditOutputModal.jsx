@@ -99,11 +99,8 @@ const EditOutputModal = React.createClass({
       { group: 'nxlog', value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
       { group: 'nxlog', value: 'nxlog:gelf-tcp', label: '[NXLog] GELF TCP output' },
       { group: 'nxlog', value: 'nxlog:gelf-tcp-tls', label: '[NXLog] GELF TCP/TLS output' },
-      { group: 'beat', value: 'topbeat:elasticsearch', label: '[TopBeat] Elasticsearch output' },
       { group: 'beat', value: 'topbeat:logstash', label: '[TopBeat] Beats output' },
-      { group: 'beat', value: 'filebeat:elasticsearch', label: '[FileBeat] Elasticsearch output' },
       { group: 'beat', value: 'filebeat:logstash', label: '[FileBeat] Beats output' },
-      { group: 'beat', value: 'winlogbeat:elasticsearch', label: '[WinLogBeat] Elasticsearch output' },
       { group: 'beat', value: 'winlogbeat:logstash', label: '[WinLogBeat] Beats output' }
     ];
 

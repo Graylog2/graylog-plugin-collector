@@ -26,38 +26,14 @@ const EditOutputFields = React.createClass({
 
   _setDefaultValue(type, value) {
     switch (type) {
-      case 'topbeat:elasticsearch':
-        if (!value.hasOwnProperty('hosts')) {
-          this.props.injectProperties('hosts', '["localhost:9200"]');
-        };
-        if (!value.hasOwnProperty('indexname')) {
-          this.props.injectProperties('indexname', 'topbeat');
-        };
-        break;
       case 'topbeat:logstash':
         if (!value.hasOwnProperty('hosts')) {
           this.props.injectProperties('hosts', '["localhost:5044"]');
         };
         break;
-      case 'filebeat:elasticsearch':
-        if (!value.hasOwnProperty('hosts')) {
-          this.props.injectProperties('hosts', '["localhost:9200"]');
-        };
-        if (!value.hasOwnProperty('indexname')) {
-          this.props.injectProperties('indexname', 'filebeat');
-        };
-        break;
       case 'filebeat:logstash':
         if (!value.hasOwnProperty('hosts')) {
           this.props.injectProperties('hosts', '["localhost:5044"]');
-        };
-        break;
-      case 'winlogbeat:elasticsearch':
-        if (!value.hasOwnProperty('hosts')) {
-          this.props.injectProperties('hosts', '["localhost:9200"]');
-        };
-        if (!value.hasOwnProperty('indexname')) {
-          this.props.injectProperties('indexname', 'winlogbeat');
         };
         break;
       case 'winlogbeat:logstash':
@@ -166,25 +142,6 @@ const EditOutputFields = React.createClass({
                        help="Specifies whether the connection should be allowed without certificate verification"/>
               </div>);
           break;
-        case 'topbeat:elasticsearch':
-          return (
-              <div>
-                <Input type="text"
-                       id={this._getId('es-server')}
-                       label="Hosts"
-                       value={this.props.properties.hosts}
-                       onChange={this._injectProperty('hosts')}
-                       help="Array of hosts to connect to"
-                       required/>
-                <Input type="text"
-                       id={this._getId('es-index')}
-                       label="Index"
-                       value={this.props.properties.indexname}
-                       onChange={this._injectProperty('indexname')}
-                       help="Index name"
-                       required/>
-              </div>);
-          break;
         case 'topbeat:logstash':
           return (
               <div>
@@ -195,26 +152,31 @@ const EditOutputFields = React.createClass({
                        onChange={this._injectProperty('hosts')}
                        help="Array of hosts to connect to"
                        required />
+                  <Input type="checkbox"
+                         id={this._getId('logstash-tls')}
+                         label="Enable TLS support"
+                         checked={this.props.properties.tls}
+                         onChange={this._injectProperty('tls')}
+                         help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                  <Input type="text"
+                         id={this._getId('logstash-tls-ca-file')}
+                         label="CA File"
+                         value={this.props.properties.ca_file}
+                         onChange={this._injectProperty('ca_file')}
+                         help="The path of the certificate of the CA" />
+                  <Input type="text"
+                         id={this._getId('logstash-tls-cert-file')}
+                         label="Cert File"
+                         value={this.props.properties.cert_file}
+                         onChange={this._injectProperty('cert_file')}
+                         help="The path of the certificate file" />
+                  <Input type="text"
+                         id={this._getId('logstash-tls-key-file')}
+                         label="Key File"
+                         value={this.props.properties.cert_key_file}
+                         onChange={this._injectProperty('cert_key_file')}
+                         help="The path of the key file" />
                 </div>);
-          break;
-        case 'filebeat:elasticsearch':
-          return (
-              <div>
-                <Input type="text"
-                       id={this._getId('es-server')}
-                       label="Hosts"
-                       value={this.props.properties.hosts}
-                       onChange={this._injectProperty('hosts')}
-                       help="Array of hosts to connect to"
-                       required/>
-                <Input type="text"
-                       id={this._getId('es-index')}
-                       label="Index"
-                       value={this.props.properties.indexname}
-                       onChange={this._injectProperty('indexname')}
-                       help="Index name"
-                       required/>
-              </div>);
           break;
         case 'filebeat:logstash':
           return (
@@ -226,25 +188,30 @@ const EditOutputFields = React.createClass({
                        onChange={this._injectProperty('hosts')}
                        help="Array of hosts to connect to"
                        required />
-              </div>);
-          break;
-        case 'winlogbeat:elasticsearch':
-          return (
-              <div>
-                <Input type="text"
-                       id={this._getId('es-server')}
-                       label="Hosts"
-                       value={this.props.properties.hosts}
-                       onChange={this._injectProperty('hosts')}
-                       help="Array of hosts to connect to"
-                       required/>
-                <Input type="text"
-                       id={this._getId('es-index')}
-                       label="Index"
-                       value={this.props.properties.indexname}
-                       onChange={this._injectProperty('indexname')}
-                       help="Index name"
-                       required/>
+                  <Input type="checkbox"
+                         id={this._getId('logstash-tls')}
+                         label="Enable TLS support"
+                         checked={this.props.properties.tls}
+                         onChange={this._injectProperty('tls')}
+                         help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                  <Input type="text"
+                         id={this._getId('logstash-tls-ca-file')}
+                         label="CA File"
+                         value={this.props.properties.ca_file}
+                         onChange={this._injectProperty('ca_file')}
+                         help="The path of the certificate of the CA" />
+                  <Input type="text"
+                         id={this._getId('logstash-tls-cert-file')}
+                         label="Cert File"
+                         value={this.props.properties.cert_file}
+                         onChange={this._injectProperty('cert_file')}
+                         help="The path of the certificate file" />
+                  <Input type="text"
+                         id={this._getId('logstash-tls-key-file')}
+                         label="Key File"
+                         value={this.props.properties.cert_key_file}
+                         onChange={this._injectProperty('cert_key_file')}
+                         help="The path of the key file" />
               </div>);
           break;
         case 'winlogbeat:logstash':
@@ -257,6 +224,30 @@ const EditOutputFields = React.createClass({
                        onChange={this._injectProperty('hosts')}
                        help="Array of hosts to connect to"
                        required />
+                  <Input type="checkbox"
+                         id={this._getId('logstash-tls')}
+                         label="Enable TLS support"
+                         checked={this.props.properties.tls}
+                         onChange={this._injectProperty('tls')}
+                         help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                  <Input type="text"
+                         id={this._getId('logstash-tls-ca-file')}
+                         label="CA File"
+                         value={this.props.properties.ca_file}
+                         onChange={this._injectProperty('ca_file')}
+                         help="The path of the certificate of the CA" />
+                  <Input type="text"
+                         id={this._getId('logstash-tls-cert-file')}
+                         label="Cert File"
+                         value={this.props.properties.cert_file}
+                         onChange={this._injectProperty('cert_file')}
+                         help="The path of the certificate file" />
+                  <Input type="text"
+                         id={this._getId('logstash-tls-key-file')}
+                         label="Key File"
+                         value={this.props.properties.cert_key_file}
+                         onChange={this._injectProperty('cert_key_file')}
+                         help="The path of the key file" />
               </div>);
           break;
         default:
