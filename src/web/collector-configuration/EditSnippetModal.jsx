@@ -82,7 +82,6 @@ const EditSnippetModal = React.createClass({
     }
     const backends = [
       { group: 'nxlog', value: 'nxlog', label: 'NXLog' },
-      { group: 'beat', value: 'topbeats', label: 'TopBeats' },
       { group: 'beat', value: 'filebeat', label: 'FileBeat' },
       { group: 'beat', value: 'winlogbeat', label: 'WinLogBeat' },
     ];

@@ -82,14 +82,6 @@ const EditInputFields = React.createClass({
           this.props.injectProperties('port', 514);
         };
         break;
-      case 'topbeat:topbeat':
-        if (!value.hasOwnProperty('period')) {
-          this.props.injectProperties('period', '10');
-        };
-        if (!value.hasOwnProperty('procs')) {
-          this.props.injectProperties('procs', '[.*]');
-        };
-        break;
       case 'filebeat:file':
         if (!value.hasOwnProperty('paths')) {
           this.props.injectProperties('paths', '["/var/log/*.log"]');
@@ -299,25 +291,6 @@ const EditInputFields = React.createClass({
                                  onChange={this._changeFields} />
                 </Input>
               </div>);
-        case 'topbeat:topbeat':
-          return (
-            <div>
-              <Input type="number"
-                     id={this._getId('period')}
-                     min={1}
-                     label="Period"
-                     value={this.props.properties.period}
-                     onChange={this._injectProperty('period')}
-                     help="In seconds, defines how often to read server statistics"
-                     required />
-              <Input type="text"
-                     id={this._getId('procs')}
-                     label="Processes"
-                     value={this.props.properties.procs}
-                     onChange={this._injectProperty('procs')}
-                     help="Regular expression to match the processes that are monitored"
-                     required />
-            </div>);
         case 'filebeat:file':
           return (
               <div>

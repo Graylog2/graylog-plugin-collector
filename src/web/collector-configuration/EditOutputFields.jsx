@@ -26,11 +26,6 @@ const EditOutputFields = React.createClass({
 
   _setDefaultValue(type, value) {
     switch (type) {
-      case 'topbeat:logstash':
-        if (!value.hasOwnProperty('hosts')) {
-          this.props.injectProperties('hosts', '["localhost:5044"]');
-        };
-        break;
       case 'filebeat:logstash':
         if (!value.hasOwnProperty('hosts')) {
           this.props.injectProperties('hosts', '["localhost:5044"]');
@@ -140,48 +135,6 @@ const EditOutputFields = React.createClass({
                        checked={this.props.properties.allow_untrusted}
                        onChange={this._injectProperty('allow_untrusted')}
                        help="Specifies whether the connection should be allowed without certificate verification"/>
-              </div>);
-          break;
-        case 'topbeat:logstash':
-          return (
-              <div>
-                <Input type="text"
-                       id={this._getId('logstash-server')}
-                       label="Hosts"
-                       value={this.props.properties.hosts}
-                       onChange={this._injectProperty('hosts')}
-                       help="Array of hosts to connect to"
-                       required />
-                  <Input type="checkbox"
-                         id={this._getId('logstash-tls')}
-                         label="Enable TLS support"
-                         checked={this.props.properties.tls}
-                         onChange={this._injectProperty('tls')}
-                         help="Use TLS authentication to secure connections between Beat and Graylog"/>
-                  <Input type="text"
-                         id={this._getId('logstash-tls-ca-file')}
-                         label="CA File"
-                         value={this.props.properties.ca_file}
-                         onChange={this._injectProperty('ca_file')}
-                         help="The path of the certificate of the CA" />
-                  <Input type="text"
-                         id={this._getId('logstash-tls-cert-file')}
-                         label="Cert File"
-                         value={this.props.properties.cert_file}
-                         onChange={this._injectProperty('cert_file')}
-                         help="The path of the certificate file" />
-                  <Input type="text"
-                         id={this._getId('logstash-tls-key-file')}
-                         label="Key File"
-                         value={this.props.properties.cert_key_file}
-                         onChange={this._injectProperty('cert_key_file')}
-                         help="The path of the key file" />
-                  <Input type="checkbox"
-                         id={this._getId('logstash-tls-insecure')}
-                         label="Insecure TLS connection"
-                         checked={this.props.properties.tls_insecure}
-                         onChange={this._injectProperty('tls_insecure')}
-                         help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         case 'filebeat:logstash':

@@ -122,7 +122,6 @@ const EditInputModal = React.createClass({
       { group: 'nxlog', value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
       { group: 'nxlog', value: 'nxlog:udp-syslog', label: '[NXLog] UDP syslog listener' },
       { group: 'nxlog', value: 'nxlog:tcp-syslog', label: '[NXLog] TCP syslog listener' },
-      { group: 'beat', value: 'topbeat:topbeat', label: '[TopBeat] Metrics'},
       { group: 'beat', value: 'filebeat:file', label: '[FileBeat] file input'},
       { group: 'beat', value: 'winlogbeat:windows-event-log', label: '[WinLogBeat] Windows event log' },
     ];
