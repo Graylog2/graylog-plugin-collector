@@ -22,7 +22,7 @@ const CollectorConfiguration = React.createClass({
   },
 
   getInitialState() {
-    return {tab: "nxlog"};
+    return {tab: "beat"};
   },
 
   _headerCellFormatter(header) {
@@ -271,8 +271,8 @@ const CollectorConfiguration = React.createClass({
             <Tabs activeKey={this.state.tab}
                   animation={false}
                   onSelect={this._tabSwitched}>
-              <Tab eventKey="nxlog" title="NXLog"/>
               <Tab eventKey="beat" title="Beats"/>
+              <Tab eventKey="nxlog" title="NXLog"/>
             </Tabs>
 
             <Row>
