@@ -148,7 +148,7 @@ const EditInputModal = React.createClass({
                    autoFocus
                    required
             />
-            <Input id={this._getId('input-foward-to')} label="Forward to"
+            <Input id={this._getId('input-foward-to')} label="Forward to (Required)"
                    help="Choose the collector output that will forward messages from this input">
               <Select ref="select-forwardto"
                       options={this._formatDropdownOptions()}
