@@ -104,7 +104,7 @@ public class CollectorServiceImpl implements CollectorService {
 
     @Override
     public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion) {
-        return CollectorImpl.create(collectorId, request.nodeId(), collectorVersion, CollectorNodeDetails.create(request.nodeDetails().operatingSystem()), DateTime.now(DateTimeZone.UTC));
+        return CollectorImpl.create(collectorId, request.nodeId(), collectorVersion, CollectorNodeDetails.create(request.nodeDetails().operatingSystem(), request.nodeDetails().statusList()), DateTime.now(DateTimeZone.UTC));
     }
 
     private List<Collector> toAbstractListType(DBCursor<CollectorImpl> collectors) {

@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorNodeDetailsSummary;
+import org.graylog.plugins.collector.collectors.rest.models.CollectorStatusList;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -33,12 +35,17 @@ public abstract class CollectorNodeDetails {
     @Size(min = 1)
     public abstract String operatingSystem();
 
+    @JsonProperty("status")
+    @Nullable
+    public abstract CollectorStatusList statusList();
+
     @JsonCreator
-    public static CollectorNodeDetails create(@JsonProperty("operating_system") String operatingSystem) {
-        return new AutoValue_CollectorNodeDetails(operatingSystem);
+    public static CollectorNodeDetails create(@JsonProperty("operating_system") String operatingSystem,
+                                              @JsonProperty("status") @Nullable CollectorStatusList statusList) {
+        return new AutoValue_CollectorNodeDetails(operatingSystem, statusList);
     }
 
     public CollectorNodeDetailsSummary toSummary() {
-        return CollectorNodeDetailsSummary.create(operatingSystem());
+        return CollectorNodeDetailsSummary.create(operatingSystem(), statusList());
     }
 }

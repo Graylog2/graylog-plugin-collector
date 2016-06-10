@@ -21,26 +21,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.HashMap;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorNodeDetailsSummary {
-
-    @JsonProperty("operating_system")
-    @NotNull
-    @Size(min = 1)
-    public abstract String operatingSystem();
-
-    @JsonProperty("status")
-    @Nullable
-    public abstract CollectorStatusList statusList();
+public abstract class CollectorStatusList {
+    @JsonProperty("backends")
+    public abstract HashMap<String, CollectorStatus> backends();
 
     @JsonCreator
-    public static CollectorNodeDetailsSummary create(@JsonProperty("operating_system") String operatingSystem,
-                                                     @JsonProperty("status") CollectorStatusList statusList) {
-        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, statusList);
-    }
-}
+    public static CollectorStatusList create(@JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
+        return new AutoValue_CollectorStatusList(backends);
+    }}
