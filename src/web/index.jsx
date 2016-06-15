@@ -2,6 +2,7 @@ import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
 import CollectorsPage from 'collectors/CollectorsPage';
+import CollectorsStatusPage from 'collectors/CollectorsStatusPage';
 import ConfigurationsPage from 'configurations/ConfigurationsPage';
 import CollectorConfigurationPage from 'collector-configuration/CollectorConfigurationPage';
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
@@ -9,6 +10,7 @@ import CollectorSystemConfiguration from 'system-configuration/CollectorSystemCo
 PluginStore.register(new PluginManifest(packageJson, {
   routes: [
     { path: '/system/collectors', component: CollectorsPage },
+    { path: '/system/collectors/:id/status', component: CollectorsStatusPage },
     { path: '/system/collectors/configurations', component: ConfigurationsPage },
     { path: '/system/collectors/configurations/:id', component: CollectorConfigurationPage },
   ],

@@ -31,6 +31,17 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.list.promise(promise);
   },
 
+  getCollector(collectorId) {
+    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}`));
+    promise
+      .catch(
+        error => {
+          UserNotification.error(`Fetching Collector failed with status: ${error}`,
+            'Could not retrieve Collector');
+        });
+    CollectorsActions.getCollector.promise(promise);
+  },
+
 });
 
 export default CollectorsStore;
