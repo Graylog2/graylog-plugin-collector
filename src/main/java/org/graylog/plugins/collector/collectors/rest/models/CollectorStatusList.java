@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
@@ -32,12 +34,22 @@ public abstract class CollectorStatusList {
     @JsonProperty("message")
     public abstract String message();
 
+    @JsonProperty("disks75")
+    @Nullable
+    public abstract List<String> disks75();
+
+    @JsonProperty("load1")
+    @Nullable
+    public abstract float load1();
+
     @JsonProperty("backends")
     public abstract HashMap<String, CollectorStatus> backends();
 
     @JsonCreator
     public static CollectorStatusList create(@JsonProperty("status") int status,
                                              @JsonProperty("message") String message,
+                                             @JsonProperty("disks75") @Nullable List<String> disks75,
+                                             @JsonProperty("load1") @Nullable float load1,
                                              @JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
-        return new AutoValue_CollectorStatusList(status, message, backends);
+        return new AutoValue_CollectorStatusList(status, message, disks75, load1, backends);
     }}
