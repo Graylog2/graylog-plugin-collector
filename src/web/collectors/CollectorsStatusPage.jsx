@@ -50,11 +50,13 @@ const CollectorsStatusPage = React.createClass({
   },
 
   _formatUtilization(stats) {
-    if (stats && stats.disks75 && stats.load1 >= 0) {
+    if (stats && stats.disks75 && stats.load1 >= -1 && stats.cpu_idle >= -1) {
       const volumes = stats.disks75.map((volume) => <dd key={volume}>{volume}</dd>);
       return (
         <div>
           <dl className="deflist">
+            <dt>CPU Idle:</dt>
+            <dd>{stats.cpu_idle}</dd>
             <dt>Load:</dt>
             <dd>{stats.load1}</dd>
             <dt>Volumes > 75%:</dt>

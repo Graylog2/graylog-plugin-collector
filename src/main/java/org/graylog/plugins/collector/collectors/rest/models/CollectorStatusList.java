@@ -42,6 +42,10 @@ public abstract class CollectorStatusList {
     @Nullable
     public abstract List<String> disks75();
 
+    @JsonProperty("cpu_idle")
+    @Nullable
+    public abstract float cpuIdle();
+
     @JsonProperty("load1")
     @Nullable
     public abstract float load1();
@@ -54,7 +58,8 @@ public abstract class CollectorStatusList {
                                              @JsonProperty("message") String message,
                                              @JsonProperty("tags") @Nullable List<String> tags,
                                              @JsonProperty("disks75") @Nullable List<String> disks75,
+                                             @JsonProperty("cpu_idle") @Nullable float cpuIdle,
                                              @JsonProperty("load1") @Nullable float load1,
                                              @JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
-        return new AutoValue_CollectorStatusList(status, message, tags, disks75, load1, backends);
+        return new AutoValue_CollectorStatusList(status, message, tags, disks75, cpuIdle, load1, backends);
     }}
