@@ -34,6 +34,10 @@ public abstract class CollectorStatusList {
     @JsonProperty("message")
     public abstract String message();
 
+    @JsonProperty("tags")
+    @Nullable
+    public abstract List<String> tags();
+
     @JsonProperty("disks75")
     @Nullable
     public abstract List<String> disks75();
@@ -48,8 +52,9 @@ public abstract class CollectorStatusList {
     @JsonCreator
     public static CollectorStatusList create(@JsonProperty("status") int status,
                                              @JsonProperty("message") String message,
+                                             @JsonProperty("tags") @Nullable List<String> tags,
                                              @JsonProperty("disks75") @Nullable List<String> disks75,
                                              @JsonProperty("load1") @Nullable float load1,
                                              @JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
-        return new AutoValue_CollectorStatusList(status, message, disks75, load1, backends);
+        return new AutoValue_CollectorStatusList(status, message, tags, disks75, load1, backends);
     }}

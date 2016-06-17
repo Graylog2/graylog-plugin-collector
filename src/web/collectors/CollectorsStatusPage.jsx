@@ -50,7 +50,7 @@ const CollectorsStatusPage = React.createClass({
   },
 
   _formatUtilization(stats) {
-    if (stats && stats.disks75 && stats.load1) {
+    if (stats && stats.disks75 && stats.load1 >= 0) {
       const volumes = stats.disks75.map((volume) => <dd key={volume}>{volume}</dd>);
       return (
         <div>
@@ -63,6 +63,20 @@ const CollectorsStatusPage = React.createClass({
         </div>
       )
     } 
+  },
+
+  _formatConfiguration(configuration) {
+    if (configuration && configuration.tags) {
+      const tags = configuration.tags.join(", ");
+      return (
+        <div>
+          <dl className="deflist">
+            <dt>Tags:</dt>
+            <dd>{tags}</dd>
+          </dl>
+        </div>
+      )
+    }
   },
 
   _formatStatus(name, item) {
@@ -130,6 +144,9 @@ const CollectorsStatusPage = React.createClass({
             <h2>Sidecar</h2>
               <div className="top-margin">
                 <Row>
+                  <Col md={6}>
+                    {this._formatConfiguration(this.state.collector.node_details.status)}
+                  </Col>
                   <Col md={6}>
                     {this._formatUtilization(this.state.collector.node_details.status)}
                   </Col>
