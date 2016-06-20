@@ -49,22 +49,27 @@ const CollectorsStatusPage = React.createClass({
     return !this.state.collector;
   },
 
-  _formatUtilization(stats) {
+  _formatSystemStats(stats) {
     if (stats && stats.disks75 && stats.load1 >= -1 && stats.cpu_idle >= -1) {
       const volumes = stats.disks75.map((volume) => <dd key={volume}>{volume}</dd>);
-      return (
-        <div>
-          <dl className="deflist">
-            <dt>CPU Idle:</dt>
-            <dd>{stats.cpu_idle}</dd>
-            <dt>Load:</dt>
-            <dd>{stats.load1}</dd>
-            <dt>Volumes > 75%:</dt>
-            {volumes}
-          </dl>
-        </div>
-      )
-    } 
+      const statsFormatted = [];
+      statsFormatted.push(
+        <dt key="cpu-idle-title">CPU Idle:</dt>,
+        <dd key="cpu-idle-description">{stats.cpu_idle}%</dd>
+      );
+      if (stats.load1 >= 0) {
+        statsFormatted.push(
+          <dt key="load-title">Load:</dt>,
+          <dd key="load-description">{stats.load1}</dd>
+        );
+      }
+      statsFormatted.push(
+        <dt key="disk-title">Volumes > 75%:</dt>,
+        volumes
+      );
+
+      return (<div><dl className="deflist">{statsFormatted}</dl></div>)
+    }
   },
 
   _formatConfiguration(configuration) {
@@ -150,7 +155,7 @@ const CollectorsStatusPage = React.createClass({
                     {this._formatConfiguration(this.state.collector.node_details.status)}
                   </Col>
                   <Col md={6}>
-                    {this._formatUtilization(this.state.collector.node_details.status)}
+                    {this._formatSystemStats(this.state.collector.node_details.status)}
                   </Col>
                 </Row>
                 <hr className="separator"/>
