@@ -27,6 +27,7 @@ import org.graylog.plugins.collector.configurations.rest.models.CollectorInput;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorOutput;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
+import org.graylog2.database.NotFoundException;
 import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -199,8 +201,11 @@ public class CollectorConfigurationService {
                 request.tags(), request.inputs(), request.outputs(), defaultSnippets);
     }
 
-    public CollectorConfiguration withInputFromRequest(String id, CollectorInput input) {
+    public CollectorConfiguration withInputFromRequest(String id, CollectorInput input) throws NotFoundException {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        String outputId = input.forwardTo();
+        this.findOutput(collectorConfiguration, outputId).orElseThrow(() -> new NotFoundException("Could not find output " + outputId));
+
         collectorConfiguration.inputs().add(input);
         return collectorConfiguration;
     }
@@ -224,15 +229,20 @@ public class CollectorConfigurationService {
         return collectorConfiguration;
     }
 
-    public CollectorConfiguration updateInputFromRequest(String id, String inputId, CollectorInput request) {
+    public CollectorConfiguration updateInputFromRequest(String id, String inputId, CollectorInput request) throws NotFoundException {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        final String outputId = request.forwardTo();
+        this.findOutput(collectorConfiguration, outputId).orElseThrow(() -> new NotFoundException("Could not find output " + outputId));
+
+        final CollectorInput toSave = CollectorInput.create(inputId, request.backend(), request.type(), request.name(), request.forwardTo(), request.properties());
+
 
         ListIterator<CollectorInput> inputIterator = collectorConfiguration.inputs().listIterator();
         while (inputIterator.hasNext()) {
             int i = inputIterator.nextIndex();
             CollectorInput input = inputIterator.next();
             if (input.inputId().equals(inputId)) {
-                collectorConfiguration.inputs().set(i, request);
+                collectorConfiguration.inputs().set(i, toSave);
             }
         }
         return collectorConfiguration;
@@ -240,13 +250,14 @@ public class CollectorConfigurationService {
 
     public CollectorConfiguration updateOutputFromRequest(String id, String outputId, CollectorOutput request) {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        final CollectorOutput toSave = CollectorOutput.create(outputId, request.backend(), request.type(), request.name(), request.properties());
 
         ListIterator<CollectorOutput> outputIterator = collectorConfiguration.outputs().listIterator();
         while (outputIterator.hasNext()) {
             int i = outputIterator.nextIndex();
             CollectorOutput output = outputIterator.next();
             if (output.outputId().equals(outputId)) {
-                collectorConfiguration.outputs().set(i, request);
+                collectorConfiguration.outputs().set(i, toSave);
             }
         }
         return collectorConfiguration;
@@ -254,16 +265,23 @@ public class CollectorConfigurationService {
 
     public CollectorConfiguration updateSnippetFromRequest(String id, String snippetId, CollectorConfigurationSnippet request) {
         CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", id));
+        final CollectorConfigurationSnippet toSave = CollectorConfigurationSnippet.create(snippetId, request.backend(), request.name(), request.snippet());
 
         ListIterator<CollectorConfigurationSnippet> snippetIterator = collectorConfiguration.snippets().listIterator();
         while (snippetIterator.hasNext()) {
             int i = snippetIterator.nextIndex();
             CollectorConfigurationSnippet snippet = snippetIterator.next();
             if (snippet.snippetId().equals(snippetId)) {
-                collectorConfiguration.snippets().set(i, request);
+                collectorConfiguration.snippets().set(i, toSave);
             }
         }
         return collectorConfiguration;
+    }
+
+    private Optional<CollectorOutput> findOutput(CollectorConfiguration collectorConfiguration, String outputId) {
+        return collectorConfiguration.outputs().stream()
+                .filter(o -> o.outputId().equals(outputId))
+                .findAny();
     }
 
 }
