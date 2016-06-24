@@ -2,6 +2,7 @@ import React from 'react';
 import { Input } from 'react-bootstrap';
 
 import FormUtils from 'util/FormsUtils';
+import { KeyValueTable } from 'components/common';
 
 const EditOutputFields = React.createClass({
   propTypes: {
@@ -18,6 +19,11 @@ const EditOutputFields = React.createClass({
 
   componentWillMount() {
     this._setDefaultValue(this.props.type, this.props.properties);
+    if (this.props.properties.fields) {
+      this.setState({fields: this.props.properties.fields});
+    } else {
+      this.setState({fields: {}});
+    }
   },
 
   componentWillUpdate(nextProps) {
@@ -47,6 +53,21 @@ const EditOutputFields = React.createClass({
     return (event) => this.props.injectProperties(name, FormUtils.getValueFromInput(event.target));
   },
 
+  _changeFields(fields) {
+    for (var key in fields) {
+      if (key != this._validField(key)) {
+        return
+      }
+      fields[key] = this._validField(fields[key]);
+    };
+    this.setState({ fields: fields });
+    this.props.injectProperties('fields', fields);
+  },
+
+  _validField(value) {
+    return value.replace(/[^a-zA-Z0-9-._]/ig, '');
+  },
+
   render() {
     if (this.props) {
       switch (this.props.type) {
@@ -68,6 +89,12 @@ const EditOutputFields = React.createClass({
                      onChange={this._injectProperty('port')}
                      help="Type a port number for this output"
                      required />
+              <Input label="Additional Fields"
+                     help="Allowed characters: a-z0-9-_.">
+                <KeyValueTable pairs={this.state.fields}
+                               editable={true}
+                               onChange={this._changeFields}/>
+              </Input>
             </div>);
             break;
         case 'nxlog:gelf-tcp':
@@ -88,6 +115,12 @@ const EditOutputFields = React.createClass({
                        onChange={this._injectProperty('port')}
                        help="Type a port number for this output"
                        required />
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields}/>
+                </Input>
               </div>);
           break;
         case 'nxlog:gelf-tcp-tls':
@@ -135,6 +168,12 @@ const EditOutputFields = React.createClass({
                        checked={this.props.properties.allow_untrusted}
                        onChange={this._injectProperty('allow_untrusted')}
                        help="Specifies whether the connection should be allowed without certificate verification"/>
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields}/>
+                </Input>
               </div>);
           break;
         case 'filebeat:logstash':
