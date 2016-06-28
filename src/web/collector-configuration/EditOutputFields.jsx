@@ -4,6 +4,8 @@ import { Input } from 'react-bootstrap';
 import FormUtils from 'util/FormsUtils';
 import { KeyValueTable } from 'components/common';
 
+import CollapsibleVerbatim from './CollapsibleVerbatim';
+
 const EditOutputFields = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
@@ -73,29 +75,32 @@ const EditOutputFields = React.createClass({
       switch (this.props.type) {
         case 'nxlog:gelf-udp':
           return (
-            <div>
-              <Input type="text"
-                     id={this._getId('gelf-udp-server')}
-                     label="Server IP"
-                     value={this.props.properties.server}
-                     onChange={this._injectProperty('server')}
-                     help="Type the server IP for this output"
-                     required />
-              <Input type="number"
-                     id={this._getId('gelf-udp-port')}
-                     min={0}
-                     label="Port"
-                     value={this.props.properties.port}
-                     onChange={this._injectProperty('port')}
-                     help="Type a port number for this output"
-                     required />
-              <Input label="Additional Fields"
-                     help="Allowed characters: a-z0-9-_.">
-                <KeyValueTable pairs={this.state.fields}
-                               editable={true}
-                               onChange={this._changeFields}/>
-              </Input>
-            </div>);
+              <div>
+                <Input type="text"
+                       id={this._getId('gelf-udp-server')}
+                       label="Server IP"
+                       value={this.props.properties.server}
+                       onChange={this._injectProperty('server')}
+                       help="Type the server IP for this output"
+                       required />
+                <Input type="number"
+                       id={this._getId('gelf-udp-port')}
+                       min={0}
+                       label="Port"
+                       value={this.props.properties.port}
+                       onChange={this._injectProperty('port')}
+                       help="Type a port number for this output"
+                       required />
+                <Input label="Additional Fields"
+                       help="Allowed characters: a-z0-9-_.">
+                  <KeyValueTable pairs={this.state.fields}
+                                 editable={true}
+                                 onChange={this._changeFields}/>
+                </Input>
+                <CollapsibleVerbatim type={this.props.type}
+                                     value={this.props.properties.verbatim}
+                                     onChange={this._injectProperty}/>
+              </div>);
             break;
         case 'nxlog:gelf-tcp':
           return (
@@ -121,6 +126,9 @@ const EditOutputFields = React.createClass({
                                  editable={true}
                                  onChange={this._changeFields}/>
                 </Input>
+                <CollapsibleVerbatim type={this.props.type}
+                                     value={this.props.properties.verbatim}
+                                     onChange={this._injectProperty}/>
               </div>);
           break;
         case 'nxlog:gelf-tcp-tls':
@@ -174,6 +182,9 @@ const EditOutputFields = React.createClass({
                                  editable={true}
                                  onChange={this._changeFields}/>
                 </Input>
+                <CollapsibleVerbatim type={this.props.type}
+                                     value={this.props.properties.verbatim}
+                                     onChange={this._injectProperty}/>
               </div>);
           break;
         case 'filebeat:logstash':
@@ -186,36 +197,36 @@ const EditOutputFields = React.createClass({
                        onChange={this._injectProperty('hosts')}
                        help="Array of hosts to connect to"
                        required />
-                  <Input type="checkbox"
-                         id={this._getId('logstash-tls')}
-                         label="Enable TLS support"
-                         checked={this.props.properties.tls}
-                         onChange={this._injectProperty('tls')}
-                         help="Use TLS authentication to secure connections between Beat and Graylog"/>
-                  <Input type="text"
-                         id={this._getId('logstash-tls-ca-file')}
-                         label="CA File"
-                         value={this.props.properties.ca_file}
-                         onChange={this._injectProperty('ca_file')}
-                         help="The path of the certificate of the CA" />
-                  <Input type="text"
-                         id={this._getId('logstash-tls-cert-file')}
-                         label="Cert File"
-                         value={this.props.properties.cert_file}
-                         onChange={this._injectProperty('cert_file')}
-                         help="The path of the certificate file" />
-                  <Input type="text"
-                         id={this._getId('logstash-tls-key-file')}
-                         label="Key File"
-                         value={this.props.properties.cert_key_file}
-                         onChange={this._injectProperty('cert_key_file')}
-                         help="The path of the key file" />
-                  <Input type="checkbox"
-                         id={this._getId('logstash-tls-insecure')}
-                         label="Insecure TLS connection"
-                         checked={this.props.properties.tls_insecure}
-                         onChange={this._injectProperty('tls_insecure')}
-                         help="Controls whether the client verifies server certificates and host names"/>
+                <Input type="checkbox"
+                       id={this._getId('logstash-tls')}
+                       label="Enable TLS support"
+                       checked={this.props.properties.tls}
+                       onChange={this._injectProperty('tls')}
+                       help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                <Input type="text"
+                       id={this._getId('logstash-tls-ca-file')}
+                       label="CA File"
+                       value={this.props.properties.ca_file}
+                       onChange={this._injectProperty('ca_file')}
+                       help="The path of the certificate of the CA" />
+                <Input type="text"
+                       id={this._getId('logstash-tls-cert-file')}
+                       label="Cert File"
+                       value={this.props.properties.cert_file}
+                       onChange={this._injectProperty('cert_file')}
+                       help="The path of the certificate file" />
+                <Input type="text"
+                       id={this._getId('logstash-tls-key-file')}
+                       label="Key File"
+                       value={this.props.properties.cert_key_file}
+                       onChange={this._injectProperty('cert_key_file')}
+                       help="The path of the key file" />
+                <Input type="checkbox"
+                       id={this._getId('logstash-tls-insecure')}
+                       label="Insecure TLS connection"
+                       checked={this.props.properties.tls_insecure}
+                       onChange={this._injectProperty('tls_insecure')}
+                       help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         case 'winlogbeat:logstash':
@@ -228,36 +239,36 @@ const EditOutputFields = React.createClass({
                        onChange={this._injectProperty('hosts')}
                        help="Array of hosts to connect to"
                        required />
-                  <Input type="checkbox"
-                         id={this._getId('logstash-tls')}
-                         label="Enable TLS support"
-                         checked={this.props.properties.tls}
-                         onChange={this._injectProperty('tls')}
-                         help="Use TLS authentication to secure connections between Beat and Graylog"/>
-                  <Input type="text"
-                         id={this._getId('logstash-tls-ca-file')}
-                         label="CA File"
-                         value={this.props.properties.ca_file}
-                         onChange={this._injectProperty('ca_file')}
-                         help="The path of the certificate of the CA" />
-                  <Input type="text"
-                         id={this._getId('logstash-tls-cert-file')}
-                         label="Cert File"
-                         value={this.props.properties.cert_file}
-                         onChange={this._injectProperty('cert_file')}
-                         help="The path of the certificate file" />
-                  <Input type="text"
-                         id={this._getId('logstash-tls-key-file')}
-                         label="Key File"
-                         value={this.props.properties.cert_key_file}
-                         onChange={this._injectProperty('cert_key_file')}
-                         help="The path of the key file" />
-                  <Input type="checkbox"
-                         id={this._getId('logstash-tls-insecure')}
-                         label="Insecure TLS connection"
-                         checked={this.props.properties.tls_insecure}
-                         onChange={this._injectProperty('tls_insecure')}
-                         help="Controls whether the client verifies server certificates and host names"/>
+                <Input type="checkbox"
+                       id={this._getId('logstash-tls')}
+                       label="Enable TLS support"
+                       checked={this.props.properties.tls}
+                       onChange={this._injectProperty('tls')}
+                       help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                <Input type="text"
+                       id={this._getId('logstash-tls-ca-file')}
+                       label="CA File"
+                       value={this.props.properties.ca_file}
+                       onChange={this._injectProperty('ca_file')}
+                       help="The path of the certificate of the CA" />
+                <Input type="text"
+                       id={this._getId('logstash-tls-cert-file')}
+                       label="Cert File"
+                       value={this.props.properties.cert_file}
+                       onChange={this._injectProperty('cert_file')}
+                       help="The path of the certificate file" />
+                <Input type="text"
+                       id={this._getId('logstash-tls-key-file')}
+                       label="Key File"
+                       value={this.props.properties.cert_key_file}
+                       onChange={this._injectProperty('cert_key_file')}
+                       help="The path of the key file" />
+                <Input type="checkbox"
+                       id={this._getId('logstash-tls-insecure')}
+                       label="Insecure TLS connection"
+                       checked={this.props.properties.tls_insecure}
+                       onChange={this._injectProperty('tls_insecure')}
+                       help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         default:

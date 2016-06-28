@@ -4,6 +4,8 @@ import { Input } from 'react-bootstrap';
 import FormUtils from 'util/FormsUtils';
 import { KeyValueTable } from 'components/common';
 
+import CollapsibleVerbatim from './CollapsibleVerbatim';
+
 const EditInputFields = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
@@ -201,6 +203,9 @@ const EditInputFields = React.createClass({
                                editable={true}
                                onChange={this._changeFields}/>
               </Input>
+              <CollapsibleVerbatim type={this.props.type}
+                                   value={this.props.properties.verbatim}
+                                   onChange={this._injectProperty}/>
             </div>);
         case 'nxlog:windows-event-log':
           return (
@@ -242,6 +247,9 @@ const EditInputFields = React.createClass({
                                  editable={true}
                                  onChange={this._changeFields} />
                 </Input>
+                <CollapsibleVerbatim type={this.props.type}
+                                     value={this.props.properties.verbatim}
+                                     onChange={this._injectProperty}/>
               </div>);
         case 'nxlog:udp-syslog':
           return (
@@ -266,6 +274,9 @@ const EditInputFields = React.createClass({
                                  editable={true}
                                  onChange={this._changeFields} />
                 </Input>
+                <CollapsibleVerbatim type={this.props.type}
+                                     value={this.props.properties.verbatim}
+                                     onChange={this._injectProperty}/>
               </div>);
         case 'nxlog:tcp-syslog':
           return (
@@ -290,6 +301,9 @@ const EditInputFields = React.createClass({
                                  editable={true}
                                  onChange={this._changeFields} />
                 </Input>
+                <CollapsibleVerbatim type={this.props.type}
+                                     value={this.props.properties.verbatim}
+                                     onChange={this._injectProperty}/>
               </div>);
         case 'filebeat:file':
           return (
