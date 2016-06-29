@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorLogFile;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -50,6 +51,10 @@ public abstract class CollectorStatusList {
     @Nullable
     public abstract float load1();
 
+    @JsonProperty("log_file_list")
+    @Nullable
+    public abstract List<CollectorLogFile> logFileList();
+
     @JsonProperty("backends")
     public abstract HashMap<String, CollectorStatus> backends();
 
@@ -60,6 +65,7 @@ public abstract class CollectorStatusList {
                                              @JsonProperty("disks_75") @Nullable List<String> disks75,
                                              @JsonProperty("cpu_idle") @Nullable float cpuIdle,
                                              @JsonProperty("load_1") @Nullable float load1,
+                                             @JsonProperty("log_file_list") @Nullable List<CollectorLogFile> logFileList,
                                              @JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
-        return new AutoValue_CollectorStatusList(status, message, tags, disks75, cpuIdle, load1, backends);
+        return new AutoValue_CollectorStatusList(status, message, tags, disks75, cpuIdle, load1, logFileList, backends);
     }}
