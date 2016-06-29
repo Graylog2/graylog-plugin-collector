@@ -50,17 +50,17 @@ const CollectorsStatusPage = React.createClass({
   },
 
   _formatSystemStats(stats) {
-    if (stats && stats.disks75 && stats.load1 >= -1 && stats.cpu_idle >= -1) {
-      const volumes = stats.disks75.map((volume) => <dd key={volume}>{volume}</dd>);
+    if (stats && stats.disks_75 && stats.load_1 >= -1 && stats.cpu_idle >= -1) {
+      const volumes = stats.disks_75.map((volume) => <dd key={volume}>{volume}</dd>);
       const statsFormatted = [];
       statsFormatted.push(
         <dt key="cpu-idle-title">CPU Idle:</dt>,
         <dd key="cpu-idle-description">{stats.cpu_idle}%</dd>
       );
-      if (stats.load1 >= 0) {
+      if (stats.load_1 >= 0) {
         statsFormatted.push(
           <dt key="load-title">Load:</dt>,
-          <dd key="load-description">{stats.load1}</dd>
+          <dd key="load-description">{stats.load_1}</dd>
         );
       }
       statsFormatted.push(
