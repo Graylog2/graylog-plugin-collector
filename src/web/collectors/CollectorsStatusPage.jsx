@@ -10,6 +10,7 @@ import PageHeader from 'components/common/PageHeader';
 import DocumentationLink from 'components/support/DocumentationLink';
 
 import CollectorsActions from 'collectors/CollectorsActions';
+import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
 
 const CollectorsStatusPage = React.createClass({
   propTypes: {
@@ -126,6 +127,7 @@ const CollectorsStatusPage = React.createClass({
     const backendStates = Object.keys(backends).map((key) => {
       return this._formatStatus(key, backends[key]);
     });
+    const logFileList = this.state.collector.node_details.log_file_list || [];
 
     return (
       <span>
@@ -152,10 +154,10 @@ const CollectorsStatusPage = React.createClass({
               <div className="top-margin">
                 <Row>
                   <Col md={6}>
-                    {this._formatConfiguration(this.state.collector.node_details.status)}
+                    {this._formatConfiguration(this.state.collector.node_details)}
                   </Col>
                   <Col md={6}>
-                    {this._formatSystemStats(this.state.collector.node_details.status)}
+                    {this._formatSystemStats(this.state.collector.node_details.metrics)}
                   </Col>
                 </Row>
                 <hr className="separator"/>
@@ -167,6 +169,14 @@ const CollectorsStatusPage = React.createClass({
           <Col md={12}>
             <h2>Backends</h2>
             {backendStates}
+          </Col>
+        </Row>
+        <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
+          <Col md={12}>
+            <h2>Log Files</h2>
+              <div className="top-margin">
+                <CollectorsStatusFileList files={this.state.collector.node_details.log_file_list}/>
+              </div>
           </Col>
         </Row>
       </span>
