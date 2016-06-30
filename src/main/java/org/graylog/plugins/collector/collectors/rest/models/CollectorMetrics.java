@@ -14,34 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with Graylog.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graylog.plugins.collector.collectors.rest.models.responses;
+package org.graylog.plugins.collector.collectors.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.joda.time.DateTime;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorLogFile {
-    @JsonProperty("path")
-    public abstract String path();
+public abstract class CollectorMetrics {
+    @JsonProperty("disks_75")
+    @Nullable
+    public abstract List<String> disks75();
 
-    @JsonProperty("mod_time")
-    public abstract DateTime modTime();
+    @JsonProperty("cpu_idle")
+    @Nullable
+    public abstract float cpuIdle();
 
-    @JsonProperty("size")
-    public abstract long size();
-
-    @JsonProperty("is_dir")
-    public abstract boolean isDir();
+    @JsonProperty("load_1")
+    @Nullable
+    public abstract float load1();
 
     @JsonCreator
-    public static CollectorLogFile create(@JsonProperty("path") String path,
-                                          @JsonProperty("mod_time") DateTime modTime,
-                                          @JsonProperty("size") long size,
-                                          @JsonProperty("is_dir") boolean isDir) {
-        return new AutoValue_CollectorLogFile(path, modTime, size, isDir);
+    public static CollectorMetrics create(@JsonProperty("disks_75") @Nullable List<String> disks75,
+                                          @JsonProperty("cpu_idle") @Nullable float cpuIdle,
+                                          @JsonProperty("load_1") @Nullable float load1) {
+        return new AutoValue_CollectorMetrics(disks75, cpuIdle, load1);
     }
 }

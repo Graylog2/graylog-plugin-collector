@@ -24,6 +24,7 @@ import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
@@ -34,13 +35,28 @@ public abstract class CollectorNodeDetailsSummary {
     @Size(min = 1)
     public abstract String operatingSystem();
 
+    @JsonProperty("tags")
+    @Nullable
+    public abstract List<String> tags();
+
+    @JsonProperty("metrics")
+    @Nullable
+    public abstract CollectorMetrics metrics();
+
+    @JsonProperty("log_file_list")
+    @Nullable
+    public abstract List<CollectorLogFile> logFileList();
+
     @JsonProperty("status")
     @Nullable
     public abstract CollectorStatusList statusList();
 
     @JsonCreator
     public static CollectorNodeDetailsSummary create(@JsonProperty("operating_system") String operatingSystem,
-                                                     @JsonProperty("status") CollectorStatusList statusList) {
-        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, statusList);
+                                                     @JsonProperty("tags") @Nullable List<String> tags,
+                                                     @JsonProperty("metrics") @Nullable CollectorMetrics metrics,
+                                                     @JsonProperty("log_file_list") @Nullable List<CollectorLogFile> logFileList,
+                                                     @JsonProperty("status") @Nullable CollectorStatusList statusList) {
+        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, tags, metrics, logFileList, statusList);
     }
 }

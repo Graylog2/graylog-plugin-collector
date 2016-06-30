@@ -20,24 +20,28 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-
-import java.util.HashMap;
+import org.joda.time.DateTime;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorStatusList {
-    @JsonProperty("status")
-    public abstract int status();
+public abstract class CollectorLogFile {
+    @JsonProperty("path")
+    public abstract String path();
 
-    @JsonProperty("message")
-    public abstract String message();
+    @JsonProperty("mod_time")
+    public abstract DateTime modTime();
 
-    @JsonProperty("backends")
-    public abstract HashMap<String, CollectorStatus> backends();
+    @JsonProperty("size")
+    public abstract long size();
+
+    @JsonProperty("is_dir")
+    public abstract boolean isDir();
 
     @JsonCreator
-    public static CollectorStatusList create(@JsonProperty("status") int status,
-                                             @JsonProperty("message") String message,
-                                             @JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
-        return new AutoValue_CollectorStatusList(status, message, backends);
-    }}
+    public static CollectorLogFile create(@JsonProperty("path") String path,
+                                          @JsonProperty("mod_time") DateTime modTime,
+                                          @JsonProperty("size") long size,
+                                          @JsonProperty("is_dir") boolean isDir) {
+        return new AutoValue_CollectorLogFile(path, modTime, size, isDir);
+    }
+}
