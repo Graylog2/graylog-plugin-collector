@@ -26,7 +26,7 @@ const CollectorsStatusPage = React.createClass({
   componentDidMount() {
     this.style.use();
     this._reloadCollector();
-    this.interval = setInterval(this._reloadCollector, 2000);
+    this.interval = setInterval(this._reloadCollector, 5000);
   },
 
   componentWillUnmount() {
@@ -174,9 +174,10 @@ const CollectorsStatusPage = React.createClass({
         <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
           <Col md={12}>
             <h2>Log Files</h2>
-              <div className="top-margin">
-                <CollectorsStatusFileList files={this.state.collector.node_details.log_file_list}/>
-              </div>
+            <p>Recently modified files will be highlighted in blue.</p>
+            <div className="top-margin">
+              <CollectorsStatusFileList files={this.state.collector.node_details.log_file_list}/>
+            </div>
           </Col>
         </Row>
       </span>

@@ -60,6 +60,9 @@ const CollectorList = React.createClass({
           <thead>
           <tr>
             <th className={`name ${this._getTableHeaderClassName('node_id')}`} onClick={this.sortByNodeId}>Name</th>
+            <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
+              Status
+            </th>
             <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
               Operating System
             </th>
@@ -69,9 +72,6 @@ const CollectorList = React.createClass({
             </th>
             <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortByCollectorVersion}>
               Collector Version
-            </th>
-            <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
-              Status
             </th>
             <th className="actions">&nbsp;</th>
           </tr>

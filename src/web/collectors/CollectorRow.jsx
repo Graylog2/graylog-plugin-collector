@@ -85,6 +85,9 @@ const CollectorRow = React.createClass({
           </LinkContainer>
         </td>
         <td className="limited">
+          <Label bsStyle={this._labelClassForState(collectorState)} bsSize="xsmall">{this._textForState(collectorState)}</Label>
+        </td>
+        <td className="limited">
           {osGlyph}
           {collector.node_details.operating_system}
         </td>
@@ -97,9 +100,6 @@ const CollectorRow = React.createClass({
         </td>
         <td className="limited">
           {collector.collector_version}
-        </td>
-        <td className="limited">
-          <Label bsStyle={this._labelClassForState(collectorState)} bsSize="xsmall">{this._textForState(collectorState)}</Label>
         </td>
         <td>
           <LinkContainer to={ApiRoutes.SearchController.index(`gl2_source_collector:${collector.id}`, 'relative', 28800).url}>
