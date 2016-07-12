@@ -176,7 +176,7 @@ const CollectorsStatusPage = React.createClass({
             <h2>Log Files</h2>
             <p>Recently modified files will be highlighted in blue.</p>
             <div className="top-margin">
-              <CollectorsStatusFileList files={this.state.collector.node_details.log_file_list}/>
+              <CollectorsStatusFileList files={logFileList}/>
             </div>
           </Col>
         </Row>
