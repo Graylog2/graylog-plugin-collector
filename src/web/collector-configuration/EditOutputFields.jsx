@@ -36,12 +36,12 @@ const EditOutputFields = React.createClass({
     switch (type) {
       case 'filebeat:logstash':
         if (!value.hasOwnProperty('hosts')) {
-          this.props.injectProperties('hosts', '["localhost:5044"]');
+          this.props.injectProperties('hosts', '[\'localhost:5044\']');
         };
         break;
       case 'winlogbeat:logstash':
         if (!value.hasOwnProperty('hosts')) {
-          this.props.injectProperties('hosts', '["localhost:5044"]');
+          this.props.injectProperties('hosts', '[\'localhost:5044\']');
         };
         break;
     }

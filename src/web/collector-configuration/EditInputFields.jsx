@@ -86,7 +86,7 @@ const EditInputFields = React.createClass({
         break;
       case 'filebeat:file':
         if (!value.hasOwnProperty('paths')) {
-          this.props.injectProperties('paths', '["/var/log/*.log"]');
+          this.props.injectProperties('paths', '[\'/var/log/*.log\']');
         };
         if (!value.hasOwnProperty('scan_frequency')) {
           this.props.injectProperties('scan_frequency', '10s');
@@ -106,7 +106,7 @@ const EditInputFields = React.createClass({
         break;
       case 'winlogbeat:windows-event-log':
         if (!value.hasOwnProperty('event')) {
-          this.props.injectProperties('event', '[{"name":"Application"}]');
+          this.props.injectProperties('event', '[{\'name\':\'Application\'},{\'name\':\'System\'},{\'name\':\'Security\'}]');
         };
         break;
     }
