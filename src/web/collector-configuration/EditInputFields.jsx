@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from 'react-bootstrap';
 
 import FormUtils from 'util/FormsUtils';
-import { KeyValueTable } from 'components/common';
+import { KeyValueTable, Select } from 'components/common';
 
 import CollapsibleVerbatim from './CollapsibleVerbatim';
 
@@ -366,12 +366,15 @@ const EditInputFields = React.createClass({
                        checked={this.props.properties.multiline_negate}
                        onChange={this._injectProperty('multiline_negate')}
                        help="Defines whether the pattern is negated"/>
-                <Input type="text"
+                <Input type="select"
                        id={this._getId('multiline-match')}
                        label="How are matching lines combined into one event"
-                       value={this.props.properties.multiline_match}
                        onChange={this._injectProperty('multiline_match')}
-                       help="Specifies how Filebeat combines matching lines into an event. Values are 'before' or 'after'"/>
+                       value={this.props.properties.multiline_match}
+                       help="Specifies how Filebeat combines matching lines into an event.">
+                  <option key="before" value="before">before</option>
+                  <option key="after" value="after">after</option>
+                </Input>
                 <Input label="Additional Fields"
                        help="Allowed characters: a-z0-9-_.">
                   <KeyValueTable pairs={this.state.fields}
