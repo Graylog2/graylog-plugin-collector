@@ -10,12 +10,21 @@ const EditOutputFields = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
     properties: React.PropTypes.object,
+    errorState: React.PropTypes.func,
+    errorFields: React.PropTypes.array,
     injectProperties: React.PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
     return {
       type: '',
+    };
+  },
+
+  getInitialState() {
+    return {
+      error: false,
+      error_message: '',
     };
   },
 
@@ -55,6 +64,11 @@ const EditOutputFields = React.createClass({
     return (event) => this.props.injectProperties(name, FormUtils.getValueFromInput(event.target));
   },
 
+  _changeErrorState(error, message, id) {
+    this.setState({error: error, error_message: message});
+    this.props.errorState(error, message, id);
+  },
+
   _changeFields(fields) {
     for (var key in fields) {
       if (key != this._validField(key)) {
@@ -68,6 +82,25 @@ const EditOutputFields = React.createClass({
 
   _validField(value) {
     return value.replace(/[^a-zA-Z0-9-._]/ig, '');
+  },
+
+  _validList(value) {
+    return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
+  },
+
+  _onChangeList(name) {
+    return (event) => {
+      if (!this._validList(event.target.value)) {
+        this._changeErrorState(true, 'Invalid JSON Array. Use the format [\'first\', \'second\']', event.target.id);
+      } else {
+        this._changeErrorState(false, '', event.target.id);
+      }
+      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
+    }
+  },
+
+  _fieldError(name) {
+    return this.state.error && this.props.errorFields.indexOf(this._getId(name)) !== -1;
   },
 
   render() {
@@ -212,8 +245,9 @@ const EditOutputFields = React.createClass({
                        id={this._getId('logstash-server')}
                        label="Hosts"
                        value={this.props.properties.hosts}
-                       onChange={this._injectProperty('hosts')}
-                       help="Array of hosts to connect to"
+                       onChange={this._onChangeList('hosts')}
+                       bsStyle={this._fieldError('logstash-server') ? 'error' : null}
+                       help={this._fieldError('logstash-server') ? this.state.error_message: "List of hosts to connect to"}
                        required />
                 <Input type="checkbox"
                        id={this._getId('logstash-tls')}
@@ -254,8 +288,9 @@ const EditOutputFields = React.createClass({
                        id={this._getId('logstash-server')}
                        label="Hosts"
                        value={this.props.properties.hosts}
-                       onChange={this._injectProperty('hosts')}
-                       help="Array of hosts to connect to"
+                       onChange={this._onChangeList('hosts')}
+                       bsStyle={this._fieldError('logstash-server') ? 'error' : null}
+                       help={this._fieldError('logstash-server') ? this.state.error_message: "List of hosts to connect to"}
                        required />
                 <Input type="checkbox"
                        id={this._getId('logstash-tls')}

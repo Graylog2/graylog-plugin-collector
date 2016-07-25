@@ -10,12 +10,21 @@ const EditInputFields = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
     properties: React.PropTypes.object,
+    errorState: React.PropTypes.func,
+    errorFields: React.PropTypes.array,
     injectProperties: React.PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
     return {
       type: '',
+    };
+  },
+
+  getInitialState() {
+    return {
+      error: false,
+      error_message: '',
     };
   },
 
@@ -120,6 +129,11 @@ const EditInputFields = React.createClass({
     return (event) => this.props.injectProperties(name, FormUtils.getValueFromInput(event.target));
   },
 
+  _changeErrorState(error, message, id) {
+    this.setState({error: error, error_message: message});
+    this.props.errorState(error, message, id);
+  },
+
   _changeFields(fields) {
     for (var key in fields) {
       if (key != this._validField(key)) {
@@ -133,6 +147,25 @@ const EditInputFields = React.createClass({
 
   _validField(value) {
     return value.replace(/[^a-zA-Z0-9-._]/ig, '');
+  },
+
+  _validList(value) {
+    return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
+  },
+
+  _onChangeList(name) {
+    return (event) => {
+      if (!this._validList(event.target.value)) {
+        this._changeErrorState(true, 'Invalid JSON Array. Use the format [\'first\', \'second\']', event.target.id);
+      } else {
+        this._changeErrorState(false, '', event.target.id);
+      }
+      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
+    }
+  },
+
+  _fieldError(name) {
+    return this.state.error && this.props.errorFields.indexOf(this._getId(name)) !== -1;
   },
 
   render() {
@@ -312,8 +345,9 @@ const EditInputFields = React.createClass({
                        id={this._getId('file-paths')}
                        label="Path to Logfile"
                        value={this.props.properties.paths}
-                       onChange={this._injectProperty('paths')}
-                       help="Location of the log files to use"
+                       onChange={this._onChangeList('paths')}
+                       bsStyle={this._fieldError('file-paths') ? 'error' : null}
+                       help={this._fieldError('file-paths') ? this.state.error_message: "Location of the log files to use"}
                        required />
                 <Input type="text"
                        id={this._getId('scan-frequency')}
@@ -340,14 +374,16 @@ const EditInputFields = React.createClass({
                        id={this._getId('exclude-lines')}
                        label="Lines that you want Filebeat to exclude"
                        value={this.props.properties.exclude_lines}
-                       onChange={this._injectProperty('exclude_lines')}
-                       help="A list of regular expressions to match the lines that you want Filebeat to exclude" />
+                       onChange={this._onChangeList('exclude_lines')}
+                       bsStyle={this._fieldError('exclude-lines') ? 'error' : null}
+                       help={this._fieldError('exclude-lines') ? this.state.error_message: "A list of regular expressions to match the lines that you want Filebeat to exclude"} />
                 <Input type="text"
                        id={this._getId('include-lines')}
                        label="Lines that you want Filebeat to include"
                        value={this.props.properties.include_lines}
-                       onChange={this._injectProperty('include_lines')}
-                       help="A list of regular expressions to match the lines that you want Filebeat to include" />
+                       onChange={this._onChangeList('include_lines')}
+                       bsStyle={this._fieldError('include-lines') ? 'error' : null}
+                       help={this._fieldError('include-lines') ? this.state.error_message: "A list of regular expressions to match the lines that you want Filebeat to include"} />
                 <Input type="checkbox"
                        id={this._getId('multiline')}
                        label="Enable Multiline"
@@ -389,8 +425,9 @@ const EditInputFields = React.createClass({
                        id={this._getId('event')}
                        label="Event name"
                        value={this.props.properties.event}
-                       onChange={this._injectProperty('event')}
-                       help="List of Windows events"
+                       onChange={this._onChangeList('event')}
+                       bsStyle={this._fieldError('event') ? 'error' : null}
+                       help={this._fieldError('event') ? this.state.error_message: "List of Windows events"}
                        required />
               </div>);
           break;
