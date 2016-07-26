@@ -83,7 +83,7 @@ const EditOutputFields = React.createClass({
   _changeList(name) {
     return (event) => {
       if (!this._validList(event.target.value)) {
-        this._changeErrorState(true, 'Invalid JSON Array. Use the format [\'first\', \'second\']', event.target.id);
+        this._changeErrorState(true, 'Invalid JSON Array. Use the format: [\'first\', \'second\']', event.target.id);
       } else {
         this._changeErrorState(false, '', event.target.id);
       }

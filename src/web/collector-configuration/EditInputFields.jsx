@@ -148,20 +148,85 @@ const EditInputFields = React.createClass({
   _changeList(name) {
     return (event) => {
       if (!this._validList(event.target.value)) {
-        this._changeErrorState(true, 'Invalid JSON Array. Use the format [\'first\', \'second\']', event.target.id);
+        this._changeErrorState(true, 'Invalid JSON Array. Use the format: [\'first\', \'second\']', event.target.id);
       } else {
         this._changeErrorState(false, '', event.target.id);
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
   },
-  
+
+  _changeDuration(name) {
+    return (event) => {
+      if (!this._validDuration(event.target.value)) {
+        this._changeErrorState(true, 'Invalid Duration, it should look like: 10s', event.target.id);
+      } else {
+        this._changeErrorState(false, '', event.target.id);
+      }
+      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
+    }
+  },
+
+  _changeNumber(name) {
+    return (event) => {
+      if (!this._validNumber(event.target.value)) {
+        this._changeErrorState(true, 'Invalid number', event.target.id);
+      } else {
+        this._changeErrorState(false, '', event.target.id);
+      }
+      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
+    }
+  },
+
+  _changePattern(name) {
+    return (event) => {
+      if (!this._validPattern(event.target.value)) {
+        this._changeErrorState(true, 'Invalid pattern, it should look like: /^foo/', event.target.id);
+      } else {
+        this._changeErrorState(false, '', event.target.id);
+      }
+      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
+    }
+  },
+
+  _changeXml(name) {
+    return (event) => {
+      if (!this._validXml(event.target.value)) {
+        this._changeErrorState(true, 'Invalid XML', event.target.id);
+      } else {
+        this._changeErrorState(false, '', event.target.id);
+      }
+      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
+    }
+  },
+
   _validField(value) {
     return value.replace(/[^a-zA-Z0-9-._]/ig, '');
   },
 
   _validList(value) {
     return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
+  },
+
+  _validDuration(value) {
+    const durationRex = /(^\d+[smh])|0/;
+    return durationRex.test(value);
+  },
+
+  _validNumber(value) {
+    return !isNaN(parseInt(value));
+  },
+
+  _validPattern(value) {
+    const patternRex = /(^\/.*\/$)|^$/;
+    return patternRex.test(value);
+  },
+
+  _validXml(value) {
+    var parser = new DOMParser();
+    var xml = parser.parseFromString(value, "application/xml");
+    const parseError = xml.getElementsByTagName("parsererror").length != 0;
+    return value.length == 0 || !parseError;
   },
 
   _fieldError(name) {
@@ -222,14 +287,16 @@ const EditInputFields = React.createClass({
                      id={this._getId('multiline-start')}
                      label="Start pattern of multiline"
                      value={this.props.properties.multiline_start}
-                     onChange={this._injectProperty('multiline_start')}
-                     help="RegEx starting pattern of a multiline"/>
+                     onChange={this._changePattern('multiline_start')}
+                     bsStyle={this._fieldError('multiline-start') ? 'error' : null}
+                     help={this._fieldError('multiline-start') ? this.state.errorMessage: "RegEx starting pattern of a multiline"}/>
               <Input type="text"
                      id={this._getId('multiline-stop')}
                      label="Stop pattern of multiline"
                      value={this.props.properties.multiline_stop}
-                     onChange={this._injectProperty('multiline_stop')}
-                     help="RegEx stop pattern of a multiline"/>
+                     onChange={this._changePattern('multiline_stop')}
+                     bsStyle={this._fieldError('multiline-stop') ? 'error' : null}
+                     help={this._fieldError('multiline-stop') ? this.state.errorMessage: "RegEx stop pattern of a multiline"}/>
               <Input label="Additional Fields"
                      help="Allowed characters: a-z0-9-_.">
                 <KeyValueTable pairs={this.state.fields}
@@ -248,13 +315,14 @@ const EditInputFields = React.createClass({
                        label="Channel"
                        value={this.props.properties.channel}
                        onChange={this._injectProperty('channel')}
-                       help="The name of the Channel to query. If not specified, the module will read from all sources"/>
-                <Input type="text"
+                       help={<span>The name of the Channel to query. If not specified, the module will read from all sources. Read more on <a href="https://msdn.microsoft.com/en-us/library/aa385225.aspx" target="_blank">MSDN</a></span>}/>
+                <Input type="textarea"
                        id={this._getId('query')}
                        label="Query"
                        value={this.props.properties.query}
-                       onChange={this._injectProperty('query')}
-                       help="The query if one wishes to pull only specific eventlog sources"/>
+                       onChange={this._changeXml('query')}
+                       bsStyle={this._fieldError('query') ? 'error' : null}
+                       help={this._fieldError('query') ? this.state.errorMessage: <span>The query if one wishes to pull only specific eventlog sources. Read more on <a href="https://msdn.microsoft.com/en-us/library/aa385231.aspx" target="_blank">MSDN</a></span>}/>
                 <Input type="checkbox"
                        id={this._getId('save-position')}
                        label="Save read position"
@@ -353,15 +421,17 @@ const EditInputFields = React.createClass({
                        id={this._getId('scan-frequency')}
                        label="Scan frequency in seconds"
                        value={this.props.properties.scan_frequency}
-                       onChange={this._injectProperty('scan_frequency')}
-                       help="How often should files be checked for changes"
+                       onChange={this._changeDuration('scan_frequency')}
+                       bsStyle={this._fieldError('scan-frequency') ? 'error' : null}
+                       help={this._fieldError('scan-frequency') ? this.state.errorMessage: "How often should files be checked for changes"}
                        required />
                 <Input type="text"
                        id={this._getId('ignore-older')}
                        label="Ignore files older then"
                        value={this.props.properties.ignore_older}
-                       onChange={this._injectProperty('ignore_older')}
-                       help="Ignore files which were modified more then the defined timespan in the past (e.g 2h)"
+                       onChange={this._changeDuration('ignore_older')}
+                       bsStyle={this._fieldError('ignore-older') ? 'error' : null}
+                       help={this._fieldError('ignore-older') ? this.state.errorMessage: "Ignore files which were modified more then the defined timespan in the past (e.g 2h)"}
                        required />
                 <Input type="text"
                        id={this._getId('document-type')}
