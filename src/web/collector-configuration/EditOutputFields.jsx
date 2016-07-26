@@ -24,7 +24,7 @@ const EditOutputFields = React.createClass({
   getInitialState() {
     return {
       error: false,
-      error_message: '',
+      errorMessage: '',
     };
   },
 
@@ -65,7 +65,7 @@ const EditOutputFields = React.createClass({
   },
 
   _changeErrorState(error, message, id) {
-    this.setState({error: error, error_message: message});
+    this.setState({error: error, errorMessage: message});
     this.props.errorState(error, message, id);
   },
 
@@ -247,7 +247,7 @@ const EditOutputFields = React.createClass({
                        value={this.props.properties.hosts}
                        onChange={this._onChangeList('hosts')}
                        bsStyle={this._fieldError('logstash-server') ? 'error' : null}
-                       help={this._fieldError('logstash-server') ? this.state.error_message: "List of hosts to connect to"}
+                       help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
                        required />
                 <Input type="checkbox"
                        id={this._getId('logstash-tls')}
@@ -290,7 +290,7 @@ const EditOutputFields = React.createClass({
                        value={this.props.properties.hosts}
                        onChange={this._onChangeList('hosts')}
                        bsStyle={this._fieldError('logstash-server') ? 'error' : null}
-                       help={this._fieldError('logstash-server') ? this.state.error_message: "List of hosts to connect to"}
+                       help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
                        required />
                 <Input type="checkbox"
                        id={this._getId('logstash-tls')}

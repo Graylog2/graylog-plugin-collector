@@ -39,8 +39,8 @@ const EditInputModal = React.createClass({
       properties: this.props.properties,
       selectedType: (this.props.backend && this.props.type) ? `${this.props.backend}:${this.props.type}` : undefined,
       error: false,
-      error_message: '',
-      error_fields: [],
+      errorMessage: '',
+      errorFields: [],
     };
   },
 
@@ -72,14 +72,15 @@ const EditInputModal = React.createClass({
   },
 
   _changeErrorState(error, message, id) {
-    this.setState({error: error, error_message: message});
-    const index = this.state.error_fields.indexOf(id);
+    var errorFields = this.state.errorFields.slice();
+    const index = errorFields.indexOf(id);
     if (error && index == -1) {
-      this.state.error_fields.push(id);
+      errorFields.push(id);
     }
     if (!error && index > -1) {
-      this.state.error_fields.splice(index, 1);
+      errorFields.splice(index, 1);
     }
+    this.setState({error: error, errorMessage: message, errorFields: errorFields});
   },
 
   _changeName(event) {
@@ -108,7 +109,7 @@ const EditInputModal = React.createClass({
   },
 
   _fieldError(name) {
-    return this.state.error && this.state.error_fields.indexOf(this._getId(name)) !== -1;
+    return this.state.error && this.state.errorFields.indexOf(this._getId(name)) !== -1;
   },
 
   _formatDropdownOptions() {
@@ -160,7 +161,7 @@ const EditInputModal = React.createClass({
                    defaultValue={this.state.name}
                    onChange={this._changeName}
                    bsStyle={this._fieldError('input-name') ? 'error' : null}
-                   help={this._fieldError('input-name') ? this.state.error_message : 'Type a name for this input'}
+                   help={this._fieldError('input-name') ? this.state.errorMessage : 'Type a name for this input'}
                    autoFocus
                    required
             />
@@ -184,7 +185,7 @@ const EditInputModal = React.createClass({
             </Input>
             <EditInputFields type={this.state.selectedType} properties={this.state.properties}
                              injectProperties={this._injectProperties} errorState={this._changeErrorState}
-                             errorFields={this.state.error_fields} />
+                             errorFields={this.state.errorFields} />
           </fieldset>
         </BootstrapModalForm>
       </span>

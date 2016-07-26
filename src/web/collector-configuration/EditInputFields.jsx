@@ -24,7 +24,7 @@ const EditInputFields = React.createClass({
   getInitialState() {
     return {
       error: false,
-      error_message: '',
+      errorMessage: '',
     };
   },
 
@@ -130,7 +130,7 @@ const EditInputFields = React.createClass({
   },
 
   _changeErrorState(error, message, id) {
-    this.setState({error: error, error_message: message});
+    this.setState({error: error, errorMessage: message});
     this.props.errorState(error, message, id);
   },
 
@@ -347,7 +347,7 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.paths}
                        onChange={this._onChangeList('paths')}
                        bsStyle={this._fieldError('file-paths') ? 'error' : null}
-                       help={this._fieldError('file-paths') ? this.state.error_message: "Location of the log files to use"}
+                       help={this._fieldError('file-paths') ? this.state.errorMessage: "Location of the log files to use"}
                        required />
                 <Input type="text"
                        id={this._getId('scan-frequency')}
@@ -376,14 +376,14 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.exclude_lines}
                        onChange={this._onChangeList('exclude_lines')}
                        bsStyle={this._fieldError('exclude-lines') ? 'error' : null}
-                       help={this._fieldError('exclude-lines') ? this.state.error_message: "A list of regular expressions to match the lines that you want Filebeat to exclude"} />
+                       help={this._fieldError('exclude-lines') ? this.state.errorMessage: "A list of regular expressions to match the lines that you want Filebeat to exclude"} />
                 <Input type="text"
                        id={this._getId('include-lines')}
                        label="Lines that you want Filebeat to include"
                        value={this.props.properties.include_lines}
                        onChange={this._onChangeList('include_lines')}
                        bsStyle={this._fieldError('include-lines') ? 'error' : null}
-                       help={this._fieldError('include-lines') ? this.state.error_message: "A list of regular expressions to match the lines that you want Filebeat to include"} />
+                       help={this._fieldError('include-lines') ? this.state.errorMessage: "A list of regular expressions to match the lines that you want Filebeat to include"} />
                 <Input type="checkbox"
                        id={this._getId('multiline')}
                        label="Enable Multiline"
@@ -427,7 +427,7 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.event}
                        onChange={this._onChangeList('event')}
                        bsStyle={this._fieldError('event') ? 'error' : null}
-                       help={this._fieldError('event') ? this.state.error_message: "List of Windows events"}
+                       help={this._fieldError('event') ? this.state.errorMessage: "List of Windows events"}
                        required />
               </div>);
           break;
