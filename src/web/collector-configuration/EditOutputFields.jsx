@@ -80,15 +80,7 @@ const EditOutputFields = React.createClass({
     this.props.injectProperties('fields', fields);
   },
 
-  _validField(value) {
-    return value.replace(/[^a-zA-Z0-9-._]/ig, '');
-  },
-
-  _validList(value) {
-    return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
-  },
-
-  _onChangeList(name) {
+  _changeList(name) {
     return (event) => {
       if (!this._validList(event.target.value)) {
         this._changeErrorState(true, 'Invalid JSON Array. Use the format [\'first\', \'second\']', event.target.id);
@@ -97,6 +89,14 @@ const EditOutputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
+  },
+
+  _validField(value) {
+    return value.replace(/[^a-zA-Z0-9-._]/ig, '');
+  },
+
+  _validList(value) {
+    return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
   },
 
   _fieldError(name) {
@@ -245,7 +245,7 @@ const EditOutputFields = React.createClass({
                        id={this._getId('logstash-server')}
                        label="Hosts"
                        value={this.props.properties.hosts}
-                       onChange={this._onChangeList('hosts')}
+                       onChange={this._changeList('hosts')}
                        bsStyle={this._fieldError('logstash-server') ? 'error' : null}
                        help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
                        required />
@@ -288,7 +288,7 @@ const EditOutputFields = React.createClass({
                        id={this._getId('logstash-server')}
                        label="Hosts"
                        value={this.props.properties.hosts}
-                       onChange={this._onChangeList('hosts')}
+                       onChange={this._changeList('hosts')}
                        bsStyle={this._fieldError('logstash-server') ? 'error' : null}
                        help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
                        required />

@@ -145,15 +145,7 @@ const EditInputFields = React.createClass({
     this.props.injectProperties('fields', fields);
   },
 
-  _validField(value) {
-    return value.replace(/[^a-zA-Z0-9-._]/ig, '');
-  },
-
-  _validList(value) {
-    return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
-  },
-
-  _onChangeList(name) {
+  _changeList(name) {
     return (event) => {
       if (!this._validList(event.target.value)) {
         this._changeErrorState(true, 'Invalid JSON Array. Use the format [\'first\', \'second\']', event.target.id);
@@ -162,6 +154,14 @@ const EditInputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
+  },
+  
+  _validField(value) {
+    return value.replace(/[^a-zA-Z0-9-._]/ig, '');
+  },
+
+  _validList(value) {
+    return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
   },
 
   _fieldError(name) {
@@ -345,7 +345,7 @@ const EditInputFields = React.createClass({
                        id={this._getId('file-paths')}
                        label="Path to Logfile"
                        value={this.props.properties.paths}
-                       onChange={this._onChangeList('paths')}
+                       onChange={this._changeList('paths')}
                        bsStyle={this._fieldError('file-paths') ? 'error' : null}
                        help={this._fieldError('file-paths') ? this.state.errorMessage: "Location of the log files to use"}
                        required />
@@ -374,14 +374,14 @@ const EditInputFields = React.createClass({
                        id={this._getId('exclude-lines')}
                        label="Lines that you want Filebeat to exclude"
                        value={this.props.properties.exclude_lines}
-                       onChange={this._onChangeList('exclude_lines')}
+                       onChange={this._changeList('exclude_lines')}
                        bsStyle={this._fieldError('exclude-lines') ? 'error' : null}
                        help={this._fieldError('exclude-lines') ? this.state.errorMessage: "A list of regular expressions to match the lines that you want Filebeat to exclude"} />
                 <Input type="text"
                        id={this._getId('include-lines')}
                        label="Lines that you want Filebeat to include"
                        value={this.props.properties.include_lines}
-                       onChange={this._onChangeList('include_lines')}
+                       onChange={this._changeList('include_lines')}
                        bsStyle={this._fieldError('include-lines') ? 'error' : null}
                        help={this._fieldError('include-lines') ? this.state.errorMessage: "A list of regular expressions to match the lines that you want Filebeat to include"} />
                 <Input type="checkbox"
@@ -425,7 +425,7 @@ const EditInputFields = React.createClass({
                        id={this._getId('event')}
                        label="Event name"
                        value={this.props.properties.event}
-                       onChange={this._onChangeList('event')}
+                       onChange={this._changeList('event')}
                        bsStyle={this._fieldError('event') ? 'error' : null}
                        help={this._fieldError('event') ? this.state.errorMessage: "List of Windows events"}
                        required />
