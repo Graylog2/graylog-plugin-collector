@@ -18,7 +18,7 @@ PluginStore.register(new PluginManifest(packageJson, {
   // Adding an element to the top navigation pointing to /sample named "Sample":
 
   systemnavigation: [
-    { path: '/system/collectors', description: 'Collectors', permissions: 'COLLECTORS_READ' },
+    { path: '/system/collectors', description: 'Collectors', permissions: 'collectors:read' },
   ],
 
   systemConfigurations: [
