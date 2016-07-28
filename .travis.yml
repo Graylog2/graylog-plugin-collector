@@ -1,27 +1,28 @@
 sudo: false
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 addons:
   apt:
     packages:
-      - rpm
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dskip.web.build=true -B -V
+    - rpm
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dskip.web.build=true
+  -B -V
 script: mvn package verify -Dskip.web.build=true -B -V
 before_deploy:
-  - mvn jdeb:jdeb && export RELEASE_DEB_FILE=$(ls target/*.deb)
-  - mvn rpm:rpm && export RELEASE_RPM_FILE=$(find target/ -name '*.rpm' | tail -1)
-  - rm -f target/original-*.jar
-  - export RELEASE_PKG_FILE=$(ls target/*.jar)
-  - echo "Deploying release to GitHub releases"
+- mvn jdeb:jdeb && export RELEASE_DEB_FILE=$(ls target/*.deb)
+- mvn rpm:rpm && export RELEASE_RPM_FILE=$(find target/ -name '*.rpm' | tail -1)
+- rm -f target/original-*.jar
+- export RELEASE_PKG_FILE=$(ls target/*.jar)
+- echo "Deploying release to GitHub releases"
 deploy:
   provider: releases
   api_key:
-    secure: <enter your encrypted GitHub access token>
+    secure: lxv594nVRmUfzitvACxdiUaezogPWfaONBrj0h1E8nTtV+bxmozuDTAv9uxX31t0uIWfTkm9EIFdamRMv5lS+1XuwbUSD36oMxSNopnlMSTS6ll1jqjenIrXhd2qk47K/LDWK1wjuTjLPRj0IkfWcJK2wG1trSaR7oWlsmdpZ8hy+WEb0wjx9Yy6Xwq2Dco0klgs8KTxIIyiVRDFLsAY4w9PymXnpOjpr3zQ2efICEQOslsl1DcqwNV1hL0VjqZgeaIjneg9e1nUVc7w1xgIaOjNQE9/oHzdV4ESmsDhUuRQKRMsqfJjXelgBbGo2QAtnvoQkD93msVhbOWvWwo35HT7bLpn3AmL93ejFOxI+QFPF8u5nFsduzvhEQucvFgMaCiq31bN5GjJHrku+zRyjA/JXPd1D4GRJ99enIjsRLaRW7l7gxsOuuLyI69QnvjA1Dw9yy6d2UICKTMcNCnADB3yrSPB1Ne0SS4/Wf5afF4T+7uv4X2Dw70dBC44euE04cKnR06rjmIg81Z0WWzfbdlxLPXySkJiY0XyLl+ysRIJD0o1iYCQqOVQ01hFguH+4k88N4ftvh8IypU4Cb3MgrP+OuyOsFx1RHM/ajwPv3UCFRVAlfkEwXITPjnPcyOiQgFBvO9n9PGLgTwzF3V/2M7LcCiw3oEUgYrbJg1yfdQ=
   file:
-    - "${RELEASE_PKG_FILE}"
-    - "${RELEASE_DEB_FILE}"
-    - "${RELEASE_RPM_FILE}"
+  - "${RELEASE_PKG_FILE}"
+  - "${RELEASE_DEB_FILE}"
+  - "${RELEASE_RPM_FILE}"
   skip_cleanup: true
   on:
     tags: true
