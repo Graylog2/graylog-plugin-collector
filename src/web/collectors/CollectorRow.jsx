@@ -6,86 +6,87 @@ import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
 
 const CollectorRow = React.createClass({
-    propTypes: {
-        collector: React.PropTypes.object.isRequired,
-    },
-    getInitialState() {
-        return {
-            showRelativeTime: true,
-        };
-    },
+  propTypes: {
+    collector: React.PropTypes.object.isRequired,
+  },
+  getInitialState() {
+    return {
+      showRelativeTime: true,
+    };
+  },
 
-    componentDidMount() {
-        this.style.use();
-    },
+  componentDidMount() {
+    this.style.use();
+  },
 
-    componentWillUnmount() {
-        this.style.unuse();
-    },
+  componentWillUnmount() {
+    this.style.unuse();
+  },
 
-    style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
-    _getOsGlyph(operatingSystem) {
-        let glyphClass = 'fa-question-circle';
-        const os = operatingSystem.trim().toLowerCase();
-        if (os.indexOf('darwin') !== -1 || os.indexOf('mac os') !== -1) {
-            glyphClass = 'fa-apple';
-        } else if (os.indexOf('linux') !== -1) {
-            glyphClass = 'fa-linux';
-        } else if (os.indexOf('win') !== -1) {
-            glyphClass = 'fa-windows';
-        }
+  _getOsGlyph(operatingSystem) {
+    let glyphClass = 'fa-question-circle';
+    const os = operatingSystem.trim().toLowerCase();
+    if (os.indexOf('darwin') !== -1 || os.indexOf('mac os') !== -1) {
+      glyphClass = 'fa-apple';
+    } else if (os.indexOf('linux') !== -1) {
+      glyphClass = 'fa-linux';
+    } else if (os.indexOf('win') !== -1) {
+      glyphClass = 'fa-windows';
+    }
 
-        glyphClass += ' collector-os';
+    glyphClass += ' collector-os';
 
-        return (<i className={`fa ${glyphClass}`}/>);
-    },
+    return (<i className={`fa ${glyphClass}`} />);
+  },
 
-    _labelClassForState(state) {
-        switch (state) {
-            case 0:
-                return 'success';
-            case 1:
-                return 'warning';
-            case 2:
-                return 'danger';
-            default:
-                return 'warning';
-        }
-    },
+  _labelClassForState(state) {
+    switch (state) {
+      case 0:
+        return 'success';
+      case 1:
+        return 'warning';
+      case 2:
+        return 'danger';
+      default:
+        return 'warning';
+    }
+  },
 
-    _textForState(state) {
-        switch (state) {
-            case 0:
-                return 'Running';
-            case 1:
-                return 'Unknown';
-            case 2:
-                return 'Failing';
-            default:
-                return 'Unknown';
-        }
-    },
+  _textForState(state) {
+    switch (state) {
+      case 0:
+        return 'Running';
+      case 1:
+        return 'Unknown';
+      case 2:
+        return 'Failing';
+      default:
+        return 'Unknown';
+    }
+  },
 
-    render() {
+  render() {
     const collector = this.props.collector;
     const collectorClass = collector.active ? '' : 'greyed-out inactive';
     const style = {};
     const annotation = collector.active ? '' : '(inactive)';
     const osGlyph = this._getOsGlyph(collector.node_details.operating_system);
-    var collectorState = null;
+    let collectorState = null;
     if (collector.node_details.status) {
-        collectorState = collector.node_details.status.status;
-    };
+      collectorState = collector.node_details.status.status;
+    }
     return (
       <tr className={collectorClass} style={style}>
         <td className="limited">
           <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
-           <a>{collector.node_id}</a>
+            <a>{collector.node_id}</a>
           </LinkContainer>
         </td>
         <td className="limited">
-          <Label bsStyle={this._labelClassForState(collectorState)} bsSize="xsmall">{this._textForState(collectorState)}</Label>
+          <Label bsStyle={this._labelClassForState(collectorState)}
+                 bsSize="xsmall">{this._textForState(collectorState)}</Label>
         </td>
         <td className="limited">
           {osGlyph}
