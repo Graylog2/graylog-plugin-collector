@@ -9,6 +9,8 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import PageHeader from 'components/common/PageHeader';
 import ConfigurationsList from './ConfigurationsList';
 
+import Routes from 'routing/Routes';
+
 const ConfigurationsPage = React.createClass({
   render() {
     return (
@@ -24,7 +26,7 @@ const ConfigurationsPage = React.createClass({
           </span>
 
           <span>
-            <LinkContainer to={'/system/collectors/'}>
+            <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
               <Button bsStyle="info">Show Collectors</Button>
             </LinkContainer>
           </span>

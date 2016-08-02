@@ -4,6 +4,8 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import EditConfigurationModal from './EditConfigurationModal';
 
+import Routes from 'routing/Routes';
+
 const ConfigurationRow = React.createClass({
   propTypes: {
     configuration: React.PropTypes.object.isRequired,
@@ -38,7 +40,7 @@ const ConfigurationRow = React.createClass({
     return (
       <tr>
         <td className="name limited">
-          <LinkContainer to={`/system/collectors/configurations/${configuration.id}`}>
+          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS_ID')(configuration.id)}>
             <a>{configuration.name}</a>
           </LinkContainer>
         </td>

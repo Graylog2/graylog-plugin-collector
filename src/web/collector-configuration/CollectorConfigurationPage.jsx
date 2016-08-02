@@ -10,6 +10,8 @@ import CollectorConfigurationsActions from 'configurations/CollectorConfiguratio
 import DocsHelper from 'util/DocsHelper';
 import DocumentationLink from 'components/support/DocumentationLink';
 
+import Routes from 'routing/Routes';
+
 const CollectorConfigurationPage = React.createClass({
   propTypes: {
     params: React.PropTypes.object.isRequired,
@@ -71,7 +73,7 @@ const CollectorConfigurationPage = React.createClass({
           </span>
 
           <span>
-            <LinkContainer to={'/system/collectors/configurations'}>
+            <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
               <Button bsStyle="info">Manage Configurations</Button>
             </LinkContainer>
           </span>

@@ -12,6 +12,8 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
 
+import Routes from 'routing/Routes';
+
 const CollectorsStatusPage = React.createClass({
   propTypes: {
       params: React.PropTypes.object.isRequired,
@@ -142,7 +144,7 @@ const CollectorsStatusPage = React.createClass({
           </span>
 
           <span>
-            <LinkContainer to={'/system/collectors/'}>
+            <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
               <Button bsStyle="info">Show Collectors</Button>
             </LinkContainer>
           </span>

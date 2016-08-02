@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import ApiRoutes from 'routing/ApiRoutes';
+import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
 
 const CollectorRow = React.createClass({
@@ -80,7 +80,7 @@ const CollectorRow = React.createClass({
     return (
       <tr className={collectorClass} style={style}>
         <td className="limited">
-          <LinkContainer to={`/system/collectors/${collector.id}/status`}>
+          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
            <a>{collector.node_id}</a>
           </LinkContainer>
         </td>
@@ -102,7 +102,7 @@ const CollectorRow = React.createClass({
           {collector.collector_version}
         </td>
         <td>
-          <LinkContainer to={ApiRoutes.SearchController.index(`gl2_source_collector:${collector.id}`, 'relative', 28800).url}>
+          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${collector.id}`, 'relative', 28800)}>
             <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
           </LinkContainer>
         </td>
