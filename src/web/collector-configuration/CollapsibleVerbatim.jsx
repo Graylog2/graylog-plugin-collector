@@ -9,8 +9,12 @@ const CollapsibleVerbatim = React.createClass({
   },
 
   getInitialState() {
+    let expanded = false;
+    if (this.props.value) {
+      expanded = true;
+    }
     return {
-      expanded: false,
+      expanded: expanded,
     };
   },
 
