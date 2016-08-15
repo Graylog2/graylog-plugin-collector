@@ -112,6 +112,9 @@ const EditInputFields = React.createClass({
         if (!value.hasOwnProperty('include_lines')) {
           this.props.injectProperties('include_lines', '[]');
         };
+        if (!value.hasOwnProperty('tail_files')) {
+          this.props.injectProperties('tail_files', true);
+        };
         break;
       case 'winlogbeat:windows-event-log':
         if (!value.hasOwnProperty('event')) {
