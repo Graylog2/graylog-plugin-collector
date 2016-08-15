@@ -199,22 +199,19 @@ const EditOutputFields = React.createClass({
                        label="CA File"
                        value={this.props.properties.ca_file}
                        onChange={this._injectProperty('ca_file')}
-                       help="The path of the certificate of the CA"
-                       required />
+                       help="The path of the certificate of the CA" />
                 <Input type="text"
                        id={this._getId('gelf-tcp-tls-cert-file')}
                        label="Cert File"
                        value={this.props.properties.cert_file}
                        onChange={this._injectProperty('cert_file')}
-                       help="The path of the certificate file"
-                       required />
+                       help="The path of the certificate file" />
                 <Input type="text"
                        id={this._getId('gelf-tcp-tls-key-file')}
                        label="Key File"
                        value={this.props.properties.cert_key_file}
                        onChange={this._injectProperty('cert_key_file')}
-                       help="The path of the key file"
-                       required />
+                       help="The path of the key file" />
                 <Input type="checkbox"
                        id={this._getId('gelf-tcp-tls-untrusted')}
                        label="Allow untrusted certificate"
