@@ -76,13 +76,15 @@ const CollectorsStatusPage = React.createClass({
   },
 
   _formatConfiguration(configuration) {
-    if (configuration && configuration.tags) {
+    if (configuration && configuration.tags && configuration.ip) {
       const tags = configuration.tags.join(", ");
       return (
         <div>
           <dl className="deflist">
             <dt>Tags:</dt>
             <dd>{tags}</dd>
+            <dt>IP:</dt>
+            <dd>{configuration.ip}</dd>
           </dl>
         </div>
       )

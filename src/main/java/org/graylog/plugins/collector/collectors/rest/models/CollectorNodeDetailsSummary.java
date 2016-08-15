@@ -39,6 +39,11 @@ public abstract class CollectorNodeDetailsSummary {
     @Nullable
     public abstract List<String> tags();
 
+    @JsonProperty("ip")
+    @Nullable
+    public abstract String ip();
+
+
     @JsonProperty("metrics")
     @Nullable
     public abstract CollectorMetrics metrics();
@@ -54,9 +59,10 @@ public abstract class CollectorNodeDetailsSummary {
     @JsonCreator
     public static CollectorNodeDetailsSummary create(@JsonProperty("operating_system") String operatingSystem,
                                                      @JsonProperty("tags") @Nullable List<String> tags,
+                                                     @JsonProperty("ip") @Nullable String ip,
                                                      @JsonProperty("metrics") @Nullable CollectorMetrics metrics,
                                                      @JsonProperty("log_file_list") @Nullable List<CollectorLogFile> logFileList,
                                                      @JsonProperty("status") @Nullable CollectorStatusList statusList) {
-        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, tags, metrics, logFileList, statusList);
+        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, tags, ip, metrics, logFileList, statusList);
     }
 }

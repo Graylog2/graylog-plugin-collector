@@ -107,6 +107,7 @@ public class CollectorServiceImpl implements CollectorService {
         return CollectorImpl.create(collectorId, request.nodeId(), collectorVersion, CollectorNodeDetails.create(
                 request.nodeDetails().operatingSystem(),
                 request.nodeDetails().tags(),
+                request.nodeDetails().ip(),
                 request.nodeDetails().metrics(),
                 request.nodeDetails().logFileList(),
                 request.nodeDetails().statusList()),
