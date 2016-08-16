@@ -3,6 +3,7 @@ import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import EditConfigurationModal from './EditConfigurationModal';
+import CopyConfigurationModal from './CopyConfigurationModal';
 
 import Routes from 'routing/Routes';
 
@@ -10,6 +11,7 @@ const ConfigurationRow = React.createClass({
   propTypes: {
     configuration: React.PropTypes.object.isRequired,
     onUpdate: React.PropTypes.func.isRequired,
+    onCopy: React.PropTypes.func.isRequired,
     validateConfiguration: React.PropTypes.func.isRequired,
     onDelete: React.PropTypes.func.isRequired,
   },
@@ -47,10 +49,12 @@ const ConfigurationRow = React.createClass({
         <td className="limited">
           {tagBadges}
         </td>
-        <td className="actions">
+        <td>
           <Button bsStyle="primary" bsSize="xsmall" onClick={this._handleClick}>
             Delete
           </Button>
+          &nbsp;
+          <CopyConfigurationModal id={this.props.configuration.id} validConfigurationName={this.props.validateConfiguration} copyConfiguration={this.props.onCopy} />
           &nbsp;
           <EditConfigurationModal configuration={this.props.configuration}
                                   updateConfiguration={this.props.onUpdate}

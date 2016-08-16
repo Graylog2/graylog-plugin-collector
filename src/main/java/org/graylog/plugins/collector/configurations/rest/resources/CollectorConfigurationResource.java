@@ -299,6 +299,25 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     }
 
     @POST
+    @Path("/configurations/{id}/{name}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @ApiOperation(value = "Copy a configuration",
+            notes = "This is a stateless method which copies a collector configuration to one with another name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Configuration not found."),
+            @ApiResponse(code = 400, message = "Invalid ObjectId.")
+    })
+    public Response copyConfiguration(@ApiParam(name = "id", required = true)
+                               @PathParam("id") String id,
+                               @PathParam("name") String name) throws NotFoundException {
+        final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copyConfiguration(id, name);
+        collectorConfigurationService.save(collectorConfiguration);
+
+        return Response.accepted().build();
+    }
+
+    @POST
     @Path("/configurations/{id}/outputs/{outputId}/{name}")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)

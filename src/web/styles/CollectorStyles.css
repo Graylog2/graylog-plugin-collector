@@ -53,6 +53,10 @@ th.sort-desc:after {
     margin-right: 5px;
 }
 
+#collector-configurations-list th.actions, td.actions {
+    width: 150px;
+}
+
 #collector-outputs-list th.actions, td.actions {
     width: 150px;
 }

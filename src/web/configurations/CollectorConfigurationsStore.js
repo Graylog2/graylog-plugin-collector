@@ -208,6 +208,22 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.saveSnippet.promise(promise);
   },
 
+  copyConfiguration(configurationId, name) {
+    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/${name}`);
+    let method = 'POST';
+
+    const promise = fetch(method, url);
+    promise
+      .then(() => {
+        UserNotification.success(`Configuration "${configurationId}" successfully copied`);
+      }, (error) => {
+        UserNotification.error(`Saving configuration "${name}" failed with status: ${error.message}`,
+          'Could not save Configuration');
+      });
+
+    CollectorConfigurationsActions.copyConfiguration.promise(promise);
+  },
+
   copyOutput(outputId, name, configurationId) {
     let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/outputs/${outputId}/${name}`);
     let method = 'POST';

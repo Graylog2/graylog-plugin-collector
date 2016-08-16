@@ -60,6 +60,14 @@ const ConfigurationsList = React.createClass({
       });
   },
 
+  _copyConfiguration(configuration, name, callback) {
+    CollectorConfigurationsActions.copyConfiguration.triggerPromise(configuration, name)
+      .then(() => {
+        callback();
+        this._reloadConfiguration();
+      });
+  },
+
   _onDelete(configuration) {
     CollectorConfigurationsActions.delete.triggerPromise(configuration)
       .then(() => {
@@ -75,7 +83,7 @@ const ConfigurationsList = React.createClass({
   _collectorConfigurationFormatter(configuration) {
     return (
       <ConfigurationRow key={configuration.id} configuration={configuration} onUpdate={this._updateConfiguration}
-                        validateConfiguration={this._validConfigurationName}
+                        onCopy={this._copyConfiguration} validateConfiguration={this._validConfigurationName}
                         onDelete={this._onDelete} />
     );
   },
@@ -108,7 +116,7 @@ const ConfigurationsList = React.createClass({
                    filterKeys={filterKeys}>
           <div className="pull-right">
             <EditConfigurationModal create updateConfiguration={this._createConfiguration}
-                                    validConfigurationName={this._validConfigurationName} />
+                                    validConfigurationName={this._validConfigurationName}/>
           </div>
         </DataTable>
       </div>

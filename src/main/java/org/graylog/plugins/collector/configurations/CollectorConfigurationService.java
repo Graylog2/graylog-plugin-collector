@@ -36,10 +36,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -264,6 +261,34 @@ public class CollectorConfigurationService {
             }
         }
         return collectorConfiguration;
+    }
+
+    public CollectorConfiguration copyConfiguration(String id, String name) {
+        CollectorConfiguration collectorConfigurationA = dbCollection.findOne(DBQuery.is("_id", id));
+        HashMap<String, String> outputIdTranslation= new HashMap<>();
+        List<CollectorOutput> outputList = new ArrayList<>();
+        List<CollectorInput> inputList = new ArrayList<>();
+        List<CollectorConfigurationSnippet> snippetList = new ArrayList<>();
+
+        collectorConfigurationA.outputs().stream()
+                .forEach(output -> {
+                    CollectorOutput copiedOutput = CollectorOutput.create(output.backend(), output.type(), output.name(), output.properties());
+                    outputIdTranslation.put(output.outputId(), copiedOutput.outputId());
+                    outputList.add(copiedOutput);
+                });
+        collectorConfigurationA.inputs().stream()
+                .forEach(input -> inputList.add(CollectorInput.create(input.type(), input.backend(), input.name(), outputIdTranslation.get(input.forwardTo()), input.properties())));
+        collectorConfigurationA.snippets().stream()
+                .forEach(snippet -> snippetList.add(CollectorConfigurationSnippet.create(snippet.backend(), snippet.name(), snippet.snippet())));
+
+        List<String> tags = Collections.emptyList();
+        CollectorConfiguration collectorConfigurationB = CollectorConfiguration.create(
+                name,
+                tags,
+                inputList,
+                outputList,
+                snippetList);
+        return collectorConfigurationB;
     }
 
     public CollectorConfiguration copyOutput(String id, String outputId, String name) {
