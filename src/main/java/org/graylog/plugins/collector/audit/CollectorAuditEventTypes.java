@@ -40,8 +40,6 @@ import java.util.Set;
 public class CollectorAuditEventTypes implements PluginAuditEventTypes {
     private static final String NAMESPACE = "collector:";
 
-    public static final String COLLECTOR_REGISTRATION_UPDATE = NAMESPACE + "collector_registration:update";
-
     public static final String CONFIGURATION_CREATE = NAMESPACE + "configuration:create";
     public static final String CONFIGURATION_UPDATE = NAMESPACE + "configuration:update";
     public static final String CONFIGURATION_DELETE = NAMESPACE + "configuration:delete";
@@ -66,7 +64,6 @@ public class CollectorAuditEventTypes implements PluginAuditEventTypes {
 
 
     private static final Set<String> EVENT_TYPES = ImmutableSet.<String>builder()
-            .add(COLLECTOR_REGISTRATION_UPDATE)
             .add(CONFIGURATION_CREATE)
             .add(CONFIGURATION_UPDATE)
             .add(CONFIGURATION_DELETE)

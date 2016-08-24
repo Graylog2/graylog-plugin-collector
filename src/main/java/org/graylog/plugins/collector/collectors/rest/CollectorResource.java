@@ -27,7 +27,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.Collector;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.Collectors;
@@ -36,7 +35,7 @@ import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorL
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
-import org.graylog2.audit.jersey.AuditEvent;
+import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -110,7 +109,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
-    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_REGISTRATION_UPDATE)
+    @NoAuditEvent("this is only a ping from collectors, and would overflow the audit log")
     public Response register(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
                              @PathParam("collectorId") @NotEmpty String collectorId,
                              @ApiParam(name = "JSON body", required = true)
