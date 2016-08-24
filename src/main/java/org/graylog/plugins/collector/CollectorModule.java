@@ -18,6 +18,7 @@ package org.graylog.plugins.collector;
 
 import com.google.common.base.Supplier;
 import com.google.inject.TypeLiteral;
+import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.collectors.rest.CollectorResource;
@@ -40,5 +41,7 @@ public class CollectorModule extends PluginModule {
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
         addPermissions(CollectorRestPermissions.class);
+
+        addAuditEventTypes(CollectorAuditEventTypes.class);
     }
 }

@@ -35,6 +35,7 @@ import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorL
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -103,11 +104,12 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @PUT
     @Timed
     @Path("/{collectorId}")
-    @ApiOperation(value = "Create/update an collector registration",
+    @ApiOperation(value = "Create/update a collector registration",
             notes = "This is a stateless method which upserts a collector registration")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @NoAuditEvent("this is only a ping from collectors, and would overflow the audit log")
     public Response register(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
                              @PathParam("collectorId") @NotEmpty String collectorId,
                              @ApiParam(name = "JSON body", required = true)

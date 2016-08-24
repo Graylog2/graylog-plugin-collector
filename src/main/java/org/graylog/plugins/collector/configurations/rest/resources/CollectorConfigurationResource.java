@@ -21,11 +21,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog.plugins.collector.configurations.rest.models.*;
 import org.graylog.plugins.collector.configurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.database.NotFoundException;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
@@ -130,6 +132,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @AuditEvent(type = CollectorAuditEventTypes.TAGS_UPDATE)
     public CollectorConfiguration updateTags(@ApiParam(name = "id", required = true)
                                              @PathParam("id") String id,
                                              @ApiParam(name = "JSON body", required = true) List<String> tags) {
@@ -147,6 +150,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.OUTPUT_UPDATE)
     public Response updateOutput(@ApiParam(name = "id", required = true)
                                  @PathParam("id") @NotEmpty String id,
                                  @ApiParam(name = "output_id", required = true)
@@ -168,6 +172,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.INPUT_UPDATE)
     public Response updateInput(@ApiParam(name = "id", required = true)
                                 @PathParam("id") @NotEmpty String id,
                                 @ApiParam(name = "input_id", required = true)
@@ -188,6 +193,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.SNIPPET_UPDATE)
     public Response updateSnippet(@ApiParam(name = "id", required = true)
                                   @PathParam("id") @NotEmpty String id,
                                   @ApiParam(name = "snippet_id", required = true)
@@ -206,6 +212,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector configuration")
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CREATE)
     public CollectorConfiguration createConfiguration(@ApiParam(name = "createDefaults")
                                                       @QueryParam("createDefaults") RestBoolean createDefaults,
                                                       @ApiParam(name = "JSON body", required = true)
@@ -226,6 +233,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Updates a collector configuration name")
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_UPDATE)
     public CollectorConfiguration updateConfigurationName(@ApiParam(name = "id")
                                                           @PathParam("id") String id,
                                                           @ApiParam(name = "JSON body", required = true)
@@ -250,6 +258,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.OUTPUT_CREATE)
     public Response createOutput(@ApiParam(name = "id", required = true)
                                  @PathParam("id") @NotEmpty String id,
                                  @ApiParam(name = "JSON body", required = true)
@@ -269,6 +278,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.INPUT_CREATE)
     public Response createInput(@ApiParam(name = "id", required = true)
                                 @PathParam("id") @NotEmpty String id,
                                 @ApiParam(name = "JSON body", required = true)
@@ -288,6 +298,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.SNIPPET_CREATE)
     public Response createSnippet(@ApiParam(name = "id", required = true)
                                   @PathParam("id") @NotEmpty String id,
                                   @ApiParam(name = "JSON body", required = true)
@@ -308,6 +319,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CLONE)
     public Response copyConfiguration(@ApiParam(name = "id", required = true)
                                @PathParam("id") String id,
                                @PathParam("name") String name) throws NotFoundException {
@@ -327,6 +339,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration or Output not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.OUTPUT_CLONE)
     public Response copyOutput(@ApiParam(name = "id", required = true)
                                @PathParam("id") String id,
                                @PathParam("outputId") String outputId,
@@ -347,6 +360,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration or Input not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.INPUT_CLONE)
     public Response copyInput(@ApiParam(name = "id", required = true)
                                @PathParam("id") String id,
                                @PathParam("inputId") String inputId,
@@ -367,6 +381,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration or Snippet not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.SNIPPET_CLONE)
     public Response copySnippet(@ApiParam(name = "id", required = true)
                                @PathParam("id") String id,
                                @PathParam("snippetId") String snippetId,
@@ -386,6 +401,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_DELETE)
     public void deleteConfiguration(@ApiParam(name = "id", required = true)
                                     @PathParam("id") String id) throws NotFoundException {
         collectorConfigurationService.delete(id);
@@ -401,6 +417,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 400, message = "Invalid ObjectId."),
             @ApiResponse(code = 412, message = "Still inputs assigned to output")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.OUTPUT_DELETE)
     public Response deleteOutput(@ApiParam(name = "id", required = true)
                                  @PathParam("id") String id,
                                  @PathParam("outputId") String outputId) throws NotFoundException {
@@ -423,6 +440,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration or Input not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.INPUT_DELETE)
     public void deleteInput(@ApiParam(name = "id", required = true)
                             @PathParam("id") String id,
                             @PathParam("inputId") String inputId) throws NotFoundException {
@@ -438,6 +456,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
             @ApiResponse(code = 404, message = "Configuration or Snippet not found."),
             @ApiResponse(code = 400, message = "Invalid ObjectId.")
     })
+    @AuditEvent(type = CollectorAuditEventTypes.SNIPPET_DELETE)
     public void deleteSnippet(@ApiParam(name = "id", required = true)
                               @PathParam("id") String id,
                               @PathParam("snippetId") String snippetId) throws NotFoundException {
