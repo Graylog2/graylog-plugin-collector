@@ -18,13 +18,21 @@ package org.graylog.plugins.collector.configurations.rest.resources;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
-import org.graylog.plugins.collector.configurations.rest.models.*;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorConfiguration;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorConfigurationSnippet;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorConfigurationSummary;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorInput;
+import org.graylog.plugins.collector.configurations.rest.models.CollectorOutput;
 import org.graylog.plugins.collector.configurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
@@ -38,7 +46,15 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -246,7 +262,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                 .build();
 
         collectorConfigurationService.save(updatedConfiguration);
-        return persistedConfiguration;
+        return updatedConfiguration;
     }
 
     @POST
