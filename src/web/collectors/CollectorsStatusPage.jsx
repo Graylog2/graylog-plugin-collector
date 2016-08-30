@@ -142,7 +142,7 @@ const CollectorsStatusPage = React.createClass({
 
           <span>
             Read more about collectors and how to set them up in the
-            {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR} text="Graylog documentation"/>.
+            {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation"/>.
           </span>
 
           <span>
