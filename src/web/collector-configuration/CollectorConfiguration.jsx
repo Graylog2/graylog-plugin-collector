@@ -150,16 +150,6 @@ const CollectorConfiguration = React.createClass({
         .then(() => this._onSuccessfulUpdate(callback));
   },
 
-  _copyInput(inputId, name, callback) {
-    CollectorConfigurationsActions.copyInput.triggerPromise(inputId, name, this.props.configuration.id)
-        .then(() => this._onSuccessfulUpdate(callback));
-  },
-
-  _copySnippet(snippetId, name, callback) {
-    CollectorConfigurationsActions.copySnippet.triggerPromise(snippetId, name, this.props.configuration.id)
-        .then(() => this._onSuccessfulUpdate(callback));
-  },
-
   _deleteOutput(output) {
     CollectorConfigurationsActions.deleteOutput.triggerPromise(output, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate());
