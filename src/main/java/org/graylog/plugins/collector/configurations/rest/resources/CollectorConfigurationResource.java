@@ -26,7 +26,6 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
-import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorConfigurationSnippet;
@@ -70,13 +69,10 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     private final ObjectMapper mapper = new ObjectMapper();
 
     private final CollectorConfigurationService collectorConfigurationService;
-    private final CollectorServiceImpl serverCollectorService;
 
     @Inject
-    public CollectorConfigurationResource(CollectorConfigurationService collectorConfigurationService,
-                                          CollectorServiceImpl serverCollectorService) {
+    public CollectorConfigurationResource(CollectorConfigurationService collectorConfigurationService) {
         this.collectorConfigurationService = collectorConfigurationService;
-        this.serverCollectorService = serverCollectorService;
     }
 
     @GET
