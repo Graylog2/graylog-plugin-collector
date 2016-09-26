@@ -69,10 +69,6 @@ public class CollectorConfigurationService {
         return dbCollection.findOne(DBQuery.is("_id", id));
     }
 
-    public CollectorConfiguration findByCollectorId(String collectorId) {
-        return dbCollection.findOne(DBQuery.is("collector_id", collectorId));
-    }
-
     public List<CollectorConfiguration> findByTags(List tags) {
         final DBCursor<CollectorConfiguration> cursor = dbCollection.find().in("tags", tags);
         final List<CollectorConfiguration> result = new ArrayList<>();
