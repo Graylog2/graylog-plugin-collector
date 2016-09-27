@@ -247,11 +247,23 @@ const EditOutputFields = React.createClass({
                        help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
                        required />
                 <Input type="checkbox"
+                       id={this._getId('logstash-loadbalance')}
+                       label="Load balancing"
+                       checked={this.props.properties.loadbalance}
+                       onChange={this._injectProperty('loadbalance')}
+                       help="If enabled and multiple servers are configured, events will balanced onto all hosts"/>
+                <Input type="checkbox"
                        id={this._getId('logstash-tls')}
                        label="Enable TLS support"
                        checked={this.props.properties.tls}
                        onChange={this._injectProperty('tls')}
                        help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                <Input type="checkbox"
+                       id={this._getId('logstash-tls-insecure')}
+                       label="Insecure TLS connection"
+                       checked={this.props.properties.tls_insecure}
+                       onChange={this._injectProperty('tls_insecure')}
+                       help="Controls whether the client verifies server certificates and host names"/>
                 <Input type="text"
                        id={this._getId('logstash-tls-ca-file')}
                        label="CA File"
@@ -270,12 +282,6 @@ const EditOutputFields = React.createClass({
                        value={this.props.properties.cert_key_file}
                        onChange={this._injectProperty('cert_key_file')}
                        help="The path of the key file" />
-                <Input type="checkbox"
-                       id={this._getId('logstash-tls-insecure')}
-                       label="Insecure TLS connection"
-                       checked={this.props.properties.tls_insecure}
-                       onChange={this._injectProperty('tls_insecure')}
-                       help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         case 'winlogbeat:logstash':
@@ -290,11 +296,23 @@ const EditOutputFields = React.createClass({
                        help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
                        required />
                 <Input type="checkbox"
+                       id={this._getId('logstash-loadbalance')}
+                       label="Load balancing"
+                       checked={this.props.properties.loadbalance}
+                       onChange={this._injectProperty('loadbalance')}
+                       help="If enabled and multiple servers are configured, events will balanced onto all hosts"/>
+                <Input type="checkbox"
                        id={this._getId('logstash-tls')}
                        label="Enable TLS support"
                        checked={this.props.properties.tls}
                        onChange={this._injectProperty('tls')}
                        help="Use TLS authentication to secure connections between Beat and Graylog"/>
+                <Input type="checkbox"
+                       id={this._getId('logstash-tls-insecure')}
+                       label="Insecure TLS connection"
+                       checked={this.props.properties.tls_insecure}
+                       onChange={this._injectProperty('tls_insecure')}
+                       help="Controls whether the client verifies server certificates and host names"/>
                 <Input type="text"
                        id={this._getId('logstash-tls-ca-file')}
                        label="CA File"
@@ -313,12 +331,6 @@ const EditOutputFields = React.createClass({
                        value={this.props.properties.cert_key_file}
                        onChange={this._injectProperty('cert_key_file')}
                        help="The path of the key file" />
-                <Input type="checkbox"
-                       id={this._getId('logstash-tls-insecure')}
-                       label="Insecure TLS connection"
-                       checked={this.props.properties.tls_insecure}
-                       onChange={this._injectProperty('tls_insecure')}
-                       help="Controls whether the client verifies server certificates and host names"/>
               </div>);
           break;
         default:
