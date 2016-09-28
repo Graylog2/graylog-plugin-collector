@@ -33,16 +33,16 @@ public abstract class CollectorMetrics {
 
     @JsonProperty("cpu_idle")
     @Nullable
-    public abstract float cpuIdle();
+    public abstract Float cpuIdle();
 
     @JsonProperty("load_1")
     @Nullable
-    public abstract float load1();
+    public abstract Float load1();
 
     @JsonCreator
     public static CollectorMetrics create(@JsonProperty("disks_75") @Nullable List<String> disks75,
-                                          @JsonProperty("cpu_idle") @Nullable float cpuIdle,
-                                          @JsonProperty("load_1") @Nullable float load1) {
+                                          @JsonProperty("cpu_idle") @Nullable Float cpuIdle,
+                                          @JsonProperty("load_1") @Nullable Float load1) {
         return new AutoValue_CollectorMetrics(disks75, cpuIdle, load1);
     }
 }
