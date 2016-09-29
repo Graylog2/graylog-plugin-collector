@@ -17,6 +17,7 @@ const EditOutputModal = React.createClass({
     saveOutput: React.PropTypes.func.isRequired,
     validOutputName: React.PropTypes.func.isRequired,
     selectedGroup: React.PropTypes.string.isRequired,
+    outputList: React.PropTypes.array.isRequired,
   },
 
   getDefaultProps() {
@@ -112,13 +113,6 @@ const EditOutputModal = React.createClass({
     } else {
       triggerButtonContent = <span>Edit</span>;
     }
-    const types = [
-      { group: 'nxlog', value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
-      { group: 'nxlog', value: 'nxlog:gelf-tcp', label: '[NXLog] GELF TCP output' },
-      { group: 'nxlog', value: 'nxlog:gelf-tcp-tls', label: '[NXLog] GELF TCP/TLS output' },
-      { group: 'beat', value: 'filebeat:logstash', label: '[FileBeat] Beats output' },
-      { group: 'beat', value: 'winlogbeat:logstash', label: '[WinLogBeat] Beats output' }
-    ];
 
     return (
       <span>
@@ -143,7 +137,7 @@ const EditOutputModal = React.createClass({
                    required />
             <Input id={this._getId('output-type')} label="Type" help="Choose the output type you want to configure">
               <Select ref="select-type"
-                      options={types.filter(type => type.group === this.props.selectedGroup)}
+                      options={this.props.outputList.filter(type => type.group === this.props.selectedGroup)}
                       value={this.state.selectedType}
                       onValueChange={this._changeType}
                       placeholder="Choose output type..."

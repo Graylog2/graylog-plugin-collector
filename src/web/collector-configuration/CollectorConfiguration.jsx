@@ -66,7 +66,8 @@ const CollectorConfiguration = React.createClass({
                            type={output.type} properties={output.properties}
                            create={false} selectedGroup={this.state.tab}
                            saveOutput={this._saveOutput}
-                           validOutputName={this._validOutputName} />
+                           validOutputName={this._validOutputName}
+                           outputList={this._filteredOutputs()} />
         </td>
       </tr>
     );
@@ -218,6 +219,47 @@ const CollectorConfiguration = React.createClass({
     return false;
   },
 
+  _filteredOutputs() {
+    let filebeatOutputs = 0;
+    let winlogbeatOutputs = 0;
+    const outputs = [
+      { group: 'nxlog', value: 'nxlog:gelf-udp', label: '[NXLog] GELF UDP output' },
+      { group: 'nxlog', value: 'nxlog:gelf-tcp', label: '[NXLog] GELF TCP output' },
+      { group: 'nxlog', value: 'nxlog:gelf-tcp-tls', label: '[NXLog] GELF TCP/TLS output' },
+      { group: 'beat', value: 'filebeat:logstash', label: '[FileBeat] Beats output' },
+      { group: 'beat', value: 'winlogbeat:logstash', label: '[WinLogBeat] Beats output' },
+    ];
+
+    this.props.configuration.outputs.forEach(item => {
+      switch (item.backend) {
+        case 'filebeat':
+          filebeatOutputs++;
+          break;
+        case 'winlogbeat':
+          winlogbeatOutputs++;
+          break;
+        default:
+      }
+    });
+
+    outputs.forEach((item, index) => {
+      switch (item.value.split(':', 1)[0]) {
+        case 'filebeat':
+          if (filebeatOutputs >= 1) {
+            outputs[index].disabled = true;
+          }
+          break;
+        case 'winlogbeat':
+          if (winlogbeatOutputs >= 1) {
+            outputs[index].disabled = true;
+          }
+          break;
+        default:
+      }
+    });
+    return outputs;
+  },
+
   render() {
     const outputHeaders = ['Output', 'Type', 'Id', 'Actions'];
     const inputHeaders = ['Input', 'Type', 'Forward To', 'Id', 'Actions'];
@@ -272,7 +314,8 @@ const CollectorConfiguration = React.createClass({
                         <EditOutputModal create
                                          saveOutput={this._saveOutput}
                                          validOutputName={this._validOutputName}
-                                         selectedGroup={this.state.tab}/>
+                                         selectedGroup={this.state.tab}
+                                         outputList={this._filteredOutputs()}/>
                       </div>
 
                       <h2>Configure {this._tabDisplayName()} Outputs</h2>
