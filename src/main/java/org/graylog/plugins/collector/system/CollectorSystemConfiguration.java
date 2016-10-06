@@ -28,6 +28,8 @@ public abstract class CollectorSystemConfiguration {
 
     private static final Period DEFAULT_EXPIRATION_PERIOD = Period.days(14);
     private static final Period DEFAULT_INACTIVE_THRESHOLD = Period.minutes(1);
+    private static final Period DEFAULT_UPDATE_INTERVAL = Period.seconds(30);
+    private static final boolean DEFAULT_SEND_STATUS = true;
 
     @JsonProperty("collector_expiration_threshold")
     public abstract Period collectorExpirationThreshold();
@@ -35,12 +37,22 @@ public abstract class CollectorSystemConfiguration {
     @JsonProperty("collector_inactive_threshold")
     public abstract Period collectorInactiveThreshold();
 
+    @JsonProperty("collector_update_interval")
+    public abstract Period collectorUpdateInterval();
+
+    @JsonProperty("collector_send_status")
+    public abstract boolean collectorSendStatus();
+
     @JsonCreator
     public static CollectorSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
-                                                      @JsonProperty("collector_inactive_threshold") Period inactiveThreshold) {
+                                                      @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
+                                                      @JsonProperty("collector_update_interval") Period updateInterval,
+                                                      @JsonProperty("collector_send_status") boolean sendStatus) {
         return builder()
                 .collectorExpirationThreshold(expirationThreshold)
                 .collectorInactiveThreshold(inactiveThreshold)
+                .collectorUpdateInterval(updateInterval)
+                .collectorSendStatus(sendStatus)
                 .build();
     }
 
@@ -48,6 +60,8 @@ public abstract class CollectorSystemConfiguration {
         return builder()
                 .collectorExpirationThreshold(DEFAULT_EXPIRATION_PERIOD)
                 .collectorInactiveThreshold(DEFAULT_INACTIVE_THRESHOLD)
+                .collectorUpdateInterval(DEFAULT_UPDATE_INTERVAL)
+                .collectorSendStatus(DEFAULT_SEND_STATUS)
                 .build();
     }
 
@@ -62,6 +76,10 @@ public abstract class CollectorSystemConfiguration {
         public abstract Builder collectorExpirationThreshold(Period expirationThreshold);
 
         public abstract Builder collectorInactiveThreshold(Period inactiveThreshold);
+
+        public abstract Builder collectorUpdateInterval(Period updateInterval);
+
+        public abstract Builder collectorSendStatus(boolean sendStatus);
 
         public abstract CollectorSystemConfiguration build();
     }
