@@ -36,7 +36,7 @@ const ConfigurationRow = React.createClass({
   render() {
     const configuration = this.props.configuration;
     const tagBadges = configuration.tags.map((tag) => {
-      return <Label key={tag} bsStyle="default" className="configuration-tag">{tag}</Label>;
+      return <span className="badge" key={tag} style={{ fontWeight: 'normal' }}>{tag}</span>;
     });
 
     return (

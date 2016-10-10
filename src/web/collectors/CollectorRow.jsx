@@ -25,6 +25,10 @@ const CollectorRow = React.createClass({
 
   style: require('!style/useable!css!styles/CollectorStyles.css'),
 
+  _getId(prefixIdName) {
+    return prefixIdName + this.props.collector.id;
+  },
+
   _getOsGlyph(operatingSystem) {
     let glyphClass = 'fa-question-circle';
     const os = operatingSystem.trim().toLowerCase();
@@ -67,6 +71,12 @@ const CollectorRow = React.createClass({
     }
   },
 
+  _tagsAsBadges(collector) {
+    return collector.node_details.tags.map((tag) =>
+      <span className="badge" key={this._getId(tag)} style={{ fontWeight: 'normal', fontSize: '75%' }}>{tag}</span>
+    );
+  },
+
   render() {
     const collector = this.props.collector;
     const collectorClass = collector.active ? '' : 'greyed-out inactive';
@@ -83,6 +93,9 @@ const CollectorRow = React.createClass({
           <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
             <a>{collector.node_id}</a>
           </LinkContainer>
+          <p>
+            {this._tagsAsBadges(collector)}
+          </p>
         </td>
         <td className="limited">
           <Label bsStyle={this._labelClassForState(collectorState)}
