@@ -429,11 +429,11 @@ const EditInputFields = React.createClass({
                        required />
                 <Input type="text"
                        id={this._getId('ignore-older')}
-                       label="Ignore files older then"
+                       label="Ignore files older than"
                        value={this.props.properties.ignore_older}
                        onChange={this._changeDuration('ignore_older')}
                        bsStyle={this._fieldError('ignore-older') ? 'error' : null}
-                       help={this._fieldError('ignore-older') ? this.state.errorMessage: "Ignore files which were modified more then the defined timespan in the past (e.g 2h)"}
+                       help={this._fieldError('ignore-older') ? this.state.errorMessage: "Ignore files which were modified more than the defined timespan in the past (e.g. 2h)"}
                        required />
                 <Input type="text"
                        id={this._getId('scan-frequency')}
