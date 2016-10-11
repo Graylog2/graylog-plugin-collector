@@ -120,12 +120,13 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
         final Collector collector = collectorService.fromRequest(collectorId, request, collectorVersion);
-
         collectorService.save(collector);
+
+        final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
         final CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
                 CollectorRegistrationConfiguration.create(
-                        configSupplier.get().collectorUpdateInterval().getSeconds(),
-                        configSupplier.get().collectorSendStatus())
+                        collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
+                        collectorSystemConfiguration.collectorSendStatus())
         );
         return Response.accepted(collectorRegistrationResponse).build();
     }
