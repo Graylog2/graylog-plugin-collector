@@ -16,7 +16,6 @@
  */
 package org.graylog.plugins.collector.collectors.rest.models.responses;
 
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,12 +23,16 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorRegistrationResponse {
-    @JsonProperty("configuration")
-    public abstract CollectorRegistrationConfiguration collectorRegistrationConfiguration();
+public abstract class CollectorRegistrationConfiguration {
+    @JsonProperty
+    public abstract int updateInterval();
+
+    @JsonProperty
+    public abstract boolean sendStatus();
 
     @JsonCreator
-    public static CollectorRegistrationResponse create(@JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration) {
-        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration);
+    public static CollectorRegistrationConfiguration create(@JsonProperty("update_interval") int updateInterval,
+                                                            @JsonProperty("send_status") boolean sendStatus) {
+        return new AutoValue_CollectorRegistrationConfiguration(updateInterval, sendStatus);
     }
 }

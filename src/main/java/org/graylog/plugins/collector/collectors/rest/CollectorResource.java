@@ -32,6 +32,7 @@ import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.Collectors;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
+import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationResponse;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
@@ -122,8 +123,9 @@ public class CollectorResource extends RestResource implements PluginRestResourc
 
         collectorService.save(collector);
         final CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
-                configSupplier.get().collectorUpdateInterval().getSeconds(),
-                configSupplier.get().collectorSendStatus()
+                CollectorRegistrationConfiguration.create(
+                        configSupplier.get().collectorUpdateInterval().getSeconds(),
+                        configSupplier.get().collectorSendStatus())
         );
         return Response.accepted(collectorRegistrationResponse).build();
     }
