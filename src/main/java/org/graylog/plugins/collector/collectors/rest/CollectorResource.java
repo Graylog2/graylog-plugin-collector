@@ -32,6 +32,8 @@ import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.Collectors;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
+import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationConfiguration;
+import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationResponse;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
@@ -64,11 +66,13 @@ import java.util.List;
 public class CollectorResource extends RestResource implements PluginRestResource {
     private final CollectorService collectorService;
     private final LostCollectorFunction lostCollectorFunction;
+    private final Supplier<CollectorSystemConfiguration> configSupplier;
 
     @Inject
     public CollectorResource(CollectorService collectorService, Supplier<CollectorSystemConfiguration> configSupplier) {
         this.collectorService = collectorService;
         this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
+        this.configSupplier = configSupplier;
     }
 
     @GET
@@ -116,10 +120,15 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
         final Collector collector = collectorService.fromRequest(collectorId, request, collectorVersion);
-
         collectorService.save(collector);
 
-        return Response.accepted().build();
+        final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
+        final CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
+                CollectorRegistrationConfiguration.create(
+                        collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
+                        collectorSystemConfiguration.collectorSendStatus())
+        );
+        return Response.accepted(collectorRegistrationResponse).build();
     }
 
     @VisibleForTesting
