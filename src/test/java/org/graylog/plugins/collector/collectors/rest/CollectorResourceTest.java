@@ -91,24 +91,17 @@ public class CollectorResourceTest extends RestResourceBaseTest {
         assertEquals(collectorSummary, response);
     }
 
-    private Collector getDummyCollector(String id, String nodeId, DateTime lastSeen, String operatingSystem) {
-        final CollectorNodeDetails collectorNodeDetails = mock(CollectorNodeDetails.class);
-        when(collectorNodeDetails.operatingSystem()).thenReturn(operatingSystem);
-
+    private Collector getDummyCollector(String id) {
         final Collector collector = mock(Collector.class);
         when(collector.getId()).thenReturn(id);
-        when(collector.getNodeId()).thenReturn(nodeId);
-        when(collector.getLastSeen()).thenReturn(lastSeen);
-        when(collector.getNodeDetails()).thenReturn(collectorNodeDetails);
-        when(collector.getNodeDetails().operatingSystem()).thenReturn(operatingSystem);
 
         return collector;
     }
 
     private List<Collector> getDummyCollectorList() {
-        final Collector collector1 = getDummyCollector("collector1id", "collector1nodeid", DateTime.now(DateTimeZone.UTC), "DummyOS 1.0");
-        final Collector collector2 = getDummyCollector("collector2id", "collector2nodeid", DateTime.now(DateTimeZone.UTC), "DummyOS 1.0");
-        final Collector collector3 = getDummyCollector("collector3id", "collector3nodeid", DateTime.now(DateTimeZone.UTC), "DummyOS 1.0");
+        final Collector collector1 = getDummyCollector("collector1id");
+        final Collector collector2 = getDummyCollector("collector2id");
+        final Collector collector3 = getDummyCollector("collector3id");
 
         return Lists.newArrayList(collector1, collector2, collector3);
     }
