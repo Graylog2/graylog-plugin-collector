@@ -184,17 +184,6 @@ const EditInputFields = React.createClass({
     }
   },
 
-  _changeString(name) {
-    return (event) => {
-      if (!this._validString(event.target.value)) {
-        this._changeErrorState(true, 'Invalid string', event.target.id);
-      } else {
-        this._changeErrorState(false, '', event.target.id);
-      }
-      this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
-    }
-  },
-
   _changePattern(name) {
     return (event) => {
       if (!this._validPattern(event.target.value)) {
@@ -232,10 +221,6 @@ const EditInputFields = React.createClass({
 
   _validNumber(value) {
     return !isNaN(parseInt(value));
-  },
-
-  _validString(value) {
-    return value;
   },
 
   _validPattern(value) {
@@ -442,9 +427,8 @@ const EditInputFields = React.createClass({
                        id={this._getId('encoding')}
                        label="Encoding"
                        value={this.props.properties.encoding}
-                       onChange={this._changeString('encoding')}
-                       bsStyle={this._fieldError('encoding') ? 'error' : null}
-                       help={this._fieldError('encoding') ? this.state.errorMessage: "Type 'utf-8' or 'gbk'"}
+                       onChange={this._injectProperty('encoding')}
+                       help="Type to be published in the 'encoding' field (e.g. 'utf-8' or 'gbk')"
                        required />
                 <Input type="text"
                        id={this._getId('document-type')}
