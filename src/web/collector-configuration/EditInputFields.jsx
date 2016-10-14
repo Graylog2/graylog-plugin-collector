@@ -100,6 +100,9 @@ const EditInputFields = React.createClass({
         if (!value.hasOwnProperty('scan_frequency')) {
           this.props.injectProperties('scan_frequency', '10s');
         };
+        if (!value.hasOwnProperty('encoding')) {
+          this.props.injectProperties('encoding', 'utf-8');
+        };
         if (!value.hasOwnProperty('ignore_older')) {
           this.props.injectProperties('ignore_older', '0');
         };
@@ -419,6 +422,13 @@ const EditInputFields = React.createClass({
                        onChange={this._changeList('paths')}
                        bsStyle={this._fieldError('file-paths') ? 'error' : null}
                        help={this._fieldError('file-paths') ? this.state.errorMessage: "Location of the log files to use"}
+                       required />
+                <Input type="text"
+                       id={this._getId('encoding')}
+                       label="Encoding"
+                       value={this.props.properties.encoding}
+                       onChange={this._injectProperty('encoding')}
+                       help="Type to be published in the 'encoding' field (e.g. 'utf-8' or 'gbk')"
                        required />
                 <Input type="text"
                        id={this._getId('document-type')}
