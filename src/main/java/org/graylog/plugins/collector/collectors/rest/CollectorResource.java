@@ -123,11 +123,11 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         collectorService.save(collector);
 
         final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
-        final CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
+        CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
                 CollectorRegistrationConfiguration.create(
-                        collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
-                        collectorSystemConfiguration.collectorSendStatus())
-        );
+                    collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
+                    collectorSystemConfiguration.collectorSendStatus()),
+                collectorSystemConfiguration.collectorConfigurationOverride());
         return Response.accepted(collectorRegistrationResponse).build();
     }
 
