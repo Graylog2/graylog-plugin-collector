@@ -33,8 +33,13 @@ public abstract class CollectorRegistrationResponse {
     @Nullable
     public abstract CollectorRegistrationConfiguration collectorRegistrationConfiguration();
 
+    @JsonProperty
+    @Nullable
+    public abstract Boolean collectorConfigOverride();
+
     @JsonCreator
-    public static CollectorRegistrationResponse create(@JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration) {
-        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration);
+    public static CollectorRegistrationResponse create(@JsonProperty("configuration") @Nullable CollectorRegistrationConfiguration collectorRegistrationConfiguration,
+                                                       @JsonProperty("collector_config_override") @Nullable Boolean configOverride) {
+        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration, configOverride);
     }
 }

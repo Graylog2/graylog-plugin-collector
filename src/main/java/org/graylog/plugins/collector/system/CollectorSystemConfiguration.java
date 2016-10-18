@@ -24,6 +24,8 @@ import org.joda.time.Period;
 
 import javax.annotation.Nullable;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 @JsonAutoDetect
 @AutoValue
 public abstract class CollectorSystemConfiguration {
@@ -32,6 +34,7 @@ public abstract class CollectorSystemConfiguration {
     private static final Period DEFAULT_INACTIVE_THRESHOLD = Period.minutes(1);
     private static final Period DEFAULT_UPDATE_INTERVAL = Period.seconds(30);
     private static final Boolean DEFAULT_SEND_STATUS = true;
+    private static final Boolean DEFAULT_CONFIG_OVERRIDE = false;
 
     @JsonProperty("collector_expiration_threshold")
     public abstract Period collectorExpirationThreshold();
@@ -47,16 +50,22 @@ public abstract class CollectorSystemConfiguration {
     @Nullable
     public abstract Boolean collectorSendStatus();
 
+    @JsonProperty("collector_config_override")
+    @Nullable
+    public abstract Boolean collectorConfigOverride();
+
     @JsonCreator
     public static CollectorSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
                                                       @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
                                                       @JsonProperty("collector_update_interval") @Nullable Period updateInterval,
-                                                      @JsonProperty("collector_send_status") @Nullable Boolean sendStatus) {
+                                                      @JsonProperty("collector_send_status") @Nullable Boolean sendStatus,
+                                                      @JsonProperty("collector_config_override") @Nullable Boolean configOverride) {
         return builder()
                 .collectorExpirationThreshold(expirationThreshold)
                 .collectorInactiveThreshold(inactiveThreshold)
-                .collectorUpdateInterval(updateInterval)
-                .collectorSendStatus(sendStatus)
+                .collectorUpdateInterval(firstNonNull(updateInterval, DEFAULT_UPDATE_INTERVAL))
+                .collectorSendStatus(firstNonNull(sendStatus, DEFAULT_SEND_STATUS))
+                .collectorConfigOverride(firstNonNull(configOverride, DEFAULT_CONFIG_OVERRIDE))
                 .build();
     }
 
@@ -66,6 +75,7 @@ public abstract class CollectorSystemConfiguration {
                 .collectorInactiveThreshold(DEFAULT_INACTIVE_THRESHOLD)
                 .collectorUpdateInterval(DEFAULT_UPDATE_INTERVAL)
                 .collectorSendStatus(DEFAULT_SEND_STATUS)
+                .collectorConfigOverride(DEFAULT_CONFIG_OVERRIDE)
                 .build();
     }
 
@@ -84,6 +94,8 @@ public abstract class CollectorSystemConfiguration {
         public abstract Builder collectorUpdateInterval(Period updateInterval);
 
         public abstract Builder collectorSendStatus(Boolean sendStatus);
+
+        public abstract Builder collectorConfigOverride(Boolean configOverride);
 
         public abstract CollectorSystemConfiguration build();
     }

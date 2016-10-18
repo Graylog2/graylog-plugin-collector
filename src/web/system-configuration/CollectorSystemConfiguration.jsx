@@ -14,6 +14,7 @@ const CollectorSystemConfiguration = React.createClass({
       collector_inactive_threshold: React.PropTypes.string,
       collector_update_interval: React.PropTypes.string,
       collector_send_status: React.PropTypes.bool,
+      collector_override_configuration: React.PropTypes.bool,
     }),
     updateConfig: React.PropTypes.func.isRequired,
   },
@@ -25,6 +26,7 @@ const CollectorSystemConfiguration = React.createClass({
         collector_inactive_threshold: 'PT1M',
         collector_update_interval: 'PT30S',
         collector_send_status: true,
+        collector_override_configuration: false,
       },
     };
   },
@@ -102,6 +104,8 @@ const CollectorSystemConfiguration = React.createClass({
           <dd>{this.state.config.collector_update_interval}</dd>
           <dt>Send status:</dt>
           <dd>{StringUtils.capitalizeFirstLetter(this.state.config.collector_send_status.toString())}</dd>
+          <dt>Override configuration:</dt>
+          <dd>{StringUtils.capitalizeFirstLetter(this.state.config.collector_override_configuration.toString())}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -142,6 +146,11 @@ const CollectorSystemConfiguration = React.createClass({
                  checked={this.state.config.collector_send_status}
                  onChange={this._onUpdate('collector_send_status')}
                  help="Send collector status and host metrics from each client" />
+          <Input type="checkbox"
+                 label="Override Sidecar configuration"
+                 checked={this.state.config.collector_override_configuration}
+                 onChange={this._onUpdate('collector_override_configuration')}
+                 help="Override configuration file settings for all Sidecar's with these options" />
         </BootstrapModalForm>
       </div>
     );
