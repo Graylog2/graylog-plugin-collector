@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.joda.time.Period;
 
+import javax.annotation.Nullable;
+
 @JsonAutoDetect
 @AutoValue
 public abstract class CollectorSystemConfiguration {
@@ -29,7 +31,7 @@ public abstract class CollectorSystemConfiguration {
     private static final Period DEFAULT_EXPIRATION_PERIOD = Period.days(14);
     private static final Period DEFAULT_INACTIVE_THRESHOLD = Period.minutes(1);
     private static final Period DEFAULT_UPDATE_INTERVAL = Period.seconds(30);
-    private static final boolean DEFAULT_SEND_STATUS = true;
+    private static final Boolean DEFAULT_SEND_STATUS = true;
 
     @JsonProperty("collector_expiration_threshold")
     public abstract Period collectorExpirationThreshold();
@@ -38,16 +40,18 @@ public abstract class CollectorSystemConfiguration {
     public abstract Period collectorInactiveThreshold();
 
     @JsonProperty("collector_update_interval")
+    @Nullable
     public abstract Period collectorUpdateInterval();
 
     @JsonProperty("collector_send_status")
-    public abstract boolean collectorSendStatus();
+    @Nullable
+    public abstract Boolean collectorSendStatus();
 
     @JsonCreator
     public static CollectorSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
                                                       @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
-                                                      @JsonProperty("collector_update_interval") Period updateInterval,
-                                                      @JsonProperty("collector_send_status") boolean sendStatus) {
+                                                      @JsonProperty("collector_update_interval") @Nullable Period updateInterval,
+                                                      @JsonProperty("collector_send_status") @Nullable Boolean sendStatus) {
         return builder()
                 .collectorExpirationThreshold(expirationThreshold)
                 .collectorInactiveThreshold(inactiveThreshold)
@@ -79,7 +83,7 @@ public abstract class CollectorSystemConfiguration {
 
         public abstract Builder collectorUpdateInterval(Period updateInterval);
 
-        public abstract Builder collectorSendStatus(boolean sendStatus);
+        public abstract Builder collectorSendStatus(Boolean sendStatus);
 
         public abstract CollectorSystemConfiguration build();
     }

@@ -19,13 +19,18 @@ package org.graylog.plugins.collector.collectors.rest.models.responses;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+
+import javax.annotation.Nullable;
 
 @AutoValue
 @JsonAutoDetect
 public abstract class CollectorRegistrationResponse {
     @JsonProperty("configuration")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Nullable
     public abstract CollectorRegistrationConfiguration collectorRegistrationConfiguration();
 
     @JsonCreator

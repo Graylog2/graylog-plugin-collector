@@ -20,11 +20,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.collectors.Collector;
@@ -47,14 +43,7 @@ import org.joda.time.Period;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -123,11 +112,16 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         collectorService.save(collector);
 
         final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
-        final CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
-                CollectorRegistrationConfiguration.create(
+        CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(null);
+        if (collectorSystemConfiguration.collectorUpdateInterval() != null &&
+                collectorSystemConfiguration.collectorSendStatus() != null) {
+            collectorRegistrationResponse = CollectorRegistrationResponse.create(
+                    CollectorRegistrationConfiguration.create(
                         collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
-                        collectorSystemConfiguration.collectorSendStatus())
-        );
+                        collectorSystemConfiguration.collectorSendStatus()
+                    )
+            );
+        }
         return Response.accepted(collectorRegistrationResponse).build();
     }
 
