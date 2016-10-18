@@ -7,7 +7,7 @@
     "url": "Graylog2/graylog-plugin-collector"
   },
   "scripts": {
-    "build": "webpack --bail -p"
+    "build": "webpack --bail"
   },
   "keywords": [
     "graylog"
