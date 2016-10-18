@@ -28,12 +28,12 @@ public abstract class CollectorRegistrationResponse {
     @JsonProperty("configuration")
     public abstract CollectorRegistrationConfiguration collectorRegistrationConfiguration();
 
-    @JsonProperty
-    public abstract boolean collectorConfigOverride();
+    @JsonProperty("configuration_override")
+    public abstract boolean configurationOverride();
 
     @JsonCreator
     public static CollectorRegistrationResponse create(@JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
-                                                       @JsonProperty("collector_config_override") boolean configOverride) {
-        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration, configOverride);
+                                                       @JsonProperty("configuration_override") boolean configurationOverride) {
+        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration, configurationOverride);
     }
 }

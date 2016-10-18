@@ -125,9 +125,9 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
         CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
                 CollectorRegistrationConfiguration.create(
-                    configSupplier.get().collectorUpdateInterval().getSeconds(),
-                    configSupplier.get().collectorSendStatus()),
-                configSupplier.get().collectorConfigOverride());
+                    collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
+                    collectorSystemConfiguration.collectorSendStatus()),
+                collectorSystemConfiguration.collectorConfigurationOverride());
         return Response.accepted(collectorRegistrationResponse).build();
     }
 

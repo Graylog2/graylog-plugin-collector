@@ -48,21 +48,21 @@ public abstract class CollectorSystemConfiguration {
     @JsonProperty("collector_send_status")
     public abstract boolean collectorSendStatus();
 
-    @JsonProperty("collector_config_override")
-    public abstract boolean collectorConfigOverride();
+    @JsonProperty("collector_configuration_override")
+    public abstract boolean collectorConfigurationOverride();
 
     @JsonCreator
     public static CollectorSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
                                                       @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
                                                       @JsonProperty("collector_update_interval") @Nullable Period updateInterval,
                                                       @JsonProperty("collector_send_status") @Nullable Boolean sendStatus,
-                                                      @JsonProperty("collector_config_override") @Nullable Boolean configOverride) {
+                                                      @JsonProperty("collector_configuration_override") @Nullable Boolean configurationOverride) {
         return builder()
                 .collectorExpirationThreshold(expirationThreshold)
                 .collectorInactiveThreshold(inactiveThreshold)
                 .collectorUpdateInterval(firstNonNull(updateInterval, DEFAULT_UPDATE_INTERVAL))
                 .collectorSendStatus(firstNonNull(sendStatus, DEFAULT_SEND_STATUS))
-                .collectorConfigOverride(firstNonNull(configOverride, DEFAULT_CONFIG_OVERRIDE))
+                .collectorConfigurationOverride(firstNonNull(configurationOverride, DEFAULT_CONFIG_OVERRIDE))
                 .build();
     }
 
@@ -72,7 +72,7 @@ public abstract class CollectorSystemConfiguration {
                 .collectorInactiveThreshold(DEFAULT_INACTIVE_THRESHOLD)
                 .collectorUpdateInterval(DEFAULT_UPDATE_INTERVAL)
                 .collectorSendStatus(DEFAULT_SEND_STATUS)
-                .collectorConfigOverride(DEFAULT_CONFIG_OVERRIDE)
+                .collectorConfigurationOverride(DEFAULT_CONFIG_OVERRIDE)
                 .build();
     }
 
@@ -92,7 +92,7 @@ public abstract class CollectorSystemConfiguration {
 
         public abstract Builder collectorSendStatus(boolean sendStatus);
 
-        public abstract Builder collectorConfigOverride(boolean configOverride);
+        public abstract Builder collectorConfigurationOverride(boolean configurationOverride);
 
         public abstract CollectorSystemConfiguration build();
     }
