@@ -23,22 +23,18 @@ import com.google.auto.value.AutoValue;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.joda.time.Period;
 
-import javax.annotation.Nullable;
-
 @AutoValue
 @JsonAutoDetect
 public abstract class CollectorRegistrationConfiguration {
     @JsonProperty
-    @Nullable
-    public abstract Integer updateInterval();
+    public abstract int updateInterval();
 
     @JsonProperty
-    @Nullable
-    public abstract Boolean sendStatus();
+    public abstract boolean sendStatus();
 
     @JsonCreator
-    public static CollectorRegistrationConfiguration create(@JsonProperty("update_interval") @Nullable Integer updateInterval,
-                                                            @JsonProperty("send_status") @Nullable Boolean sendStatus) {
+    public static CollectorRegistrationConfiguration create(@JsonProperty("update_interval") int updateInterval,
+                                                            @JsonProperty("send_status") boolean sendStatus) {
         return new AutoValue_CollectorRegistrationConfiguration(updateInterval, sendStatus);
     }
 

@@ -33,8 +33,8 @@ public abstract class CollectorSystemConfiguration {
     private static final Period DEFAULT_EXPIRATION_PERIOD = Period.days(14);
     private static final Period DEFAULT_INACTIVE_THRESHOLD = Period.minutes(1);
     private static final Period DEFAULT_UPDATE_INTERVAL = Period.seconds(30);
-    private static final Boolean DEFAULT_SEND_STATUS = true;
-    private static final Boolean DEFAULT_CONFIG_OVERRIDE = false;
+    private static final boolean DEFAULT_SEND_STATUS = true;
+    private static final boolean DEFAULT_CONFIG_OVERRIDE = false;
 
     @JsonProperty("collector_expiration_threshold")
     public abstract Period collectorExpirationThreshold();
@@ -43,16 +43,13 @@ public abstract class CollectorSystemConfiguration {
     public abstract Period collectorInactiveThreshold();
 
     @JsonProperty("collector_update_interval")
-    @Nullable
     public abstract Period collectorUpdateInterval();
 
     @JsonProperty("collector_send_status")
-    @Nullable
-    public abstract Boolean collectorSendStatus();
+    public abstract boolean collectorSendStatus();
 
     @JsonProperty("collector_config_override")
-    @Nullable
-    public abstract Boolean collectorConfigOverride();
+    public abstract boolean collectorConfigOverride();
 
     @JsonCreator
     public static CollectorSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
@@ -93,9 +90,9 @@ public abstract class CollectorSystemConfiguration {
 
         public abstract Builder collectorUpdateInterval(Period updateInterval);
 
-        public abstract Builder collectorSendStatus(Boolean sendStatus);
+        public abstract Builder collectorSendStatus(boolean sendStatus);
 
-        public abstract Builder collectorConfigOverride(Boolean configOverride);
+        public abstract Builder collectorConfigOverride(boolean configOverride);
 
         public abstract CollectorSystemConfiguration build();
     }
