@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
-import org.joda.time.Period;
 
 @AutoValue
 @JsonAutoDetect
@@ -36,11 +34,5 @@ public abstract class CollectorRegistrationConfiguration {
     public static CollectorRegistrationConfiguration create(@JsonProperty("update_interval") int updateInterval,
                                                             @JsonProperty("send_status") boolean sendStatus) {
         return new AutoValue_CollectorRegistrationConfiguration(updateInterval, sendStatus);
-    }
-
-    public static CollectorRegistrationConfiguration createFromCollectorSystemConfiguration(CollectorSystemConfiguration config) {
-        final Period updateInterval = config.collectorUpdateInterval();
-        final Boolean sendStatus = config.collectorSendStatus();
-        return new AutoValue_CollectorRegistrationConfiguration(updateInterval == null ? null : updateInterval.getSeconds(), sendStatus);
     }
 }
