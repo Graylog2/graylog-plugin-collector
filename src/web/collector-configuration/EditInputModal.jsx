@@ -118,7 +118,7 @@ const EditInputModal = React.createClass({
     if (this.props.outputs) {
       const outputCount = this.props.outputs.length;
       for (let i = 0; i < outputCount; i++) {
-        options.push({ value: this.props.outputs[i].output_id, label: this.props.outputs[i].name });
+        options.push({ value: this.props.outputs[i].output_id, label: this.props.outputs[i].name + ' [' + this.props.outputs[i].backend + ']'});
       }
     } else {
       options.push({ value: 'none', label: 'No outputs available', disable: true });

@@ -54,7 +54,7 @@ const CollectorConfiguration = React.createClass({
     return (
       <tr key={output.output_id}>
         <td>{output.name}</td>
-        <td>{output.type}</td>
+        <td>{output.backend}</td>
         <td>{output.output_id}</td>
         <td>
           <DeleteConfirmButton entity={output} type="output" onClick={this._deleteOutput} />
