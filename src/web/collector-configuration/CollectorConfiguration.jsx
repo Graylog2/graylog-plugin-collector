@@ -22,7 +22,20 @@ const CollectorConfiguration = React.createClass({
   },
 
   getInitialState() {
-    return {tab: "beat"};
+    const outputs = {};
+    let initialTab = 'beat';
+    outputs.beat = this.props.configuration.outputs.filter(key => key.backend === 'filebeat' || key.backend === 'winlogbeat').length;
+    outputs.nxlog = this.props.configuration.outputs.filter(key => key.backend === 'nxlog').length;
+
+    if (outputs.beat === 0) {
+      const tab = Object.keys(outputs).reduce((a, b) => {
+        return outputs[a] > outputs[b] ? a : b;
+      });
+      if (outputs[tab] > 0) {
+        initialTab = tab;
+      }
+    }
+    return { tab: initialTab };
   },
 
   _headerCellFormatter(header) {
