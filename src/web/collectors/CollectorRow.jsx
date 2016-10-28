@@ -72,9 +72,13 @@ const CollectorRow = React.createClass({
   },
 
   _tagsAsBadges(collector) {
-    return collector.node_details.tags.map((tag) =>
-      <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>
-    );
+    if (collector.node_details.tags) {
+      return collector.node_details.tags.map((tag) =>
+        <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>
+      );
+    } else {
+      return;
+    }
   },
 
   render() {
