@@ -49,10 +49,6 @@ th.sort-desc:after {
     width: 300px;
 }
 
-.configuration-tag {
-    margin-right: 5px;
-}
-
 #collector-configurations-list th.actions, td.actions {
     width: 150px;
 }
@@ -93,4 +89,13 @@ hr.separator {
 
 .collector-name {
     word-break: break-all;
+}
+
+.configuration-tag {
+    font-weight: normal;
+    margin-right: 2px;
+}
+
+.configuration-tag-sm {
+    font-size: 80%;
 }
