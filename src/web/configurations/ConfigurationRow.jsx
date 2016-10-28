@@ -36,7 +36,7 @@ const ConfigurationRow = React.createClass({
   render() {
     const configuration = this.props.configuration;
     const tagBadges = configuration.tags.map((tag) => {
-      return <span className="badge" key={tag} style={{ fontWeight: 'normal' }}>{tag}</span>;
+      return <span className="badge configuration-tag" key={tag}>{tag}</span>;
     });
 
     return (
@@ -46,7 +46,7 @@ const ConfigurationRow = React.createClass({
             <a>{configuration.name}</a>
           </LinkContainer>
         </td>
-        <td className="limited">
+        <td>
           {tagBadges}
         </td>
         <td>

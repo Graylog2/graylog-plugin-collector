@@ -73,7 +73,7 @@ const CollectorRow = React.createClass({
 
   _tagsAsBadges(collector) {
     return collector.node_details.tags.map((tag) =>
-      <span className="badge" key={this._getId(tag)} style={{ fontWeight: 'normal', fontSize: '75%' }}>{tag}</span>
+      <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>
     );
   },
 
@@ -89,7 +89,7 @@ const CollectorRow = React.createClass({
     }
     return (
       <tr className={collectorClass} style={style}>
-        <td className="limited">
+        <td className="collector-name">
           <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
             <a>{collector.node_id}</a>
           </LinkContainer>
@@ -97,22 +97,22 @@ const CollectorRow = React.createClass({
             {this._tagsAsBadges(collector)}
           </p>
         </td>
-        <td className="limited">
+        <td>
           <Label bsStyle={this._labelClassForState(collectorState)}
                  bsSize="xsmall">{this._textForState(collectorState)}</Label>
         </td>
-        <td className="limited">
+        <td>
           {osGlyph}
           {collector.node_details.operating_system}
         </td>
-        <td className="limited">
+        <td>
           <Timestamp dateTime={collector.last_seen} relative={this.state.showRelativeTime} />
         </td>
-        <td className="limited">
+        <td>
           {collector.id}
           {annotation}
         </td>
-        <td className="limited">
+        <td>
           {collector.collector_version}
         </td>
         <td>
