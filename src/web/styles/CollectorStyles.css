@@ -90,3 +90,7 @@ hr.separator {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+
+.collector-name {
+    word-break: break-all;
+}

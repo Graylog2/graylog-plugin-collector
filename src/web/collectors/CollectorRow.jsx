@@ -89,7 +89,7 @@ const CollectorRow = React.createClass({
     }
     return (
       <tr className={collectorClass} style={style}>
-        <td>
+        <td className="collector-name">
           <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
             <a>{collector.node_id}</a>
           </LinkContainer>
