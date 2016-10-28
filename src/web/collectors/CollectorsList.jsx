@@ -59,7 +59,7 @@ const CollectorList = React.createClass({
         <table className="table table-striped collectors-list">
           <thead>
           <tr>
-            <th className={`name ${this._getTableHeaderClassName('node_id')}`} onClick={this.sortByNodeId}>Name</th>
+            <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeId}>Name</th>
             <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
               Status
             </th>
