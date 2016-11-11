@@ -101,7 +101,7 @@ const EditInputFields = React.createClass({
           this.props.injectProperties('scan_frequency', '10s');
         };
         if (!value.hasOwnProperty('encoding')) {
-          this.props.injectProperties('encoding', 'utf-8');
+          this.props.injectProperties('encoding', 'plain');
         };
         if (!value.hasOwnProperty('ignore_older')) {
           this.props.injectProperties('ignore_older', '0');
