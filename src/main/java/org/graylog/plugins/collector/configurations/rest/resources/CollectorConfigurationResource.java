@@ -101,19 +101,21 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         if (tags != null && !etagCached) {
             List<CollectorConfiguration> collectorConfigurationList = collectorConfigurationService.findByTags(tags);
             collectorConfiguration = collectorConfigurationService.merge(collectorConfigurationList);
+            String hashCode;
             if (collectorConfiguration != null) {
                 collectorConfiguration.tags().addAll(tags);
-            }
 
-            // add new etag to cache
-            String hashCode = Hashing.md5()
-                    .hashInt(collectorConfiguration.hashCode())  // avoid negative values
-                    .toString();
-            EntityTag collectorConfigurationEtag = new EntityTag(hashCode);
-            builder = Response.ok(collectorConfiguration);
-            builder.tag(collectorConfigurationEtag);
-            if (!validEtags.contains(collectorConfigurationEtag.toString())) {
-                validEtags.add(collectorConfigurationEtag.toString());
+                // add new etag to cache
+                hashCode = Hashing.md5()
+                        .hashInt(collectorConfiguration.hashCode())  // avoid negative values
+                        .toString();
+
+                EntityTag collectorConfigurationEtag = new EntityTag(hashCode);
+                builder = Response.ok(collectorConfiguration);
+                builder.tag(collectorConfigurationEtag);
+                if (!validEtags.contains(collectorConfigurationEtag.toString())) {
+                    validEtags.add(collectorConfigurationEtag.toString());
+                }
             }
         }
 
