@@ -11,6 +11,7 @@ import DocumentationLink from 'components/support/DocumentationLink';
 
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
+import CollectorRestartButton from 'collectors/CollectorRestartButton';
 
 import Routes from 'routing/Routes';
 
@@ -92,22 +93,32 @@ const CollectorsStatusPage = React.createClass({
   },
 
   _formatStatus(name, item) {
+    let restart = null;
+    if (name !== 'Status' && this.state.collector) {
+      restart = (<div className="pull-right">
+        <CollectorRestartButton collector={this.state.collector} backend={name}/>
+      </div>);
+    }
+
     if (item) {
       switch (item.status) {
         case 0:
           return (
             <Alert bsStyle="success" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
               <i className="fa fa-check-circle"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
+              {restart}
             </Alert>);
         case 1:
           return (
             <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
               <i className="fa fa-cog"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
+              {restart}
             </Alert>);
         case 2:
           return (
             <Alert bsStyle="danger" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
               <i className="fa fa-wrench"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
+              {restart}
             </Alert>);
       }
     } else {

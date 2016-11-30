@@ -21,6 +21,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
@@ -31,9 +35,14 @@ public abstract class CollectorRegistrationResponse {
     @JsonProperty("configuration_override")
     public abstract boolean configurationOverride();
 
+    @JsonProperty("actions")
+    @Nullable
+    public abstract List<CollectorAction> actions();
+
     @JsonCreator
     public static CollectorRegistrationResponse create(@JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
-                                                       @JsonProperty("configuration_override") boolean configurationOverride) {
-        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration, configurationOverride);
+                                                       @JsonProperty("configuration_override") boolean configurationOverride,
+                                                       @JsonProperty("actions") @Nullable List<CollectorAction> actions) {
+        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration, configurationOverride, actions);
     }
 }

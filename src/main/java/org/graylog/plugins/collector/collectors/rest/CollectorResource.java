@@ -27,9 +27,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.Collector;
+import org.graylog.plugins.collector.collectors.CollectorActions;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.Collectors;
+import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationConfiguration;
@@ -37,6 +40,7 @@ import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorR
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
@@ -57,6 +61,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "System/Collectors", description = "Management of Graylog Collectors.")
@@ -105,6 +110,24 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         }
     }
 
+    @GET
+    @Timed
+    @Path("/{collectorId}/action")
+    @ApiOperation(value = "Returns queued actions for the specified collector id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "No actions found for specified id")
+    })
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    public List<CollectorAction> getAction(@ApiParam(name = "collectorId", required = true)
+                                      @PathParam("collectorId") @NotEmpty String collectorId) {
+        final CollectorActions collectorActions = collectorService.findActionByCollector(collectorId, false);
+        if (collectorActions != null) {
+            return collectorActions.getAction();
+        }
+        return new ArrayList<>();
+    }
+
     @PUT
     @Timed
     @Path("/{collectorId}")
@@ -122,13 +145,37 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         final Collector collector = collectorService.fromRequest(collectorId, request, collectorVersion);
         collectorService.save(collector);
 
+        final CollectorActions collectorActions = collectorService.findActionByCollector(collectorId, true);
+        List<CollectorAction> collectorAction = null;
+        if (collectorActions != null) {
+            collectorAction = collectorActions.getAction();
+        }
         final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
         CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
                 CollectorRegistrationConfiguration.create(
                     collectorSystemConfiguration.collectorUpdateInterval().getSeconds(),
                     collectorSystemConfiguration.collectorSendStatus()),
-                collectorSystemConfiguration.collectorConfigurationOverride());
+                collectorSystemConfiguration.collectorConfigurationOverride(),
+                collectorAction);
         return Response.accepted(collectorRegistrationResponse).build();
+    }
+
+    @PUT
+    @Timed
+    @Path("/{collectorId}/action")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @ApiOperation(value = "Set a collector action")
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "The supplied action is not valid.")})
+    @AuditEvent(type = CollectorAuditEventTypes.ACTION_UPDATE)
+    public Response setAction(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
+                           @PathParam("collectorId") @NotEmpty String collectorId,
+                           @ApiParam(name = "JSON body", required = true)
+                           @Valid @NotNull List<CollectorAction> request) {
+        final CollectorActions collectorActions = collectorService.actionFromRequest(collectorId, request);
+        collectorService.saveAction(collectorActions);
+
+        return Response.accepted().build();
     }
 
     @VisibleForTesting
