@@ -16,21 +16,17 @@
  */
 package org.graylog.plugins.collector.collectors.rest.resources;
 
-import com.google.inject.Module;
 import org.apache.shiro.subject.Subject;
-import org.assertj.core.util.Lists;
 import org.graylog2.shared.bindings.GuiceInjectorHolder;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
-import org.mockito.internal.matchers.VarargMatcher;
 
-import java.util.List;
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,8 +34,7 @@ public class RestResourceBaseTest {
     @Before
     public void setUpInjector() throws Exception {
         // The list of modules is empty for now so only JIT injection will be used.
-        final List<Module> modules = Lists.emptyList();
-        GuiceInjectorHolder.createInjector(modules);
+        GuiceInjectorHolder.createInjector(Collections.emptyList());
     }
 
 
@@ -58,7 +53,7 @@ public class RestResourceBaseTest {
         @Override
         protected Subject getSubject() {
             final Subject mock = mock(Subject.class);
-            when(mock.isPermitted(argThat(new MyVarargMatcher()))).thenReturn(new boolean[]{false, false});
+            when(mock.isPermitted((String[]) any())).thenReturn(new boolean[]{false, false});
             return mock;
         }
 
@@ -71,7 +66,7 @@ public class RestResourceBaseTest {
         @Override
         protected Subject getSubject() {
             final Subject mock = mock(Subject.class);
-            when(mock.isPermitted(argThat(new MyVarargMatcher()))).thenReturn(new boolean[]{true, true});
+            when(mock.isPermitted((String[]) any())).thenReturn(new boolean[]{true, true});
             return mock;
         }
 
@@ -84,19 +79,12 @@ public class RestResourceBaseTest {
         @Override
         protected Subject getSubject() {
             final Subject mock = mock(Subject.class);
-            when(mock.isPermitted(argThat(new MyVarargMatcher()))).thenReturn(new boolean[]{false, true});
+            when(mock.isPermitted((String[]) any())).thenReturn(new boolean[]{false, true});
             return mock;
         }
 
         public boolean runCheck() {
             return isAnyPermitted(new String[]{"a:b", "a:c"}, "instance");
-        }
-    }
-
-    static class MyVarargMatcher implements VarargMatcher, ArgumentMatcher<String[]> {
-        @Override
-        public boolean matches(String[] varargArgument) {
-            return /* does it match? */ true;
         }
     }
 }

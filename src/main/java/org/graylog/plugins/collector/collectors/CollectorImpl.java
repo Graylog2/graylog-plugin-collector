@@ -65,7 +65,15 @@ public abstract class CollectorImpl implements Collector {
         return new AutoValue_CollectorImpl(id, nodeId, collectorNodeDetails, collectorVersion, lastSeen);
     }
 
-    public static CollectorImpl create(String collectorId, String nodeId, String collectorVersion, CollectorNodeDetails collectorNodeDetails, DateTime lastSeen) {
-        return new AutoValue_CollectorImpl(collectorId, nodeId, collectorNodeDetails, collectorVersion, lastSeen);
+    public static CollectorImpl create(String collectorId,
+                                       String nodeId,
+                                       String collectorVersion,
+                                       CollectorNodeDetails collectorNodeDetails,
+                                       DateTime lastSeen) {
+        return new AutoValue_CollectorImpl(collectorId,
+                nodeId,
+                collectorNodeDetails,
+                collectorVersion,
+                lastSeen);
     }
 }

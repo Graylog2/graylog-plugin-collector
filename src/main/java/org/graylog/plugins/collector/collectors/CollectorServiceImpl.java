@@ -19,6 +19,7 @@ package org.graylog.plugins.collector.collectors;
 import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.CollectionName;
@@ -33,12 +34,14 @@ import org.mongojack.JacksonDBCollection;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class CollectorServiceImpl implements CollectorService {
 
     private final JacksonDBCollection<CollectorImpl, String> coll;
+    private final JacksonDBCollection<CollectorActions, String> collActions;
     private final Validator validator;
 
     @Inject
@@ -50,6 +53,11 @@ public class CollectorServiceImpl implements CollectorService {
         final DBCollection dbCollection = mongoConnection.getDatabase().getCollection(collectionName);
         this.coll = JacksonDBCollection.wrap(dbCollection, CollectorImpl.class, String.class, mapperProvider.get());
         this.coll.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));
+
+        final String actionCollectionName = CollectorActions.class.getAnnotation(CollectionName.class).value();
+        final DBCollection actionDbCollection = mongoConnection.getDatabase().getCollection(actionCollectionName);
+        this.collActions = JacksonDBCollection.wrap(actionDbCollection, CollectorActions.class, String.class, mapperProvider.get());
+
     }
 
     @Override
@@ -112,6 +120,38 @@ public class CollectorServiceImpl implements CollectorService {
                 request.nodeDetails().logFileList(),
                 request.nodeDetails().statusList()),
                 DateTime.now(DateTimeZone.UTC));
+    }
+
+    @Override
+    public CollectorActions actionFromRequest(String collectorId, List<CollectorAction> actions) {
+        CollectorActions collectorActions = findActionByCollector(collectorId, false);
+        if (collectorActions == null) {
+            return CollectorActions.create(collectorId, DateTime.now(DateTimeZone.UTC), actions);
+        }
+        List<CollectorAction> updatedActions = new ArrayList<>();
+        for (final CollectorAction action : actions) {
+            for (final CollectorAction existingsAction : collectorActions.getAction()) {
+                if (!existingsAction.backend().equals(action.backend())) {
+                    updatedActions.add(existingsAction);
+                }
+            }
+            updatedActions.add(action);
+        }
+        return CollectorActions.create(collectorActions.getId(), collectorId, DateTime.now(DateTimeZone.UTC), updatedActions);
+    }
+
+    @Override
+    public CollectorActions saveAction(CollectorActions collectorActions) {
+        return collActions.findAndModify(DBQuery.is("collector_id", collectorActions.getCollectorId()), new BasicDBObject(), new BasicDBObject(), false, collectorActions, true, true);
+    }
+
+    @Override
+    public CollectorActions findActionByCollector(String collectorId, boolean remove) {
+        if (remove) {
+            return collActions.findAndRemove(DBQuery.is("collector_id", collectorId));
+        } else {
+            return collActions.findOne(DBQuery.is("collector_id", collectorId));
+        }
     }
 
     private List<Collector> toAbstractListType(DBCursor<CollectorImpl> collectors) {

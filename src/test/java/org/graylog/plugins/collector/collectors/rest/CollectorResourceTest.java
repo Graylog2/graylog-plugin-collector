@@ -18,7 +18,6 @@ package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.collectors.Collector;
-import org.graylog.plugins.collector.collectors.CollectorNodeDetails;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorNodeDetailsSummary;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
@@ -26,8 +25,6 @@ import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorS
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
