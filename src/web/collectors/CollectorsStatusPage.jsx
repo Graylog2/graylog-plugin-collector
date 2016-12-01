@@ -11,7 +11,7 @@ import DocumentationLink from 'components/support/DocumentationLink';
 
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
-import CollectorRestartButton from 'collectors/CollectorRestartButton';
+import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
 
 import Routes from 'routing/Routes';
 
@@ -96,7 +96,7 @@ const CollectorsStatusPage = React.createClass({
     let restart = null;
     if (name !== 'Status' && this.state.collector) {
       restart = (<div className="pull-right">
-        <CollectorRestartButton collector={this.state.collector} backend={name}/>
+        <CollectorsRestartButton collector={this.state.collector} backend={name}/>
       </div>);
     }
 
