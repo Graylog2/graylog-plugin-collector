@@ -52,7 +52,9 @@ const CollectorsRestartButton = React.createClass({
   },
 
   _refreshButtonState() {
-    CollectorsActions.getCollectorActions.triggerPromise(this.props.collector.id).then(this._resetButton);
+    if (this.state.disabled) {
+      CollectorsActions.getCollectorActions.triggerPromise(this.props.collector.id).then(this._resetButton);
+    }
   },
 
   render() {
