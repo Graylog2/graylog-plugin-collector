@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
 
-import PageHeader from 'components/common/PageHeader';
+import { DocumentTitle, PageHeader } from 'components/common';
 import CollectorList from './CollectorsList';
 import DocumentationLink from 'components/support/DocumentationLink';
 
@@ -14,30 +14,32 @@ import Routes from 'routing/Routes';
 const CollectorsPage = React.createClass({
   render() {
     return (
-      <span>
-        <PageHeader title="Collectors in Cluster">
-          <span>
-            The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
-          </span>
+      <DocumentTitle title="Collectors">
+        <span>
+          <PageHeader title="Collectors in Cluster">
+            <span>
+              The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
+            </span>
 
-          <span>
-            Read more about collectors and how to set them up in the
-            {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR} text="Graylog documentation" />.
-          </span>
+            <span>
+              Read more about collectors and how to set them up in the
+              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR} text="Graylog documentation" />.
+            </span>
 
-          <span>
-            <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-              <Button bsStyle="info">Manage configurations</Button>
-            </LinkContainer>
-          </span>
-        </PageHeader>
+            <span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
+                <Button bsStyle="info">Manage configurations</Button>
+              </LinkContainer>
+            </span>
+          </PageHeader>
 
-        <Row className="content">
-          <Col md={12}>
-            <CollectorList />
-          </Col>
-        </Row>
-      </span>
+          <Row className="content">
+            <Col md={12}>
+              <CollectorList />
+            </Col>
+          </Row>
+        </span>
+      </DocumentTitle>
     );
   },
 });

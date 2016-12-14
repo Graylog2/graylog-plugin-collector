@@ -3,10 +3,9 @@ import React from 'react';
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { Spinner } from 'components/common';
+import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import StringUtils from 'util/StringUtils';
 import DocsHelper from 'util/DocsHelper';
-import PageHeader from 'components/common/PageHeader';
 import DocumentationLink from 'components/support/DocumentationLink';
 
 import CollectorsActions from 'collectors/CollectorsActions';
@@ -17,7 +16,7 @@ import Routes from 'routing/Routes';
 
 const CollectorsStatusPage = React.createClass({
   propTypes: {
-      params: React.PropTypes.object.isRequired,
+    params: React.PropTypes.object.isRequired,
   },
 
   getInitialState() {
@@ -132,7 +131,7 @@ const CollectorsStatusPage = React.createClass({
 
   render() {
     if (this._isLoading()) {
-      return <Spinner />;
+      return <DocumentTitle title="Collector status"><Spinner /></DocumentTitle>;
     }
 
     var backends = [];
@@ -145,57 +144,59 @@ const CollectorsStatusPage = React.createClass({
     const logFileList = this.state.collector.node_details.log_file_list || [];
 
     return (
-      <span>
-        <PageHeader title={<span>Collector Status <em>{this.state.collector.node_id}</em></span>}>
-          <span>
-            A status overview of all running collector backends on this host.
-          </span>
+      <DocumentTitle title={`Collector status ${this.state.collector.node_id}`}>
+        <span>
+          <PageHeader title={<span>Collector Status <em>{this.state.collector.node_id}</em></span>}>
+            <span>
+              A status overview of all running collector backends on this host.
+            </span>
 
-          <span>
-            Read more about collectors and how to set them up in the
-            {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation"/>.
-          </span>
+            <span>
+              Read more about collectors and how to set them up in the
+              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation"/>.
+            </span>
 
-          <span>
-            <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
-              <Button bsStyle="info">Show Collectors</Button>
-            </LinkContainer>
-          </span>
-        </PageHeader>
+            <span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+                <Button bsStyle="info">Show Collectors</Button>
+              </LinkContainer>
+            </span>
+          </PageHeader>
 
-        <Row className="content" key="sidecar-status">
-          <Col md={12}>
-            <h2>Sidecar</h2>
+          <Row className="content" key="sidecar-status">
+            <Col md={12}>
+              <h2>Sidecar</h2>
+                <div className="top-margin">
+                  <Row>
+                    <Col md={6}>
+                      {this._formatConfiguration(this.state.collector.node_details)}
+                    </Col>
+                    <Col md={6}>
+                      {this._formatSystemStats(this.state.collector.node_details.metrics)}
+                    </Col>
+                  </Row>
+                  <hr className="separator"/>
+                </div>
+              {this._formatStatus("Status", this.state.collector.node_details.status)}
+            </Col>
+          </Row>
+          <Row className="content" key="backend-status" hidden={backendStates.length === 0}>
+            <Col md={12}>
+              <h2>Backends</h2>
+              {backendStates}
+            </Col>
+          </Row>
+          <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
+            <Col md={12}>
+              <h2>Log Files</h2>
+              <p>Recently modified files will be highlighted in blue.</p>
               <div className="top-margin">
-                <Row>
-                  <Col md={6}>
-                    {this._formatConfiguration(this.state.collector.node_details)}
-                  </Col>
-                  <Col md={6}>
-                    {this._formatSystemStats(this.state.collector.node_details.metrics)}
-                  </Col>
-                </Row>
-                <hr className="separator"/>
+                <CollectorsStatusFileList files={logFileList}/>
               </div>
-            {this._formatStatus("Status", this.state.collector.node_details.status)}
-          </Col>
-        </Row>
-        <Row className="content" key="backend-status" hidden={backendStates.length === 0}>
-          <Col md={12}>
-            <h2>Backends</h2>
-            {backendStates}
-          </Col>
-        </Row>
-        <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
-          <Col md={12}>
-            <h2>Log Files</h2>
-            <p>Recently modified files will be highlighted in blue.</p>
-            <div className="top-margin">
-              <CollectorsStatusFileList files={logFileList}/>
-            </div>
-          </Col>
-        </Row>
-      </span>
+            </Col>
+          </Row>
+        </span>
+      </DocumentTitle>
     );
   },
 });
