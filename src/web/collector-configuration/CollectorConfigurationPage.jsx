@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { PageHeader, Spinner } from 'components/common';
+import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import CollectorConfiguration from './CollectorConfiguration';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
@@ -61,26 +61,28 @@ const CollectorConfigurationPage = React.createClass({
     }
 
     return (
-      <div>
-        <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}>
-          <span>
-            Use this page to review and manage the configuration for this collector.
-          </span>
+      <DocumentTitle title={`Collector ${this.state.configuration.name} configuration`}>
+        <div>
+          <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}>
+            <span>
+              Use this page to review and manage the configuration for this collector.
+            </span>
 
-          <span>
-            Read more about collector configurations in the{' '}
-            <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
-          </span>
+            <span>
+              Read more about collector configurations in the{' '}
+              <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
+            </span>
 
-          <span>
-            <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-              <Button bsStyle="info">Manage Configurations</Button>
-            </LinkContainer>
-          </span>
-        </PageHeader>
-        <CollectorConfiguration configuration={this.state.configuration} tags={this.state.tags}
-                                onConfigurationChange={this._reloadConfiguration} />
-      </div>
+            <span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
+                <Button bsStyle="info">Manage Configurations</Button>
+              </LinkContainer>
+            </span>
+          </PageHeader>
+          <CollectorConfiguration configuration={this.state.configuration} tags={this.state.tags}
+                                  onConfigurationChange={this._reloadConfiguration} />
+        </div>
+      </DocumentTitle>
     );
   },
 });
