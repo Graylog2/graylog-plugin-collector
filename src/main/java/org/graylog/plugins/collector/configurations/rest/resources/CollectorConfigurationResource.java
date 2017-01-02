@@ -17,6 +17,7 @@
 package org.graylog.plugins.collector.configurations.rest.resources;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
 import io.swagger.annotations.*;
@@ -24,6 +25,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
+import org.graylog.plugins.collector.configurations.rest.ConfigurationEtagService;
 import org.graylog.plugins.collector.configurations.rest.models.*;
 import org.graylog.plugins.collector.configurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
@@ -41,8 +43,6 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,11 +55,13 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     private final ObjectMapper mapper = new ObjectMapper();
 
     private final CollectorConfigurationService collectorConfigurationService;
-    private static List<String> validEtags = Collections.synchronizedList(new ArrayList<String>());
+    private final ConfigurationEtagService etagService;
 
     @Inject
-    public CollectorConfigurationResource(CollectorConfigurationService collectorConfigurationService) {
+    public CollectorConfigurationResource(CollectorConfigurationService collectorConfigurationService,
+                                          ConfigurationEtagService etagService) {
         this.collectorConfigurationService = collectorConfigurationService;
+        this.etagService = etagService;
     }
 
     @GET
@@ -78,7 +80,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                      @ApiParam(name = "tags")
                                      @QueryParam("tags") String queryTags) throws NotFoundException {
 
-        List tags = parseQueryTags(queryTags);
+        List<String> tags = parseQueryTags(queryTags);
         CollectorConfiguration collectorConfiguration;
 
         String ifNoneMatch = httpHeaders.getHeaderString("If-None-Match");
@@ -89,8 +91,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         // check if client is up to date with a known valid etag
         if (ifNoneMatch != null) {
             EntityTag etag = new EntityTag(ifNoneMatch.replaceAll("\"", ""));
-            etagCached = validEtags.contains(etag.toString());
-            if (etagCached) {
+            if (etagService.isPresent(etag.toString())) {
                 etagCached = true;
                 builder = Response.notModified();
                 builder.tag(etag);
@@ -101,21 +102,16 @@ public class CollectorConfigurationResource extends RestResource implements Plug
         if (tags != null && !etagCached) {
             List<CollectorConfiguration> collectorConfigurationList = collectorConfigurationService.findByTags(tags);
             collectorConfiguration = collectorConfigurationService.merge(collectorConfigurationList);
-            String hashCode;
             if (collectorConfiguration != null) {
                 collectorConfiguration.tags().addAll(tags);
 
                 // add new etag to cache
-                hashCode = Hashing.md5()
-                        .hashInt(collectorConfiguration.hashCode())  // avoid negative values
-                        .toString();
+                String etagString = configToEtag(collectorConfiguration);
 
-                EntityTag collectorConfigurationEtag = new EntityTag(hashCode);
+                EntityTag collectorConfigurationEtag = new EntityTag(etagString);
                 builder = Response.ok(collectorConfiguration);
                 builder.tag(collectorConfigurationEtag);
-                if (!validEtags.contains(collectorConfigurationEtag.toString())) {
-                    validEtags.add(collectorConfigurationEtag.toString());
-                }
+                etagService.put(collectorConfigurationEtag.toString());
             }
         }
 
@@ -136,7 +132,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @ApiOperation(value = "List all collector configurations")
     public CollectorConfigurationListResponse listConfigurations() {
         final List<CollectorConfigurationSummary> result = this.collectorConfigurationService.loadAll().stream()
-                .map(collectorConfiguration -> getCollectorConfigurationSummary(collectorConfiguration))
+                .map(this::getCollectorConfigurationSummary)
                 .collect(Collectors.toList());
 
         return CollectorConfigurationListResponse.create(result.size(), result);
@@ -173,7 +169,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     public CollectorConfiguration updateTags(@ApiParam(name = "id", required = true)
                                              @PathParam("id") String id,
                                              @ApiParam(name = "JSON body", required = true) List<String> tags) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.withTagsFromRequest(id, tags);
         collectorConfigurationService.save(collectorConfiguration);
         return collectorConfiguration;
@@ -195,7 +191,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                  @PathParam("output_id") @NotEmpty String outputId,
                                  @ApiParam(name = "JSON body", required = true)
                                  @Valid @NotNull CollectorOutput request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateOutputFromRequest(id, outputId, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -217,7 +213,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                 @ApiParam(name = "input_id", required = true)
                                 @PathParam("input_id") @NotEmpty String inputId,
                                 @ApiParam(name = "JSON body", required = true) @Valid @NotNull CollectorInput request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateInputFromRequest(id, inputId, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -240,7 +236,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                   @PathParam("snippet_id") @NotEmpty String snippetId,
                                   @ApiParam(name = "JSON body", required = true)
                                   @Valid @NotNull CollectorConfigurationSnippet request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.updateSnippetFromRequest(id, snippetId, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -258,7 +254,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                                       @QueryParam("createDefaults") RestBoolean createDefaults,
                                                       @ApiParam(name = "JSON body", required = true)
                                                       @Valid @NotNull CollectorConfiguration request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         CollectorConfiguration collectorConfiguration;
         if (createDefaults != null && createDefaults.getValue()) {
             collectorConfiguration = collectorConfigurationService.fromRequestWithDefaultSnippets(request);
@@ -280,7 +276,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                                           @PathParam("id") String id,
                                                           @ApiParam(name = "JSON body", required = true)
                                                           @Valid @NotNull CollectorConfiguration request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration persistedConfiguration = collectorConfigurationService.findById(id);
         final CollectorConfiguration newConfiguration = collectorConfigurationService.fromRequest(request);
 
@@ -306,7 +302,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                  @PathParam("id") @NotEmpty String id,
                                  @ApiParam(name = "JSON body", required = true)
                                  @Valid @NotNull CollectorOutput request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.withOutputFromRequest(id, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -327,7 +323,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                 @PathParam("id") @NotEmpty String id,
                                 @ApiParam(name = "JSON body", required = true)
                                 @Valid @NotNull CollectorInput request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.withInputFromRequest(id, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -348,7 +344,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                   @PathParam("id") @NotEmpty String id,
                                   @ApiParam(name = "JSON body", required = true)
                                   @Valid @NotNull CollectorConfigurationSnippet request) {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.withSnippetFromRequest(id, request);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -369,7 +365,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     public Response copyConfiguration(@ApiParam(name = "id", required = true)
                                @PathParam("id") String id,
                                @PathParam("name") String name) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copyConfiguration(id, name);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -391,7 +387,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                @PathParam("id") String id,
                                @PathParam("outputId") String outputId,
                                @PathParam("name") String name) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copyOutput(id, outputId, name);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -413,7 +409,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                @PathParam("id") String id,
                                @PathParam("inputId") String inputId,
                                @PathParam("name") String name) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copyInput(id, inputId, name);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -435,7 +431,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
                                @PathParam("id") String id,
                                @PathParam("snippetId") String snippetId,
                                @PathParam("name") String name) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         final CollectorConfiguration collectorConfiguration = collectorConfigurationService.copySnippet(id, snippetId, name);
         collectorConfigurationService.save(collectorConfiguration);
 
@@ -454,7 +450,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_DELETE)
     public void deleteConfiguration(@ApiParam(name = "id", required = true)
                                     @PathParam("id") String id) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         collectorConfigurationService.delete(id);
     }
 
@@ -472,7 +468,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     public Response deleteOutput(@ApiParam(name = "id", required = true)
                                  @PathParam("id") String id,
                                  @PathParam("outputId") String outputId) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         int deleted = collectorConfigurationService.deleteOutput(id, outputId);
         switch (deleted) {
             case 0:
@@ -496,7 +492,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     public void deleteInput(@ApiParam(name = "id", required = true)
                             @PathParam("id") String id,
                             @PathParam("inputId") String inputId) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         collectorConfigurationService.deleteInput(id, inputId);
     }
 
@@ -513,7 +509,7 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     public void deleteSnippet(@ApiParam(name = "id", required = true)
                               @PathParam("id") String id,
                               @PathParam("snippetId") String snippetId) throws NotFoundException {
-        validEtags.clear();
+        etagService.invalidateAll();
         collectorConfigurationService.deleteSnippet(id, snippetId);
     }
 
@@ -524,16 +520,22 @@ public class CollectorConfigurationResource extends RestResource implements Plug
     }
 
     private List<String> parseQueryTags(String queryTags) {
-        List tags = null;
+        List<String> tags = null;
         if (queryTags != null) {
             try {
-                tags = mapper.readValue(queryTags, List.class);
+                tags = mapper.readValue(queryTags, new TypeReference<List<String>>(){});
             } catch (IOException e) {
                 LOG.error("Can not parse provided collector tags: {}", queryTags);
                 tags = null;
             }
         }
         return tags;
+    }
+
+    private String configToEtag(CollectorConfiguration collectorConfiguration) {
+        return Hashing.md5()
+                .hashInt(collectorConfiguration.hashCode())  // avoid negative values
+                .toString();
     }
 
     public static class RestBoolean {
