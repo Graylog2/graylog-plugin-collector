@@ -17,12 +17,14 @@
 package org.graylog.plugins.collector;
 
 import com.google.common.base.Supplier;
+import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.collectors.rest.CollectorResource;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
+import org.graylog.plugins.collector.configurations.rest.ConfigurationEtagService;
 import org.graylog.plugins.collector.configurations.rest.resources.CollectorConfigurationResource;
 import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
@@ -43,5 +45,7 @@ public class CollectorModule extends PluginModule {
         addPermissions(CollectorRestPermissions.class);
 
         addAuditEventTypes(CollectorAuditEventTypes.class);
+
+        serviceBinder().addBinding().to(ConfigurationEtagService.class).in(Scopes.SINGLETON);
     }
 }
