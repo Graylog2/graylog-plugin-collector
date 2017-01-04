@@ -17,12 +17,14 @@
 package org.graylog.plugins.collector;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
 import org.graylog.plugins.collector.collectors.rest.CollectorResource;
+import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog.plugins.collector.configurations.rest.ConfigurationEtagService;
 import org.graylog.plugins.collector.configurations.rest.resources.CollectorConfigurationResource;
@@ -30,9 +32,19 @@ import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
+import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 
+import java.util.Set;
+
 public class CollectorModule extends PluginModule {
+    @Override
+    public Set<? extends PluginConfigBean> getConfigBeans() {
+        return ImmutableSet.of(
+                new CollectorPluginConfiguration()
+        );
+    }
+
     @Override
     protected void configure() {
         bind(CollectorService.class).to(CollectorServiceImpl.class);
