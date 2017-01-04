@@ -14,10 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
+@Singleton
 public class ConfigurationEtagService extends AbstractIdleService {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationEtagService.class);
 
