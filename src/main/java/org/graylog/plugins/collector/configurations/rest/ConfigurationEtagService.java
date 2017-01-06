@@ -1,11 +1,13 @@
 package org.graylog.plugins.collector.configurations.rest;
 
 import com.codahale.metrics.MetricRegistry;
+import com.github.joschi.jadconfig.util.Duration;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractIdleService;
+import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
 import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog2.events.ClusterEventBus;
 import org.graylog2.metrics.CacheStatsSet;
@@ -15,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
@@ -29,13 +30,18 @@ public class ConfigurationEtagService extends AbstractIdleService {
     private ClusterEventBus clusterEventBus;
 
     @Inject
-    public ConfigurationEtagService(MetricRegistry metricRegistry, EventBus eventBus, ClusterEventBus clusterEventBus) {
+    public ConfigurationEtagService(CollectorPluginConfiguration pluginConfiguration,
+                                    MetricRegistry metricRegistry,
+                                    EventBus eventBus,
+                                    ClusterEventBus clusterEventBus) {
         this.metricRegistry = metricRegistry;
         this.eventBus = eventBus;
         this.clusterEventBus = clusterEventBus;
+        Duration cacheTime = pluginConfiguration.getCacheTime();
         cache = CacheBuilder.newBuilder()
                 .recordStats()
-                .expireAfterWrite(1, TimeUnit.HOURS)  // TODO magic number
+                .expireAfterWrite(cacheTime.getQuantity(), cacheTime.getUnit())
+                .maximumSize(pluginConfiguration.getCacheMaxSize())
                 .build();
     }
 
