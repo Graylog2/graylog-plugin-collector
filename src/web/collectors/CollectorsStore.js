@@ -1,7 +1,7 @@
 import Reflux from 'reflux';
 import URLUtils from 'util/URLUtils';
 import UserNotification from 'util/UserNotification';
-import fetch from 'logic/rest/FetchProvider';
+import fetch, { fetchPeriodically } from 'logic/rest/FetchProvider';
 
 import CollectorsActions from './CollectorsActions';
 
@@ -15,7 +15,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   list() {
-    const promise = fetch('GET', URLUtils.qualifyUrl(this.sourceUrl));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(this.sourceUrl));
     promise
       .then(
         response => {
@@ -32,7 +32,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   getCollector(collectorId) {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}`));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}`));
     promise
       .catch(
         error => {
@@ -58,7 +58,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   getCollectorActions(collectorId) {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}/action`));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}/action`));
     promise
       .catch(
         error => {
