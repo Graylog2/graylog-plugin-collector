@@ -10,7 +10,7 @@ import ConfigurationsPage from 'configurations/ConfigurationsPage';
 import CollectorConfigurationPage from 'collector-configuration/CollectorConfigurationPage';
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
 
-PluginStore.register(new PluginManifest(packageJson, {
+const manifest = new PluginManifest(packageJson, {
   routes: [
     { path: '/system/collectors', component: CollectorsPage },
     { path: '/system/collectors/:id/status', component: CollectorsStatusPage },
@@ -30,4 +30,11 @@ PluginStore.register(new PluginManifest(packageJson, {
       configType: 'org.graylog.plugins.collector.system.CollectorSystemConfiguration',
     },
   ],
-}));
+});
+
+PluginStore.register(manifest);
+
+if (module.hot) {
+  module.hot.accept();
+  module.hot.dispose(() => PluginStore.unregister(manifest));
+}
