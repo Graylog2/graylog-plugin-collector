@@ -313,7 +313,8 @@ const CollectorConfiguration = React.createClass({
 
         <Row className="content">
           <Col md={12}>
-            <Tabs activeKey={this.state.tab}
+            <Tabs id="collectorBackendSelector"
+                  activeKey={this.state.tab}
                   animation={false}
                   onSelect={this._tabSwitched}>
               <Tab eventKey="beat" title="Beats"/>
