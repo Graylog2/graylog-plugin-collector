@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Input, Col, Row, Tabs, Tab } from 'react-bootstrap';
+import { Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
 
+import { Input } from 'components/bootstrap';
 import { DataTable } from 'components/common';
 
 import CopyOutputModal from './CopyOutputModal';
