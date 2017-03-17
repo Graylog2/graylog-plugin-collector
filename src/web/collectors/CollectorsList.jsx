@@ -39,7 +39,11 @@ const CollectorList = React.createClass({
   _getFilteredCollectors() {
     const filter = this.state.filter.toLowerCase().trim();
     return this.state.collectors.filter((collector) => {
-      return !filter || collector.id.toLowerCase().indexOf(filter) !== -1 || collector.node_id.toLowerCase().indexOf(filter) !== -1 || collector.node_details.operating_system.toLowerCase().indexOf(filter) !== -1;
+      return !filter ||
+        collector.id.toLowerCase().indexOf(filter) !== -1 ||
+        collector.node_id.toLowerCase().indexOf(filter) !== -1 ||
+        collector.node_details.operating_system.toLowerCase().indexOf(filter) !== -1 ||
+        collector.node_details.tags.toString().toLowerCase().indexOf(filter) !== -1;
     });
   },
   _bySortField(collector1, collector2) {
