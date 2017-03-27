@@ -430,6 +430,13 @@ const EditInputFields = React.createClass({
                        onChange={this._injectProperty('encoding')}
                        help="Type to be published in the 'encoding' field (e.g. 'utf-8' or 'gbk')"
                        required />
+                 <Input type="text"
+                        id={this._getId('registry_file')}
+                        label="Registry_file"
+                        value={this.props.properties.registry_file}
+                        onChange={this._injectProperty('registry_file')}
+                        help="Set store file where filebeat track the last read"
+                        required />
                 <Input type="text"
                        id={this._getId('document-type')}
                        label="Type of input file"
