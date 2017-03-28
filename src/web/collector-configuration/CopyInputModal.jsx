@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Input } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
-import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
+import { BootstrapModalForm, Input } from 'components/bootstrap';
 
 const CopyInputModal = React.createClass({
     propTypes: {

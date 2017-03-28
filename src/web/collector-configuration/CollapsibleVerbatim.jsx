@@ -1,5 +1,6 @@
 import React from 'react';
-import { Alert, Collapse, Input } from 'react-bootstrap';
+import { Alert, Collapse } from 'react-bootstrap';
+import { Input } from 'components/bootstrap';
 
 const CollapsibleVerbatim = React.createClass({
   propTypes: {

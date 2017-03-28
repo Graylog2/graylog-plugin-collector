@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Input, Col, Row, Tabs, Tab } from 'react-bootstrap';
+import { Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
 
+import { Input } from 'components/bootstrap';
 import { DataTable } from 'components/common';
 
 import CopyOutputModal from './CopyOutputModal';
@@ -313,7 +314,8 @@ const CollectorConfiguration = React.createClass({
 
         <Row className="content">
           <Col md={12}>
-            <Tabs activeKey={this.state.tab}
+            <Tabs id="collectorBackendSelector"
+                  activeKey={this.state.tab}
                   animation={false}
                   onSelect={this._tabSwitched}>
               <Tab eventKey="beat" title="Beats"/>
