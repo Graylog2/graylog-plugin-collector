@@ -436,7 +436,7 @@ const EditInputFields = React.createClass({
                         value={this.props.properties.registry_file}
                         onChange={this._injectProperty('registry_file')}
                         help="Set store file where filebeat track the last read"
-                        required />
+                        />
                 <Input type="text"
                        id={this._getId('document-type')}
                        label="Type of input file"
