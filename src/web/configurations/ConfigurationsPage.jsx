@@ -29,7 +29,11 @@ const ConfigurationsPage = React.createClass({
 
             <span>
               <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
-                <Button bsStyle="info">Show Collectors</Button>
+                <Button bsStyle="info">Overview</Button>
+              </LinkContainer>
+              &nbsp;
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
+                <Button bsStyle="info active">Manage Configurations</Button>
               </LinkContainer>
             </span>
           </PageHeader>
