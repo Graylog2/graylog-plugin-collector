@@ -114,7 +114,7 @@ const EditOutputFields = React.createClass({
                        label="Server IP"
                        value={this.props.properties.server}
                        onChange={this._injectProperty('server')}
-                       help="Type the server IP for this output"
+                       help="The graylog-server host to send the logs to."
                        required />
                 <Input type="number"
                        id={this._getId('gelf-udp-port')}
@@ -122,7 +122,7 @@ const EditOutputFields = React.createClass({
                        label="Port"
                        value={this.props.properties.port}
                        onChange={this._injectProperty('port')}
-                       help="Type a port number for this output"
+                       help="The port number of the graylog-server GELF input."
                        required />
                 <Input type="checkbox"
                        id={this._getId('gelf-udp-buffered')}
@@ -155,7 +155,7 @@ const EditOutputFields = React.createClass({
                        label="Server IP"
                        value={this.props.properties.server}
                        onChange={this._injectProperty('server')}
-                       help="Type the server IP for this output"
+                       help="The graylog-server host to send the logs to."
                        required />
                 <Input type="number"
                        id={this._getId('gelf-tcp-port')}
@@ -163,7 +163,7 @@ const EditOutputFields = React.createClass({
                        label="Port"
                        value={this.props.properties.port}
                        onChange={this._injectProperty('port')}
-                       help="Type a port number for this output"
+                       help="The port number of the graylog-server GELF input."
                        required />
                 <Input type="checkbox"
                        id={this._getId('gelf-tcp-buffered')}
@@ -196,7 +196,7 @@ const EditOutputFields = React.createClass({
                        label="Server IP"
                        value={this.props.properties.server}
                        onChange={this._injectProperty('server')}
-                       help="Type the server IP for this output"
+                       help="The graylog-server host to send the logs to."
                        required />
                 <Input type="number"
                        id={this._getId('gelf-tcp-tls-port')}
@@ -204,7 +204,7 @@ const EditOutputFields = React.createClass({
                        label="Port"
                        value={this.props.properties.port}
                        onChange={this._injectProperty('port')}
-                       help="Type a port number for this output"
+                       help="The port number of the graylog-server GELF input."
                        required />
                 <Input type="text"
                        id={this._getId('gelf-tcp-tls-ca-file')}
@@ -262,7 +262,7 @@ const EditOutputFields = React.createClass({
                        value={this.props.properties.hosts}
                        onChange={this._changeList('hosts')}
                        bsStyle={this._fieldError('logstash-server') ? 'error' : null}
-                       help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
+                       help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of graylog-server hosts to send the logs to."}
                        required />
                 <Input type="checkbox"
                        id={this._getId('logstash-loadbalance')}
@@ -311,7 +311,7 @@ const EditOutputFields = React.createClass({
                        value={this.props.properties.hosts}
                        onChange={this._changeList('hosts')}
                        bsStyle={this._fieldError('logstash-server') ? 'error' : null}
-                       help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of hosts to connect to"}
+                       help={this._fieldError('logstash-server') ? this.state.errorMessage: "List of graylog-server hosts to send the logs to."}
                        required />
                 <Input type="checkbox"
                        id={this._getId('logstash-loadbalance')}
