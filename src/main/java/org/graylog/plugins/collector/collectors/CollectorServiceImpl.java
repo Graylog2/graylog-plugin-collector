@@ -102,7 +102,7 @@ public class CollectorServiceImpl implements CollectorService {
     @Override
     public int destroyExpired(Period period) {
         int count = 0;
-        final DateTime threshold = DateTime.now(DateTimeZone.UTC).minusSeconds(period.getSeconds());
+        final DateTime threshold = DateTime.now(DateTimeZone.UTC).minus(period);
         for (Collector collector : all())
             if (collector.getLastSeen().isBefore(threshold))
                 count += destroy(collector);
