@@ -25,13 +25,13 @@ import com.google.auto.value.AutoValue;
 @JsonAutoDetect
 public abstract class CollectorRegistrationConfiguration {
     @JsonProperty
-    public abstract int updateInterval();
+    public abstract long updateInterval();
 
     @JsonProperty
     public abstract boolean sendStatus();
 
     @JsonCreator
-    public static CollectorRegistrationConfiguration create(@JsonProperty("update_interval") int updateInterval,
+    public static CollectorRegistrationConfiguration create(@JsonProperty("update_interval") long updateInterval,
                                                             @JsonProperty("send_status") boolean sendStatus) {
         return new AutoValue_CollectorRegistrationConfiguration(updateInterval, sendStatus);
     }
