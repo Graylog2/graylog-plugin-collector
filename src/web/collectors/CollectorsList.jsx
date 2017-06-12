@@ -182,14 +182,12 @@ const CollectorList = React.createClass({
             </Button>
           </div>
           <div className="form-inline collectors-filter-form">
-            <CollectorFilter ref="collectorsFilter"
-                             label="Filter collectors"
+            <CollectorFilter label="Filter collectors"
                              data={this.state.collectors}
                              filterBy={'tags'}
                              displayKey={'tags'}
-                             filterSuggestions={[]}
                              searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
-                             onDataFiltered={this._onFilterChange}/>
+                             onDataFiltered={this._onFilterChange} />
           </div>
           {collectorList}
         </Col>

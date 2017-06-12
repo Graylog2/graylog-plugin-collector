@@ -6,15 +6,24 @@ import { TypeAheadInput } from 'components/common';
 
 const CollectorFilter = React.createClass({
   propTypes: {
-    data: React.PropTypes.array,
+    data: React.PropTypes.array.isRequired,
+    searchInKeys: React.PropTypes.array.isRequired,
+    filterBy: React.PropTypes.string.isRequired,
+    onDataFiltered: React.PropTypes.func.isRequired,
     displayKey: React.PropTypes.string,
-    filterBy: React.PropTypes.string,
     filterData: React.PropTypes.func,
     filterSuggestionAccessor: React.PropTypes.string,
     filterSuggestions: React.PropTypes.array,
     label: React.PropTypes.string,
-    onDataFiltered: React.PropTypes.func,
-    searchInKeys: React.PropTypes.array,
+  },
+  getDefaultProps() {
+    return {
+      label: 'Filter',
+      displayKey: 'value',
+      filterData: undefined,
+      filterSuggestionAccessor: undefined,
+      filterSuggestions: [],
+    };
   },
   getInitialState() {
     return {
@@ -24,14 +33,14 @@ const CollectorFilter = React.createClass({
   },
   _onSearchTextChanged(event) {
     event.preventDefault();
-    this.setState({ filterText: this.refs.typeAheadInput.getValue() }, this.filterData);
+    this.setState({ filterText: this._typeAheadInput.getValue() }, this.filterData);
   },
   _onFilterAdded(event, suggestion) {
     this.setState({
       filters: this.state.filters.add(suggestion[this.props.displayKey]),
       filterText: '',
     }, this.filterData);
-    this.refs.typeAheadInput.clear();
+    this._typeAheadInput.clear();
   },
   _onFilterRemoved(event) {
     event.preventDefault();
@@ -75,7 +84,7 @@ const CollectorFilter = React.createClass({
     }, this);
   },
   _resetFilters() {
-    this.refs.typeAheadInput.clear();
+    this._typeAheadInput.clear();
     this.setState({ filterText: '', filters: Immutable.OrderedSet() }, this.filterData);
   },
   _getStatusText(state) {
@@ -165,7 +174,7 @@ const CollectorFilter = React.createClass({
     return (
       <div className="filter">
         <form className="form-inline" onSubmit={this._onSearchTextChanged} style={{ display: 'inline' }}>
-          <TypeAheadInput ref="typeAheadInput"
+          <TypeAheadInput ref={(c) => { this._typeAheadInput = c; }}
                           onSuggestionSelected={this._onFilterAdded}
                           suggestionText={`Filter by ${this.props.filterBy}: `}
                           suggestions={suggestions}
