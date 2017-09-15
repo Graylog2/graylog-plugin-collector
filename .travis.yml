@@ -18,6 +18,6 @@ deploy:
   provider: releases
   api_key:
     secure: o626pv+kN9uCyndmGNysMp41x5cADA1PTBmJEfQ1ogUbo7EVlnmBGZwe6uxSMKhPzxabwrzpnG+cFrruJxmas9s8fSxsb5tEwPl8ouqwAJSffs7Q9tJ4xjX6CnE/+zJFaE5d0ky9DmSjEHmO4AfTrzrcUnbdEzZRkdJn0uyNbe4Kefyv6hu3/ysVLWLU49z+NtOc9dioSuyOwVXD+fg8+KYzPwT1pmqUVrxbTVP2NedI47XHcnq7jyqnguH6H5VKNyRZyv/A2XGe5Pb8zjdtXiTfzXJESrP0/ZQOWrVLJHd67Yeg+N8QJKi2SCPnv9Dd01BE4tMc8gbBOTJErW54EKWbJxDfJ4PN1r47QU5ftgN1PzdJsII6DaNN3fQFJMnEkaSOH/MMO7D/b8thggy73K14B7fNHt2PJSJDKBYCe1woGEekkzZeqcRwtkoMYwsqE+7SMbbqqsqCnMoJtf6Qlx0nbiH735KnMuNCYTRh18bJXA7KFasJwRYxtnpyuE1wOPLyzlTtWdvQYivjsxOLZ8ivINTNB3xvTjRTwCA/ryv3xII3SpkSNqCR4/GQSCI53pUTPscedMlMpkIl/xcOGPJPjgij58H+B6iPfiPVd39K3DF0BrL+AtM4ti/GwTHaFquJSZ3Q75rYN/KsbnNAwLnumJ8hrLKN2ctkvJzblxM=
-  file: target/graylog-plugin-collector-2.4.0-SNAPSHOT.jar
+  file: target/graylog-plugin-collector-2.4.0-SNAPSHOT-shaded.jar
   on:
     repo: silenceper/graylog-plugin-collector
