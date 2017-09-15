@@ -6,7 +6,8 @@ addons:
   apt:
     packages:
     - rpm
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dskip.web.build=true -B -V
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dskip.web.build=true
+  -B -V
 script: mvn package verify -Dskip.web.build=true -B -V
 before_deploy:
 - mvn jdeb:jdeb && export RELEASE_DEB_FILE=$(ls target/*.deb)
@@ -17,12 +18,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: lxv594nVRmUfzitvACxdiUaezogPWfaONBrj0h1E8nTtV+bxmozuDTAv9uxX31t0uIWfTkm9EIFdamRMv5lS+1XuwbUSD36oMxSNopnlMSTS6ll1jqjenIrXhd2qk47K/LDWK1wjuTjLPRj0IkfWcJK2wG1trSaR7oWlsmdpZ8hy+WEb0wjx9Yy6Xwq2Dco0klgs8KTxIIyiVRDFLsAY4w9PymXnpOjpr3zQ2efICEQOslsl1DcqwNV1hL0VjqZgeaIjneg9e1nUVc7w1xgIaOjNQE9/oHzdV4ESmsDhUuRQKRMsqfJjXelgBbGo2QAtnvoQkD93msVhbOWvWwo35HT7bLpn3AmL93ejFOxI+QFPF8u5nFsduzvhEQucvFgMaCiq31bN5GjJHrku+zRyjA/JXPd1D4GRJ99enIjsRLaRW7l7gxsOuuLyI69QnvjA1Dw9yy6d2UICKTMcNCnADB3yrSPB1Ne0SS4/Wf5afF4T+7uv4X2Dw70dBC44euE04cKnR06rjmIg81Z0WWzfbdlxLPXySkJiY0XyLl+ysRIJD0o1iYCQqOVQ01hFguH+4k88N4ftvh8IypU4Cb3MgrP+OuyOsFx1RHM/ajwPv3UCFRVAlfkEwXITPjnPcyOiQgFBvO9n9PGLgTwzF3V/2M7LcCiw3oEUgYrbJg1yfdQ=
-  file:
-  - "${RELEASE_PKG_FILE}"
-  - "${RELEASE_DEB_FILE}"
-  - "${RELEASE_RPM_FILE}"
-  skip_cleanup: true
+    secure: o626pv+kN9uCyndmGNysMp41x5cADA1PTBmJEfQ1ogUbo7EVlnmBGZwe6uxSMKhPzxabwrzpnG+cFrruJxmas9s8fSxsb5tEwPl8ouqwAJSffs7Q9tJ4xjX6CnE/+zJFaE5d0ky9DmSjEHmO4AfTrzrcUnbdEzZRkdJn0uyNbe4Kefyv6hu3/ysVLWLU49z+NtOc9dioSuyOwVXD+fg8+KYzPwT1pmqUVrxbTVP2NedI47XHcnq7jyqnguH6H5VKNyRZyv/A2XGe5Pb8zjdtXiTfzXJESrP0/ZQOWrVLJHd67Yeg+N8QJKi2SCPnv9Dd01BE4tMc8gbBOTJErW54EKWbJxDfJ4PN1r47QU5ftgN1PzdJsII6DaNN3fQFJMnEkaSOH/MMO7D/b8thggy73K14B7fNHt2PJSJDKBYCe1woGEekkzZeqcRwtkoMYwsqE+7SMbbqqsqCnMoJtf6Qlx0nbiH735KnMuNCYTRh18bJXA7KFasJwRYxtnpyuE1wOPLyzlTtWdvQYivjsxOLZ8ivINTNB3xvTjRTwCA/ryv3xII3SpkSNqCR4/GQSCI53pUTPscedMlMpkIl/xcOGPJPjgij58H+B6iPfiPVd39K3DF0BrL+AtM4ti/GwTHaFquJSZ3Q75rYN/KsbnNAwLnumJ8hrLKN2ctkvJzblxM=
+  file: graylog-plugin-collector-2.4.0-SNAPSHOT.jar
   on:
-    tags: true
-    jdk: oraclejdk8
+    repo: silenceper/graylog-plugin-collector
