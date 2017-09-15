@@ -1,6 +1,6 @@
 # Collector Plugin for Graylog
 
-[![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-collector.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-collector)
+[![Build Status](https://travis-ci.org/silenceper/graylog-plugin-collector.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-collector)
 
 __Use this paragraph to enter a description of your plugin.__
 
