@@ -12,7 +12,7 @@ script: mvn package verify -Dskip.web.build=true -B -V
 before_deploy:
 - mvn jdeb:jdeb && export RELEASE_DEB_FILE=$(ls target/*.deb)
 - mvn rpm:rpm && export RELEASE_RPM_FILE=$(find target/ -name '*.rpm' | tail -1)
-=- export RELEASE_PKG_FILE=$(ls target/*.jar)
+- export RELEASE_PKG_FILE=$(ls target/*.jar)
 - echo "Deploying release to GitHub releases"
 deploy:
   provider: releases
