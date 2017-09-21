@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import Immutable from 'immutable';
@@ -6,15 +7,15 @@ import { TypeAheadInput } from 'components/common';
 
 const CollectorFilter = React.createClass({
   propTypes: {
-    data: React.PropTypes.array.isRequired,
-    searchInKeys: React.PropTypes.array.isRequired,
-    filterBy: React.PropTypes.string.isRequired,
-    onDataFiltered: React.PropTypes.func.isRequired,
-    displayKey: React.PropTypes.string,
-    filterData: React.PropTypes.func,
-    filterSuggestionAccessor: React.PropTypes.string,
-    filterSuggestions: React.PropTypes.array,
-    label: React.PropTypes.string,
+    data: PropTypes.array.isRequired,
+    searchInKeys: PropTypes.array.isRequired,
+    filterBy: PropTypes.string.isRequired,
+    onDataFiltered: PropTypes.func.isRequired,
+    displayKey: PropTypes.string,
+    filterData: PropTypes.func,
+    filterSuggestionAccessor: PropTypes.string,
+    filterSuggestions: PropTypes.array,
+    label: PropTypes.string,
   },
   getDefaultProps() {
     return {

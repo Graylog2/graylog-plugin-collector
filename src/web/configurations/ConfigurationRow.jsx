@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -9,11 +10,11 @@ import Routes from 'routing/Routes';
 
 const ConfigurationRow = React.createClass({
   propTypes: {
-    configuration: React.PropTypes.object.isRequired,
-    onUpdate: React.PropTypes.func.isRequired,
-    onCopy: React.PropTypes.func.isRequired,
-    validateConfiguration: React.PropTypes.func.isRequired,
-    onDelete: React.PropTypes.func.isRequired,
+    configuration: PropTypes.object.isRequired,
+    onUpdate: PropTypes.func.isRequired,
+    onCopy: PropTypes.func.isRequired,
+    validateConfiguration: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
   },
 
   componentDidMount() {

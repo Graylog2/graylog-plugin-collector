@@ -1,12 +1,13 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, Collapse } from 'react-bootstrap';
 import { Input } from 'components/bootstrap';
 
 const CollapsibleVerbatim = React.createClass({
   propTypes: {
-    type: React.PropTypes.string,
-    value: React.PropTypes.string,
-    onChange: React.PropTypes.func.isRequired,
+    type: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
   },
 
   getInitialState() {

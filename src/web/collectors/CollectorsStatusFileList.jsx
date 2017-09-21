@@ -1,10 +1,11 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { DataTable, Spinner, Timestamp } from 'components/common';
 
 const CollectorsStatusFileList = React.createClass({
   propTypes: {
-    files: React.PropTypes.array.isRequired,
+    files: PropTypes.array.isRequired,
   },
 
   _headerCellFormatter(header) {

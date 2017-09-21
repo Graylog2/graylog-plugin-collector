@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
@@ -8,16 +9,16 @@ import EditOutputFields from './EditOutputFields';
 
 const EditOutputModal = React.createClass({
   propTypes: {
-    id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    backend: React.PropTypes.string,
-    type: React.PropTypes.string,
-    properties: React.PropTypes.object,
-    create: React.PropTypes.bool,
-    saveOutput: React.PropTypes.func.isRequired,
-    validOutputName: React.PropTypes.func.isRequired,
-    selectedGroup: React.PropTypes.string.isRequired,
-    outputList: React.PropTypes.array.isRequired,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    backend: PropTypes.string,
+    type: PropTypes.string,
+    properties: PropTypes.object,
+    create: PropTypes.bool,
+    saveOutput: PropTypes.func.isRequired,
+    validOutputName: PropTypes.func.isRequired,
+    selectedGroup: PropTypes.string.isRequired,
+    outputList: PropTypes.array.isRequired,
   },
 
   getDefaultProps() {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
@@ -5,9 +6,9 @@ import { BootstrapModalForm, Input } from 'components/bootstrap';
 
 const CopyInputModal = React.createClass({
     propTypes: {
-        id: React.PropTypes.string,
-        copyInput: React.PropTypes.func.isRequired,
-        validInputName: React.PropTypes.func.isRequired,
+        id: PropTypes.string,
+        copyInput: PropTypes.func.isRequired,
+        validInputName: PropTypes.func.isRequired,
     },
 
     getDefaultProps() {

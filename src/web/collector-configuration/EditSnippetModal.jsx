@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
@@ -6,14 +7,14 @@ import { Select } from 'components/common';
 
 const EditSnippetModal = React.createClass({
   propTypes: {
-    id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    snippet: React.PropTypes.string,
-    backend: React.PropTypes.string,
-    create: React.PropTypes.bool,
-    saveSnippet: React.PropTypes.func.isRequired,
-    validSnippetName: React.PropTypes.func.isRequired,
-    selectedGroup: React.PropTypes.string.isRequired,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    snippet: PropTypes.string,
+    backend: PropTypes.string,
+    create: PropTypes.bool,
+    saveSnippet: PropTypes.func.isRequired,
+    validSnippetName: PropTypes.func.isRequired,
+    selectedGroup: PropTypes.string.isRequired,
   },
 
   getDefaultProps() {

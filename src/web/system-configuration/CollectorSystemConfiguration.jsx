@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { BootstrapModalForm, Input } from 'components/bootstrap';
@@ -9,14 +10,14 @@ import StringUtils from 'util/StringUtils';
 
 const CollectorSystemConfiguration = React.createClass({
   propTypes: {
-    config: React.PropTypes.shape({
-      collector_expiration_threshold: React.PropTypes.string,
-      collector_inactive_threshold: React.PropTypes.string,
-      collector_update_interval: React.PropTypes.string,
-      collector_send_status: React.PropTypes.bool,
-      collector_configuration_override: React.PropTypes.bool,
+    config: PropTypes.shape({
+      collector_expiration_threshold: PropTypes.string,
+      collector_inactive_threshold: PropTypes.string,
+      collector_update_interval: PropTypes.string,
+      collector_send_status: PropTypes.bool,
+      collector_configuration_override: PropTypes.bool,
     }),
-    updateConfig: React.PropTypes.func.isRequired,
+    updateConfig: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {

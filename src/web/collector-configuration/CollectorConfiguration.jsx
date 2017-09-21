@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
@@ -17,9 +18,9 @@ import TagsSelect from './TagsSelect';
 
 const CollectorConfiguration = React.createClass({
   propTypes: {
-    configuration: React.PropTypes.object.isRequired,
-    tags: React.PropTypes.array.isRequired,
-    onConfigurationChange: React.PropTypes.func.isRequired,
+    configuration: PropTypes.object.isRequired,
+    tags: PropTypes.array.isRequired,
+    onConfigurationChange: PropTypes.func.isRequired,
   },
 
   getInitialState() {

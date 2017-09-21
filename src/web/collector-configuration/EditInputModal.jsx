@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { Select } from 'components/common';
@@ -8,17 +9,17 @@ import EditInputFields from './EditInputFields';
 
 const EditInputModal = React.createClass({
   propTypes: {
-    id: React.PropTypes.string,
-    name: React.PropTypes.string,
-    backend: React.PropTypes.string,
-    type: React.PropTypes.string,
-    forwardTo: React.PropTypes.string,
-    properties: React.PropTypes.object,
-    outputs: React.PropTypes.array,
-    create: React.PropTypes.bool,
-    saveInput: React.PropTypes.func.isRequired,
-    validInputName: React.PropTypes.func.isRequired,
-    selectedGroup: React.PropTypes.string.isRequired,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    backend: PropTypes.string,
+    type: PropTypes.string,
+    forwardTo: PropTypes.string,
+    properties: PropTypes.object,
+    outputs: PropTypes.array,
+    create: PropTypes.bool,
+    saveInput: PropTypes.func.isRequired,
+    validInputName: PropTypes.func.isRequired,
+    selectedGroup: PropTypes.string.isRequired,
   },
 
   getDefaultProps() {

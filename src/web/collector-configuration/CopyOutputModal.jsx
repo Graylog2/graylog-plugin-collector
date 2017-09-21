@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
@@ -5,9 +6,9 @@ import { BootstrapModalForm, Input } from 'components/bootstrap';
 
 const CopyOutputModal = React.createClass({
     propTypes: {
-        id: React.PropTypes.string,
-        copyOutput: React.PropTypes.func.isRequired,
-        validOutputName: React.PropTypes.func.isRequired,
+        id: PropTypes.string,
+        copyOutput: PropTypes.func.isRequired,
+        validOutputName: PropTypes.func.isRequired,
     },
 
     getDefaultProps() {

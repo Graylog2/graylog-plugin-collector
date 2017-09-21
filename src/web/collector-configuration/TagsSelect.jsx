@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import MultiSelect from 'components/common/MultiSelect';
 
 const TagsSelect = React.createClass({
   propTypes: {
-    tags: React.PropTypes.arrayOf(React.PropTypes.string),
-    availableTags: React.PropTypes.array.isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string),
+    availableTags: PropTypes.array.isRequired,
   },
 
   getDefaultProps() {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Alert, Row, Col, Button } from 'react-bootstrap';
@@ -16,7 +17,7 @@ import Routes from 'routing/Routes';
 
 const CollectorsStatusPage = React.createClass({
   propTypes: {
-    params: React.PropTypes.object.isRequired,
+    params: PropTypes.object.isRequired,
   },
 
   getInitialState() {

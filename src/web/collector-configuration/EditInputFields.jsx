@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Input } from 'components/bootstrap';
 
@@ -8,11 +9,11 @@ import CollapsibleVerbatim from './CollapsibleVerbatim';
 
 const EditInputFields = React.createClass({
   propTypes: {
-    type: React.PropTypes.string,
-    properties: React.PropTypes.object,
-    errorState: React.PropTypes.func,
-    errorFields: React.PropTypes.array,
-    injectProperties: React.PropTypes.func.isRequired,
+    type: PropTypes.string,
+    properties: PropTypes.object,
+    errorState: PropTypes.func,
+    errorFields: PropTypes.array,
+    injectProperties: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {

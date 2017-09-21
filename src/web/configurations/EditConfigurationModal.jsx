@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
@@ -6,10 +7,10 @@ import ObjectUtils from 'util/ObjectUtils';
 
 const EditConfigurationModal = React.createClass({
   propTypes: {
-    configuration: React.PropTypes.object,
-    create: React.PropTypes.bool,
-    updateConfiguration: React.PropTypes.func.isRequired,
-    validConfigurationName: React.PropTypes.func.isRequired,
+    configuration: PropTypes.object,
+    create: PropTypes.bool,
+    updateConfiguration: PropTypes.func.isRequired,
+    validConfigurationName: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {

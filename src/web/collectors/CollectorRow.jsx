@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -7,7 +8,7 @@ import { Timestamp } from 'components/common';
 
 const CollectorRow = React.createClass({
   propTypes: {
-    collector: React.PropTypes.object.isRequired,
+    collector: PropTypes.object.isRequired,
   },
   getInitialState() {
     return {

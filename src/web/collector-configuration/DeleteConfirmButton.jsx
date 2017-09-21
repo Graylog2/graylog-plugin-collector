@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
 const DeleteConfirmButton = React.createClass({
   propTypes: {
-    entity: React.PropTypes.object.isRequired,
-    type: React.PropTypes.string.isRequired,
-    onClick: React.PropTypes.func.isRequired,
+    entity: PropTypes.object.isRequired,
+    type: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
   },
 
   handleClick() {
