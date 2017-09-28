@@ -98,6 +98,9 @@ const EditInputFields = React.createClass({
         if (!value.hasOwnProperty('paths')) {
           this.props.injectProperties('paths', '[\'/var/log/*.log\']');
         };
+        if (!value.hasOwnProperty('exclude_files')) {
+          this.props.injectProperties('exclude_files', '[]');
+        };
         if (!value.hasOwnProperty('scan_frequency')) {
           this.props.injectProperties('scan_frequency', '10s');
         };
@@ -424,6 +427,13 @@ const EditInputFields = React.createClass({
                        bsStyle={this._fieldError('file-paths') ? 'error' : null}
                        help={this._fieldError('file-paths') ? this.state.errorMessage: "Location of the log files to use"}
                        required />
+                <Input type="text"
+                       id={this._getId('exclude-files')}
+                       label="Exclude Logfile"
+                       value={this.props.properties.exclude_files}
+                       onChange={this._changeList('exclude_files')}
+                       bsStyle={this._fieldError('exclude-files') ? 'error' : null}
+                       help={this._fieldError('exclude-files') ? this.state.errorMessage: "A list of regular expressions to match the files that you want Filebeat to ignore.(e.g. ['\.gz$'])"} />
                 <Input type="text"
                        id={this._getId('encoding')}
                        label="Encoding"
