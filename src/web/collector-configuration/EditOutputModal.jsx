@@ -140,7 +140,7 @@ const EditOutputModal = React.createClass({
               <Select ref="select-type"
                       options={this.props.outputList.filter(type => type.group === this.props.selectedGroup)}
                       value={this.state.selectedType}
-                      onValueChange={this._changeType}
+                      onChange={this._changeType}
                       placeholder="Choose output type..."
               />
             </Input>
