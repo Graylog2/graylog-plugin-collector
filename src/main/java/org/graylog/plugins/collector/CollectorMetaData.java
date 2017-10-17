@@ -24,9 +24,6 @@ import java.net.URI;
 import java.util.EnumSet;
 import java.util.Set;
 
-/**
- * Implement the PluginMetaData interface here.
- */
 public class CollectorMetaData implements PluginMetaData {
     private static final String PLUGIN_PROPERTIES = "org.graylog.plugins.graylog-plugin-collector/graylog-plugin.properties";
 
@@ -47,7 +44,7 @@ public class CollectorMetaData implements PluginMetaData {
 
     @Override
     public URI getURL() {
-        return URI.create("https://www.graylog.org/");
+        return URI.create("http://docs.graylog.org/en/latest/pages/collector_sidecar.html");
     }
 
     @Override
