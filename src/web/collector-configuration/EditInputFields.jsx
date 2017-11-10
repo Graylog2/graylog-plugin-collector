@@ -307,7 +307,8 @@ const EditInputFields = React.createClass({
                      onChange={this._changePattern('multiline_stop')}
                      bsStyle={this._fieldError('multiline-stop') ? 'error' : null}
                      help={this._fieldError('multiline-stop') ? this.state.errorMessage: "RegEx stop pattern of a multiline"}/>
-              <Input label="Additional Fields"
+              <Input id="additional-fields"
+                     label="Additional Fields"
                      help="Allowed characters: a-z0-9-_.">
                 <KeyValueTable pairs={this.state.fields}
                                editable={true}
@@ -352,7 +353,8 @@ const EditInputFields = React.createClass({
                        value={this.props.properties.poll_interval}
                        onChange={this._injectProperty('poll_interval')}
                        help="In seconds how frequently the collector will check for new files and new log entries"/>
-                <Input label="Additional Fields"
+                <Input id="additional-fields"
+                       label="Additional Fields"
                        help="Allowed characters: a-z0-9-_.">
                   <KeyValueTable pairs={this.state.fields}
                                  editable={true}
@@ -379,7 +381,8 @@ const EditInputFields = React.createClass({
                        onChange={this._injectProperty('port')}
                        help="Port number of the UDP input"
                        required/>
-                <Input label="Additional Fields"
+                <Input id="additional-fields"
+                       label="Additional Fields"
                        help="Allowed characters: a-z0-9-_.">
                   <KeyValueTable pairs={this.state.fields}
                                  editable={true}
@@ -406,7 +409,8 @@ const EditInputFields = React.createClass({
                        onChange={this._injectProperty('port')}
                        help="Port number of the TCP input"
                        required/>
-                <Input label="Additional Fields"
+                <Input id="additional-fields"
+                       label="Additional Fields"
                        help="Allowed characters: a-z0-9-_.">
                   <KeyValueTable pairs={this.state.fields}
                                  editable={true}
@@ -511,7 +515,8 @@ const EditInputFields = React.createClass({
                   <option key="before" value="before">before</option>
                   <option key="after" value="after">after</option>
                 </Input>
-                <Input label="Additional Fields"
+                <Input id="additional-fields"
+                       label="Additional Fields"
                        help="Allowed characters: a-z0-9-_.">
                   <KeyValueTable pairs={this.state.fields}
                                  editable={true}

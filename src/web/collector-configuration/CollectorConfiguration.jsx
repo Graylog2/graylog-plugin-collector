@@ -294,7 +294,8 @@ const CollectorConfiguration = React.createClass({
             <h2>Configuration tags</h2>
             <p>Manage tags for this configuration. Collectors using one of these tags will automatically apply this configuration.</p>
             <form className="form-horizontal" style={{ marginTop: 15 }} onSubmit={this._updateTags}>
-              <Input label="Tags"
+              <Input id="tags-selector"
+                     label="Tags"
                      help="Select a tag or create new ones by typing their name."
                      labelClassName="col-sm-2" wrapperClassName="col-sm-10">
                 <Row>
