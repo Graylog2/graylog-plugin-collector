@@ -176,6 +176,7 @@ const CollectorFilter = React.createClass({
       <div className="filter">
         <form className="form-inline" onSubmit={this._onSearchTextChanged} style={{ display: 'inline' }}>
           <TypeAheadInput ref={(c) => { this._typeAheadInput = c; }}
+                          id="collector-filter"
                           onSuggestionSelected={this._onFilterAdded}
                           suggestionText={`Filter by ${this.props.filterBy}: `}
                           suggestions={suggestions}

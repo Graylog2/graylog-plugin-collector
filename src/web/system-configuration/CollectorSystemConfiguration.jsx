@@ -119,7 +119,8 @@ const CollectorSystemConfiguration = React.createClass({
                             onModalClose={this._resetConfig}
                             submitButtonText="Save">
           <fieldset>
-            <ISODurationInput duration={this.state.config.collector_inactive_threshold}
+            <ISODurationInput id="inactive-threshold-field"
+                              duration={this.state.config.collector_inactive_threshold}
                               update={this._onUpdate('collector_inactive_threshold')}
                               label="Inactive threshold (as ISO8601 Duration)"
                               help="Amount of time of inactivity after which collectors are flagged as inactive."
@@ -127,14 +128,16 @@ const CollectorSystemConfiguration = React.createClass({
                               errorText="invalid (min: 1 second)"
                               required />
 
-            <ISODurationInput duration={this.state.config.collector_expiration_threshold}
+            <ISODurationInput id="collector-expiration-field"
+                              duration={this.state.config.collector_expiration_threshold}
                               update={this._onUpdate('collector_expiration_threshold')}
                               label="Expiration threshold (as ISO8601 Duration)"
                               help="Amount of time after which inactive collectors are purged from the database."
                               validator={this._expirationThresholdValidator}
                               errorText="invalid (min: 1 minute)"
                               required />
-            <ISODurationInput duration={this.state.config.collector_update_interval}
+            <ISODurationInput id="collector-update-field"
+                              duration={this.state.config.collector_update_interval}
                               update={this._onUpdate('collector_update_interval')}
                               label="Update interval (as ISO8601 Duration)"
                               help="Time between collector update requests."
@@ -143,11 +146,13 @@ const CollectorSystemConfiguration = React.createClass({
                               required />
           </fieldset>
           <Input type="checkbox"
+                 id="send-status-updates-checkbox"
                  label="Send status updates"
                  checked={this.state.config.collector_send_status}
                  onChange={this._onUpdate('collector_send_status')}
                  help="Send collector status and host metrics from each client" />
           <Input type="checkbox"
+                 id="override-sidecar-config-checkbox"
                  label="Override Sidecar configuration"
                  checked={this.state.config.collector_configuration_override}
                  onChange={this._onUpdate('collector_configuration_override')}
