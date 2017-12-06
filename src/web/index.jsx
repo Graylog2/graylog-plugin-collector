@@ -1,5 +1,4 @@
 // eslint-disable-next-line no-unused-vars
-import webpackEntry from 'webpack-entry';
 
 import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
@@ -9,6 +8,7 @@ import CollectorsStatusPage from 'collectors/CollectorsStatusPage';
 import ConfigurationsPage from 'configurations/ConfigurationsPage';
 import CollectorConfigurationPage from 'collector-configuration/CollectorConfigurationPage';
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
+import AltConfigurationPage from 'alt-configuration/AltConfigurationPage';
 
 const manifest = new PluginManifest(packageJson, {
   routes: [
@@ -16,6 +16,7 @@ const manifest = new PluginManifest(packageJson, {
     { path: '/system/collectors/:id/status', component: CollectorsStatusPage },
     { path: '/system/collectors/configurations', component: ConfigurationsPage },
     { path: '/system/collectors/configurations/:id', component: CollectorConfigurationPage },
+    { path: '/system/collectors/altconfigurations/:id', component: AltConfigurationPage },
   ],
 
   // Adding an element to the top navigation pointing to /sample named "Sample":
