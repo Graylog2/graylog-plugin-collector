@@ -13,14 +13,12 @@ const FilebeatHelper = React.createClass({
   logProspector() {
     return (
       <div>
+        <h3>Log Prospector</h3>
         Reads every line of the log file.
-
-        <pre className={`${ConfigurationHelperStyle.marginTab} ${ConfigurationHelperStyle.exampleFunction}`} style={{ whiteSpace: 'pre-wrap' }}>
-        filebeat.prospectors:
-        - type: log
-        paths:
-        - /var/log/apache/httpd-*.log`,\
-        </pre>
+        {this.example(`filebeat.prospectors:
+  - type: log
+    paths:
+      - /var/log/apache/httpd-*.log`)}
       </div>
     );
   },
@@ -28,23 +26,28 @@ const FilebeatHelper = React.createClass({
   redisProspector() {
     return (
       <div>
+        <h3>Redis Prospector</h3>
         Reads slow log entries from redis (experimental).
-        <pre className={`${ConfigurationHelperStyle.marginTab} ${ConfigurationHelperStyle.exampleFunction}`} style={{ whiteSpace: 'pre-wrap' }}>
-          - type: redis
-            hosts: ["localhost:6379"]
-            username: "redis"
-            password: "secret"
-            scan_frequency: 10s
-        </pre>
+        {this.example(`filebeat.prospectors:
+  - type: redis
+    hosts: ["localhost:6379"]
+    username: "redis"
+    password: "secret"
+    scan_frequency: 10s`)}
       </div>
     );
   },
 
+  example(data) {
+    return (
+      <pre className={`${ConfigurationHelperStyle.marginTab} ${ConfigurationHelperStyle.exampleFunction}`} >{data}</pre>
+    );
+  },
 
   render() {
     const data = {
       prospector: {
-        log: this.logProspector,
+        log: this.logProspector(),
         redis: this.redisProspector(),
       },
     };

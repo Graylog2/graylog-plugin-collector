@@ -48,7 +48,7 @@ const ConfigurationHelper = React.createClass({
           </Navbar.Collapse>
         </Navbar>
         <Panel>
-          <FilebeatHelper section={'prospector'} paragraph={'redis'} />
+          <FilebeatHelper section={'prospector'} paragraph={'log'} />
         </Panel>
       </Panel>
     );
