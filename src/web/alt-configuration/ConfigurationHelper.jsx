@@ -5,18 +5,13 @@ import { Col, MenuItem, Nav, Navbar, NavDropdown, Panel, Row } from 'react-boots
 import DocumentationLink from 'components/support/DocumentationLink';
 import DocsHelper from 'util/DocsHelper';
 
+import FilebeatHelper from './FilebeatHelper';
 import ConfigurationHelperStyle from './ConfigurationHelper.css';
 
 const ConfigurationHelper = React.createClass({
   propTypes: {
     type: PropTypes.string.isRequired,
   },
-
-  configurationExample: `<Input in>
-    Module	im_tcp
-    Host	0.0.0.0
-    Port	1514
-</Input>`,
 
   render() {
     return (
@@ -53,12 +48,7 @@ const ConfigurationHelper = React.createClass({
           </Navbar.Collapse>
         </Navbar>
         <Panel>
-          This module accepts TCP connections on the address and port specified in the configuration. It can handle
-          multiple simultaneous connections. The TCP transfer protocol provides more reliable log transmission than UDP.
-          If security is a concern, consider using the im_ssl module instead.
-          <pre className={`${ConfigurationHelperStyle.marginTab} ${ConfigurationHelperStyle.exampleFunction}`}>
-            {this.configurationExample}
-          </pre>
+          <FilebeatHelper section={'prospector'} paragraph={'redis'} />
         </Panel>
       </Panel>
     );
