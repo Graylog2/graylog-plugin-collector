@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 import React from 'react';
 
 import ConfigurationHelperStyle from './ConfigurationHelper.css';
@@ -6,11 +7,19 @@ import ConfigurationHelperStyle from './ConfigurationHelper.css';
 
 const FilebeatHelper = React.createClass({
   propTypes: {
-    section: PropTypes.string.isRequired,
-    paragraph: PropTypes.string.isRequired,
+    section: PropTypes.string,
+    paragraph: PropTypes.string,
   },
 
-  logProspector() {
+  statics: {
+    toc: {
+      'prospectors': ['log', 'redis'],
+      'outputs': ['logstash'],
+      'filters': ['processors', 'json', 'drop events', 'add fields']
+    }
+  },
+
+  prospectorsLog() {
     return (
       <div>
         <h3>Log Prospector</h3>
@@ -23,7 +32,7 @@ const FilebeatHelper = React.createClass({
     );
   },
 
-  redisProspector() {
+  prospectorsRedis() {
     return (
       <div>
         <h3>Redis Prospector</h3>
@@ -44,17 +53,20 @@ const FilebeatHelper = React.createClass({
     );
   },
 
-  render() {
-    const data = {
-      prospector: {
-        log: this.logProspector(),
-        redis: this.redisProspector(),
-      },
-    };
+  lookupName() {
+    return lodash.camelCase(this.props.section + ' ' + this.props.paragraph);
+  },
 
-    return (
-      data[this.props.section][this.props.paragraph]
-    );
+  render() {
+    if (this.props.section && this.props.paragraph) {
+      return (
+        this[this.lookupName()]()
+      );
+    } else {
+      return (
+        <div>Choose a configuration topic from the drop down to get a quick help.</div>
+      );
+    }
   },
 });
 export default FilebeatHelper;

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 import React from 'react';
 import { Col, MenuItem, Nav, Navbar, NavDropdown, Panel, Row } from 'react-bootstrap';
 
@@ -13,8 +14,51 @@ const ConfigurationHelper = React.createClass({
     type: PropTypes.string.isRequired,
   },
 
+  getInitialState() {
+    return {
+      section: undefined,
+      paragraph: undefined,
+    };
+  },
+
+  _onSelect(event) {
+    const newState = event.split(".");
+    this.setState({section: newState[0], paragraph: newState[1]})
+  },
+
+  _getId(idName, index) {
+    const idIndex = index !== undefined ? '.' + index : '';
+    return idName + idIndex;
+  },
+
+  _getEventKey(a, b) {
+    return (a + '.' + b);
+  },
+
+  navDropDowns(content) {
+    let result = [];
+    for (let section in content) {
+      if (!content.hasOwnProperty(section)) {
+        return undefined;
+      }
+      const paragraphs = content[section];
+      let menuItems = [];
+      for (let i = 0; i < paragraphs.length; i++) {
+        menuItems.push(
+            <MenuItem key={this._getId(section,i)} eventKey={this._getEventKey(section, paragraphs[i])}>{lodash.capitalize(paragraphs[i])}</MenuItem>
+        );
+      }
+      result.push(
+        <NavDropdown key={this._getId(section)} title={lodash.capitalize(section)} id="basic-nav-dropdown">
+          {menuItems}
+        </NavDropdown>
+      );
+    }
+    return result;
+  },
+
   render() {
-    return (
+  return (
       <Panel header="Filebeat quick reference">
         <Row className="row-sm">
           <Col md={12}>
@@ -28,27 +72,13 @@ const ConfigurationHelper = React.createClass({
 
         <Navbar collapseOnSelect>
           <Navbar.Collapse>
-            <Nav>
-              <NavDropdown eventKey={1} title="Inputs" id="basic-nav-dropdown">
-                <MenuItem eventKey={1.1}>File</MenuItem>
-                <MenuItem eventKey={1.2}>Syslog</MenuItem>
-                <MenuItem eventKey={1.3}>Windows Event</MenuItem>
-              </NavDropdown>
-              <NavDropdown eventKey={2} title="Outputs" id="basic-nav-dropdown">
-                <MenuItem eventKey={2.1}>GELF</MenuItem>
-                <MenuItem eventKey={2.2}>TCP</MenuItem>
-                <MenuItem eventKey={2.3}>TCP/SSL</MenuItem>
-              </NavDropdown>
-              <NavDropdown eventKey={3} title="Filters" id="basic-nav-dropdown">
-                <MenuItem eventKey={3.1}>RegEx</MenuItem>
-                <MenuItem eventKey={3.2}>Pattern Matcher</MenuItem>
-                <MenuItem eventKey={3.3}>Event Correlator</MenuItem>
-              </NavDropdown>
+            <Nav onSelect={this._onSelect}>
+              {this.navDropDowns(FilebeatHelper.toc)}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
         <Panel>
-          <FilebeatHelper section={'prospector'} paragraph={'log'} />
+          <FilebeatHelper section={this.state.section} paragraph={this.state.paragraph} />
         </Panel>
       </Panel>
     );
