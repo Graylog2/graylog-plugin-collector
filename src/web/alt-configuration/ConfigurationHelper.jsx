@@ -22,43 +22,46 @@ const ConfigurationHelper = React.createClass({
   },
 
   _onSelect(event) {
-    const newState = event.split(".");
-    this.setState({section: newState[0], paragraph: newState[1]})
+    const newState = event.split('.');
+    this.setState({ section: newState[0], paragraph: newState[1] });
   },
 
   _getId(idName, index) {
-    const idIndex = index !== undefined ? '.' + index : '';
+    const idIndex = index !== undefined ? `. ${index}` : '';
     return idName + idIndex;
   },
 
   _getEventKey(a, b) {
-    return (a + '.' + b);
+    return (`${a}.${b}`);
   },
 
   navDropDowns(content) {
-    let result = [];
-    for (let section in content) {
-      if (!content.hasOwnProperty(section)) {
+    const dropDowns = [];
+    Object.keys(content).forEach((section) => {
+      if (!Object.prototype.hasOwnProperty.call(content, section)) {
         return undefined;
       }
+
       const paragraphs = content[section];
-      let menuItems = [];
-      for (let i = 0; i < paragraphs.length; i++) {
+      const menuItems = [];
+
+      for (let i = 0; i < paragraphs.length; i += 1) {
         menuItems.push(
-            <MenuItem key={this._getId(section,i)} eventKey={this._getEventKey(section, paragraphs[i])}>{lodash.capitalize(paragraphs[i])}</MenuItem>
+          <MenuItem key={this._getId(section,i)} eventKey={this._getEventKey(section, paragraphs[i])}>{lodash.capitalize(paragraphs[i])}</MenuItem>,
         );
       }
-      result.push(
+      dropDowns.push(
         <NavDropdown key={this._getId(section)} title={lodash.capitalize(section)} id="basic-nav-dropdown">
           {menuItems}
-        </NavDropdown>
+        </NavDropdown>,
       );
-    }
-    return result;
+    });
+
+    return dropDowns;
   },
 
   render() {
-  return (
+    return (
       <Panel header="Filebeat quick reference">
         <Row className="row-sm">
           <Col md={12}>
