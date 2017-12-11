@@ -13,10 +13,10 @@ const FilebeatHelper = React.createClass({
 
   statics: {
     toc: {
-      'prospectors': ['log', 'redis'],
-      'outputs': ['logstash'],
-      'filters': ['processors', 'json', 'drop events', 'add fields']
-    }
+      prospectors: ['log', 'redis'],
+      outputs: ['logstash'],
+      filters: ['processors', 'json', 'drop events', 'add fields']
+    },
   },
 
   prospectorsLog() {
@@ -54,7 +54,7 @@ const FilebeatHelper = React.createClass({
   },
 
   lookupName() {
-    return lodash.camelCase(this.props.section + ' ' + this.props.paragraph);
+    return lodash.camelCase(`${this.props.section} ${this.props.paragraph}`);
   },
 
   render() {
