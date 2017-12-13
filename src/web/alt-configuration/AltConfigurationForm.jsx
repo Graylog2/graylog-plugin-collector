@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 
-import AceEditor from 'react-ace';
-
+import { SourceCodeEditor } from 'components/common';
 import { Input } from 'components/bootstrap';
 import history from 'util/History';
 
@@ -71,20 +70,7 @@ const AltConfigurationForm = React.createClass({
 
 
           <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
-            <div style={{ border: '1px solid lightgray', borderRadius: 5 }}>
-              <AceEditor
-                mode="text"
-                theme="chrome"
-                name="edit"
-                fontSize={14}
-                height="22em"
-                width="100%"
-                editorProps={{ $blockScrolling: 'Infinity' }}
-                value={this.state.formData.snippet}
-                onChange={this._onSourceChange}
-                focus
-              />
-            </div>
+            <SourceCodeEditor value={this.state.formData.snippet} onChange={this._onSourceChange} />
           </Input>
         </fieldset>
 
