@@ -70,7 +70,9 @@ const AltConfigurationForm = React.createClass({
 
 
           <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
-            <SourceCodeEditor value={this.state.formData.snippet} onChange={this._onSourceChange} />
+            <SourceCodeEditor id="configuration-text-editor"
+                              value={this.state.formData.snippet}
+                              onChange={this._onSourceChange} />
           </Input>
         </fieldset>
 
