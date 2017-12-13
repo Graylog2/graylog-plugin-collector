@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import React from 'react';
-import { Col, MenuItem, Nav, Navbar, NavDropdown, Panel, Row } from 'react-bootstrap';
+import { Col, MenuItem, Nav, Navbar, NavDropdown, Panel, Row, Tab, Tabs } from 'react-bootstrap';
 
 import DocumentationLink from 'components/support/DocumentationLink';
 import DocsHelper from 'util/DocsHelper';
 
 import FilebeatHelper from './FilebeatHelper';
+import TemplatesHelper from './TemplatesHelper';
 import ConfigurationHelperStyle from './ConfigurationHelper.css';
 
 const ConfigurationHelper = React.createClass({
@@ -73,16 +74,30 @@ const ConfigurationHelper = React.createClass({
           </Col>
         </Row>
 
-        <Navbar collapseOnSelect>
-          <Navbar.Collapse>
-            <Nav onSelect={this._onSelect}>
-              {this.navDropDowns(FilebeatHelper.toc)}
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-        <Panel>
-          <FilebeatHelper section={this.state.section} paragraph={this.state.paragraph} />
-        </Panel>
+        <Row className="row-sm">
+          <Col md={12}>
+            <Tabs id="configurationsHelper" defaultActiveKey={1} animation={false}>
+              <Tab eventKey={1} title="Reference">
+                <br />
+                <Navbar collapseOnSelect>
+                  <Navbar.Collapse>
+                    <Nav onSelect={this._onSelect}>
+                      {this.navDropDowns(FilebeatHelper.toc)}
+                    </Nav>
+                  </Navbar.Collapse>
+                </Navbar>
+                <Panel>
+                  <FilebeatHelper section={this.state.section} paragraph={this.state.paragraph} />
+                </Panel>
+              </Tab>
+              <Tab eventKey={2} title="Templates">
+                <br />
+                <TemplatesHelper />
+              </Tab>
+              <Tab eventKey={3} title="Includes"></Tab>
+            </Tabs>
+          </Col>
+        </Row>
       </Panel>
     );
   },
