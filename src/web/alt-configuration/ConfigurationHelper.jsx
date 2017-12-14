@@ -8,6 +8,7 @@ import DocsHelper from 'util/DocsHelper';
 
 import FilebeatHelper from './FilebeatHelper';
 import TemplatesHelper from './TemplatesHelper';
+import IncludesHelper from './IncludesHelper';
 import ConfigurationHelperStyle from './ConfigurationHelper.css';
 
 const ConfigurationHelper = React.createClass({
@@ -94,7 +95,10 @@ const ConfigurationHelper = React.createClass({
                 <br />
                 <TemplatesHelper />
               </Tab>
-              <Tab eventKey={3} title="Includes"></Tab>
+              <Tab eventKey={3} title="Includes">
+                <br />
+                <IncludesHelper />
+              </Tab>
             </Tabs>
           </Col>
         </Row>

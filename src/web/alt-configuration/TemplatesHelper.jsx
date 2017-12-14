@@ -16,15 +16,15 @@ const TemplatesHelper = React.createClass({
           </thead>
           <tbody>
             <tr>
-              <td><code>.Linux</code></td>
+              <td><code>{'{{'}.Linux{'}}'}</code></td>
               <td>True if executed on a Linux node.</td>
             </tr>
             <tr>
-              <td><code>.Windows</code></td>
+              <td><code>{'{{'}.Windows{'}}'}</code></td>
               <td>Same for Windows nodes.</td>
             </tr>
             <tr>
-              <td><code>.LinuxPlatform</code></td>
+              <td><code>{'{{'}.LinuxPlatform{'}}'}</code></td>
               <td>Returns the base distribution as string, e.g. <code>&quot;debian&quot;, &quot;redhat&quot;</code></td>
             </tr>
           </tbody>
