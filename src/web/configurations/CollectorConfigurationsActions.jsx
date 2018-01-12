@@ -3,6 +3,7 @@ import Reflux from 'reflux';
 const CollectorConfigurationsActions = Reflux.createActions({
   list: { asyncResult: true },
   getConfiguration: { asyncResult: true },
+  renderConfiguration: { asyncResult: true },
   createConfiguration: { asyncResult: true },
   updateConfiguration: { asyncResult: true },
   saveTags: { asyncResult: true },

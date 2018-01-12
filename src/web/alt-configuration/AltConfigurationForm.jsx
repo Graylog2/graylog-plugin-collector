@@ -7,6 +7,7 @@ import { Input } from 'components/bootstrap';
 import history from 'util/History';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
+import SourceViewModal from './SourceViewModal';
 
 const AltConfigurationForm = React.createClass({
   propTypes: {
@@ -57,34 +58,57 @@ const AltConfigurationForm = React.createClass({
     history.goBack();
   },
 
+  _onShowSource(id) {
+    this._save();
+    this.refs[`modal_${id}`].open();
+  },
+
   render() {
     return (
-      <form onSubmit={this._onSubmit}>
-        <fieldset>
-          <Input type="text"
-                 id={this._getId('name')}
-                 label="Name"
-                 onChange={this._onNameChange}
-                 help="Configuration name."
-                 value={this.state.formData.name} />
+      <div>
+        <form onSubmit={this._onSubmit}>
+          <fieldset>
+            <Input type="text"
+                   id={this._getId('name')}
+                   label="Name"
+                   onChange={this._onNameChange}
+                   help="Configuration name."
+                   value={this.state.formData.name} />
 
 
-          <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
-            <SourceCodeEditor id="configuration-text-editor"
-                              value={this.state.formData.snippet}
-                              onChange={this._onSourceChange} />
-          </Input>
-        </fieldset>
+            <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
+              <SourceCodeEditor id="configuration-text-editor"
+                                value={this.state.formData.snippet}
+                                onChange={this._onSourceChange} />
+              <Button className="pull-right"
+                      bsStyle="link"
+                      bsSize="sm"
+                      onClick={() => this._onShowSource(this.props.configuration.id)}>
+                Save and preview
+              </Button>
+            </Input>
+          </fieldset>
 
-        <Row>
-          <Col md={12}>
-            <div className="form-group">
-              <Button type="submit" bsStyle="primary" style={{ marginRight: 10 }}>Save</Button>
-              <Button type="button" onClick={this._onCancel}>Cancel</Button>
-            </div>
-          </Col>
-        </Row>
-      </form>
+          <Row>
+            <Col md={12}>
+              <div className="form-group">
+                <Button type="submit"
+                        bsStyle="primary"
+                        style={{ marginRight: 10 }}>
+                  Save
+                </Button>
+                <Button type="button"
+                        onClick={this._onCancel}>
+                  Cancel
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </form>
+        <SourceViewModal ref={`modal_${this.props.configuration.id}`}
+                         configurationId={this.props.configuration.id}
+                         renderTemplate />
+      </div>
     );
   },
 });

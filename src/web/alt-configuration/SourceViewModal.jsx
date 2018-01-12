@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Button, Modal, Panel } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import BootstrapModalWrapper from 'components/bootstrap/BootstrapModalWrapper';
 
@@ -10,6 +10,7 @@ import CollectorConfigurationsActions from 'configurations/CollectorConfiguratio
 const SourceViewModal = React.createClass({
   propTypes: {
     configurationId: PropTypes.string.isRequired,
+    renderTemplate: PropTypes.boolean,
   },
 
   getInitialState() {
@@ -18,11 +19,8 @@ const SourceViewModal = React.createClass({
     };
   },
 
-  componentDidMount() {
-    this._loadConfiguration();
-  },
-
   open() {
+    this._loadConfiguration();
     this.refs.sourceModal.open();
   },
 
@@ -31,10 +29,17 @@ const SourceViewModal = React.createClass({
   },
 
   _loadConfiguration() {
-    CollectorConfigurationsActions.getConfiguration(this.props.configurationId)
-      .then((configuration) => {
-        this.setState({ configuration: configuration });
-      });
+    if (this.props.renderTemplate === true) {
+      CollectorConfigurationsActions.renderConfiguration(this.props.configurationId)
+        .then((configuration) => {
+          this.setState( {configuration: configuration} );
+        });
+    } else {
+      CollectorConfigurationsActions.getConfiguration(this.props.configurationId)
+        .then((configuration) => {
+          this.setState( {configuration: configuration} );
+        });
+    }
   },
 
   render() {

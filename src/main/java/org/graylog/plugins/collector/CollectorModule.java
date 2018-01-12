@@ -20,6 +20,7 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
+import org.graylog.plugins.collector.altConfigurations.rest.resources.AltConfigurationResource;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
@@ -54,6 +55,7 @@ public class CollectorModule extends PluginModule {
         addPeriodical(PurgeExpiredCollectorsThread.class);
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
+        addRestResource(AltConfigurationResource.class);
         addPermissions(CollectorRestPermissions.class);
 
         addAuditEventTypes(CollectorAuditEventTypes.class);

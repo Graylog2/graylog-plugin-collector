@@ -52,6 +52,19 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.getConfiguration.promise(promise);
   },
 
+  renderConfiguration(configurationId) {
+    const promise = fetch(
+      'GET',
+      URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/render/${configurationId}`));
+    promise
+      .catch(
+        error => {
+          UserNotification.error(`Fetching collector configuration failed with status: ${error}`,
+            'Could not retrieve configuration');
+        });
+    CollectorConfigurationsActions.renderConfiguration.promise(promise);
+  },
+
   createConfiguration(name) {
     const url = URLUtils.qualifyUrl(`${this.sourceUrl}?createDefaults=true`);
     const method = 'POST';
