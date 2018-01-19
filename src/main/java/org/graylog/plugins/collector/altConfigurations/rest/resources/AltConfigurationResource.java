@@ -34,14 +34,14 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     }
 
     @GET
-    @Path("/render/{id}")
-    @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @Path("/render/{collectorId}/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Render collector configuration template")
-    public CollectorConfiguration renderConfiguration(@ApiParam(name = "id", required = true)
-                                        @PathParam("id") @NotEmpty String id) {
-        return this.altConfigurationService.renderConfiguration(id);
+    public CollectorConfiguration renderConfiguration(@ApiParam(name = "collectorId", required = true)
+                                                      @PathParam("collectorId") String collectorId,
+                                                      @ApiParam(name = "configurationId", required = true)
+                                                      @PathParam("configurationId") String configurationId) {
+        return this.altConfigurationService.renderConfiguration(collectorId, configurationId);
     }
 
 }

@@ -16,16 +16,32 @@ const TemplatesHelper = React.createClass({
           </thead>
           <tbody>
             <tr>
-              <td><code>{'{{'}.Linux{'}}'}</code></td>
-              <td>True if executed on a Linux node.</td>
+              <td><code>{'${'}operatingSystem{'}'}</code></td>
+              <td>Name of the agents operating system, e.g. <code>&quot;Linux&quot;, &quot;Windows&quot;</code></td>
             </tr>
             <tr>
-              <td><code>{'{{'}.Windows{'}}'}</code></td>
-              <td>Same for Windows nodes.</td>
+              <td><code>{'${'}collectorId{'}'}</code></td>
+              <td>The name of the agent, defaults to hostname if not set.</td>
             </tr>
             <tr>
-              <td><code>{'{{'}.LinuxPlatform{'}}'}</code></td>
-              <td>Returns the base distribution as string, e.g. <code>&quot;debian&quot;, &quot;redhat&quot;</code></td>
+              <td><code>{'${'}nodeId{'}'}</code></td>
+              <td>UUID of the agent.</td>
+            </tr>
+            <tr>
+              <td><code>{'${'}collectorVersion{'}'}</code></td>
+              <td>Version string of the running Sidecar.</td>
+            </tr>
+            <tr>
+              <td><code>{'${'}ip{'}'}</code></td>
+              <td>First public IP address.</td>
+            </tr>
+            <tr>
+              <td><code>{'${'}cpuIdle{'}'}</code></td>
+              <td>Current CPU idle value.</td>
+            </tr>
+            <tr>
+              <td><code>{'${'}load1{'}'}</code></td>
+              <td>Current system load.</td>
             </tr>
           </tbody>
         </Table>

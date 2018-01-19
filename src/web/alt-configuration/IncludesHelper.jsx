@@ -37,11 +37,11 @@ const IncludesHelper = React.createClass({
   _configurationListFormatter() {
     const configurationRows = [];
     Object.values(this.state.configurations).forEach((configuration) => {
-      const escapedName = `{{${configuration.name}}}`;
+      const escapedName = `<#include "${configuration.id}">`;
       configurationRows.push(
         <tr key={this._getId(configuration.id)}>
-          <td><code>.{escapedName}</code></td>
-          <td>{configuration.id}</td>
+          <td><code>{escapedName}</code></td>
+          <td>{configuration.name}</td>
           <td>
             <Button bsStyle="link"
                     bsSize="sm"
@@ -73,7 +73,7 @@ const IncludesHelper = React.createClass({
           <thead>
             <tr>
               <th>Include Statement</th>
-              <th>Id</th>
+              <th>Name</th>
               <th>Actions</th>
             </tr>
           </thead>
