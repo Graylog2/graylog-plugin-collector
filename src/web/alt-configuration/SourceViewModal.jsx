@@ -10,12 +10,13 @@ import CollectorConfigurationsActions from 'configurations/CollectorConfiguratio
 const SourceViewModal = React.createClass({
   propTypes: {
     configurationId: PropTypes.string.isRequired,
-    renderTemplate: PropTypes.boolean,
+    preview: PropTypes.bool,
   },
 
   getInitialState() {
     return {
-      configuration: undefined,
+      source: undefined,
+      name: undefined,
     };
   },
 
@@ -29,35 +30,29 @@ const SourceViewModal = React.createClass({
   },
 
   _loadConfiguration() {
-    if (this.props.renderTemplate === true) {
-      CollectorConfigurationsActions.renderConfiguration(this.props.configurationId)
-        .then((configuration) => {
-          this.setState( {configuration: configuration} );
+    if (this.props.preview === true) {
+      CollectorConfigurationsActions.renderPreview(this.props.configurationId)
+        .then((response) => {
+          this.setState({ source: response.preview, name: 'preview' });
         });
     } else {
       CollectorConfigurationsActions.getConfiguration(this.props.configurationId)
         .then((configuration) => {
-          this.setState( {configuration: configuration} );
+          this.setState({ source: configuration.snippets[0].snippet, name: configuration.name });
         });
     }
   },
 
   render() {
-    let source;
-    let name;
-    if (this.state.configuration !== undefined) {
-      source = this.state.configuration.snippets[0].snippet;
-      name = this.state.configuration.name;
-    }
     return (
       <BootstrapModalWrapper ref="sourceModal">
         <Modal.Header closeButton>
-          <Modal.Title><span>Configuration <em>{name}</em></span></Modal.Title>
+          <Modal.Title><span>Configuration <em>{this.state.name}</em></span></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="configuration">
             <pre>
-              {source}
+              {this.state.source}
             </pre>
           </div>
         </Modal.Body>

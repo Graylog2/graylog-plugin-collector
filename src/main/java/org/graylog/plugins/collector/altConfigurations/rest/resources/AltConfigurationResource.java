@@ -3,15 +3,11 @@ package org.graylog.plugins.collector.altConfigurations.rest.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.AltConfigurationTemplateRenderResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.AltConfigurationPreviewRenderResponse;
 import org.graylog.plugins.collector.configurations.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -41,7 +37,17 @@ public class AltConfigurationResource extends RestResource implements PluginRest
                                                       @PathParam("collectorId") String collectorId,
                                                       @ApiParam(name = "configurationId", required = true)
                                                       @PathParam("configurationId") String configurationId) {
-        return this.altConfigurationService.renderConfiguration(collectorId, configurationId);
+        return this.altConfigurationService.renderConfigurationForCollector(collectorId, configurationId);
+    }
+
+    @GET
+    @Path("/render/preview/{configurationId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Render preview of a configuration template")
+    public AltConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
+                                        @PathParam("configurationId") String configurationId) {
+        String preview = this.altConfigurationService.renderPreview(configurationId);
+        return AltConfigurationPreviewRenderResponse.create(preview);
     }
 
 }

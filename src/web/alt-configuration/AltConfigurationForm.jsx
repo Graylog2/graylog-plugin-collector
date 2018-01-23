@@ -59,7 +59,6 @@ const AltConfigurationForm = React.createClass({
   },
 
   _onShowSource(id) {
-    this._save();
     this.refs[`modal_${id}`].open();
   },
 
@@ -84,7 +83,7 @@ const AltConfigurationForm = React.createClass({
                       bsStyle="link"
                       bsSize="sm"
                       onClick={() => this._onShowSource(this.props.configuration.id)}>
-                Save and preview
+                Preview
               </Button>
             </Input>
           </fieldset>
@@ -107,7 +106,7 @@ const AltConfigurationForm = React.createClass({
         </form>
         <SourceViewModal ref={`modal_${this.props.configuration.id}`}
                          configurationId={this.props.configuration.id}
-                         renderTemplate />
+                         preview />
       </div>
     );
   },

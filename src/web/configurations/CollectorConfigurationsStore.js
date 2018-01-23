@@ -52,17 +52,17 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.getConfiguration.promise(promise);
   },
 
-  renderConfiguration(configurationId) {
+  renderPreview(configurationId) {
     const promise = fetch(
       'GET',
-      URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/render/${configurationId}`));
+      URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/render/preview/${configurationId}`));
     promise
       .catch(
         error => {
-          UserNotification.error(`Fetching collector configuration failed with status: ${error}`,
-            'Could not retrieve configuration');
+          UserNotification.error(`Fetching configuration preview failed with status: ${error}`,
+            'Could not retrieve preview');
         });
-    CollectorConfigurationsActions.renderConfiguration.promise(promise);
+    CollectorConfigurationsActions.renderPreview.promise(promise);
   },
 
   createConfiguration(name) {

@@ -47,10 +47,9 @@ public class AltConfigurationService {
         templateConfiguration.setTemplateLoader(new MongoDbTemplateLoader(dbCollection));
     }
 
-    public CollectorConfiguration renderConfiguration(String collectorId, String configurationId) {
-        Writer writer = new StringWriter();
-        Map<String, Object> context = new HashMap<>();
+    public CollectorConfiguration renderConfigurationForCollector(String collectorId, String configurationId) {
         Collector collector = collectorService.findById(collectorId);
+        Map<String, Object> context = new HashMap<>();
 
         context.put("collectorId", collector.getId());
         context.put("nodeId", collector.getNodeId());
@@ -63,15 +62,38 @@ public class AltConfigurationService {
         if (collector.getNodeDetails().metrics().load1() != null) {
             context.put("load1", collector.getNodeDetails().metrics().load1());
         }
+        return replaceConfigurationSnippet(configurationId, renderTemplate(configurationId, context));
+    }
 
+    public String renderPreview(String configurationId) {
+        Map<String, Object> context = new HashMap<>();
+
+        context.put("collectorId", "<collector id>");
+        context.put("nodeId", "<node id>");
+        context.put("collectorVersion", "<version>");
+        context.put("operatingSystem", "<operating system>");
+        context.put("ip", "<ip>");
+        context.put("cpuIdle", "<cpu idle>");
+        context.put("load1", "<load 1>");
+
+        return renderTemplate(configurationId, context);
+
+    }
+
+    private String renderTemplate(String templateId, Map<String, Object> context) {
+        Writer writer = new StringWriter();
         try {
-            Template compiledTemplate = templateConfiguration.getTemplate(configurationId);
+            Template compiledTemplate = templateConfiguration.getTemplate(templateId);
             compiledTemplate.process(context, writer);
         } catch (TemplateException | IOException e) {
-            LOG.error("Failed to render configuration template: ", e);
+            LOG.error("Failed to render template: ", e);
             return null;
         }
 
+        return writer.toString();
+    }
+
+    private CollectorConfiguration replaceConfigurationSnippet(String configurationId, String s) {
         CollectorConfiguration oldConfiguration = dbCollection.findOne(DBQuery.is("_id", configurationId));
         List<CollectorConfigurationSnippet> collectorConfigurationSnippets = oldConfiguration.snippets();
         CollectorConfigurationSnippet oldSnippet = collectorConfigurationSnippets.get(0);
@@ -79,7 +101,7 @@ public class AltConfigurationService {
                 oldSnippet.snippetId(),
                 oldSnippet.backend(),
                 oldSnippet.name(),
-                writer.toString()
+                s
         );
         collectorConfigurationSnippets.set(0, renderedSnippet);
         return CollectorConfiguration.create(
@@ -89,6 +111,6 @@ public class AltConfigurationService {
                 oldConfiguration.inputs(),
                 oldConfiguration.outputs(),
                 collectorConfigurationSnippets);
-    }
 
+    }
 }
