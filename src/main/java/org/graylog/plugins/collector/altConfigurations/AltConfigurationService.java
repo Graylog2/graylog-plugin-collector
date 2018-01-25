@@ -1,9 +1,12 @@
 package org.graylog.plugins.collector.altConfigurations;
 
+import freemarker.core.JSONOutputFormat;
+import freemarker.core.OutputFormat;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.bson.types.ObjectId;
+import org.graylog.plugins.collector.altConfigurations.directives.IndentTemplateDirective;
 import org.graylog.plugins.collector.altConfigurations.loader.MongoDbTemplateLoader;
 import org.graylog.plugins.collector.collectors.Collector;
 import org.graylog.plugins.collector.collectors.CollectorService;
@@ -45,6 +48,7 @@ public class AltConfigurationService {
                 ObjectId.class,
                 mapper.get());
         templateConfiguration.setTemplateLoader(new MongoDbTemplateLoader(dbCollection));
+        templateConfiguration.setSharedVariable("indent", new IndentTemplateDirective());
     }
 
     public CollectorConfiguration renderConfigurationForCollector(String collectorId, String configurationId) {
