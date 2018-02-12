@@ -20,7 +20,10 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
+import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltConfigurationResource;
+import org.graylog.plugins.collector.altConfigurations.rest.resources.BackendResource;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
@@ -33,6 +36,7 @@ import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
+import org.graylog2.migrations.Migration;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 
@@ -56,9 +60,13 @@ public class CollectorModule extends PluginModule {
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
         addRestResource(AltConfigurationResource.class);
+        addRestResource(BackendResource.class);
         addPermissions(CollectorRestPermissions.class);
 
         addAuditEventTypes(CollectorAuditEventTypes.class);
+
+        final Multibinder<Migration> binder = Multibinder.newSetBinder(binder(), Migration.class);
+        binder.addBinding().to(V20180212165000_AddDefaultBackends.class);
 
         serviceBinder().addBinding().to(ConfigurationEtagService.class).in(Scopes.SINGLETON);
     }

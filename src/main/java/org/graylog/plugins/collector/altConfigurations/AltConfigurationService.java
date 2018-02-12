@@ -1,7 +1,5 @@
 package org.graylog.plugins.collector.altConfigurations;
 
-import freemarker.core.JSONOutputFormat;
-import freemarker.core.OutputFormat;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

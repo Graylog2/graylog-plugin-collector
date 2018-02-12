@@ -68,11 +68,10 @@ const AltConfigurationPage = React.createClass({
           </span>
 
           <span>
-            Read more about the Graylog  Sidecar in the documentation.
+            Read more about the Graylog Sidecar in the documentation.
           </span>
         </PageHeader>
 
-        <AltConfigurationTags configuration={this.state.configuration} tags={this.state.tags} />
         <Row className="content">
           <Col md={6}>
             <AltConfigurationForm configuration={this.state.configuration} />
