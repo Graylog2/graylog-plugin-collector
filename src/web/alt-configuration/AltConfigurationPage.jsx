@@ -7,7 +7,6 @@ import { PageHeader, Spinner } from 'components/common';
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
 import AltConfigurationForm from 'alt-configuration/AltConfigurationForm';
-import AltConfigurationTags from 'alt-configuration/AltConfigurationTags';
 import ConfigurationHelper from 'alt-configuration/ConfigurationHelper';
 
 const AltConfigurationPage = React.createClass({
@@ -18,14 +17,12 @@ const AltConfigurationPage = React.createClass({
   getInitialState() {
     return {
       configuration: undefined,
-      tags: undefined,
     };
   },
 
   componentDidMount() {
     this.style.use();
     this._reloadConfiguration();
-    this._loadTags();
   },
 
   componentWillUnmount() {
@@ -42,15 +39,8 @@ const AltConfigurationPage = React.createClass({
     this.setState({ configuration });
   },
 
-  _loadTags() {
-    CollectorConfigurationsActions.listTags.triggerPromise()
-      .then((tags) => {
-        this.setState({ tags });
-      });
-  },
-
   _isLoading() {
-    return !(this.state.configuration && this.state.tags);
+    return !(this.state.configuration);
   },
 
   render() {

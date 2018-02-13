@@ -58,7 +58,7 @@ const IncludesHelper = React.createClass({
   },
 
   _isLoading() {
-    return this.state.configurations.length === 0;
+    return !(this.state.configurations);
   },
 
   render() {

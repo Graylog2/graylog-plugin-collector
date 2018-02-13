@@ -15,7 +15,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   list() {
-    const promise = fetch('GET', URLUtils.qualifyUrl(this.sourceUrl))
+    const promise = fetch('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/configurations`))
       .then(
         response => {
           this.configurations = response.configurations;
@@ -42,7 +42,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   getConfiguration(configurationId) {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}`));
+    const promise = fetch('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/configurations/${configurationId}`));
     promise
       .catch(
         error => {

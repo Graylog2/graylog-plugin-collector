@@ -2,20 +2,15 @@ package org.graylog.plugins.collector.altConfigurations.loader;
 
 import freemarker.cache.TemplateLoader;
 import org.bson.types.ObjectId;
-import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
-import org.graylog.plugins.collector.configurations.rest.models.CollectorConfiguration;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
 public class MongoDbTemplateLoader implements TemplateLoader {
-    private static final Logger LOG = LoggerFactory.getLogger(AltConfigurationService.class);
-
     private final JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection;
 
     public MongoDbTemplateLoader(JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection) {
@@ -28,7 +23,7 @@ public class MongoDbTemplateLoader implements TemplateLoader {
         if (collectorConfiguration == null) {
             throw new IOException("Can't find template: " + unlocalize(id));
         }
-        return collectorConfiguration.snippets().get(0).snippet();
+        return collectorConfiguration.template();
     }
 
     @Override

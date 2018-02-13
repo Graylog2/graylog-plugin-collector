@@ -19,10 +19,10 @@ const AltConfigurationForm = React.createClass({
       editor: undefined,
       parseErrors: [],
       formData: {
-        id: this.props.configuration.snippets[0].snippet_id,
-        name: this.props.configuration.snippets[0].name,
-        snippet: String(this.props.configuration.snippets[0].snippet),
-        backend: this.props.configuration.snippets[0].backend,
+        id: this.props.configuration.id,
+        name: this.props.configuration.name,
+        backend: this.props.configuration.backend,
+        template: String(this.props.configuration.template),
       },
     };
   },
@@ -45,7 +45,7 @@ const AltConfigurationForm = React.createClass({
 
   _onSourceChange(value) {
     const formData = this.state.formData;
-    formData.snippet = value;
+    formData.template = value;
     this.setState({ formData });
   },
 
@@ -77,7 +77,7 @@ const AltConfigurationForm = React.createClass({
 
             <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
               <SourceCodeEditor id="configuration-text-editor"
-                                value={this.state.formData.snippet}
+                                value={this.state.formData.template}
                                 onChange={this._onSourceChange} />
               <Button className="pull-right"
                       bsStyle="link"
