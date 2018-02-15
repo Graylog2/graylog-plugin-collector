@@ -3,7 +3,7 @@ package org.graylog.plugins.collector.altConfigurations.rest.responses;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackendSummary;
 
 import java.util.Collection;
 
@@ -13,11 +13,11 @@ public abstract class CollectorBackendListResponse {
     public abstract long total();
 
     @JsonProperty
-    public abstract Collection<CollectorBackend> backends();
+    public abstract Collection<CollectorBackendSummary> backends();
 
     @JsonCreator
     public static CollectorBackendListResponse create(@JsonProperty("total") long total,
-                                                            @JsonProperty("backends") Collection<CollectorBackend> backends) {
+                                                      @JsonProperty("backends") Collection<CollectorBackendSummary> backends) {
         return new AutoValue_CollectorBackendListResponse(total, backends);
     }
 }

@@ -7,6 +7,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -21,7 +22,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +43,9 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector backends")
     public CollectorBackendListResponse listBackends() {
-        final List<CollectorBackend> result = new ArrayList<>(this.backendService.loadAll());
+        final List<CollectorBackendSummary> result = this.backendService.loadAll().stream()
+                .map(this::getCollectorBackendSummary)
+                .collect(Collectors.toList());
 
         return CollectorBackendListResponse.create(result.size(), result);
 
@@ -58,6 +60,13 @@ public class BackendResource extends RestResource implements PluginRestResource 
                                                 @Valid @NotNull CollectorBackend request) {
         CollectorBackend collectorBackend = backendService.fromRequest(request);
         return backendService.save(collectorBackend);
+    }
+
+    private CollectorBackendSummary getCollectorBackendSummary(CollectorBackend backend) {
+        return CollectorBackendSummary.create(
+                backend.name(),
+                backend.serviceType(),
+                backend.nodeOperatingSystem());
     }
 
 }
