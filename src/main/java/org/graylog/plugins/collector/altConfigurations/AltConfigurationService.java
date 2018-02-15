@@ -74,7 +74,6 @@ public class AltConfigurationService {
 
     public CollectorConfiguration fromRequest(CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(
-                null,
                 request.backendId(),
                 request.name(),
                 request.template());

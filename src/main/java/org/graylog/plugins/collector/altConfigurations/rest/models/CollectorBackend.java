@@ -38,7 +38,7 @@ public abstract class CollectorBackend {
     public abstract String validationCommand();
 
     @JsonCreator
-    public static CollectorBackend create(@JsonProperty("id")@Nullable String id,
+    public static CollectorBackend create(@JsonProperty("id") String id,
                                           @JsonProperty("name") String name,
                                           @JsonProperty("service_type") String serviceType,
                                           @JsonProperty("node_operating_system") String nodeOperatingSystem,
@@ -47,4 +47,20 @@ public abstract class CollectorBackend {
                                           @JsonProperty("validation_command") String validationCommand) {
         return new AutoValue_CollectorBackend(id, name, serviceType, nodeOperatingSystem, executable, parameters, validationCommand);
     }
+
+    public static CollectorBackend create(String name,
+                                          String serviceType,
+                                          String nodeOperatingSystem,
+                                          String executable,
+                                          String parameters,
+                                          String validationCommand) {
+        return create(new org.bson.types.ObjectId().toHexString(),
+                name,
+                serviceType,
+                nodeOperatingSystem,
+                executable,
+                parameters,
+                validationCommand);
+    }
+
 }

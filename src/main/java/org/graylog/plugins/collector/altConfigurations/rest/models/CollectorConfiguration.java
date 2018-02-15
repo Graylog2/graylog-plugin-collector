@@ -26,10 +26,19 @@ public abstract class CollectorConfiguration {
     public abstract String template();
 
     @JsonCreator
-    public static CollectorConfiguration create(@Id @ObjectId @JsonProperty("id") @Nullable String id,
+    public static CollectorConfiguration create(@JsonProperty("id") String id,
                                                 @JsonProperty("backend_id") String backendId,
                                                 @JsonProperty("name") String name,
                                                 @JsonProperty("template") String template) {
         return new AutoValue_CollectorConfiguration(id, backendId, name, template);
+    }
+
+    public static CollectorConfiguration create(String backend_id,
+                                                String name,
+                                                String template) {
+        return create(new org.bson.types.ObjectId().toHexString(),
+                backend_id,
+                name,
+                template);
     }
 }

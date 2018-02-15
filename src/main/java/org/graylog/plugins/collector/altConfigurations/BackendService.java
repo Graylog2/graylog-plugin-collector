@@ -41,6 +41,17 @@ public class BackendService {
         return toAbstractListType(dbCollection.find());
     }
 
+    public CollectorBackend fromRequest(CollectorBackend request) {
+        CollectorBackend collectorBackend = CollectorBackend.create(
+                request.name(),
+                request.serviceType(),
+                request.nodeOperatingSystem(),
+                request.executable(),
+                request.parameters(),
+                request.validationCommand());
+        return collectorBackend;
+    }
+
     public CollectorBackend save(CollectorBackend backend) {
         final WriteResult<CollectorBackend, ObjectId> result = dbCollection.save(backend);
         return result.getSavedObject();
