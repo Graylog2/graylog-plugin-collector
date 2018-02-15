@@ -7,6 +7,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
@@ -20,10 +21,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(value = "Backends", description = "Manage collector backends")
-@Path("/altconfiguration/backend")
+@Path("/altconfiguration/backends")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class BackendResource extends RestResource implements PluginRestResource {
@@ -39,8 +42,11 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector backends")
-    public List<CollectorBackend> listBackends() {
-        return this.backendService.loadAll();
+    public CollectorBackendListResponse listBackends() {
+        final List<CollectorBackend> result = new ArrayList<>(this.backendService.loadAll());
+
+        return CollectorBackendListResponse.create(result.size(), result);
+
     }
 
     @POST
