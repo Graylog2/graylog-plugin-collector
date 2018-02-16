@@ -24,18 +24,7 @@ const ConfigurationsList = React.createClass({
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {
-      const tags = configurations
-        .map(configuration => configuration.tags)
-        .reduce((uniqueTags, currentTags) => {
-          currentTags.forEach(tag => {
-            if (uniqueTags.indexOf(tag) === -1) {
-              uniqueTags.push(tag);
-            }
-          });
-
-          return uniqueTags;
-        }, []);
-      this.setState({ tags });
+      this.setState({ configurations });
     });
   },
 
@@ -44,8 +33,8 @@ const ConfigurationsList = React.createClass({
     return !this.state.configurations.some((configuration) => configuration.name === name);
   },
 
-  _createConfiguration(configuration, callback) {
-    CollectorConfigurationsActions.createConfiguration.triggerPromise(configuration.name)
+  _createConfiguration(name, backendId, callback) {
+    CollectorConfigurationsActions.createConfiguration.triggerPromise(name, backendId)
       .then(() => {
         callback();
         this._reloadConfiguration();
@@ -115,8 +104,9 @@ const ConfigurationsList = React.createClass({
                    noDataText="There are no configurations to display, why don't you create one?"
                    filterKeys={filterKeys}>
           <div className="pull-right">
-            <EditConfigurationModal create updateConfiguration={this._createConfiguration}
-                                    validConfigurationName={this._validConfigurationName}/>
+            <EditConfigurationModal create
+                                    updateConfiguration={this._createConfiguration}
+                                    validConfigurationName={this._validConfigurationName} />
           </div>
         </DataTable>
       </div>

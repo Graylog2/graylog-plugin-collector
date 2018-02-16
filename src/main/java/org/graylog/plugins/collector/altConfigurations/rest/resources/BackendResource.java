@@ -64,6 +64,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
 
     private CollectorBackendSummary getCollectorBackendSummary(CollectorBackend backend) {
         return CollectorBackendSummary.create(
+                backend.id(),
                 backend.name(),
                 backend.serviceType(),
                 backend.nodeOperatingSystem());

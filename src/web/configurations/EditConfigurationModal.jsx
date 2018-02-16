@@ -3,25 +3,32 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
+import { Select } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
+
+import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 
 const EditConfigurationModal = React.createClass({
   propTypes: {
-    configuration: PropTypes.object,
     create: PropTypes.bool,
     updateConfiguration: PropTypes.func.isRequired,
     validConfigurationName: PropTypes.func.isRequired,
   },
 
+  componentWillMount() {
+    this._loadBackends();
+  },
+
   getDefaultProps() {
     return {
-      configuration: { name: '' },
     };
   },
 
   getInitialState() {
     return {
-      configuration: ObjectUtils.clone(this.props.configuration),
+      name: undefined,
+      backends: undefined,
+      selectedBackend: undefined,
       error: false,
       error_message: '',
     };
@@ -36,7 +43,13 @@ const EditConfigurationModal = React.createClass({
   },
 
   _getId(prefixIdName) {
-    return prefixIdName + this.state.configuration.name;
+    return prefixIdName + this.state.name;
+  },
+
+  _loadBackends() {
+    CollectorConfigurationsActions.listBackends.triggerPromise().then((backends) => {
+      this.setState({ backends: backends });
+    });
   },
 
   _saved() {
@@ -45,27 +58,41 @@ const EditConfigurationModal = React.createClass({
   },
 
   _save() {
-    const configuration = this.state.configuration;
-
     if (!this.state.error) {
-      this.props.updateConfiguration(configuration, this._saved);
+      this.props.updateConfiguration(this.state.name, this.state.selectedBackend, this._saved);
     }
   },
 
-  _changeName(event) {
-    const name = event.target.value;
-    const newConfiguration = ObjectUtils.clone(this.state.configuration);
-    newConfiguration.name = name;
+  _formatBackendOptions() {
+    const options = [];
 
-    if (!this.props.validConfigurationName(name)) {
+    if (this.state.backends) {
+      const backendCount = this.state.backends.length;
+      for (let i = 0; i < backendCount; i += 1) {
+        options.push({ value: this.state.backends[i].id, label: this.state.backends[i].name });
+      }
+    } else {
+      options.push({ value: 'none', label: 'Loading backend list...', disable: true });
+    }
+
+    return options;
+  },
+
+  _changeName(event) {
+    const newName = event.target.value;
+
+    if (!this.props.validConfigurationName(newName)) {
       this.setState({
-        configuration: newConfiguration,
         error: true,
         error_message: 'Configuration with that name already exists!',
       });
     } else {
-      this.setState({ configuration: newConfiguration, error: false, error_message: '' });
+      this.setState({ name: newName, error: false, error_message: '' });
     }
+  },
+
+  _changeBackendDropdown(id) {
+    this.setState({ selectedBackend: id });
   },
 
   render() {
@@ -77,19 +104,27 @@ const EditConfigurationModal = React.createClass({
           {this.props.create ? 'Create configuration' : 'Edit'}
         </Button>
         <BootstrapModalForm ref="modal"
-                            title={`${this.props.create ? 'Create' : 'Edit'} Configuration ${this.state.configuration.name}`}
+                            title={`${this.props.create ? 'Create' : 'Edit'} Configuration ${this.state.name}`}
                             onSubmitForm={this._save}
                             submitButtonText="Save">
           <fieldset>
             <Input type="text"
                    id={this._getId('configuration-name')}
                    label="Name"
-                   defaultValue={this.state.configuration.name}
+                   defaultValue={this.state.name}
                    onChange={this._changeName}
                    bsStyle={this.state.error ? 'error' : null}
                    help={this.state.error ? this.state.error_message : 'Name for this configuration'}
                    autoFocus
                    required />
+            <Input id={this._getId('select-backend')}
+                   label="Backend"
+                   help="Choose the backend this configuration will be made for">
+              <Select options={this._formatBackendOptions()}
+                      value={this.state.selectedBackend}
+                      onChange={this._changeBackendDropdown}
+                      placeholder="Backend" />
+            </Input>
           </fieldset>
         </BootstrapModalForm>
       </span>

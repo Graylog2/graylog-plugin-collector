@@ -15,7 +15,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   list() {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/configurations`))
+    const promise = fetch('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/configurations'))
       .then(
         response => {
           this.configurations = response.configurations;
@@ -28,6 +28,22 @@ const CollectorConfigurationsStore = Reflux.createStore({
             'Could not retrieve configurations');
         });
     CollectorConfigurationsActions.list.promise(promise);
+  },
+
+  listBackends() {
+    const promise = fetch('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'))
+      .then(
+        response => {
+          this.backends = response.backends;
+          this.trigger({ backends: this.backends });
+
+          return this.backends;
+        },
+        error => {
+          UserNotification.error(`Fetching collector backends failed with status: ${error}`,
+            'Could not retrieve backends');
+        });
+    CollectorConfigurationsActions.listBackends.promise(promise);
   },
 
   listTags() {
@@ -65,15 +81,13 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.renderPreview.promise(promise);
   },
 
-  createConfiguration(name) {
-    const url = URLUtils.qualifyUrl(`${this.sourceUrl}?createDefaults=true`);
+  createConfiguration(name, backendId) {
+    const url = URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/configurations');
     const method = 'POST';
     const configuration = {};
     configuration.name = name;
-    configuration.tags = [];
-    configuration.inputs = [];
-    configuration.outputs = [];
-    configuration.snippets = [];
+    configuration.backend_id = backendId;
+    configuration.template = '';
 
     const promise = fetch(method, url, configuration);
     promise

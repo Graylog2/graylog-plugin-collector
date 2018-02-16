@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Label } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import EditConfigurationModal from './EditConfigurationModal';
@@ -36,20 +36,15 @@ const ConfigurationRow = React.createClass({
 
   render() {
     const configuration = this.props.configuration;
-    const tagBadges = configuration.tags.map((tag) => {
-      return <span className="badge configuration-tag" key={tag}>{tag}</span>;
-    });
 
     return (
       <tr>
         <td className="name limited">
-          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS_ID')(configuration.id)}>
+          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ALTCONFIGURATIONS_ID')(configuration.id)}>
             <a>{configuration.name}</a>
           </LinkContainer>
         </td>
-        <td>
-          {tagBadges}
-        </td>
+        <td></td>
         <td>
           <Button bsStyle="primary" bsSize="xsmall" onClick={this._handleClick}>
             Delete
