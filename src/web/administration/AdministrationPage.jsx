@@ -10,6 +10,8 @@ import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
 import DocumentationLink from 'components/support/DocumentationLink';
 
+import CollectorsAdministrationContainer from './CollectorsAdministrationContainer';
+
 const AdministrationPage = createReactClass({
   render() {
     return (
@@ -40,6 +42,7 @@ const AdministrationPage = createReactClass({
 
           <Row className="content">
             <Col md={12}>
+              <CollectorsAdministrationContainer />
             </Col>
           </Row>
         </span>

@@ -1,0 +1,10 @@
+:local(.collectorRow) .form-group {
+    display: inline-block;
+    margin: 0 10px 0 0;
+}
+
+:local(.collectorId) {
+    color: #aaaaaa;
+    font-size: 0.9em;
+    font-style: italic;
+}
