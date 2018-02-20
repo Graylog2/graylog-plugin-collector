@@ -5,7 +5,7 @@ import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
 import CollectorsPage from 'collectors/CollectorsPage';
 import CollectorsStatusPage from 'collectors/CollectorsStatusPage';
-import ConfigurationsPage from 'configurations/ConfigurationsPage';
+import ConfigurationPage from 'configurations/ConfigurationPage';
 import CollectorConfigurationPage from 'collector-configuration/CollectorConfigurationPage';
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
 import AltConfigurationPage from 'alt-configuration/AltConfigurationPage';
@@ -16,9 +16,9 @@ const manifest = new PluginManifest(packageJson, {
     { path: '/system/collectors', component: CollectorsPage },
     { path: '/system/collectors/:id/status', component: CollectorsStatusPage },
     { path: '/system/collectors/administration', component: AdministrationPage },
-    { path: '/system/collectors/configurations', component: ConfigurationsPage },
-    { path: '/system/collectors/configurations/:id', component: CollectorConfigurationPage },
-    { path: '/system/collectors/altconfigurations/:id', component: AltConfigurationPage },
+    { path: '/system/collectors/configuration', component: ConfigurationPage },
+    { path: '/system/collectors/configuration/:id', component: CollectorConfigurationPage },
+    { path: '/system/collectors/altconfiguration/:id', component: AltConfigurationPage },
   ],
 
   // Adding an element to the top navigation pointing to /sample named "Sample":

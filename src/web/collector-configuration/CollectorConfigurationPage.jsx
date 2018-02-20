@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
@@ -74,15 +74,17 @@ const CollectorConfigurationPage = React.createClass({
               <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
             </span>
 
-            <span>
+            <ButtonToolbar>
               <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
                 <Button bsStyle="info">Overview</Button>
               </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info" className="active">Manage Configurations</Button>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+                <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-            </span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+                <Button bsStyle="info" className="active">Configuration</Button>
+              </LinkContainer>
+            </ButtonToolbar>
           </PageHeader>
           <CollectorConfiguration configuration={this.state.configuration} tags={this.state.tags}
                                   onConfigurationChange={this._reloadConfiguration} />

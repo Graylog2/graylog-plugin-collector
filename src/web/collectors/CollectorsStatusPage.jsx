@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Alert, Row, Col, Button } from 'react-bootstrap';
+import { Alert, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
@@ -157,15 +157,17 @@ const CollectorsStatusPage = React.createClass({
               {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation"/>.
             </span>
 
-            <span>
+            <ButtonToolbar>
               <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
                 <Button bsStyle="info" className="active">Overview</Button>
               </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info">Manage Configurations</Button>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+                <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-            </span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+                <Button bsStyle="info">Configuration</Button>
+              </LinkContainer>
+            </ButtonToolbar>
           </PageHeader>
 
           <Row className="content" key="sidecar-status">

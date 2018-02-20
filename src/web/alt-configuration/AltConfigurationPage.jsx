@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
-import { PageHeader, Spinner } from 'components/common';
+import { DocumentTitle, PageHeader, Spinner } from 'components/common';
+import Routes from 'routing/Routes';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
@@ -51,26 +53,40 @@ const AltConfigurationPage = React.createClass({
     const title = <span>Collector Configuration</span>;
 
     return (
-      <div>
-        <PageHeader title={title}>
-          <span>
-            Some words about collector configurations.
-          </span>
+      <DocumentTitle title="Collectors Administration">
+        <span>
+          <PageHeader title={title}>
+            <span>
+              Some words about collector configurations.
+            </span>
 
-          <span>
-            Read more about the Graylog Sidecar in the documentation.
-          </span>
-        </PageHeader>
+            <span>
+              Read more about the Graylog Sidecar in the documentation.
+            </span>
 
-        <Row className="content">
-          <Col md={6}>
-            <AltConfigurationForm configuration={this.state.configuration} />
-          </Col>
-          <Col md={6}>
-            <ConfigurationHelper type="filebeat" />
-          </Col>
-        </Row>
-      </div>
+            <ButtonToolbar>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+                <Button bsStyle="info">Overview</Button>
+              </LinkContainer>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+                <Button bsStyle="info">Administration</Button>
+              </LinkContainer>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+                <Button bsStyle="info" className="active">Configuration</Button>
+              </LinkContainer>
+            </ButtonToolbar>
+          </PageHeader>
+
+          <Row className="content">
+            <Col md={6}>
+              <AltConfigurationForm configuration={this.state.configuration} />
+            </Col>
+            <Col md={6}>
+              <ConfigurationHelper type="filebeat" />
+            </Col>
+          </Row>
+        </span>
+      </DocumentTitle>
     );
   },
 });

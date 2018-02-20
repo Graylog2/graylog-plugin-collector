@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col, Button } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
@@ -16,7 +16,7 @@ const CollectorsPage = React.createClass({
     return (
       <DocumentTitle title="Collectors">
         <span>
-          <PageHeader title="Collectors in Cluster">
+          <PageHeader title="Collectors Overview">
             <span>
               The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
             </span>
@@ -26,15 +26,17 @@ const CollectorsPage = React.createClass({
               {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR} text="Graylog documentation" />.
             </span>
 
-            <span>
+            <ButtonToolbar>
               <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
                 <Button bsStyle="info" className="active">Overview</Button>
               </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info">Manage Configurations</Button>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+                <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-            </span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+                <Button bsStyle="info">Configuration</Button>
+              </LinkContainer>
+            </ButtonToolbar>
           </PageHeader>
 
           <Row className="content">

@@ -40,7 +40,7 @@ const ConfigurationRow = React.createClass({
     return (
       <tr>
         <td className="name limited">
-          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ALTCONFIGURATIONS_ID')(configuration.id)}>
+          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ALTCONFIGURATION_ID')(configuration.id)}>
             <a>{configuration.name}</a>
           </LinkContainer>
         </td>

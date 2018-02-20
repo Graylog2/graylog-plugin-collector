@@ -32,7 +32,7 @@ const AdministrationPage = createReactClass({
               <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
                 <Button bsStyle="info" className="active">Administration</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
                 <Button bsStyle="info">Configuration</Button>
               </LinkContainer>
             </ButtonToolbar>

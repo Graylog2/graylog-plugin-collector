@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col, Button } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
@@ -11,12 +11,12 @@ import ConfigurationsList from './ConfigurationsList';
 
 import Routes from 'routing/Routes';
 
-const ConfigurationsPage = React.createClass({
+const ConfigurationPage = React.createClass({
   render() {
     return (
-      <DocumentTitle title="Collector sidecar configurations">
+      <DocumentTitle title="Collectors Configuration">
         <span>
-          <PageHeader title="Collector Sidecar Configurations">
+          <PageHeader title="Collectors Configuration">
             <span>
               The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
               manage the Sidecar configurations.
@@ -27,15 +27,17 @@ const ConfigurationsPage = React.createClass({
               <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
             </span>
 
-            <span>
+            <ButtonToolbar>
               <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
                 <Button bsStyle="info">Overview</Button>
               </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info" className="active">Manage Configurations</Button>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+                <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-            </span>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+                <Button bsStyle="info" className="active">Configuration</Button>
+              </LinkContainer>
+            </ButtonToolbar>
           </PageHeader>
 
           <Row className="content">
@@ -49,4 +51,4 @@ const ConfigurationsPage = React.createClass({
   },
 });
 
-export default ConfigurationsPage;
+export default ConfigurationPage;
