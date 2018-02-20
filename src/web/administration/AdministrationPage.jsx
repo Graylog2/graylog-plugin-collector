@@ -1,0 +1,51 @@
+import React from 'react';
+import createReactClass from 'create-react-class';
+
+import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+
+import DocsHelper from 'util/DocsHelper';
+
+import { DocumentTitle, PageHeader } from 'components/common';
+import Routes from 'routing/Routes';
+import DocumentationLink from 'components/support/DocumentationLink';
+
+const AdministrationPage = createReactClass({
+  render() {
+    return (
+      <DocumentTitle title="Collectors Administration">
+        <span>
+          <PageHeader title="Collectors Administration">
+            <span>
+              The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
+            </span>
+
+            <span>
+              Read more about collectors and how to set them up in the
+              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR} text="Graylog documentation" />.
+            </span>
+
+            <ButtonToolbar>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+                <Button bsStyle="info">Overview</Button>
+              </LinkContainer>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+                <Button bsStyle="info" className="active">Administration</Button>
+              </LinkContainer>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
+                <Button bsStyle="info">Configuration</Button>
+              </LinkContainer>
+            </ButtonToolbar>
+          </PageHeader>
+
+          <Row className="content">
+            <Col md={12}>
+            </Col>
+          </Row>
+        </span>
+      </DocumentTitle>
+    );
+  },
+});
+
+export default AdministrationPage;

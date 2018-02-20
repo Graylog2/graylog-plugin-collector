@@ -9,11 +9,13 @@ import ConfigurationsPage from 'configurations/ConfigurationsPage';
 import CollectorConfigurationPage from 'collector-configuration/CollectorConfigurationPage';
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
 import AltConfigurationPage from 'alt-configuration/AltConfigurationPage';
+import AdministrationPage from 'administration/AdministrationPage';
 
 const manifest = new PluginManifest(packageJson, {
   routes: [
     { path: '/system/collectors', component: CollectorsPage },
     { path: '/system/collectors/:id/status', component: CollectorsStatusPage },
+    { path: '/system/collectors/administration', component: AdministrationPage },
     { path: '/system/collectors/configurations', component: ConfigurationsPage },
     { path: '/system/collectors/configurations/:id', component: CollectorConfigurationPage },
     { path: '/system/collectors/altconfigurations/:id', component: AltConfigurationPage },
@@ -34,4 +36,3 @@ const manifest = new PluginManifest(packageJson, {
 });
 
 PluginStore.register(manifest);
-
