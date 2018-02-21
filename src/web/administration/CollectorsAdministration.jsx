@@ -6,6 +6,7 @@ import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList } from 'components/common';
 import { Input } from 'components/bootstrap';
+import BackendIndicator from 'collectors/BackendIndicator';
 
 import style from './CollectorsAdministration.css';
 
@@ -68,21 +69,30 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
-  formatCollector(collector) {
+  formatCollector(collector, backend) {
     return (
       <ControlledTableList.Item key={`collector-${collector.id}`}>
-        <Row className="row-sm">
-          <Col md={6}>
-            <div className={style.collectorRow}>
+        <div className={style.collectorEntry}>
+          <Row>
+            <Col md={6}>
               <Input id={`${collector.id}-checkbox`}
                      type="checkbox"
                      label={collector.node_id}
                      checked={this.state.selected.includes(collector.id)}
                      onChange={this.handleCollectorSelect(collector.id)} />
               <span className={style.collectorId}>{collector.id}</span>
-            </div>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <div className={style.additionalInformation}>
+                <em>
+                  <BackendIndicator backend={backend} operatingSystem={collector.node_details.operating_system} />
+                </em>
+              </div>
+            </Col>
+          </Row>
+        </div>
       </ControlledTableList.Item>
     );
   },
@@ -96,7 +106,13 @@ const CollectorsAdministration = createReactClass({
         <ControlledTableList.Item>No items to display</ControlledTableList.Item>
       );
     } else {
-      formattedCollectors = collectors.map(collector => this.formatCollector(collector));
+      formattedCollectors = [];
+      collectors.forEach((collector) => {
+        const backends = Object.keys(collector.node_details.status.backends);
+        backends.forEach((backend) => {
+          formattedCollectors.push(this.formatCollector(collector, backend));
+        });
+      });
     }
 
     return (
