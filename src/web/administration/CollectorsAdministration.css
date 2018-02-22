@@ -15,3 +15,12 @@
 :local(.additionalInformation) {
     margin-left: 20px;
 }
+
+:local(.headerComponentsWrapper) {
+    float: right;
+    margin: 5px 0;
+}
+
+:local(.headerComponentsWrapper) .btn-link {
+    color: #666;
+}

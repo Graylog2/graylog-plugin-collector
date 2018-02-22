@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
-import { Col, Row } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList } from 'components/common';
 import { Input } from 'components/bootstrap';
@@ -50,6 +50,26 @@ const CollectorsAdministration = createReactClass({
     this.setState({ selected: newSelection });
   },
 
+  getHeaderFilters() {
+    return (
+      <ButtonToolbar>
+        <Button bsSize="small" bsStyle="link">Backend <span className="caret" /></Button>
+        <Button bsSize="small" bsStyle="link">Configuration <span className="caret" /></Button>
+        <Button bsSize="small" bsStyle="link">OS <span className="caret" /></Button>
+        <Button bsSize="small" bsStyle="link">Status <span className="caret" /></Button>
+      </ButtonToolbar>
+    );
+  },
+
+  getBulkActions() {
+    return (
+      <ButtonToolbar>
+        <Button bsSize="small" bsStyle="link">Process <span className="caret" /></Button>
+        <Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>
+      </ButtonToolbar>
+    );
+  },
+
   formatHeader() {
     const { collectors } = this.props;
     const { selected } = this.state;
@@ -57,6 +77,10 @@ const CollectorsAdministration = createReactClass({
 
     return (
       <ControlledTableList.Header>
+        <div className={style.headerComponentsWrapper}>
+          {selectedItems === 0 ? this.getHeaderFilters() : this.getBulkActions()}
+        </div>
+
         <Input ref={(c) => { this.selectAllInput = c; }}
                id="select-all-checkbox"
                type="checkbox"
