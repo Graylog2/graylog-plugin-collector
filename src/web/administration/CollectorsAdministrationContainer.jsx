@@ -21,6 +21,10 @@ const CollectorsAdministrationContainer = createReactClass({
                 status: 2,
                 message: 'Unable to start collector after 3 tries, giving up!',
               },
+              filebeat: {
+                status: 1,
+                message: 'This is awesome!',
+              },
             },
           },
         },

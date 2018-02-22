@@ -71,7 +71,7 @@ const CollectorsAdministration = createReactClass({
 
   formatCollector(collector, backend) {
     return (
-      <ControlledTableList.Item key={`collector-${collector.id}`}>
+      <ControlledTableList.Item key={`collector-${collector.id}-${backend}`}>
         <div className={style.collectorEntry}>
           <Row>
             <Col md={6}>
