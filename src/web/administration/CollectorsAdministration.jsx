@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 
-import { ControlledTableList } from 'components/common';
+import { ControlledTableList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
 import BackendIndicator from 'collectors/BackendIndicator';
 
@@ -17,8 +17,16 @@ const CollectorsAdministration = createReactClass({
 
   getInitialState() {
     return {
+      query: '',
+      filteredCollectors: this.props.collectors,
       selected: [],
     };
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (!lodash.isEqual(this.props.collectors, nextProps.collectors)) {
+      this.filterCollectors(this.state.query, nextProps.collectors);
+    }
   },
 
   componentDidUpdate() {
@@ -121,17 +129,31 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
+  filterCollectors(query, collectors) {
+    const filteredCollectors = collectors.filter(collector => collector.id.match(query) || collector.node_id.match(query));
+    this.setState({ query: query, filteredCollectors: filteredCollectors });
+  },
+
+  handleSearch(query, callback) {
+    this.filterCollectors(query, this.props.collectors);
+    callback();
+  },
+
+  handleReset() {
+    this.filterCollectors('', this.props.collectors);
+  },
+
   render() {
-    const { collectors } = this.props;
+    const { filteredCollectors } = this.state;
 
     let formattedCollectors;
-    if (collectors.length === 0) {
+    if (filteredCollectors.length === 0) {
       formattedCollectors = (
         <ControlledTableList.Item>No items to display</ControlledTableList.Item>
       );
     } else {
       formattedCollectors = [];
-      collectors.forEach((collector) => {
+      filteredCollectors.forEach((collector) => {
         const backends = Object.keys(collector.node_details.status.backends);
         backends.forEach((backend) => {
           formattedCollectors.push(this.formatCollector(collector, backend));
@@ -141,10 +163,24 @@ const CollectorsAdministration = createReactClass({
 
     return (
       <div>
-        <ControlledTableList>
-          {this.formatHeader()}
-          {formattedCollectors}
-        </ControlledTableList>
+        <Row>
+          <Col md={12}>
+            <SearchForm onSearch={this.handleSearch}
+                        onReset={this.handleReset}
+                        searchButtonLabel="Filter"
+                        resetButtonLabel="Reset"
+                        label="Filter collectors"
+                        useLoadingState />
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <ControlledTableList>
+              {this.formatHeader()}
+              {formattedCollectors}
+            </ControlledTableList>
+          </Col>
+        </Row>
       </div>
     );
   },
