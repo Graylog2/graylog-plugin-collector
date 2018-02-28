@@ -53,6 +53,27 @@ const CollectorsAdministrationContainer = createReactClass({
         collector_version: '0.1.5',
       },
     ];
+    const backends = [
+      {
+        id: '5a8c06ec58ddc805e697c7a2',
+        name: 'filebeat',
+        service_type: 'exec',
+        node_operating_system: 'linux',
+      },
+      {
+        id: '5a8c06ec58ddc805e697c7a3',
+        name: 'winlogbeat',
+        service_type: 'svc',
+        node_operating_system: 'windows',
+      },
+      {
+        id: '5a8c06ec58ddc805e697c7a4',
+        name: 'nxlog',
+        service_type: 'exec',
+        node_operating_system: 'linux',
+      },
+    ];
+
     const collectorsByBackend = [];
     collectors.forEach((collector) => {
       const backendNames = Object.keys(collector.node_details.status.backends);
@@ -61,7 +82,7 @@ const CollectorsAdministrationContainer = createReactClass({
       });
     });
 
-    return <CollectorsAdministration collectors={collectorsByBackend} />;
+    return <CollectorsAdministration collectors={collectorsByBackend} backends={backends} />;
   },
 });
 
