@@ -53,7 +53,15 @@ const CollectorsAdministrationContainer = createReactClass({
         collector_version: '0.1.5',
       },
     ];
-    return <CollectorsAdministration collectors={collectors} />;
+    const collectorsByBackend = [];
+    collectors.forEach((collector) => {
+      const backendNames = Object.keys(collector.node_details.status.backends);
+      backendNames.forEach((backend) => {
+        collectorsByBackend.push({ backend: backend, collector: collector });
+      });
+    });
+
+    return <CollectorsAdministration collectors={collectorsByBackend} />;
   },
 });
 

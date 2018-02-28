@@ -17,7 +17,6 @@ const CollectorsAdministration = createReactClass({
 
   getInitialState() {
     return {
-      query: '',
       filteredCollectors: this.props.collectors,
       selected: [],
     };
@@ -25,7 +24,7 @@ const CollectorsAdministration = createReactClass({
 
   componentWillReceiveProps(nextProps) {
     if (!lodash.isEqual(this.props.collectors, nextProps.collectors)) {
-      this.filterCollectors(this.state.query, nextProps.collectors);
+      this.setState({ filteredCollectors: nextProps.collectors });
     }
   },
 
@@ -129,18 +128,23 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
-  filterCollectors(query, collectors) {
-    const filteredCollectors = collectors.filter(collector => collector.id.match(query) || collector.node_id.match(query));
-    this.setState({ query: query, filteredCollectors: filteredCollectors });
+  filterCollectors(predicate, collectors) {
+    const filteredCollectors = collectors.filter(predicate);
+    this.setState({ filteredCollectors: filteredCollectors });
+  },
+
+  filterCollectorsByQuery(query, collectors) {
+    const predicate = ({ collector }) => collector.id.match(query, 'i') || collector.node_id.match(query, 'i');
+    this.filterCollectors(predicate, collectors);
   },
 
   handleSearch(query, callback) {
-    this.filterCollectors(query, this.props.collectors);
+    this.filterCollectorsByQuery(query, this.props.collectors);
     callback();
   },
 
   handleReset() {
-    this.filterCollectors('', this.props.collectors);
+    this.filterCollectorsByQuery('', this.props.collectors);
   },
 
   render() {
@@ -153,11 +157,8 @@ const CollectorsAdministration = createReactClass({
       );
     } else {
       formattedCollectors = [];
-      filteredCollectors.forEach((collector) => {
-        const backends = Object.keys(collector.node_details.status.backends);
-        backends.forEach((backend) => {
-          formattedCollectors.push(this.formatCollector(collector, backend));
-        });
+      filteredCollectors.forEach(({ backend, collector }) => {
+        formattedCollectors.push(this.formatCollector(collector, backend));
       });
     }
 
