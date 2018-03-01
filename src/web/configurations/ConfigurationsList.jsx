@@ -91,24 +91,27 @@ const ConfigurationsList = React.createClass({
 
     return (
       <div>
-        <DataTable id="collector-configurations-list"
-                   className="table-hover"
-                   headers={headers}
-                   headerCellFormatter={this._headerCellFormatter}
-                   sortByKey="name"
-                   rows={this.state.configurations}
-                   filterBy="tag"
-                   filterSuggestions={this.state.tags}
-                   dataRowFormatter={this._collectorConfigurationFormatter}
-                   filterLabel="Filter Configurations"
-                   noDataText="There are no configurations to display, why don't you create one?"
-                   filterKeys={filterKeys}>
-          <div className="pull-right">
-            <EditConfigurationModal create
-                                    updateConfiguration={this._createConfiguration}
-                                    validConfigurationName={this._validConfigurationName} />
-          </div>
-        </DataTable>
+        <h2>Configurations</h2>
+        <div className="top-margin">
+          <DataTable id="collector-configurations-list"
+                     className="table-hover"
+                     headers={headers}
+                     headerCellFormatter={this._headerCellFormatter}
+                     sortByKey="name"
+                     rows={this.state.configurations}
+                     filterBy="tag"
+                     filterSuggestions={this.state.tags}
+                     dataRowFormatter={this._collectorConfigurationFormatter}
+                     filterLabel="Filter Configurations"
+                     noDataText="There are no configurations to display, why don't you create one?"
+                     filterKeys={filterKeys}>
+            <div className="pull-right">
+              <EditConfigurationModal create
+                                      updateConfiguration={this._createConfiguration}
+                                      validConfigurationName={this._validConfigurationName} />
+            </div>
+          </DataTable>
+        </div>
       </div>
     );
   },

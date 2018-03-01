@@ -1,15 +1,14 @@
 import React from 'react';
-
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
 import DocumentationLink from 'components/support/DocumentationLink';
-
 import { DocumentTitle, PageHeader } from 'components/common';
-import ConfigurationsList from './ConfigurationsList';
-
 import Routes from 'routing/Routes';
+
+import ConfigurationsList from './ConfigurationsList';
+import BackendList from './BackendList';
 
 const ConfigurationPage = React.createClass({
   render() {
@@ -43,6 +42,11 @@ const ConfigurationPage = React.createClass({
           <Row className="content">
             <Col md={12}>
               <ConfigurationsList />
+            </Col>
+          </Row>
+          <Row className="content">
+            <Col md={12}>
+              <BackendList />
             </Col>
           </Row>
         </span>
