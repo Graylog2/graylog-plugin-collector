@@ -9,7 +9,7 @@ import org.graylog2.database.CollectionName;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
-import java.util.Map;
+import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
@@ -26,10 +26,78 @@ public abstract class Collector {
 
     @JsonProperty
     @Nullable
-    public abstract Map<String, String> configurations();
+    public abstract List<CollectorConfigurationRelation> configurations();
 
     @JsonProperty
     public abstract String collectorVersion();
+
+    @JsonProperty
+    public abstract DateTime lastSeen();
+
+    public static Builder builder() {
+        return new AutoValue_Collector.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder id(String id);
+        public abstract Builder nodeId(String title);
+        public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
+        public abstract Builder configurations(List<CollectorConfigurationRelation> configurations);
+        public abstract Builder collectorVersion(String collectorVersion);
+        public abstract Builder lastSeen(DateTime lastSeen);
+        public abstract Collector build();
+    }
+
+    @JsonCreator
+    public static Collector create(@JsonProperty("_id") String objectId,
+                                   @JsonProperty("id") String collectorId,
+                                   @JsonProperty("node_id") String nodeId,
+                                   @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
+                                   @JsonProperty("configurations") @Nullable List<CollectorConfigurationRelation> configurations,
+                                   @JsonProperty("collector_version") String collectorVersion,
+                                   @JsonProperty("last_seen") DateTime lastSeen) {
+
+        return builder()
+                .id(collectorId)
+                .nodeId(nodeId)
+                .nodeDetails(nodeDetails)
+                .configurations(configurations)
+                .collectorVersion(collectorVersion)
+                .lastSeen(lastSeen)
+                .build();
+    }
+
+    public static Collector create(String collectorId,
+                                   String nodeId,
+                                   String collectorVersion,
+                                   CollectorNodeDetails collectorNodeDetails,
+                                   List<CollectorConfigurationRelation> configurations,
+                                   DateTime lastSeen) {
+        return create(new org.bson.types.ObjectId().toHexString(),
+                collectorId,
+                nodeId,
+                collectorNodeDetails,
+                configurations,
+                collectorVersion,
+                lastSeen);
+    }
+
+    public static Collector create(String collectorId,
+                                   String nodeId,
+                                   String collectorVersion,
+                                   CollectorNodeDetails collectorNodeDetails,
+                                   DateTime lastSeen) {
+        return create(new org.bson.types.ObjectId().toHexString(),
+                collectorId,
+                nodeId,
+                collectorNodeDetails,
+                null,
+                collectorVersion,
+                lastSeen);
+    }
 
     public CollectorSummary toSummary(Function<Collector, Boolean> isActiveFunction) {
         final Boolean isActive = isActiveFunction.apply(this);
@@ -40,46 +108,5 @@ public abstract class Collector {
                 lastSeen(),
                 collectorVersion(),
                 isActive != null && isActive);
-    }
-
-    @JsonProperty("last_seen")
-    public abstract DateTime lastSeen();
-
-    @JsonCreator
-    public static Collector create(@JsonProperty("_id") String objectId,
-                                   @JsonProperty("id") String id,
-                                   @JsonProperty("node_id") String nodeId,
-                                   @JsonProperty("node_details") CollectorNodeDetails collectorNodeDetails,
-                                   @JsonProperty("configurations") @Nullable Map<String, String> configurationList,
-                                   @JsonProperty("collector_version") String collectorVersion,
-                                   @JsonProperty("last_seen") DateTime lastSeen) {
-        return new AutoValue_Collector(id, nodeId, collectorNodeDetails, configurationList, collectorVersion, lastSeen);
-    }
-
-    public static Collector create(String collectorId,
-                                   String nodeId,
-                                   String collectorVersion,
-                                   CollectorNodeDetails collectorNodeDetails,
-                                   Map<String, String> configurationList,
-                                   DateTime lastSeen) {
-        return new AutoValue_Collector(collectorId,
-                nodeId,
-                collectorNodeDetails,
-                configurationList,
-                collectorVersion,
-                lastSeen);
-    }
-
-    public static Collector create(String collectorId,
-                                   String nodeId,
-                                   String collectorVersion,
-                                   CollectorNodeDetails collectorNodeDetails,
-                                   DateTime lastSeen) {
-        return new AutoValue_Collector(collectorId,
-                nodeId,
-                collectorNodeDetails,
-                null,
-                collectorVersion,
-                lastSeen);
     }
 }

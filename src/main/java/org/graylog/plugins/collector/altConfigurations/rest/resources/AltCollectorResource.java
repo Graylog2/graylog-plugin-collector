@@ -16,6 +16,8 @@ import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurations;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collectors;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
@@ -30,6 +32,8 @@ import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -47,7 +51,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Api(value = "AltCollector", description = "Manage collector fleet")
-@Path("/collectors")
+@Path("/altcollectors")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AltCollectorResource extends RestResource implements PluginRestResource {
@@ -126,6 +130,25 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                 collectorSystemConfiguration.collectorConfigurationOverride(),
                 collectorAction);
         return Response.accepted(collectorRegistrationResponse).build();
+    }
+
+    @PUT
+    @Timed
+    @Path("/{collectorId}/configurations")
+    @ApiOperation(value = "Assign configuration to collector backend")
+    public Collector assignConfiguration(@ApiParam(name = "collectorId", required = true)
+                                         @PathParam("collectorId") String collectorId,
+                                         @ApiParam(name = "JSON body", required = true)
+                                         @Valid @NotNull CollectorConfigurations request) throws NotFoundException {
+        Collector collector = collectorService.findById(collectorId);
+        for (CollectorConfigurationRelation relation : request.configurations()) {
+            try {
+                collector = collectorService.assignConfiguration(collector, relation.backendId(), relation.configurationId());
+            } catch (org.graylog2.database.NotFoundException e) {
+                throw new NotFoundException(e.getMessage());
+            }
+        }
+        return collectorService.save(collector);
     }
 
     @VisibleForTesting

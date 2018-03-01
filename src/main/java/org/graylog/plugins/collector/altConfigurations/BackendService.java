@@ -30,7 +30,7 @@ public class BackendService {
     }
 
     public CollectorBackend load(String id) {
-        return dbCollection.findOne(DBQuery.is("id", id));
+        return dbCollection.findOne(DBQuery.is("_id", id));
     }
 
     public CollectorBackend loadForName(String name) {

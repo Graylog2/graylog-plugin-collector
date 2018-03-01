@@ -14,6 +14,8 @@ import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
+import org.graylog2.plugin.rest.PluginRestResource;
+import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.inject.Inject;
@@ -31,10 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "AltCollector Actions", description = "Manage Collector Actions")
-@Path("/collectors")
+@Path("/altcollectors/action")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class ActionResource {
+public class ActionResource extends RestResource implements PluginRestResource {
     private final ActionService actionService;
 
     @Inject
@@ -44,7 +46,7 @@ public class ActionResource {
 
     @GET
     @Timed
-    @Path("/{collectorId}/action")
+    @Path("/{collectorId}")
     @ApiOperation(value = "Returns queued actions for the specified collector id")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "No actions found for specified id")
@@ -62,7 +64,7 @@ public class ActionResource {
 
     @PUT
     @Timed
-    @Path("/{collectorId}/action")
+    @Path("/{collectorId}")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @ApiOperation(value = "Set a collector action")

@@ -4,10 +4,12 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
+import org.graylog2.database.NotFoundException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
@@ -24,13 +26,19 @@ import java.util.Set;
 public class AltCollectorService {
     private static final String COLLECTION_NAME = "collectors";
     private final JacksonDBCollection<Collector, ObjectId> dbCollection;
+    private final BackendService backendService;
+    private final AltConfigurationService configurationService;
 
     private final Validator validator;
 
     @Inject
-    public AltCollectorService(MongoConnection mongoConnection,
+    public AltCollectorService(BackendService backendService,
+                               AltConfigurationService configurationService,
+                               MongoConnection mongoConnection,
                                MongoJackObjectMapperProvider mapper,
                                Validator validator) {
+        this.backendService = backendService;
+        this.configurationService = configurationService;
         this.validator = validator;
         dbCollection = JacksonDBCollection.wrap(
                 mongoConnection.getDatabase().getCollection(COLLECTION_NAME),
@@ -105,6 +113,31 @@ public class AltCollectorService {
                 DateTime.now(DateTimeZone.UTC));
     }
 
+    public Collector assignConfiguration(Collector collector, String backendId, String configurationId) throws NotFoundException{
+        if (backendService.load(backendId) == null) {
+            throw new NotFoundException("Couldn't find backend with ID " + backendId);
+        }
+        if (configurationService.load(configurationId) == null) {
+            throw new NotFoundException("Couldn't find configuration with ID " + backendId);
+        }
+
+        List<CollectorConfigurationRelation> configurations = collector.configurations();
+        if (configurations != null) {
+            for (int i = 0; i < configurations.size(); i++) {
+                CollectorConfigurationRelation relation = configurations.get(i);
+                if (relation.backendId().equalsIgnoreCase(backendId)) {
+                    configurations.set(i, CollectorConfigurationRelation.create(backendId, configurationId));
+                }
+            }
+        } else {
+            configurations = Lists.newArrayList();
+            configurations.add(CollectorConfigurationRelation.create(backendId, configurationId));
+        }
+        Collector toSave = collector.toBuilder()
+                .configurations(configurations)
+                .build();
+        return save(toSave);
+    }
 
     private List<Collector> toAbstractListType(DBCursor<Collector> collectors) {
         return toAbstractListType(collectors.toArray());

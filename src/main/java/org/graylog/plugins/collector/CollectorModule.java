@@ -22,6 +22,8 @@ import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
+import org.graylog.plugins.collector.altConfigurations.rest.resources.ActionResource;
+import org.graylog.plugins.collector.altConfigurations.rest.resources.AltCollectorResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltConfigurationResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.BackendResource;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
@@ -61,6 +63,8 @@ public class CollectorModule extends PluginModule {
         addRestResource(CollectorConfigurationResource.class);
         addRestResource(AltConfigurationResource.class);
         addRestResource(BackendResource.class);
+        addRestResource(ActionResource.class);
+        addRestResource(AltCollectorResource.class);
         addPermissions(CollectorRestPermissions.class);
 
         addAuditEventTypes(CollectorAuditEventTypes.class);
