@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from 'react-router';
 
 import EditConfigurationModal from './EditConfigurationModal';
 import CopyConfigurationModal from './CopyConfigurationModal';
@@ -40,9 +40,9 @@ const ConfigurationRow = React.createClass({
     return (
       <tr>
         <td className="name limited">
-          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ALTCONFIGURATION_ID')(configuration.id)}>
-            <a>{configuration.name}</a>
-          </LinkContainer>
+          <Link to={Routes.pluginRoute('SYSTEM_COLLECTORS_ALTCONFIGURATION_ID')(configuration.id)}>
+            {configuration.name}
+          </Link>
         </td>
         <td></td>
         <td>

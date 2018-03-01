@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Label } from 'react-bootstrap';
+import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
@@ -95,9 +96,9 @@ const CollectorRow = React.createClass({
     return (
       <tr className={collectorClass} style={style}>
         <td className="collector-name">
-          <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
-            <a>{collector.node_id}</a>
-          </LinkContainer>
+          <Link to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
+            {collector.node_id}
+          </Link>
           <p>
             {this._tagsAsBadges(collector)}
           </p>
