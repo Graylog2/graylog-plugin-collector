@@ -2,9 +2,12 @@
   "parser": "babel-eslint",
   "ecmaFeatures": {
     "classes": true,
-    "jsx": true,
+    "jsx": true
   },
   "extends": [
-    "graylog",
+    "graylog"
   ],
+  "env": {
+    "browser": true
+  }
 }
