@@ -11,6 +11,10 @@ import style from './BackendList.css';
 const BackendList = createReactClass({
   propTypes: {
     backends: PropTypes.array.isRequired,
+    onCreate: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onClone: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
   },
 
   headerCellFormatter(header) {
@@ -19,11 +23,12 @@ const BackendList = createReactClass({
   },
 
   backendFormatter(backend) {
-    return <BackendRow backend={backend} />;
+    const { onEdit, onClone, onDelete } = this.props;
+    return <BackendRow backend={backend} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />;
   },
 
   render() {
-    const { backends } = this.props;
+    const { backends, onCreate } = this.props;
 
     const headers = ['Name', 'Operating System', 'Actions'];
     const filterKeys = ['name', 'id', 'node_operating_system'];
@@ -33,7 +38,7 @@ const BackendList = createReactClass({
         <Row>
           <Col md={12}>
             <div className="pull-right">
-              <Button bsStyle="success" bsSize="small">Create Backend</Button>
+              <Button bsStyle="success" bsSize="small" onClick={onCreate}>Create Backend</Button>
             </div>
             <h2>Backends <small>{backends.length} total</small></h2>
           </Col>
