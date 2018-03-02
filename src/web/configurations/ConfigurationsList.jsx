@@ -99,7 +99,7 @@ const ConfigurationsList = React.createClass({
                                       updateConfiguration={this._createConfiguration}
                                       validConfigurationName={this._validConfigurationName} />
             </div>
-            <h2>Configurations</h2>
+            <h2>Configurations <small>{this.state.configurations.length} total</small></h2>
           </Col>
         </Row>
         <div className="top-margin">
