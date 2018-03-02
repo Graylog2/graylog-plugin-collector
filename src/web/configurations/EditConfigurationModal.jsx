@@ -101,7 +101,7 @@ const EditConfigurationModal = React.createClass({
         <Button onClick={this.openModal}
                 bsStyle={this.props.create ? 'success' : 'info'}
                 bsSize={this.props.create ? 'small' : 'xsmall'}>
-          {this.props.create ? 'Create configuration' : 'Edit'}
+          {this.props.create ? 'Create Configuration' : 'Edit'}
         </Button>
         <BootstrapModalForm ref="modal"
                             title={`${this.props.create ? 'Create' : 'Edit'} Configuration ${this.state.name}`}
