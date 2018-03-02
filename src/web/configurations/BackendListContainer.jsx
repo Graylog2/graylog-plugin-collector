@@ -5,18 +5,18 @@ import Reflux from 'reflux';
 import { Spinner } from 'components/common';
 import BackendList from './BackendList';
 
-import CollectorConfigurationsStore from './CollectorConfigurationsStore';
-import CollectorConfigurationsActions from './CollectorConfigurationsActions';
+import BackendsStore from './BackendsStore';
+import BackendsActions from './BackendsActions';
 
 const BackendListContainer = createReactClass({
-  mixins: [Reflux.connect(CollectorConfigurationsStore)],
+  mixins: [Reflux.connect(BackendsStore)],
 
   componentDidMount() {
     this.loadBackends();
   },
 
   loadBackends() {
-    CollectorConfigurationsActions.listBackends();
+    BackendsActions.list();
   },
 
   render() {

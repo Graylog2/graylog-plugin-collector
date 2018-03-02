@@ -30,22 +30,6 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.list.promise(promise);
   },
 
-  listBackends() {
-    const promise = fetch('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'))
-      .then(
-        response => {
-          this.backends = response.backends;
-          this.trigger({ backends: this.backends });
-
-          return this.backends;
-        },
-        error => {
-          UserNotification.error(`Fetching collector backends failed with status: ${error}`,
-            'Could not retrieve backends');
-        });
-    CollectorConfigurationsActions.listBackends.promise(promise);
-  },
-
   listTags() {
     const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/tags`));
     promise

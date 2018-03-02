@@ -2,7 +2,6 @@ import Reflux from 'reflux';
 
 const CollectorConfigurationsActions = Reflux.createActions({
   list: { asyncResult: true },
-  listBackends: { asyncResult: true },
   getConfiguration: { asyncResult: true },
   createConfiguration: { asyncResult: true },
   updateConfiguration: { asyncResult: true },

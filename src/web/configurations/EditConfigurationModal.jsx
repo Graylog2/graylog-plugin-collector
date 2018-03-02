@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import Reflux from 'reflux';
 import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
-import { Select } from 'components/common';
-import ObjectUtils from 'util/ObjectUtils';
+import { Select, Spinner } from 'components/common';
 
-import CollectorConfigurationsActions from './CollectorConfigurationsActions';
+import BackendsActions from './BackendsActions';
+import BackendsStore from './BackendsStore';
 
 const EditConfigurationModal = React.createClass({
+  mixins: [Reflux.connect(BackendsStore)],
+
   propTypes: {
     create: PropTypes.bool,
     updateConfiguration: PropTypes.func.isRequired,
@@ -27,7 +30,6 @@ const EditConfigurationModal = React.createClass({
   getInitialState() {
     return {
       name: undefined,
-      backends: undefined,
       selectedBackend: undefined,
       error: false,
       error_message: '',
@@ -47,9 +49,7 @@ const EditConfigurationModal = React.createClass({
   },
 
   _loadBackends() {
-    CollectorConfigurationsActions.listBackends.triggerPromise().then((backends) => {
-      this.setState({ backends: backends });
-    });
+    BackendsActions.list();
   },
 
   _saved() {
@@ -96,6 +96,11 @@ const EditConfigurationModal = React.createClass({
   },
 
   render() {
+    const { backends } = this.state;
+    if (!backends) {
+      return <Spinner />;
+    }
+
     return (
       <span>
         <Button onClick={this.openModal}
