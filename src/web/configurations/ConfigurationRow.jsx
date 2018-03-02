@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router';
+
+import Routes from 'routing/Routes';
 
 import EditConfigurationModal from './EditConfigurationModal';
 import CopyConfigurationModal from './CopyConfigurationModal';
-
-import Routes from 'routing/Routes';
 
 const ConfigurationRow = React.createClass({
   propTypes: {
@@ -27,7 +27,7 @@ const ConfigurationRow = React.createClass({
 
   style: require('!style/useable!css!styles/CollectorStyles.css'),
 
-  _handleClick() {
+  _handleDelete() {
     const configuration = this.props.configuration;
     if (window.confirm(`You are about to delete configuration "${configuration.name}". Are you sure?`)) {
       this.props.onDelete(configuration);
@@ -44,17 +44,23 @@ const ConfigurationRow = React.createClass({
             {configuration.name}
           </Link>
         </td>
-        <td></td>
+        <td />
         <td>
-          <Button bsStyle="primary" bsSize="xsmall" onClick={this._handleClick}>
-            Delete
-          </Button>
-          &nbsp;
-          <CopyConfigurationModal id={this.props.configuration.id} validConfigurationName={this.props.validateConfiguration} copyConfiguration={this.props.onCopy} />
-          &nbsp;
-          <EditConfigurationModal configuration={this.props.configuration}
-                                  updateConfiguration={this.props.onUpdate}
-                                  validConfigurationName={this.props.validateConfiguration} />
+          <ButtonToolbar>
+            <EditConfigurationModal configuration={this.props.configuration}
+                                    updateConfiguration={this.props.onUpdate}
+                                    validConfigurationName={this.props.validateConfiguration} />
+            <DropdownButton id={`more-actions-${this.props.configuration.id}`}
+                            title="More actions"
+                            bsSize="xsmall"
+                            pullRight>
+              <CopyConfigurationModal id={this.props.configuration.id}
+                                      validConfigurationName={this.props.validateConfiguration}
+                                      copyConfiguration={this.props.onCopy} />
+              <MenuItem divider />
+              <MenuItem onSelect={this._handleDelete}>Delete</MenuItem>
+            </DropdownButton>
+          </ButtonToolbar>
         </td>
       </tr>
     );

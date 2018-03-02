@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { MenuItem } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
+
+import style from './CopyConfigurationModal.css';
 
 const CopyConfigurationModal = React.createClass({
   propTypes: {
@@ -32,7 +34,7 @@ const CopyConfigurationModal = React.createClass({
   },
 
   _getId(prefixIdName) {
-    return prefixIdName + this.state.name;
+    return `${prefixIdName}-${this.props.id}`;
   },
 
   _closeModal() {
@@ -59,28 +61,24 @@ const CopyConfigurationModal = React.createClass({
   render() {
     return (
       <span>
-                <Button onClick={this.openModal}
-                        bsStyle="warning"
-                        bsSize="xsmall">
-                  Clone
-                </Button>
-                <BootstrapModalForm ref="modal"
-                                    title="Clone"
-                                    onSubmitForm={this._save}
-                                    submitButtonText="Create">
-                  <fieldset>
-                    <Input type="text"
-                           id={this._getId('configuration-name')}
-                           label="Name"
-                           defaultValue={this.state.name}
-                           onChange={this._changeName}
-                           bsStyle={this.state.error ? 'error' : null}
-                           help={this.state.error ? this.state.error_message : 'Type a name for the new configuration'}
-                           autoFocus
-                           required />
-                  </fieldset>
-                </BootstrapModalForm>
-            </span>
+        <MenuItem className={style.menuItem} onSelect={this.openModal}>Clone</MenuItem>
+        <BootstrapModalForm ref="modal"
+                            title="Clone"
+                            onSubmitForm={this._save}
+                            submitButtonText="Create">
+          <fieldset>
+            <Input type="text"
+                   id={this._getId('configuration-name')}
+                   label="Name"
+                   defaultValue={this.state.name}
+                   onChange={this._changeName}
+                   bsStyle={this.state.error ? 'error' : null}
+                   help={this.state.error ? this.state.error_message : 'Type a name for the new configuration'}
+                   autoFocus
+                   required />
+          </fieldset>
+        </BootstrapModalForm>
+      </span>
     );
   },
 });
