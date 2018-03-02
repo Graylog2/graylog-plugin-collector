@@ -99,6 +99,12 @@ const ConfigurationsList = React.createClass({
             </div>
             <h2>Configurations <small>{this.state.configurations.length} total</small></h2>
           </Col>
+          <Col md={12}>
+            <p>
+              These are the Configurations to use in your Collector Backends. Remember to apply new configurations to
+              Collectors in the Administration page.
+            </p>
+          </Col>
         </Row>
         <DataTable id="collector-configurations-list"
                    className="table-hover"
