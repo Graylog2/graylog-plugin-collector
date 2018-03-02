@@ -1,5 +1,6 @@
 import React from 'react';
 import Reflux from 'reflux';
+import { Col, Row } from 'react-bootstrap';
 
 import { DataTable, Spinner } from 'components/common';
 
@@ -91,7 +92,16 @@ const ConfigurationsList = React.createClass({
 
     return (
       <div>
-        <h2>Configurations</h2>
+        <Row>
+          <Col md={12}>
+            <div className="pull-right">
+              <EditConfigurationModal create
+                                      updateConfiguration={this._createConfiguration}
+                                      validConfigurationName={this._validConfigurationName} />
+            </div>
+            <h2>Configurations</h2>
+          </Col>
+        </Row>
         <div className="top-margin">
           <DataTable id="collector-configurations-list"
                      className="table-hover"
@@ -104,13 +114,7 @@ const ConfigurationsList = React.createClass({
                      dataRowFormatter={this._collectorConfigurationFormatter}
                      filterLabel="Filter Configurations"
                      noDataText="There are no configurations to display, why don't you create one?"
-                     filterKeys={filterKeys}>
-            <div className="pull-right">
-              <EditConfigurationModal create
-                                      updateConfiguration={this._createConfiguration}
-                                      validConfigurationName={this._validConfigurationName} />
-            </div>
-          </DataTable>
+                     filterKeys={filterKeys} />
         </div>
       </div>
     );

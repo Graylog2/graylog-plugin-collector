@@ -100,7 +100,7 @@ const EditConfigurationModal = React.createClass({
       <span>
         <Button onClick={this.openModal}
                 bsStyle={this.props.create ? 'success' : 'info'}
-                bsSize={this.props.create ? null : 'xsmall'}>
+                bsSize={this.props.create ? 'small' : 'xsmall'}>
           {this.props.create ? 'Create configuration' : 'Edit'}
         </Button>
         <BootstrapModalForm ref="modal"
