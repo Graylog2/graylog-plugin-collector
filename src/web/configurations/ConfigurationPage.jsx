@@ -8,7 +8,7 @@ import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
 
 import ConfigurationsList from './ConfigurationsList';
-import BackendList from './BackendList';
+import BackendListContainer from './BackendListContainer';
 
 const ConfigurationPage = React.createClass({
   render() {
@@ -46,7 +46,7 @@ const ConfigurationPage = React.createClass({
           </Row>
           <Row className="content">
             <Col md={12}>
-              <BackendList />
+              <BackendListContainer />
             </Col>
           </Row>
         </span>
