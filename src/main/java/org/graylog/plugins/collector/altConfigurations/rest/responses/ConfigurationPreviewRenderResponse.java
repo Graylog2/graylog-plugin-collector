@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class AltConfigurationPreviewRenderResponse {
+public abstract class ConfigurationPreviewRenderResponse {
     @JsonProperty
     public abstract String preview();
 
     @JsonCreator
-    public static AltConfigurationPreviewRenderResponse create(
+    public static ConfigurationPreviewRenderResponse create(
             @JsonProperty("preview") String preview) {
-        return new AutoValue_AltConfigurationPreviewRenderResponse(preview);
+        return new AutoValue_ConfigurationPreviewRenderResponse(preview);
     }
 
 }

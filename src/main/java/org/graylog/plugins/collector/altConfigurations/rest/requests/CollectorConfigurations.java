@@ -1,9 +1,10 @@
-package org.graylog.plugins.collector.altConfigurations.rest.models;
+package org.graylog.plugins.collector.altConfigurations.rest.requests;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 
 import java.util.List;
 

@@ -17,13 +17,11 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurations;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorSummary;
-import org.graylog.plugins.collector.altConfigurations.rest.models.Collectors;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorConfigurations;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorList;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.audit.jersey.NoAuditEvent;
@@ -32,8 +30,6 @@ import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -75,10 +71,9 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @ApiOperation(value = "Lists all existing collector registrations")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
-    public CollectorList list() {
+    public List<CollectorSummary> list() {
         final List<Collector> collectors = collectorService.all();
-        final List<CollectorSummary> collectorSummaries = Collectors.toSummaryList(collectors, lostCollectorFunction);
-        return CollectorList.create(collectorSummaries);
+        return collectorService.toSummaryList(collectors, lostCollectorFunction);
     }
 
     @GET
@@ -120,7 +115,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, true);
         List<CollectorAction> collectorAction = null;
         if (collectorActions != null) {
-            collectorAction = collectorActions.getAction();
+            collectorAction = collectorActions.action();
         }
         final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
         CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(

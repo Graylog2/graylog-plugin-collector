@@ -36,16 +36,16 @@ public abstract class CollectorActions {
     @Nullable
     @Id
     @ObjectId
-    public abstract String getId();
+    public abstract String id();
 
     @JsonProperty("collector_id")
-    public abstract String getCollectorId();
+    public abstract String collectorId();
 
     @JsonProperty("created")
-    public abstract DateTime getCreated();
+    public abstract DateTime created();
 
     @JsonProperty("action")
-    public abstract List<CollectorAction> getAction();
+    public abstract List<CollectorAction> action();
 
     @JsonCreator
     public static CollectorActions create(@JsonProperty("id") @Id @ObjectId String id,
@@ -64,5 +64,4 @@ public abstract class CollectorActions {
                 created,
                 action);
     }
-
 }

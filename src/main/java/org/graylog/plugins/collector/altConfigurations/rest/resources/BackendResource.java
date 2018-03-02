@@ -7,7 +7,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackendSummary;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;

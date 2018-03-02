@@ -1,5 +1,6 @@
 package org.graylog.plugins.collector.altConfigurations;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
@@ -7,6 +8,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.NotFoundException;
@@ -46,7 +48,7 @@ public class AltCollectorService {
                 ObjectId.class,
                 mapper.get());
 
-        this.dbCollection.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));
+        this.dbCollection.createIndex(new BasicDBObject("node_id", 1), new BasicDBObject("unique", true));
     }
 
     public long count() {
@@ -58,7 +60,7 @@ public class AltCollectorService {
             final Set<ConstraintViolation<Collector>> violations = validator.validate(collector);
             if (violations.isEmpty()) {
                 return dbCollection.findAndModify(
-                        DBQuery.is("id", collector.id()),
+                        DBQuery.is("node_id", collector.nodeId()),
                         new BasicDBObject(),
                         new BasicDBObject(),
                         false,
@@ -80,10 +82,6 @@ public class AltCollectorService {
         return dbCollection.findOne(DBQuery.is("id", id));
     }
 
-    public List<Collector> findByNodeId(String nodeId) {
-        return toAbstractListType(dbCollection.find(DBQuery.is("node_id", nodeId)));
-    }
-
     public int destroy(Collector collector) {
         return dbCollection.remove(DBQuery.is("id", collector.id())).getN();
     }
@@ -101,11 +99,10 @@ public class AltCollectorService {
     public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion) {
         return Collector.create(
                 collectorId,
-                request.nodeId(),
+                request.nodeName(),
                 collectorVersion,
                 CollectorNodeDetails.create(
                         request.nodeDetails().operatingSystem(),
-                        request.nodeDetails().tags(),
                         request.nodeDetails().ip(),
                         request.nodeDetails().metrics(),
                         request.nodeDetails().logFileList(),
@@ -148,5 +145,13 @@ public class AltCollectorService {
         result.addAll(collectors);
 
         return result;
+    }
+
+    public static List<CollectorSummary> toSummaryList(List<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
+        final List<CollectorSummary> collectorSummaries = Lists.newArrayListWithCapacity(collectors.size());
+        for (Collector collector : collectors)
+            collectorSummaries.add(collector.toSummary(isActiveFunction));
+
+        return collectorSummaries;
     }
 }

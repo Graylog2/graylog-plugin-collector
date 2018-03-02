@@ -39,7 +39,7 @@ public class ActionService {
         }
         List<CollectorAction> updatedActions = new ArrayList<>();
         for (final CollectorAction action : actions) {
-            for (final CollectorAction existingsAction : collectorActions.getAction()) {
+            for (final CollectorAction existingsAction : collectorActions.action()) {
                 if (!existingsAction.backend().equals(action.backend())) {
                     updatedActions.add(existingsAction);
                 }
@@ -47,7 +47,7 @@ public class ActionService {
             updatedActions.add(action);
         }
         return CollectorActions.create(
-                collectorActions.getId(),
+                collectorActions.id(),
                 collectorId,
                 DateTime.now(DateTimeZone.UTC),
                 updatedActions);
@@ -55,7 +55,7 @@ public class ActionService {
 
     public CollectorActions saveAction(CollectorActions collectorActions) {
         return dbCollection.findAndModify(
-                DBQuery.is("collector_id", collectorActions.getCollectorId()),
+                DBQuery.is("collector_id", collectorActions.collectorId()),
                 new BasicDBObject(),
                 new BasicDBObject(),
                 false,

@@ -7,8 +7,8 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationSummary;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.AltConfigurationPreviewRenderResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationSummary;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.ConfigurationPreviewRenderResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
@@ -81,10 +81,10 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @Path("/render/preview/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Render preview of a configuration template")
-    public AltConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
+    public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
                                         @PathParam("configurationId") String configurationId) {
         String preview = this.altConfigurationService.renderPreview(configurationId);
-        return AltConfigurationPreviewRenderResponse.create(preview);
+        return ConfigurationPreviewRenderResponse.create(preview);
     }
 
     @POST

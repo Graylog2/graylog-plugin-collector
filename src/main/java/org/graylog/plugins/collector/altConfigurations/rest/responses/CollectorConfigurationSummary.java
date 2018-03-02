@@ -16,22 +16,27 @@
  */
 package org.graylog.plugins.collector.altConfigurations.rest.responses;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorSummary;
-
-import java.util.List;
+import org.mongojack.Id;
+import org.mongojack.ObjectId;
 
 @AutoValue
-@JsonAutoDetect
-public abstract class CollectorList {
-    @JsonProperty
-    public abstract List<CollectorSummary> collectors();
+public abstract class CollectorConfigurationSummary {
+    @JsonProperty("id")
+    @Id
+    @ObjectId
+    public abstract String id();
+
+    @JsonProperty("name")
+    public abstract String name();
 
     @JsonCreator
-    public static CollectorList create(@JsonProperty("collectors") List<CollectorSummary> collectors) {
-        return new AutoValue_CollectorList(collectors);
+    public static CollectorConfigurationSummary create(@JsonProperty("id") @Id @ObjectId String id,
+                                                       @JsonProperty("name") String name) {
+        return new AutoValue_CollectorConfigurationSummary(id, name);
     }
+
 }
+

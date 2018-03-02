@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.graylog2.database.CollectionName;
 import org.joda.time.DateTime;
+import org.mongojack.Id;
+import org.mongojack.ObjectId;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -16,10 +19,15 @@ import java.util.List;
 @CollectionName("collectors")
 public abstract class Collector {
     @JsonProperty
+    @Id
+    @ObjectId
     public abstract String id();
 
     @JsonProperty
     public abstract String nodeId();
+
+    @JsonProperty
+    public abstract String nodeName();
 
     @JsonProperty
     public abstract CollectorNodeDetails nodeDetails();
@@ -44,6 +52,7 @@ public abstract class Collector {
     public abstract static class Builder {
         public abstract Builder id(String id);
         public abstract Builder nodeId(String title);
+        public abstract Builder nodeName(String title);
         public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
         public abstract Builder configurations(List<CollectorConfigurationRelation> configurations);
         public abstract Builder collectorVersion(String collectorVersion);
@@ -52,17 +61,18 @@ public abstract class Collector {
     }
 
     @JsonCreator
-    public static Collector create(@JsonProperty("_id") String objectId,
-                                   @JsonProperty("id") String collectorId,
+    public static Collector create(@JsonProperty("id") @Id @ObjectId String id,
                                    @JsonProperty("node_id") String nodeId,
+                                   @JsonProperty("node_name") String nodeName,
                                    @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
                                    @JsonProperty("configurations") @Nullable List<CollectorConfigurationRelation> configurations,
                                    @JsonProperty("collector_version") String collectorVersion,
                                    @JsonProperty("last_seen") DateTime lastSeen) {
 
         return builder()
-                .id(collectorId)
+                .id(id)
                 .nodeId(nodeId)
+                .nodeName(nodeName)
                 .nodeDetails(nodeDetails)
                 .configurations(configurations)
                 .collectorVersion(collectorVersion)
@@ -70,29 +80,29 @@ public abstract class Collector {
                 .build();
     }
 
-    public static Collector create(String collectorId,
-                                   String nodeId,
+    public static Collector create(String nodeId,
+                                   String nodeName,
                                    String collectorVersion,
                                    CollectorNodeDetails collectorNodeDetails,
                                    List<CollectorConfigurationRelation> configurations,
                                    DateTime lastSeen) {
         return create(new org.bson.types.ObjectId().toHexString(),
-                collectorId,
                 nodeId,
+                nodeName,
                 collectorNodeDetails,
                 configurations,
                 collectorVersion,
                 lastSeen);
     }
 
-    public static Collector create(String collectorId,
-                                   String nodeId,
+    public static Collector create(String nodeId,
+                                   String nodeName,
                                    String collectorVersion,
                                    CollectorNodeDetails collectorNodeDetails,
                                    DateTime lastSeen) {
         return create(new org.bson.types.ObjectId().toHexString(),
-                collectorId,
                 nodeId,
+                nodeName,
                 collectorNodeDetails,
                 null,
                 collectorVersion,
@@ -102,9 +112,9 @@ public abstract class Collector {
     public CollectorSummary toSummary(Function<Collector, Boolean> isActiveFunction) {
         final Boolean isActive = isActiveFunction.apply(this);
         return CollectorSummary.create(
-                id(),
                 nodeId(),
-                nodeDetails().toSummary(),
+                nodeName(),
+                nodeDetails(),
                 lastSeen(),
                 collectorVersion(),
                 isActive != null && isActive);

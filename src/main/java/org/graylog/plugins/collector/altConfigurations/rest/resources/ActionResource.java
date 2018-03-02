@@ -57,7 +57,7 @@ public class ActionResource extends RestResource implements PluginRestResource {
                                            @PathParam("collectorId") @NotEmpty String collectorId) {
         final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, false);
         if (collectorActions != null) {
-            return collectorActions.getAction();
+            return collectorActions.action();
         }
         return new ArrayList<>();
     }

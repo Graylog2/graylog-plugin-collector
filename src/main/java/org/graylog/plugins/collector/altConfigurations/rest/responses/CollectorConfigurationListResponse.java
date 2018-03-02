@@ -19,7 +19,6 @@ package org.graylog.plugins.collector.altConfigurations.rest.responses;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationSummary;
 
 import java.util.Collection;
 

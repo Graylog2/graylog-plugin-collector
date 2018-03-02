@@ -1,4 +1,4 @@
-package org.graylog.plugins.collector.altConfigurations.rest.models;
+package org.graylog.plugins.collector.altConfigurations.rest.responses;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
