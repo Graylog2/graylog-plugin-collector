@@ -49,10 +49,6 @@ th.sort-desc:after {
     width: 300px;
 }
 
-#collector-configurations-list th.actions, td.actions {
-    width: 150px;
-}
-
 #collector-outputs-list th.actions, td.actions {
     width: 150px;
 }

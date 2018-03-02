@@ -9,19 +9,14 @@ import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 import EditConfigurationModal from './EditConfigurationModal';
 
+import style from './ConfigurationsList.css';
+
 const ConfigurationsList = React.createClass({
   mixins: [Reflux.connect(CollectorConfigurationsStore)],
 
   componentDidMount() {
-    this.style.use();
     this._reloadConfiguration();
   },
-
-  componentWillUnmount() {
-    this.style.unuse();
-  },
-
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {
@@ -66,14 +61,17 @@ const ConfigurationsList = React.createClass({
   },
 
   _headerCellFormatter(header) {
-    const className = (header === 'Actions' ? 'actions' : '');
+    const className = (header === 'Actions' ? style.actionsColumn : '');
     return <th className={className}>{header}</th>;
   },
 
   _collectorConfigurationFormatter(configuration) {
     return (
-      <ConfigurationRow key={configuration.id} configuration={configuration} onUpdate={this._updateConfiguration}
-                        onCopy={this._copyConfiguration} validateConfiguration={this._validConfigurationName}
+      <ConfigurationRow key={configuration.id}
+                        configuration={configuration}
+                        onUpdate={this._updateConfiguration}
+                        onCopy={this._copyConfiguration}
+                        validateConfiguration={this._validConfigurationName}
                         onDelete={this._onDelete} />
     );
   },
@@ -102,20 +100,19 @@ const ConfigurationsList = React.createClass({
             <h2>Configurations <small>{this.state.configurations.length} total</small></h2>
           </Col>
         </Row>
-        <div className="top-margin">
-          <DataTable id="collector-configurations-list"
-                     className="table-hover"
-                     headers={headers}
-                     headerCellFormatter={this._headerCellFormatter}
-                     sortByKey="name"
-                     rows={this.state.configurations}
-                     filterBy="tag"
-                     filterSuggestions={this.state.tags}
-                     dataRowFormatter={this._collectorConfigurationFormatter}
-                     filterLabel="Filter Configurations"
-                     noDataText="There are no configurations to display, why don't you create one?"
-                     filterKeys={filterKeys} />
-        </div>
+        <DataTable id="collector-configurations-list"
+                   className="table-hover"
+                   headers={headers}
+                   headerCellFormatter={this._headerCellFormatter}
+                   sortByKey="name"
+                   rows={this.state.configurations}
+                   filterBy="tag"
+                   filterSuggestions={this.state.tags}
+                   dataRowFormatter={this._collectorConfigurationFormatter}
+                   filterLabel="Filter Configurations"
+                   noDataText="There are no configurations to display, why don't you create one?"
+                   filterKeys={filterKeys}
+                   useResponsiveTable={false} />
       </div>
     );
   },
