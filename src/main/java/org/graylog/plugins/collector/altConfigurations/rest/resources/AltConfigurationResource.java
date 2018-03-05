@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
+import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.ConfigurationPreviewRenderResponse;
@@ -34,11 +36,14 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AltConfigurationResource extends RestResource implements PluginRestResource {
-    private final AltConfigurationService altConfigurationService;
+    private final AltConfigurationService configurationService;
+    private final AltCollectorService collectorService;
 
     @Inject
-    public AltConfigurationResource(AltConfigurationService altConfigurationService) {
-        this.altConfigurationService = altConfigurationService;
+    public AltConfigurationResource(AltConfigurationService configurationService,
+                                    AltCollectorService collectorService) {
+        this.configurationService = configurationService;
+        this.collectorService = collectorService;
     }
 
     @GET
@@ -48,7 +53,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
     public CollectorConfigurationListResponse listConfigurations() {
-        final List<CollectorConfigurationSummary> result = this.altConfigurationService.loadAll().stream()
+        final List<CollectorConfigurationSummary> result = this.configurationService.loadAll().stream()
                 .map(this::getCollectorConfigurationSummary)
                 .collect(Collectors.toList());
 
@@ -63,7 +68,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @ApiOperation(value = "Show collector configuration details")
     public CollectorConfiguration getConfigurations(@ApiParam(name = "id", required = true)
                                                     @PathParam("id") String id) {
-        return this.altConfigurationService.load(id);
+        return this.configurationService.load(id);
     }
 
     @GET
@@ -74,7 +79,8 @@ public class AltConfigurationResource extends RestResource implements PluginRest
                                                       @PathParam("collectorId") String collectorId,
                                                       @ApiParam(name = "configurationId", required = true)
                                                       @PathParam("configurationId") String configurationId) {
-        return this.altConfigurationService.renderConfigurationForCollector(collectorId, configurationId);
+        Collector collector = collectorService.findByNodeId(collectorId);
+        return this.configurationService.renderConfigurationForCollector(collector, configurationId);
     }
 
     @GET
@@ -83,7 +89,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @ApiOperation(value = "Render preview of a configuration template")
     public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
                                         @PathParam("configurationId") String configurationId) {
-        String preview = this.altConfigurationService.renderPreview(configurationId);
+        String preview = this.configurationService.renderPreview(configurationId);
         return ConfigurationPreviewRenderResponse.create(preview);
     }
 
@@ -96,8 +102,8 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CREATE)
     public CollectorConfiguration createConfiguration(@ApiParam(name = "JSON body", required = true)
                                                       @Valid @NotNull CollectorConfiguration request) {
-        CollectorConfiguration collectorConfiguration = altConfigurationService.fromRequest(request);
-        return altConfigurationService.save(collectorConfiguration);
+        CollectorConfiguration collectorConfiguration = configurationService.fromRequest(request);
+        return configurationService.save(collectorConfiguration);
     }
 
     private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {

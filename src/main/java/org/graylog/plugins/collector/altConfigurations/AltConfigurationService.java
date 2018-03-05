@@ -8,9 +8,8 @@ import freemarker.template.TemplateException;
 import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.directives.IndentTemplateDirective;
 import org.graylog.plugins.collector.altConfigurations.loader.MongoDbTemplateLoader;
+import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.collectors.Collector;
-import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.mongojack.DBCursor;
@@ -32,17 +31,14 @@ import java.util.Map;
 @Singleton
 public class AltConfigurationService {
     private static final Logger LOG = LoggerFactory.getLogger(AltConfigurationService.class);
-    private final CollectorService collectorService;
     private static Configuration templateConfiguration = new Configuration(Configuration.VERSION_2_3_27);
 
     private static final String COLLECTION_NAME = "collector_configurations";
     private final JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection;
 
     @Inject
-    public AltConfigurationService(CollectorService collectorService,
-                                   MongoConnection mongoConnection,
+    public AltConfigurationService(MongoConnection mongoConnection,
                                    MongoJackObjectMapperProvider mapper) {
-        this.collectorService = collectorService;
         dbCollection = JacksonDBCollection.wrap(
                 mongoConnection.getDatabase().getCollection(COLLECTION_NAME),
                 CollectorConfiguration.class,
@@ -80,23 +76,22 @@ public class AltConfigurationService {
         return collectorConfiguration;
     }
 
-    public CollectorConfiguration renderConfigurationForCollector(String collectorId, String configurationId) {
-        Collector collector = collectorService.findById(collectorId);
+    public CollectorConfiguration renderConfigurationForCollector(Collector collector, String configurationId) {
         Map<String, Object> context = new HashMap<>();
 
-        context.put("collectorId", collector.getId());
-        context.put("nodeId", collector.getNodeId());
-        context.put("collectorVersion", collector.getCollectorVersion());
-        context.put("operatingSystem", collector.getNodeDetails().operatingSystem());
-        context.put("ip", collector.getNodeDetails().ip());
-        if (collector.getNodeDetails().metrics().cpuIdle() != null) {
-            context.put("cpuIdle", collector.getNodeDetails().metrics().cpuIdle());
+        context.put("nodeId", collector.nodeId());
+        context.put("nodeName", collector.nodeName());
+        context.put("collectorVersion", collector.collectorVersion());
+        context.put("operatingSystem", collector.nodeDetails().operatingSystem());
+        context.put("ip", collector.nodeDetails().ip());
+        if (collector.nodeDetails().metrics().cpuIdle() != null) {
+            context.put("cpuIdle", collector.nodeDetails().metrics().cpuIdle());
         }
-        if (collector.getNodeDetails().metrics().load1() != null) {
-            context.put("load1", collector.getNodeDetails().metrics().load1());
+        if (collector.nodeDetails().metrics().load1() != null) {
+            context.put("load1", collector.nodeDetails().metrics().load1());
         }
 
-        CollectorConfiguration configuration = dbCollection.findOne(DBQuery.is("_id", configurationId));
+        CollectorConfiguration configuration = load(configurationId);
         return CollectorConfiguration.create(
                 configuration.id(),
                 configuration.backendId(),

@@ -58,7 +58,7 @@ public class CollectorModule extends PluginModule {
         bind(CollectorConfigurationService.class).asEagerSingleton();
         bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
 
-        addPeriodical(PurgeExpiredCollectorsThread.class);
+//        addPeriodical(PurgeExpiredCollectorsThread.class);
         addRestResource(CollectorResource.class);
         addRestResource(CollectorConfigurationResource.class);
         addRestResource(AltConfigurationResource.class);

@@ -31,8 +31,6 @@ import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -54,8 +52,6 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AltCollectorResource extends RestResource implements PluginRestResource {
-    private static final Logger LOG = LoggerFactory.getLogger(AltConfigurationResource.class);
-
     private final AltCollectorService collectorService;
     private final ActionService actionService;
     private final AltCollectorResource.LostCollectorFunction lostCollectorFunction;
