@@ -78,8 +78,8 @@ public class AltCollectorService {
         return toAbstractListType(dbCollection.find());
     }
 
-    public Collector findById(String id) {
-        return dbCollection.findOne(DBQuery.is("id", id));
+    public Collector findByNodeId(String id) {
+        return dbCollection.findOne(DBQuery.is("node_id", id));
     }
 
     public int destroy(Collector collector) {
@@ -96,9 +96,9 @@ public class AltCollectorService {
         return count;
     }
 
-    public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion) {
+    public Collector fromRequest(String nodeId, CollectorRegistrationRequest request, String collectorVersion) {
         return Collector.create(
-                collectorId,
+                nodeId,
                 request.nodeName(),
                 collectorVersion,
                 CollectorNodeDetails.create(
@@ -136,10 +136,17 @@ public class AltCollectorService {
         return save(toSave);
     }
 
+    public List<CollectorSummary> toSummaryList(List<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
+        final List<CollectorSummary> collectorSummaries = Lists.newArrayListWithCapacity(collectors.size());
+        for (Collector collector : collectors)
+            collectorSummaries.add(collector.toSummary(isActiveFunction));
+
+        return collectorSummaries;
+    }
+
     private List<Collector> toAbstractListType(DBCursor<Collector> collectors) {
         return toAbstractListType(collectors.toArray());
     }
-
     private List<Collector> toAbstractListType(List<Collector> collectors) {
         final List<Collector> result = Lists.newArrayListWithCapacity(collectors.size());
         result.addAll(collectors);
@@ -147,11 +154,4 @@ public class AltCollectorService {
         return result;
     }
 
-    public static List<CollectorSummary> toSummaryList(List<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
-        final List<CollectorSummary> collectorSummaries = Lists.newArrayListWithCapacity(collectors.size());
-        for (Collector collector : collectors)
-            collectorSummaries.add(collector.toSummary(isActiveFunction));
-
-        return collectorSummaries;
-    }
 }

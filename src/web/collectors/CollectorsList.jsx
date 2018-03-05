@@ -17,7 +17,7 @@ const CollectorList = React.createClass({
     return {
       collectors: undefined,
       filteredRows: undefined,
-      sortBy: 'node_id',
+      sortBy: 'node_name',
       sortDesc: false,
       sort: (collector) => collector.node_id,
       showInactive: false,
@@ -59,7 +59,7 @@ const CollectorList = React.createClass({
         <table className="table table-striped collectors-list">
           <thead>
           <tr>
-            <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeId}>Name</th>
+            <th className={this._getTableHeaderClassName('node_name')} onClick={this.sortByNodeName}>Name</th>
             <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
               Status
             </th>
@@ -67,7 +67,7 @@ const CollectorList = React.createClass({
               Operating System
             </th>
             <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
-            <th className={this._getTableHeaderClassName('id')} onClick={this.sortById}>
+            <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeID}>
               Collector Id
             </th>
             <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortByCollectorVersion}>
@@ -86,21 +86,21 @@ const CollectorList = React.createClass({
   toggleShowInactive() {
     this.setState({ showInactive: !this.state.showInactive });
   },
-  sortById() {
-    this.setState({
-      sortBy: 'id',
-      sortDesc: this.state.sortBy === 'id' && !this.state.sortDesc,
-      sort: (collector) => {
-        return collector.id;
-      },
-    });
-  },
   sortByNodeId() {
     this.setState({
       sortBy: 'node_id',
       sortDesc: this.state.sortBy === 'node_id' && !this.state.sortDesc,
       sort: (collector) => {
         return collector.node_id;
+      },
+    });
+  },
+  sortByNodeName() {
+    this.setState({
+      sortBy: 'node_name',
+      sortDesc: this.state.sortBy === 'node_name' && !this.state.sortDesc,
+      sort: (collector) => {
+        return collector.node_name;
       },
     });
   },
@@ -166,7 +166,7 @@ const CollectorList = React.createClass({
       })
       .sort(this._bySortField)
       .map((collector) => {
-        return <CollectorRow key={collector.id} collector={collector} />;
+        return <CollectorRow key={collector.node_id} collector={collector} />;
       });
 
     const showOrHideInactive = (this.state.showInactive ? 'Hide' : 'Include');

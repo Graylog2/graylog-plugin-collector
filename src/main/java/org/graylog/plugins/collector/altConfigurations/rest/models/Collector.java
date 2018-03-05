@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
-import org.graylog2.database.CollectionName;
 import org.joda.time.DateTime;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
@@ -16,11 +15,11 @@ import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
-@CollectionName("collectors")
 public abstract class Collector {
     @JsonProperty
     @Id
     @ObjectId
+    @Nullable
     public abstract String id();
 
     @JsonProperty
@@ -80,33 +79,34 @@ public abstract class Collector {
                 .build();
     }
 
-    public static Collector create(String nodeId,
-                                   String nodeName,
-                                   String collectorVersion,
-                                   CollectorNodeDetails collectorNodeDetails,
-                                   List<CollectorConfigurationRelation> configurations,
-                                   DateTime lastSeen) {
-        return create(new org.bson.types.ObjectId().toHexString(),
-                nodeId,
-                nodeName,
-                collectorNodeDetails,
-                configurations,
-                collectorVersion,
-                lastSeen);
-    }
+//    public static Collector create(String nodeId,
+//                                   String nodeName,
+//                                   String collectorVersion,
+//                                   CollectorNodeDetails collectorNodeDetails,
+//                                   List<CollectorConfigurationRelation> configurations,
+//                                   DateTime lastSeen) {
+//        return create(new org.bson.types.ObjectId().toHexString(),
+//                nodeId,
+//                nodeName,
+//                collectorNodeDetails,
+//                configurations,
+//                collectorVersion,
+//                lastSeen);
+//    }
 
+    // empty _id for atomic upserts
     public static Collector create(String nodeId,
                                    String nodeName,
                                    String collectorVersion,
                                    CollectorNodeDetails collectorNodeDetails,
                                    DateTime lastSeen) {
-        return create(new org.bson.types.ObjectId().toHexString(),
-                nodeId,
-                nodeName,
-                collectorNodeDetails,
-                null,
-                collectorVersion,
-                lastSeen);
+        return builder()
+                .nodeId(nodeId)
+                .nodeName(nodeName)
+                .nodeDetails(collectorNodeDetails)
+                .collectorVersion(collectorVersion)
+                .lastSeen(lastSeen)
+                .build();
     }
 
     public CollectorSummary toSummary(Function<Collector, Boolean> isActiveFunction) {

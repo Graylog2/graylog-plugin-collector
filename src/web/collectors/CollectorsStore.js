@@ -15,7 +15,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   list() {
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(this.sourceUrl));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors'));
     promise
       .then(
         response => {
@@ -32,7 +32,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   getCollector(collectorId) {
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}`));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altcollectors/${collectorId}`));
     promise
       .catch(
         error => {

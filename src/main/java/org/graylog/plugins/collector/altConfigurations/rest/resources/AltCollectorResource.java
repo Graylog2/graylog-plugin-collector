@@ -19,6 +19,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActi
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorConfigurations;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
@@ -30,6 +31,8 @@ import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -51,6 +54,8 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AltCollectorResource extends RestResource implements PluginRestResource {
+    private static final Logger LOG = LoggerFactory.getLogger(AltConfigurationResource.class);
+
     private final AltCollectorService collectorService;
     private final ActionService actionService;
     private final AltCollectorResource.LostCollectorFunction lostCollectorFunction;
@@ -71,9 +76,10 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @ApiOperation(value = "Lists all existing collector registrations")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
-    public List<CollectorSummary> list() {
+    public CollectorListResponse list() {
         final List<Collector> collectors = collectorService.all();
-        return collectorService.toSummaryList(collectors, lostCollectorFunction);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
+        return CollectorListResponse.create(collectorSummaries.size(), collectorSummaries);
     }
 
     @GET
@@ -87,7 +93,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorSummary get(@ApiParam(name = "collectorId", required = true)
                                 @PathParam("collectorId") @NotEmpty String collectorId) {
-        final Collector collector = collectorService.findById(collectorId);
+        final Collector collector = collectorService.findByNodeId(collectorId);
         if (collector != null) {
             return collector.toSummary(lostCollectorFunction);
         } else {
@@ -109,7 +115,12 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector collector = collectorService.fromRequest(collectorId, request, collectorVersion);
+        final Collector collector = collectorService.findByNodeId(collectorId).toBuilder()
+                .nodeName(request.nodeName())
+                .nodeDetails(request.nodeDetails())
+                .collectorVersion(collectorVersion)
+                .lastSeen(DateTime.now())
+                .build();
         collectorService.save(collector);
 
         final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, true);
@@ -135,7 +146,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                                          @PathParam("collectorId") String collectorId,
                                          @ApiParam(name = "JSON body", required = true)
                                          @Valid @NotNull CollectorConfigurations request) throws NotFoundException {
-        Collector collector = collectorService.findById(collectorId);
+        Collector collector = collectorService.findByNodeId(collectorId);
         for (CollectorConfigurationRelation relation : request.configurations()) {
             try {
                 collector = collectorService.assignConfiguration(collector, relation.backendId(), relation.configurationId());

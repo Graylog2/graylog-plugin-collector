@@ -28,7 +28,7 @@ const CollectorRow = React.createClass({
   style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _getId(prefixIdName) {
-    return prefixIdName + this.props.collector.id;
+    return prefixIdName + this.props.collector.node_id;
   },
 
   _getOsGlyph(operatingSystem) {
@@ -96,8 +96,8 @@ const CollectorRow = React.createClass({
     return (
       <tr className={collectorClass} style={style}>
         <td className="collector-name">
-          <Link to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.id)}>
-            {collector.node_id}
+          <Link to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.node_id)}>
+            {collector.node_name}
           </Link>
           <p>
             {this._tagsAsBadges(collector)}
@@ -115,14 +115,14 @@ const CollectorRow = React.createClass({
           <Timestamp dateTime={collector.last_seen} relative={this.state.showRelativeTime} />
         </td>
         <td>
-          {collector.id}
+          {collector.node_id}
           {annotation}
         </td>
         <td>
           {collector.collector_version}
         </td>
         <td>
-          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${collector.id}`, 'relative', 604800)}>
+          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${collector.node_id}`, 'relative', 604800)}>
             <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
           </LinkContainer>
         </td>
