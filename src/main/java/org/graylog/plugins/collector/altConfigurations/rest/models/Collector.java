@@ -33,7 +33,7 @@ public abstract class Collector {
 
     @JsonProperty
     @Nullable
-    public abstract List<CollectorConfigurationRelation> configurations();
+    public abstract List<CollectorConfigurationRelation> assignments();
 
     @JsonProperty
     public abstract String collectorVersion();
@@ -53,7 +53,7 @@ public abstract class Collector {
         public abstract Builder nodeId(String title);
         public abstract Builder nodeName(String title);
         public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
-        public abstract Builder configurations(List<CollectorConfigurationRelation> configurations);
+        public abstract Builder assignments(List<CollectorConfigurationRelation> assignments);
         public abstract Builder collectorVersion(String collectorVersion);
         public abstract Builder lastSeen(DateTime lastSeen);
         public abstract Collector build();
@@ -64,7 +64,7 @@ public abstract class Collector {
                                    @JsonProperty("node_id") String nodeId,
                                    @JsonProperty("node_name") String nodeName,
                                    @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
-                                   @JsonProperty("configurations") @Nullable List<CollectorConfigurationRelation> configurations,
+                                   @JsonProperty("assignments") @Nullable List<CollectorConfigurationRelation> assignments,
                                    @JsonProperty("collector_version") String collectorVersion,
                                    @JsonProperty("last_seen") DateTime lastSeen) {
 
@@ -73,7 +73,7 @@ public abstract class Collector {
                 .nodeId(nodeId)
                 .nodeName(nodeName)
                 .nodeDetails(nodeDetails)
-                .configurations(configurations)
+                .assignments(assignments)
                 .collectorVersion(collectorVersion)
                 .lastSeen(lastSeen)
                 .build();

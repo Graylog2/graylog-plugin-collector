@@ -102,20 +102,20 @@ public class AltCollectorService {
             throw new NotFoundException("Couldn't find configuration with ID " + backendId);
         }
 
-        List<CollectorConfigurationRelation> configurations = collector.configurations();
-        if (configurations != null) {
-            for (int i = 0; i < configurations.size(); i++) {
-                CollectorConfigurationRelation relation = configurations.get(i);
+        List<CollectorConfigurationRelation> assignments = collector.assignments();
+        if (assignments != null) {
+            for (int i = 0; i < assignments.size(); i++) {
+                CollectorConfigurationRelation relation = assignments.get(i);
                 if (relation.backendId().equalsIgnoreCase(backendId)) {
-                    configurations.set(i, CollectorConfigurationRelation.create(backendId, configurationId));
+                    assignments.set(i, CollectorConfigurationRelation.create(backendId, configurationId));
                 }
             }
         } else {
-            configurations = Lists.newArrayList();
-            configurations.add(CollectorConfigurationRelation.create(backendId, configurationId));
+            assignments = Lists.newArrayList();
+            assignments.add(CollectorConfigurationRelation.create(backendId, configurationId));
         }
         Collector toSave = collector.toBuilder()
-                .configurations(configurations)
+                .assignments(assignments)
                 .build();
         return save(toSave);
     }
