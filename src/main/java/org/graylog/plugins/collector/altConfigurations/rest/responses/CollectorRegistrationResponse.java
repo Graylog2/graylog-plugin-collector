@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -29,20 +30,29 @@ import java.util.List;
 @AutoValue
 @JsonAutoDetect
 public abstract class CollectorRegistrationResponse {
-    @JsonProperty("configuration")
+    @JsonProperty
     public abstract CollectorRegistrationConfiguration collectorRegistrationConfiguration();
 
-    @JsonProperty("configuration_override")
+    @JsonProperty
     public abstract boolean configurationOverride();
 
-    @JsonProperty("actions")
+    @JsonProperty
     @Nullable
     public abstract List<CollectorAction> actions();
 
+    @JsonProperty
+    public abstract List<CollectorConfigurationRelation> assignments();
+
     @JsonCreator
-    public static CollectorRegistrationResponse create(@JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
-                                                       @JsonProperty("configuration_override") boolean configurationOverride,
-                                                       @JsonProperty("actions") @Nullable List<CollectorAction> actions) {
-        return new AutoValue_CollectorRegistrationResponse(collectorRegistrationConfiguration, configurationOverride, actions);
+    public static CollectorRegistrationResponse create(
+            @JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
+            @JsonProperty("configuration_override") boolean configurationOverride,
+            @JsonProperty("actions") @Nullable List<CollectorAction> actions,
+            @JsonProperty("assignments") List<CollectorConfigurationRelation> assignments) {
+        return new AutoValue_CollectorRegistrationResponse(
+                collectorRegistrationConfiguration,
+                configurationOverride,
+                actions,
+                assignments);
     }
 }

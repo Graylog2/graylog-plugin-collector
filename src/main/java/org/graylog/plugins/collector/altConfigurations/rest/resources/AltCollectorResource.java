@@ -130,7 +130,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                         collectorSystemConfiguration.collectorUpdateInterval().toStandardDuration().getStandardSeconds(),
                         collectorSystemConfiguration.collectorSendStatus()),
                 collectorSystemConfiguration.collectorConfigurationOverride(),
-                collectorAction);
+                collectorAction,
+                collector.assignments());
         return Response.accepted(collectorRegistrationResponse).build();
     }
 
