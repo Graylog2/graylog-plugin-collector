@@ -6,6 +6,8 @@ import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
@@ -92,6 +94,19 @@ public class AltCollectorService {
                 count += destroy(collector);
 
         return count;
+    }
+
+    public Collector fromRequest(String nodeId, CollectorRegistrationRequest request, String collectorVersion) {
+        return Collector.create(
+                nodeId,
+                request.nodeName(),
+                CollectorNodeDetails.create(
+                        request.nodeDetails().operatingSystem(),
+                        request.nodeDetails().ip(),
+                        request.nodeDetails().metrics(),
+                        request.nodeDetails().logFileList(),
+                        request.nodeDetails().statusList()),
+                collectorVersion);
     }
 
     public Collector assignConfiguration(Collector collector, String backendId, String configurationId) throws NotFoundException{

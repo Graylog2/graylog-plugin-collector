@@ -7,6 +7,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
@@ -76,6 +77,21 @@ public abstract class Collector {
                 .assignments(assignments)
                 .collectorVersion(collectorVersion)
                 .lastSeen(lastSeen)
+                .build();
+    }
+
+    public static Collector create(@JsonProperty("node_id") String nodeId,
+                                   @JsonProperty("node_name") String nodeName,
+                                   @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
+                                   @JsonProperty("collector_version") String collectorVersion) {
+
+        return builder()
+                .id(new org.bson.types.ObjectId().toHexString())
+                .nodeId(nodeId)
+                .nodeName(nodeName)
+                .nodeDetails(nodeDetails)
+                .collectorVersion(collectorVersion)
+                .lastSeen(DateTime.now(DateTimeZone.UTC))
                 .build();
     }
 

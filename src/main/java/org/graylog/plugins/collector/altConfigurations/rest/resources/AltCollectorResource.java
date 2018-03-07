@@ -30,6 +30,7 @@ import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 
 import javax.inject.Inject;
@@ -111,13 +112,21 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector collector = collectorService.findByNodeId(collectorId).toBuilder()
-                .nodeName(request.nodeName())
-                .nodeDetails(request.nodeDetails())
-                .collectorVersion(collectorVersion)
-                .lastSeen(DateTime.now())
-                .build();
-        collectorService.save(collector);
+        final Collector newCollector;
+        final Collector oldCollector = collectorService.findByNodeId(collectorId);
+        List<CollectorConfigurationRelation> assignments = null;
+        if (oldCollector != null) {
+            assignments = oldCollector.assignments();
+            newCollector = oldCollector.toBuilder()
+                    .nodeName(request.nodeName())
+                    .nodeDetails(request.nodeDetails())
+                    .collectorVersion(collectorVersion)
+                    .lastSeen(DateTime.now(DateTimeZone.UTC))
+                    .build();
+        } else {
+            newCollector = collectorService.fromRequest(collectorId, request, collectorVersion);
+        }
+        collectorService.save(newCollector);
 
         final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, true);
         List<CollectorAction> collectorAction = null;
@@ -131,7 +140,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                         collectorSystemConfiguration.collectorSendStatus()),
                 collectorSystemConfiguration.collectorConfigurationOverride(),
                 collectorAction,
-                collector.assignments());
+                assignments);
         return Response.accepted(collectorRegistrationResponse).build();
     }
 

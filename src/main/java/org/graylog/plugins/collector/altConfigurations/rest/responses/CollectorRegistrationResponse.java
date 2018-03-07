@@ -41,6 +41,7 @@ public abstract class CollectorRegistrationResponse {
     public abstract List<CollectorAction> actions();
 
     @JsonProperty
+    @Nullable
     public abstract List<CollectorConfigurationRelation> assignments();
 
     @JsonCreator
@@ -48,7 +49,7 @@ public abstract class CollectorRegistrationResponse {
             @JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
             @JsonProperty("configuration_override") boolean configurationOverride,
             @JsonProperty("actions") @Nullable List<CollectorAction> actions,
-            @JsonProperty("assignments") List<CollectorConfigurationRelation> assignments) {
+            @JsonProperty("assignments") @Nullable List<CollectorConfigurationRelation> assignments) {
         return new AutoValue_CollectorRegistrationResponse(
                 collectorRegistrationConfiguration,
                 configurationOverride,
