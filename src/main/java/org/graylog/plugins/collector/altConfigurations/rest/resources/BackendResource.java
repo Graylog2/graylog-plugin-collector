@@ -9,6 +9,7 @@ import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummaryResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
@@ -43,11 +44,23 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector backends")
     public CollectorBackendListResponse listBackends() {
+        final List<CollectorBackend> result = this.backendService.loadAll();
+        return CollectorBackendListResponse.create(result.size(), result);
+
+    }
+
+    @GET
+    @Path("/summary")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "List a summary of all collector backends")
+    public CollectorBackendSummaryResponse listSummary() {
         final List<CollectorBackendSummary> result = this.backendService.loadAll().stream()
                 .map(this::getCollectorBackendSummary)
                 .collect(Collectors.toList());
 
-        return CollectorBackendListResponse.create(result.size(), result);
+        return CollectorBackendSummaryResponse.create(result.size(), result);
 
     }
 

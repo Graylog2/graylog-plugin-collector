@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class V20180212165000_AddDefaultBackends extends Migration {
     private static final Logger LOG = LoggerFactory.getLogger(V20180212165000_AddDefaultBackends.class);
@@ -32,24 +35,27 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "exec",
                 "linux",
                 "/usr/bin/filebeat",
-                "-c",
-                "-configtest -c"
+                "/etc/graylog/collector-sidecar/generated/filebeat.yml",
+                new ArrayList<String>(Arrays.asList("-c",  "%s")),
+                "/usr/bin/filebeat -configtest -c %s"
         );
         ensureBackend(
                 "winlogbeat",
                 "svc",
                 "windows",
                 "C:\\Program Files\\graylog\\collector-sidecar\\winlogbeat.exe",
-                "-c",
-                "-configtest -c"
+                "C:\\Program Files\\graylog\\collector-sidecar\\generated\\winlogbeat.yml",
+                new ArrayList<String>(Arrays.asList("-c", "%s")),
+                "C:\\Program Files\\graylog\\collector-sidecar\\winlogbeat.exe -configtest -c %s"
         );
         ensureBackend(
                 "nxlog",
                 "exec",
                 "linux",
                 "/usr/bin/nxlog",
-                "-f -c",
-                "-v -c"
+                "/etc/graylog/collector-sidecar/generated/nxlog.conf",
+                new ArrayList<String>(Arrays.asList("-f", "-c", "%s")),
+                "/usr/bin/nxlog -v -c %s"
         );
     }
 
@@ -57,8 +63,9 @@ public class V20180212165000_AddDefaultBackends extends Migration {
     private String ensureBackend(String backendName,
                                  String serviceType,
                                  String nodeOperatingSystem,
-                                 String executable,
-                                 String parameters,
+                                 String executablePath,
+                                 String configurationPath,
+                                 List<String> executeParameters,
                                  String validationCommand) {
         CollectorBackend backend = null;
         try {
@@ -76,8 +83,9 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                     backendName,
                     serviceType,
                     nodeOperatingSystem,
-                    executable,
-                    parameters,
+                    executablePath,
+                    configurationPath,
+                    executeParameters,
                     validationCommand
             );
             try {

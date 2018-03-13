@@ -46,8 +46,9 @@ public class BackendService {
                 request.name(),
                 request.serviceType(),
                 request.nodeOperatingSystem(),
-                request.executable(),
-                request.parameters(),
+                request.executablePath(),
+                request.configurationPath(),
+                request.executeParameters(),
                 request.validationCommand());
         return collectorBackend;
     }

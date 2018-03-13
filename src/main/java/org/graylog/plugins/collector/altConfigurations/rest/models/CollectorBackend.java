@@ -8,6 +8,7 @@ import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
@@ -28,11 +29,14 @@ public abstract class CollectorBackend {
     @JsonProperty("node_operating_system")
     public abstract String nodeOperatingSystem();
 
-    @JsonProperty("executable")
-    public abstract String executable();
+    @JsonProperty("executable_path")
+    public abstract String executablePath();
 
-    @JsonProperty("parameters")
-    public abstract String parameters();
+    @JsonProperty("configuration_path")
+    public abstract String configurationPath();
+
+    @JsonProperty("execute_parameters")
+    public abstract List<String> executeParameters();
 
     @JsonProperty("validation_command")
     public abstract String validationCommand();
@@ -42,24 +46,35 @@ public abstract class CollectorBackend {
                                           @JsonProperty("name") String name,
                                           @JsonProperty("service_type") String serviceType,
                                           @JsonProperty("node_operating_system") String nodeOperatingSystem,
-                                          @JsonProperty("executable") String executable,
-                                          @JsonProperty("parameters") String parameters,
+                                          @JsonProperty("executable_path") String executablePath,
+                                          @JsonProperty("configuration_path") String configurationPath,
+                                          @JsonProperty("execute_parameters") List<String> executeParameters,
                                           @JsonProperty("validation_command") String validationCommand) {
-        return new AutoValue_CollectorBackend(id, name, serviceType, nodeOperatingSystem, executable, parameters, validationCommand);
+        return new AutoValue_CollectorBackend(
+                id,
+                name,
+                serviceType,
+                nodeOperatingSystem,
+                executablePath,
+                configurationPath,
+                executeParameters,
+                validationCommand);
     }
 
     public static CollectorBackend create(String name,
                                           String serviceType,
                                           String nodeOperatingSystem,
-                                          String executable,
-                                          String parameters,
+                                          String executablePath,
+                                          String configurationPath,
+                                          List<String> executeParameters,
                                           String validationCommand) {
         return create(new org.bson.types.ObjectId().toHexString(),
                 name,
                 serviceType,
                 nodeOperatingSystem,
-                executable,
-                parameters,
+                executablePath,
+                configurationPath,
+                executeParameters,
                 validationCommand);
     }
 
