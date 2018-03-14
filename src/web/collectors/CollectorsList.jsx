@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
 import { Row, Col, Alert, Button } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
@@ -10,7 +11,8 @@ import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
 import CollectorFilter from './CollectorFilter';
 
-const CollectorList = React.createClass({
+const CollectorList = createReactClass({
+  displayName: 'CollectorList',
   mixins: [Reflux.connect(CollectorsStore)],
 
   getInitialState() {
@@ -23,11 +25,13 @@ const CollectorList = React.createClass({
       showInactive: false,
     };
   },
+
   componentDidMount() {
     this.style.use();
     this._reloadCollectors();
     this.interval = setInterval(this._reloadCollectors, this.COLLECTOR_DATA_REFRESH);
   },
+
   componentWillUnmount() {
     this.style.unuse();
     if (this.interval) {
@@ -41,18 +45,22 @@ const CollectorList = React.createClass({
   _reloadCollectors() {
     CollectorsActions.list.triggerPromise().then(this._setCollectors);
   },
+
   _setCollectors(collectors) {
     this.setState({collectors: collectors.collectors});
   },
+
   _bySortField(collector1, collector2) {
     const sort = this.state.sort;
     const field1 = sort(collector1);
     const field2 = sort(collector2);
     return (this.state.sortDesc ? naturalSort(field2, field1) : naturalSort(field1, field2));
   },
+
   _getTableHeaderClassName(field) {
     return (this.state.sortBy === field ? (this.state.sortDesc ? 'sort-desc' : 'sort-asc') : 'sortable');
   },
+
   _formatCollectorList(collectors) {
     return (
       <div className="table-responsive">
@@ -83,9 +91,11 @@ const CollectorList = React.createClass({
       </div>
     );
   },
+
   toggleShowInactive() {
     this.setState({ showInactive: !this.state.showInactive });
   },
+
   sortById() {
     this.setState({
       sortBy: 'id',
@@ -95,6 +105,7 @@ const CollectorList = React.createClass({
       },
     });
   },
+
   sortByNodeId() {
     this.setState({
       sortBy: 'node_id',
@@ -104,6 +115,7 @@ const CollectorList = React.createClass({
       },
     });
   },
+
   sortByOperatingSystem() {
     this.setState({
       sortBy: 'operating_system',
@@ -113,6 +125,7 @@ const CollectorList = React.createClass({
       },
     });
   },
+
   sortByLastSeen() {
     this.setState({
       sortBy: 'last_seen',
@@ -122,6 +135,7 @@ const CollectorList = React.createClass({
       },
     });
   },
+
   sortByCollectorVersion() {
     this.setState({
       sortBy: 'collector_version',
@@ -131,6 +145,7 @@ const CollectorList = React.createClass({
       },
     });
   },
+
   sortByCollectorStatus() {
     this.setState({
       sortBy: 'collector_status',
@@ -144,13 +159,16 @@ const CollectorList = React.createClass({
       },
     });
   },
+
   _formatEmptyListAlert() {
     const showInactiveHint = (this.state.showInactive ? null : ' and/or click on "Include inactive collectors"');
     return <Alert>There are no collectors to show. Try adjusting your search filter{showInactiveHint}.</Alert>;
   },
+
   _onFilterChange(filteredRows) {
     this.setState({ filteredRows });
   },
+
   _isLoading() {
     return !this.state.collectors;
   },

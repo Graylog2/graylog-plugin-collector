@@ -11,7 +11,7 @@ import DocumentationLink from 'components/support/DocumentationLink';
 
 import Routes from 'routing/Routes';
 
-const CollectorsPage = React.createClass({
+class CollectorsPage extends React.Component {
   render() {
     return (
       <DocumentTitle title="Collectors">
@@ -45,7 +45,7 @@ const CollectorsPage = React.createClass({
         </span>
       </DocumentTitle>
     );
-  },
-});
+  }
+}
 
 export default CollectorsPage;

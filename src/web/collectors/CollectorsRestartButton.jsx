@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { Button } from 'react-bootstrap';
 
 import CollectorsActions from 'collectors/CollectorsActions';
 
-const CollectorsRestartButton = React.createClass({
+const CollectorsRestartButton = createReactClass({
+  displayName: 'CollectorsRestartButton',
+
   propTypes: {
     collector: PropTypes.object.isRequired,
     backend: PropTypes.string.isRequired,

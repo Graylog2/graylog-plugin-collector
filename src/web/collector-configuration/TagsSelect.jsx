@@ -3,21 +3,19 @@ import React from 'react';
 
 import MultiSelect from 'components/common/MultiSelect';
 
-const TagsSelect = React.createClass({
-  propTypes: {
+class TagsSelect extends React.Component {
+  static propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     availableTags: PropTypes.array.isRequired,
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      tags: [],
-    };
-  },
+  static defaultProps = {
+    tags: [],
+  };
 
-  getValue() {
+  getValue = () => {
     return this.refs.select.getValue().split(',');
-  },
+  };
 
   render() {
     const tagsValue = this.props.tags.join(',');
@@ -33,7 +31,7 @@ const TagsSelect = React.createClass({
         allowCreate
       />
     );
-  },
-});
+  }
+}
 
 export default TagsSelect;

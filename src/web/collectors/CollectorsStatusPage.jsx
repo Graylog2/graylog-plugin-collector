@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import createReactClass from 'create-react-class';
+
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -15,7 +17,9 @@ import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
 
 import Routes from 'routing/Routes';
 
-const CollectorsStatusPage = React.createClass({
+const CollectorsStatusPage = createReactClass({
+  displayName: 'CollectorsStatusPage',
+
   propTypes: {
     params: PropTypes.object.isRequired,
   },

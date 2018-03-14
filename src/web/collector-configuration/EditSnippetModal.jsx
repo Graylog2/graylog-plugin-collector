@@ -5,8 +5,8 @@ import { Button } from 'react-bootstrap';
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { Select } from 'components/common';
 
-const EditSnippetModal = React.createClass({
-  propTypes: {
+class EditSnippetModal extends React.Component {
+  static propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
     snippet: PropTypes.string,
@@ -15,64 +15,60 @@ const EditSnippetModal = React.createClass({
     saveSnippet: PropTypes.func.isRequired,
     validSnippetName: PropTypes.func.isRequired,
     selectedGroup: PropTypes.string.isRequired,
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      id: '',
-      name: '',
-    };
-  },
+  static defaultProps = {
+    id: '',
+    name: '',
+  };
 
-  getInitialState() {
-    return {
-      id: this.props.id,
-      name: this.props.name,
-      snippet: this.props.snippet,
-      backend: this.props.backend,
-      error: false,
-      error_message: '',
-    };
-  },
+  state = {
+    id: this.props.id,
+    name: this.props.name,
+    snippet: this.props.snippet,
+    backend: this.props.backend,
+    error: false,
+    error_message: '',
+  };
 
-  openModal() {
+  openModal = () => {
     this.refs.modal.open();
-  },
+  };
 
-  _getId(prefixIdName) {
+  _getId = (prefixIdName) => {
     return prefixIdName + this.state.name;
-  },
+  };
 
-  _closeModal() {
+  _closeModal = () => {
     this.refs.modal.close();
-  },
+  };
 
-  _saved() {
+  _saved = () => {
     this._closeModal();
     if (this.props.create) {
       this.setState({ name: '', type: '', snippet: '' });
     }
-  },
+  };
 
-  _save() {
+  _save = () => {
     const configuration = this.state;
 
     if (!configuration.error) {
       this.props.saveSnippet(configuration, this._saved);
     }
-  },
+  };
 
-  _changeName(event) {
+  _changeName = (event) => {
     this.setState({ name: event.target.value });
-  },
+  };
 
-  _changeBackend(selectedBackend) {
+  _changeBackend = (selectedBackend) => {
     this.setState({ backend: selectedBackend });
-  },
+  };
 
-  _changeSnippet(event) {
+  _changeSnippet = (event) => {
     this.setState({ snippet: event.target.value });
-  },
+  };
 
   render() {
     let triggerButtonContent;
@@ -131,7 +127,7 @@ const EditSnippetModal = React.createClass({
         </BootstrapModalForm>
       </span>
     );
-  },
-});
+  }
+}
 
 export default EditSnippetModal;

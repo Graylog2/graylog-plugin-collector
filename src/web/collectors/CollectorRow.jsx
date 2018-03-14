@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
 
-const CollectorRow = React.createClass({
+const CollectorRow = createReactClass({
+  displayName: 'CollectorRow',
+
   propTypes: {
     collector: PropTypes.object.isRequired,
   },
+
   getInitialState() {
     return {
       showRelativeTime: true,

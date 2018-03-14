@@ -5,8 +5,8 @@ import Immutable from 'immutable';
 
 import { TypeAheadInput } from 'components/common';
 
-const CollectorFilter = React.createClass({
-  propTypes: {
+class CollectorFilter extends React.Component {
+  static propTypes = {
     data: PropTypes.array.isRequired,
     searchInKeys: PropTypes.array.isRequired,
     filterBy: PropTypes.string.isRequired,
@@ -16,38 +16,40 @@ const CollectorFilter = React.createClass({
     filterSuggestionAccessor: PropTypes.string,
     filterSuggestions: PropTypes.array,
     label: PropTypes.string,
-  },
-  getDefaultProps() {
-    return {
-      label: 'Filter',
-      displayKey: 'value',
-      filterData: undefined,
-      filterSuggestionAccessor: undefined,
-      filterSuggestions: [],
-    };
-  },
-  getInitialState() {
-    return {
-      filterText: '',
-      filters: Immutable.OrderedSet(),
-    };
-  },
-  _onSearchTextChanged(event) {
+  };
+
+  static defaultProps = {
+    label: 'Filter',
+    displayKey: 'value',
+    filterData: undefined,
+    filterSuggestionAccessor: undefined,
+    filterSuggestions: [],
+  };
+
+  state = {
+    filterText: '',
+    filters: Immutable.OrderedSet(),
+  };
+
+  _onSearchTextChanged = (event) => {
     event.preventDefault();
     this.setState({ filterText: this._typeAheadInput.getValue() }, this.filterData);
-  },
-  _onFilterAdded(event, suggestion) {
+  };
+
+  _onFilterAdded = (event, suggestion) => {
     this.setState({
       filters: this.state.filters.add(suggestion[this.props.displayKey]),
       filterText: '',
     }, this.filterData);
     this._typeAheadInput.clear();
-  },
-  _onFilterRemoved(event) {
+  };
+
+  _onFilterRemoved = (event) => {
     event.preventDefault();
     this.setState({ filters: this.state.filters.delete(event.target.getAttribute('data-target')) }, this.filterData);
-  },
-  _matchFilters(datum) {
+  };
+
+  _matchFilters = (datum) => {
     return this.state.filters.every((filter) => {
       let dataToFilter = datum[this.props.filterBy];
 
@@ -62,8 +64,9 @@ const CollectorFilter = React.createClass({
 
       return dataToFilter.indexOf(filter.toLocaleLowerCase()) !== -1;
     }, this);
-  },
-  _matchStringSearch(datum) {
+  };
+
+  _matchStringSearch = (datum) => {
     return this.props.searchInKeys.some((searchInKey) => {
       const key = datum[searchInKey];
       const value = this.state.filterText;
@@ -83,12 +86,14 @@ const CollectorFilter = React.createClass({
       }
       return containsFilter(key, value);
     }, this);
-  },
-  _resetFilters() {
+  };
+
+  _resetFilters = () => {
     this._typeAheadInput.clear();
     this.setState({ filterText: '', filters: Immutable.OrderedSet() }, this.filterData);
-  },
-  _getStatusText(state) {
+  };
+
+  _getStatusText = (state) => {
     switch (state) {
       case 0:
         return 'Running';
@@ -99,8 +104,9 @@ const CollectorFilter = React.createClass({
       default:
         return 'Unknown';
     }
-  },
-  _transform(collectors) {
+  };
+
+  _transform = (collectors) => {
     return collectors.map((collector) => {
       const transformedCollector = {
         id: collector.id,
@@ -118,8 +124,9 @@ const CollectorFilter = React.createClass({
       }
       return transformedCollector;
     });
-  },
-  filterData() {
+  };
+
+  filterData = () => {
     if (typeof this.props.filterData === 'function') {
       return this.props.filterData(this.props.data);
     }
@@ -136,7 +143,8 @@ const CollectorFilter = React.createClass({
     });
 
     this.props.onDataFiltered(mappedData);
-  },
+  };
+
   render() {
     const filters = this.state.filters.map((filter) => {
       return (
@@ -193,7 +201,7 @@ const CollectorFilter = React.createClass({
         </ul>
       </div>
     );
-  },
-});
+  }
+}
 
 export default CollectorFilter;

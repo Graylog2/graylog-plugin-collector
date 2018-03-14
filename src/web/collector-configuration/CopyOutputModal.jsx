@@ -4,57 +4,53 @@ import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 
-const CopyOutputModal = React.createClass({
-    propTypes: {
+class CopyOutputModal extends React.Component {
+    static propTypes = {
         id: PropTypes.string,
         copyOutput: PropTypes.func.isRequired,
         validOutputName: PropTypes.func.isRequired,
-    },
+    };
 
-    getDefaultProps() {
-        return {
-            id: '',
-            name: '',
-        };
-    },
+    static defaultProps = {
+        id: '',
+        name: '',
+    };
 
-    getInitialState() {
-        return {
-            id: this.props.id,
-            name: '',
-            error: false,
-            error_message: '',
-        };
-    },
+    state = {
+        id: this.props.id,
+        name: '',
+        error: false,
+        error_message: '',
+    };
 
-    openModal() {
+    openModal = () => {
         this.refs.modal.open();
-    },
+    };
 
-    _getId(prefixIdName) {
+    _getId = (prefixIdName) => {
         return prefixIdName + this.state.name;
-    },
+    };
 
-    _closeModal() {
+    _closeModal = () => {
         this.refs.modal.close();
-    },
+    };
 
-    _saved() {
+    _saved = () => {
         this._closeModal();
         this.setState({ name: '' });
-    },
+    };
 
-    _save() {
+    _save = () => {
         const configuration = this.state;
 
         if (!configuration.error) {
             this.props.copyOutput(this.props.id, this.state.name, this._saved);
         }
-    },
+    };
 
-    _changeName(event) {
+    _changeName = (event) => {
         this.setState({ name: event.target.value });
-    },
+    };
 
     render() {
         return (
@@ -82,7 +78,7 @@ const CopyOutputModal = React.createClass({
                 </BootstrapModalForm>
             </span>
         );
-    },
-});
+    }
+}
 
 export default CopyOutputModal;

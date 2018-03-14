@@ -3,31 +3,33 @@ import React from 'react';
 import { Alert, Collapse } from 'react-bootstrap';
 import { Input } from 'components/bootstrap';
 
-const CollapsibleVerbatim = React.createClass({
-  propTypes: {
+class CollapsibleVerbatim extends React.Component {
+  static propTypes = {
     type: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-  },
+  };
 
-  getInitialState() {
+  constructor(props) {
+    super(props);
     let expanded = false;
-    if (this.props.value) {
+    if (props.value) {
       expanded = true;
     }
-    return {
+
+    this.state = {
       expanded: expanded,
     };
-  },
+  }
 
-  _onHandleToggle(e) {
+  _onHandleToggle = (e) => {
     e.preventDefault();
     this.setState({ expanded: !this.state.expanded });
-  },
+  };
 
-  _getId(prefixIdName) {
+  _getId = (prefixIdName) => {
     return prefixIdName + this.props.type;
-  },
+  };
 
   render() {
     const text = this.state.expanded ? 'Hide' : 'Add';
@@ -47,7 +49,7 @@ const CollapsibleVerbatim = React.createClass({
         </Collapse>
       </span>
     );
-  },
-});
+  }
+}
 
 export default CollapsibleVerbatim;

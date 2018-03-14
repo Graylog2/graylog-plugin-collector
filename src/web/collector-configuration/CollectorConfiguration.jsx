@@ -16,18 +16,19 @@ import DeleteConfirmButton from './DeleteConfirmButton';
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import TagsSelect from './TagsSelect';
 
-const CollectorConfiguration = React.createClass({
-  propTypes: {
+class CollectorConfiguration extends React.Component {
+  static propTypes = {
     configuration: PropTypes.object.isRequired,
     tags: PropTypes.array.isRequired,
     onConfigurationChange: PropTypes.func.isRequired,
-  },
+  };
 
-  getInitialState() {
+  constructor(props) {
+    super(props);
     const outputs = {};
     let initialTab = 'beat';
-    outputs.beat = this.props.configuration.outputs.filter(key => key.backend === 'filebeat' || key.backend === 'winlogbeat').length;
-    outputs.nxlog = this.props.configuration.outputs.filter(key => key.backend === 'nxlog').length;
+    outputs.beat = props.configuration.outputs.filter(key => key.backend === 'filebeat' || key.backend === 'winlogbeat').length;
+    outputs.nxlog = props.configuration.outputs.filter(key => key.backend === 'nxlog').length;
 
     if (outputs.beat === 0) {
       const tab = Object.keys(outputs).reduce((a, b) => {
@@ -37,10 +38,10 @@ const CollectorConfiguration = React.createClass({
         initialTab = tab;
       }
     }
-    return { tab: initialTab };
-  },
+    this.state = { tab: initialTab };
+  }
 
-  _headerCellFormatter(header) {
+  _headerCellFormatter = (header) => {
     let className;
 
     switch (header.toLowerCase()) {
@@ -63,9 +64,9 @@ const CollectorConfiguration = React.createClass({
     }
 
     return <th className={className}>{header}</th>;
-  },
+  };
 
-  _outputFormatter(output) {
+  _outputFormatter = (output) => {
     return (
       <tr key={output.output_id}>
         <td>{output.name}</td>
@@ -86,9 +87,9 @@ const CollectorConfiguration = React.createClass({
         </td>
       </tr>
     );
-  },
+  };
 
-  _inputFormatter(input) {
+  _inputFormatter = (input) => {
     var filterOutputs = this.props.configuration.outputs.filter(this._filterConfigurations);
     return (
       <tr key={input.input_id}>
@@ -109,9 +110,9 @@ const CollectorConfiguration = React.createClass({
         </td>
       </tr>
     );
-  },
+  };
 
-  _snippetFormatter(snippet) {
+  _snippetFormatter = (snippet) => {
     return (
       <tr key={snippet.snippet_id}>
         <td>{snippet.name}</td>
@@ -127,91 +128,91 @@ const CollectorConfiguration = React.createClass({
         </td>
       </tr>
     );
-  },
+  };
 
-  _onSuccessfulUpdate(callback) {
+  _onSuccessfulUpdate = (callback) => {
     if (typeof callback === 'function') {
       callback();
     }
     this.props.onConfigurationChange();
-  },
+  };
 
-  _saveOutput(output, callback) {
+  _saveOutput = (output, callback) => {
     CollectorConfigurationsActions.saveOutput.triggerPromise(output, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate(callback));
-  },
+  };
 
-  _saveInput(input, callback) {
+  _saveInput = (input, callback) => {
     CollectorConfigurationsActions.saveInput.triggerPromise(input, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate(callback));
-  },
+  };
 
-  _saveSnippet(snippet, callback) {
+  _saveSnippet = (snippet, callback) => {
     CollectorConfigurationsActions.saveSnippet.triggerPromise(snippet, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate(callback));
-  },
+  };
 
-  _copyOutput(outputId, name, callback) {
+  _copyOutput = (outputId, name, callback) => {
     CollectorConfigurationsActions.copyOutput.triggerPromise(outputId, name, this.props.configuration.id)
         .then(() => this._onSuccessfulUpdate(callback));
-  },
+  };
 
-  _copyInput(inputId, name, callback) {
+  _copyInput = (inputId, name, callback) => {
     CollectorConfigurationsActions.copyInput.triggerPromise(inputId, name, this.props.configuration.id)
         .then(() => this._onSuccessfulUpdate(callback));
-  },
+  };
 
-  _copySnippet(snippetId, name, callback) {
+  _copySnippet = (snippetId, name, callback) => {
     CollectorConfigurationsActions.copySnippet.triggerPromise(snippetId, name, this.props.configuration.id)
         .then(() => this._onSuccessfulUpdate(callback));
-  },
+  };
 
-  _deleteOutput(output) {
+  _deleteOutput = (output) => {
     CollectorConfigurationsActions.deleteOutput.triggerPromise(output, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate());
-  },
+  };
 
-  _deleteInput(input) {
+  _deleteInput = (input) => {
     CollectorConfigurationsActions.deleteInput.triggerPromise(input, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate());
-  },
+  };
 
-  _deleteSnippet(snippet) {
+  _deleteSnippet = (snippet) => {
     CollectorConfigurationsActions.deleteSnippet.triggerPromise(snippet, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate());
-  },
+  };
 
-  _validInputName(name) {
+  _validInputName = (name) => {
     // Check if inputs already contain an input with the given name.
     return !this.props.configuration.inputs.some((input) => input.name === name);
-  },
+  };
 
-  _validOutputName(name) {
+  _validOutputName = (name) => {
     // Check if outputs already contain an output with the given name.
     return !this.props.configuration.outputs.some((output) => output.name === name);
-  },
+  };
 
-  _validSnippetName(name) {
+  _validSnippetName = (name) => {
     // Check if snippets already contain an snippet with the given name.
     return !this.props.configuration.snippets.some((snippet) => snippet.name === name);
-  },
+  };
 
-  _updateTags(event) {
+  _updateTags = (event) => {
     event.preventDefault();
     const tags = this.refs.tags.getValue().filter((value) => value !== '');
     CollectorConfigurationsActions.updateTags(tags, this.props.configuration.id)
       .then(() => this._onSuccessfulUpdate());
-  },
+  };
 
-  _getOutputById(id) {
+  _getOutputById = (id) => {
     return this.props.configuration.outputs.find((output) => output.output_id === id);
-  },
+  };
 
-  _tabSwitched(tabKey) {
+  _tabSwitched = (tabKey) => {
     this.setState({tab: tabKey});
-  },
+  };
 
-  _tabDisplayName() {
+  _tabDisplayName = () => {
     switch(this.state.tab) {
       case 'nxlog':
         return "NXLog";
@@ -222,9 +223,9 @@ const CollectorConfiguration = React.createClass({
       default:
         return "Collector";
     }
-  },
+  };
 
-  _filterConfigurations(element) {
+  _filterConfigurations = (element) => {
     if (this.state.tab == "nxlog" && element.backend == "nxlog") {
       return true;
     }
@@ -232,9 +233,9 @@ const CollectorConfiguration = React.createClass({
       return true;
     }
     return false;
-  },
+  };
 
-  _filteredOutputs() {
+  _filteredOutputs = () => {
     let filebeatOutputs = 0;
     let winlogbeatOutputs = 0;
     const outputs = [
@@ -273,7 +274,7 @@ const CollectorConfiguration = React.createClass({
       }
     });
     return outputs;
-  },
+  };
 
   render() {
     const outputHeaders = ['Output', 'Type', 'Id', 'Actions'];
@@ -402,7 +403,7 @@ const CollectorConfiguration = React.createClass({
         </Row>
       </div>
     );
-  },
-});
+  }
+}
 
 export default CollectorConfiguration;
