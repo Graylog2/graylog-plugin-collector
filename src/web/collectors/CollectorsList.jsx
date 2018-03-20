@@ -39,10 +39,7 @@ const CollectorList = React.createClass({
   COLLECTOR_DATA_REFRESH: 5 * 1000,
 
   _reloadCollectors() {
-    CollectorsActions.list.triggerPromise().then(this._setCollectors);
-  },
-  _setCollectors(collectors) {
-    this.setState({collectors: collectors.collectors});
+    CollectorsActions.list();
   },
   _bySortField(collector1, collector2) {
     const sort = this.state.sort;
