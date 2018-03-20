@@ -7,8 +7,8 @@ import { BootstrapModalForm, Input } from 'components/bootstrap';
 
 import EditInputFields from './EditInputFields';
 
-const EditInputModal = React.createClass({
-  propTypes: {
+class EditInputModal extends React.Component {
+  static propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
     backend: PropTypes.string,
@@ -20,59 +20,55 @@ const EditInputModal = React.createClass({
     saveInput: PropTypes.func.isRequired,
     validInputName: PropTypes.func.isRequired,
     selectedGroup: PropTypes.string.isRequired,
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      id: '',
-      name: '',
-      properties: {},
-    };
-  },
+  static defaultProps = {
+    id: '',
+    name: '',
+    properties: {},
+  };
 
-  getInitialState() {
-    return {
-      id: this.props.id,
-      name: this.props.name,
-      backend: this.props.backend,
-      type: this.props.type,
-      forwardTo: this.props.forwardTo,
-      properties: this.props.properties,
-      selectedType: (this.props.backend && this.props.type) ? `${this.props.backend}:${this.props.type}` : undefined,
-      error: false,
-      errorMessage: '',
-      errorFields: [],
-    };
-  },
+  state = {
+    id: this.props.id,
+    name: this.props.name,
+    backend: this.props.backend,
+    type: this.props.type,
+    forwardTo: this.props.forwardTo,
+    properties: this.props.properties,
+    selectedType: (this.props.backend && this.props.type) ? `${this.props.backend}:${this.props.type}` : undefined,
+    error: false,
+    errorMessage: '',
+    errorFields: [],
+  };
 
-  openModal() {
+  openModal = () => {
     this.refs.modal.open();
-  },
+  };
 
-  _getId(prefixIdName) {
+  _getId = (prefixIdName) => {
     return prefixIdName + this.state.name;
-  },
+  };
 
-  _closeModal() {
+  _closeModal = () => {
     this.refs.modal.close();
-  },
+  };
 
-  _saved() {
+  _saved = () => {
     this._closeModal();
     if (this.props.create) {
       this.setState({ name: '', backend: '', type: '', selectedType: '', forwardTo: '', properties: {} });
     }
-  },
+  };
 
-  _save() {
+  _save = () => {
     const configuration = this.state;
 
     if (!configuration.error) {
       this.props.saveInput(configuration, this._saved);
     }
-  },
+  };
 
-  _changeErrorState(error, message, id) {
+  _changeErrorState = (error, message, id) => {
     var errorFields = this.state.errorFields.slice();
     const index = errorFields.indexOf(id);
     if (error && index == -1) {
@@ -82,38 +78,38 @@ const EditInputModal = React.createClass({
       errorFields.splice(index, 1);
     }
     this.setState({error: error, errorMessage: message, errorFields: errorFields});
-  },
+  };
 
-  _changeName(event) {
+  _changeName = (event) => {
     this.setState({ name: event.target.value });
-  },
+  };
 
-  _changeForwardtoDropdown(selectedValue) {
+  _changeForwardtoDropdown = (selectedValue) => {
     this.setState({ forwardTo: selectedValue });
-  },
+  };
 
-  _changeProperties(properties) {
+  _changeProperties = (properties) => {
     this.setState({ properties });
-  },
+  };
 
-  _changeType(type) {
+  _changeType = (type) => {
     const backendAndType = type.split(/:/, 2);
     this.setState({ selectedType: type, backend: backendAndType[0], type: backendAndType[1], properties: {} });
-  },
+  };
 
-  _injectProperties(key, value) {
+  _injectProperties = (key, value) => {
     const properties = this.state.properties;
     if (properties) {
       properties[key] = value;
     }
     this.setState({ properties });
-  },
+  };
 
-  _fieldError(name) {
+  _fieldError = (name) => {
     return this.state.error && this.state.errorFields.indexOf(this._getId(name)) !== -1;
-  },
+  };
 
-  _formatDropdownOptions() {
+  _formatDropdownOptions = () => {
     const options = [];
 
     if (this.props.outputs) {
@@ -126,7 +122,7 @@ const EditInputModal = React.createClass({
     }
 
     return options;
-  },
+  };
 
   render() {
     let triggerButtonContent;
@@ -191,7 +187,7 @@ const EditInputModal = React.createClass({
         </BootstrapModalForm>
       </span>
     );
-  },
-});
+  }
+}
 
 export default EditInputModal;

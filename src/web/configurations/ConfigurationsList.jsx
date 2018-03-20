@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
 
 import { DataTable, Spinner } from 'components/common';
@@ -8,7 +9,8 @@ import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 import EditConfigurationModal from './EditConfigurationModal';
 
-const ConfigurationsList = React.createClass({
+const ConfigurationsList = createReactClass({
+  displayName: 'ConfigurationsList',
   mixins: [Reflux.connect(CollectorConfigurationsStore)],
 
   componentDidMount() {

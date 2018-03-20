@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -8,7 +9,9 @@ import CopyConfigurationModal from './CopyConfigurationModal';
 
 import Routes from 'routing/Routes';
 
-const ConfigurationRow = React.createClass({
+const ConfigurationRow = createReactClass({
+  displayName: 'ConfigurationRow',
+
   propTypes: {
     configuration: PropTypes.object.isRequired,
     onUpdate: PropTypes.func.isRequired,

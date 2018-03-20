@@ -3,16 +3,16 @@ import React from 'react';
 
 import { DataTable, Spinner, Timestamp } from 'components/common';
 
-const CollectorsStatusFileList = React.createClass({
-  propTypes: {
+class CollectorsStatusFileList extends React.Component {
+  static propTypes = {
     files: PropTypes.array.isRequired,
-  },
+  };
 
-  _headerCellFormatter(header) {
+  _headerCellFormatter = (header) => {
     return <th>{header}</th>;
-  },
+  };
 
-  _activityFormatter(time) {
+  _activityFormatter = (time) => {
     var now = new Date().getTime();
     var modDate = new Date(time).getTime();
     if (modDate > (now - 60000)) {
@@ -20,17 +20,17 @@ const CollectorsStatusFileList = React.createClass({
     } else {
       return("");
     }
-  },
+  };
 
-  _dirFormatter(file) {
+  _dirFormatter = (file) => {
     if(file.is_dir) {
       return(<span><i className="fa fa-folder-open"/>&nbsp;&nbsp;{file.path}</span>);
     } else {
       return(<span><i className="fa fa-file-o"/>&nbsp;&nbsp;{file.path}</span>);
     }
-  },
+  };
 
-  _fileListFormatter(file) {
+  _fileListFormatter = (file) => {
     const format = "YYYY-MM-DD HH:mm:ss";
 
     return (
@@ -40,7 +40,7 @@ const CollectorsStatusFileList = React.createClass({
         <td>{this._dirFormatter(file)}</td>
       </tr>
     );
-  },
+  };
 
   render() {
     var filterKeys = [];
@@ -60,6 +60,6 @@ const CollectorsStatusFileList = React.createClass({
       </div>
     );
   }
-});
+}
 
 export default CollectorsStatusFileList;

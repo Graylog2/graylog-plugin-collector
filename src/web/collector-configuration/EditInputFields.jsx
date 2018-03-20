@@ -7,27 +7,23 @@ import { KeyValueTable, Select } from 'components/common';
 
 import CollapsibleVerbatim from './CollapsibleVerbatim';
 
-const EditInputFields = React.createClass({
-  propTypes: {
+class EditInputFields extends React.Component {
+  static propTypes = {
     type: PropTypes.string,
     properties: PropTypes.object,
     errorState: PropTypes.func,
     errorFields: PropTypes.array,
     injectProperties: PropTypes.func.isRequired,
-  },
+  };
 
-  getDefaultProps() {
-    return {
-      type: '',
-    };
-  },
+  static defaultProps = {
+    type: '',
+  };
 
-  getInitialState() {
-    return {
-      error: false,
-      errorMessage: '',
-    };
-  },
+  state = {
+    error: false,
+    errorMessage: '',
+  };
 
   componentWillMount() {
     this._setDefaultValue(this.props.type, this.props.properties);
@@ -36,13 +32,13 @@ const EditInputFields = React.createClass({
     } else {
       this.setState({fields: {}});
     }
-  },
+  }
 
   componentWillUpdate(nextProps) {
     this._setDefaultValue(nextProps.type, nextProps.properties);
-  },
+  }
 
-  _setDefaultValue(type, value) {
+  _setDefaultValue = (type, value) => {
     switch (type) {
       case 'nxlog:file':
         if (!value.hasOwnProperty('poll_interval')) {
@@ -129,22 +125,22 @@ const EditInputFields = React.createClass({
         };
         break;
     }
-  },
+  };
 
-  _getId(prefixIdName) {
+  _getId = (prefixIdName) => {
     return prefixIdName + this.props.type;
-  },
+  };
 
-  _injectProperty(name) {
+  _injectProperty = (name) => {
     return (event) => this.props.injectProperties(name, FormUtils.getValueFromInput(event.target));
-  },
+  };
 
-  _changeErrorState(error, message, id) {
+  _changeErrorState = (error, message, id) => {
     this.setState({error: error, errorMessage: message});
     this.props.errorState(error, message, id);
-  },
+  };
 
-  _changeFields(fields) {
+  _changeFields = (fields) => {
     for (var key in fields) {
       if (key != this._validField(key)) {
         return
@@ -153,9 +149,9 @@ const EditInputFields = React.createClass({
     };
     this.setState({ fields: fields });
     this.props.injectProperties('fields', fields);
-  },
+  };
 
-  _changeList(name) {
+  _changeList = (name) => {
     return (event) => {
       if (!this._validList(event.target.value)) {
         this._changeErrorState(true, 'Invalid JSON Array. Use the format: [\'first\', \'second\']', event.target.id);
@@ -164,9 +160,9 @@ const EditInputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
-  },
+  };
 
-  _changeDuration(name) {
+  _changeDuration = (name) => {
     return (event) => {
       if (!this._validDuration(event.target.value)) {
         this._changeErrorState(true, 'Invalid Duration, it should look like: 10s', event.target.id);
@@ -175,9 +171,9 @@ const EditInputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
-  },
+  };
 
-  _changeNumber(name) {
+  _changeNumber = (name) => {
     return (event) => {
       if (!this._validNumber(event.target.value)) {
         this._changeErrorState(true, 'Invalid number', event.target.id);
@@ -186,9 +182,9 @@ const EditInputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
-  },
+  };
 
-  _changePattern(name) {
+  _changePattern = (name) => {
     return (event) => {
       if (!this._validPattern(event.target.value)) {
         this._changeErrorState(true, 'Invalid pattern, it should look like: /^foo/', event.target.id);
@@ -197,9 +193,9 @@ const EditInputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
-  },
+  };
 
-  _changeXml(name) {
+  _changeXml = (name) => {
     return (event) => {
       if (!this._validXml(event.target.value)) {
         this._changeErrorState(true, 'Invalid XML', event.target.id);
@@ -208,40 +204,40 @@ const EditInputFields = React.createClass({
       }
       this.props.injectProperties(name, FormUtils.getValueFromInput(event.target))
     }
-  },
+  };
 
-  _validField(value) {
+  _validField = (value) => {
     return value.replace(/[^a-zA-Z0-9-._]/ig, '');
-  },
+  };
 
-  _validList(value) {
+  _validList = (value) => {
     return value.indexOf('\"') === -1 && value.startsWith('[') && value.endsWith(']');
-  },
+  };
 
-  _validDuration(value) {
+  _validDuration = (value) => {
     const durationRex = /(^\d+[smh])|0/;
     return durationRex.test(value);
-  },
+  };
 
-  _validNumber(value) {
+  _validNumber = (value) => {
     return !isNaN(parseInt(value));
-  },
+  };
 
-  _validPattern(value) {
+  _validPattern = (value) => {
     const patternRex = /(^\/.*\/$)|^$/;
     return patternRex.test(value);
-  },
+  };
 
-  _validXml(value) {
+  _validXml = (value) => {
     var parser = new DOMParser();
     var xml = parser.parseFromString(value, "application/xml");
     const parseError = xml.getElementsByTagName("parsererror").length != 0;
     return value.length == 0 || !parseError;
-  },
+  };
 
-  _fieldError(name) {
+  _fieldError = (name) => {
     return this.state.error && this.props.errorFields.indexOf(this._getId(name)) !== -1;
-  },
+  };
 
   render() {
     if (this.props.type) {
@@ -541,7 +537,7 @@ const EditInputFields = React.createClass({
       }
     }
     return (null);
-  },
-});
+  }
+}
 
 export default EditInputFields;

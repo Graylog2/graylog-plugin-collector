@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -13,7 +14,9 @@ import DocumentationLink from 'components/support/DocumentationLink';
 
 import Routes from 'routing/Routes';
 
-const CollectorConfigurationPage = React.createClass({
+const CollectorConfigurationPage = createReactClass({
+  displayName: 'CollectorConfigurationPage',
+
   propTypes: {
     params: PropTypes.object.isRequired,
   },
