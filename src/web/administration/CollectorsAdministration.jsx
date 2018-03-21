@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 
-import { ControlledTableList, SearchForm, SelectPopover } from 'components/common';
+import { ControlledTableList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
 import BackendIndicator from 'collectors/BackendIndicator';
-import { naturalSortIgnoreCase } from 'util/SortUtils';
+import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
 
 import style from './CollectorsAdministration.css';
 
@@ -43,80 +43,6 @@ const CollectorsAdministration = createReactClass({
     selectAllCheckbox.indeterminate = selected.length > 0 && !this.isAllSelected(collectors, selected);
   },
 
-  getBackendsFilter() {
-    const backends = lodash
-      .uniq(this.props.backends.map(backend => backend.name))
-      .sort(naturalSortIgnoreCase);
-
-    const filter = backendName => (
-      this.filterCollectors(({ backend }) => backend.match(backendName, 'i'), this.props.collectorsByBackend)
-    );
-
-    return (
-      <SelectPopover id="backend-filter"
-                   title="Filter by backend"
-                   triggerNode={<Button bsSize="small" bsStyle="link">Backend <span className="caret" /></Button>}
-                   items={backends}
-                   onItemSelect={filter}
-                   filterPlaceholder="Filter by backend" />
-    );
-  },
-
-  getConfigurationFilter() {
-    // TODO Implement this filter when model is clearer
-    return (
-      <SelectPopover id="configuration-filter"
-                     title="Filter by configuration"
-                     triggerNode={<Button bsSize="small" bsStyle="link">Configuration <span className="caret" /></Button>}
-                     items={[]}
-                     onItemSelect={() => {}}
-                     filterPlaceholder="Filter by configuration" />
-    );
-  },
-
-  getOSFilter() {
-    const operatingSystems = lodash
-      .uniq(this.props.backends.map(backend => lodash.upperFirst(backend.node_operating_system)))
-      .sort(naturalSortIgnoreCase);
-
-    const filter = (os) => (
-      this.filterCollectors(({ collector }) => collector.node_details.operating_system.match(os, 'i'),
-        this.props.collectorsByBackend)
-    );
-
-    return (
-      <SelectPopover id="os-filter"
-                     title="Filter by OS"
-                     triggerNode={<Button bsSize="small" bsStyle="link">OS <span className="caret" /></Button>}
-                     items={operatingSystems}
-                     onItemSelect={filter}
-                     filterPlaceholder="Filter by OS" />
-    );
-  },
-
-  getStatusFilter() {
-    // TODO Implement this filter
-    return (
-      <SelectPopover id="status-filter"
-                     title="Filter by status"
-                     triggerNode={<Button bsSize="small" bsStyle="link">Status <span className="caret" /></Button>}
-                     items={[]}
-                     onItemSelect={() => {}}
-                     filterPlaceholder="Filter by status" />
-    );
-  },
-
-  getHeaderFilters() {
-    return (
-      <ButtonToolbar>
-        {this.getBackendsFilter()}
-        {this.getConfigurationFilter()}
-        {this.getOSFilter()}
-        {this.getStatusFilter()}
-      </ButtonToolbar>
-    );
-  },
-
   getBulkActions() {
     return (
       <ButtonToolbar>
@@ -131,14 +57,16 @@ const CollectorsAdministration = createReactClass({
   },
 
   formatHeader() {
-    const { collectorsByBackend } = this.props;
+    const { collectorsByBackend, backends } = this.props;
     const { selected } = this.state;
     const selectedItems = this.state.selected.length;
 
     return (
       <ControlledTableList.Header>
         <div className={style.headerComponentsWrapper}>
-          {selectedItems === 0 ? this.getHeaderFilters() : this.getBulkActions()}
+          {selectedItems === 0 ?
+            <CollectorAdministrationFilters backends={backends} filter={this.filterCollectors} /> :
+            this.getBulkActions()}
         </div>
 
         <Input ref={(c) => { this.selectAllInput = c; }}
@@ -198,23 +126,23 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
-  filterCollectors(predicate, collectors) {
-    const filteredCollectors = collectors.filter(predicate);
+  filterCollectors(predicate) {
+    const filteredCollectors = this.props.collectorsByBackend.filter(predicate);
     this.setState({ filteredCollectors: filteredCollectors });
   },
 
-  filterCollectorsByQuery(query, collectors) {
+  filterCollectorsByQuery(query) {
     const predicate = ({ collector }) => collector.node_name.match(query, 'i') || collector.node_id.match(query, 'i');
-    this.filterCollectors(predicate, collectors);
+    this.filterCollectors(predicate);
   },
 
   handleSearch(query, callback) {
-    this.filterCollectorsByQuery(query, this.props.collectorsByBackend);
+    this.filterCollectorsByQuery(query);
     callback();
   },
 
   handleReset() {
-    this.filterCollectorsByQuery('', this.props.collectorsByBackend);
+    this.filterCollectorsByQuery('');
   },
 
   render() {
