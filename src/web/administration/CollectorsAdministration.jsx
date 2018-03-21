@@ -79,8 +79,9 @@ const CollectorsAdministration = createReactClass({
       .uniq(this.props.backends.map(backend => lodash.upperFirst(backend.node_operating_system)))
       .sort(naturalSortIgnoreCase);
 
-    const filter = os => (
-      this.filterCollectors(({ collector }) => collector.node_details.operating_system.match(os), this.props.collectorsByBackend)
+    const filter = (os) => (
+      this.filterCollectors(({ collector }) => collector.node_details.operating_system.match(os, 'i'),
+        this.props.collectorsByBackend)
     );
 
     return (
