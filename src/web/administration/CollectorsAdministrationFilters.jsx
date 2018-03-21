@@ -10,6 +10,7 @@ import { naturalSortIgnoreCase } from 'util/SortUtils';
 const CollectorsAdministrationFilters = createReactClass({
   propTypes: {
     backends: PropTypes.array.isRequired,
+    configurations: PropTypes.array.isRequired,
     filter: PropTypes.func.isRequired,
   },
 
@@ -31,11 +32,13 @@ const CollectorsAdministrationFilters = createReactClass({
   },
 
   getConfigurationFilter() {
+    const configurations = this.props.configurations.map(configuration => configuration.name).sort(naturalSortIgnoreCase);
+
     return (
       <SelectPopover id="configuration-filter"
                      title="Filter by configuration"
                      triggerNode={<Button bsSize="small" bsStyle="link">Configuration <span className="caret" /></Button>}
-                     items={[]}
+                     items={configurations}
                      onItemSelect={() => {}}
                      filterPlaceholder="Filter by configuration" />
     );

@@ -9,10 +9,11 @@ import BackendsActions from '../configurations/BackendsActions';
 import BackendsStore from '../configurations/BackendsStore';
 import CollectorsActions from '../collectors/CollectorsActions';
 import CollectorsStore from '../collectors/CollectorsStore';
-
+import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
+import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
 
 const CollectorsAdministrationContainer = createReactClass({
-  mixins: [Reflux.connect(BackendsStore), Reflux.connect(CollectorsStore)],
+  mixins: [Reflux.connect(BackendsStore), Reflux.connect(CollectorsStore), Reflux.connect(CollectorConfigurationsStore)],
 
   componentDidMount() {
     this.loadData();
@@ -21,11 +22,12 @@ const CollectorsAdministrationContainer = createReactClass({
   loadData() {
     BackendsActions.list();
     CollectorsActions.list();
+    CollectorConfigurationsActions.list();
   },
 
   render() {
-    const { backends, collectors } = this.state;
-    if (!backends || !collectors) {
+    const { backends, collectors, configurations } = this.state;
+    if (!backends || !collectors || !configurations) {
       return <Spinner text="Loading collector list..." />;
     }
 
@@ -39,7 +41,11 @@ const CollectorsAdministrationContainer = createReactClass({
       });
     });
 
-    return <CollectorsAdministration collectorsByBackend={collectorsByBackend} backends={backends} />;
+    return (
+      <CollectorsAdministration collectorsByBackend={collectorsByBackend}
+                                backends={backends}
+                                configurations={configurations} />
+    );
   },
 });
 

@@ -16,6 +16,7 @@ const CollectorsAdministration = createReactClass({
   propTypes: {
     collectorsByBackend: PropTypes.array.isRequired,
     backends: PropTypes.array.isRequired,
+    configurations: PropTypes.array.isRequired,
   },
 
   getInitialState() {
@@ -49,7 +50,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   formatHeader() {
-    const { collectorsByBackend, backends } = this.props;
+    const { collectorsByBackend, backends, configurations } = this.props;
     const { selected } = this.state;
     const selectedItems = this.state.selected.length;
 
@@ -57,8 +58,8 @@ const CollectorsAdministration = createReactClass({
       <ControlledTableList.Header>
         <div className={style.headerComponentsWrapper}>
           {selectedItems === 0 ?
-            <CollectorAdministrationFilters backends={backends} filter={this.filterCollectors} /> :
-            <CollectorAdministrationActions configurations={configurations} />}
+            <CollectorAdministrationFilters backends={backends} configurations={configurations} filter={this.filterCollectors} /> :
+            <CollectorAdministrationActions backends={backends} configurations={configurations} />}
         </div>
 
         <Input ref={(c) => { this.selectAllInput = c; }}
