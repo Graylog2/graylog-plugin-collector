@@ -23,7 +23,12 @@ const CollectorsAdministrationActions = createReactClass({
       return (
         <span>
           {configuration.name}&emsp;
-          <small><BackendIndicator backend={backend.name} operatingSystem={backend.node_operating_system} /></small>
+          <small>
+            {backend ?
+              <BackendIndicator backend={backend.name} operatingSystem={backend.node_operating_system} /> :
+              <em>Unknown backend</em>
+            }
+          </small>
         </span>
       );
     };
