@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 
 import OperatingSystemIcon from './OperatingSystemIcon';
 
@@ -14,7 +15,7 @@ const BackendIndicator = createReactClass({
     const { backend, operatingSystem } = this.props;
     return (
       <span>
-        <OperatingSystemIcon operatingSystem={operatingSystem} /> {backend} on {operatingSystem}
+        <OperatingSystemIcon operatingSystem={operatingSystem} /> {backend} on {lodash.upperFirst(operatingSystem)}
       </span>
     );
   },

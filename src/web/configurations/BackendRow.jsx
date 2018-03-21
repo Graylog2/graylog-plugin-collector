@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 import { Button, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import OperatingSystemIcon from 'collectors/OperatingSystemIcon';
@@ -36,7 +37,7 @@ const BackendRow = createReactClass({
           {backend.name}
         </td>
         <td>
-          <OperatingSystemIcon operatingSystem={backend.node_operating_system} /> {backend.node_operating_system}
+          <OperatingSystemIcon operatingSystem={backend.node_operating_system} /> {lodash.upperFirst(backend.node_operating_system)}
         </td>
         <td>
           <ButtonToolbar>
