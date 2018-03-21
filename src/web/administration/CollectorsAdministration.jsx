@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
-import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
@@ -142,12 +142,15 @@ const CollectorsAdministration = createReactClass({
   },
 
   render() {
+    const { collectorsByBackend } = this.props;
     const { filteredCollectors } = this.state;
 
     let formattedCollectors;
     if (filteredCollectors.length === 0) {
       formattedCollectors = (
-        <ControlledTableList.Item>No items to display</ControlledTableList.Item>
+        <ControlledTableList.Item>
+          {collectorsByBackend.length === 0 ? 'There are no collectors to display' : 'Filters do not match any collectors'}
+        </ControlledTableList.Item>
       );
     } else {
       formattedCollectors = [];
