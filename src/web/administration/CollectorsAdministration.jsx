@@ -204,7 +204,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   filterCollectorsByQuery(query, collectors) {
-    const predicate = ({ collector }) => collector.id.match(query, 'i') || collector.node_id.match(query, 'i');
+    const predicate = ({ collector }) => collector.node_name.match(query, 'i') || collector.node_id.match(query, 'i');
     this.filterCollectors(predicate, collectors);
   },
 
