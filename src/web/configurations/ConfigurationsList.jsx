@@ -19,9 +19,7 @@ const ConfigurationsList = React.createClass({
   },
 
   _reloadConfiguration() {
-    CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {
-      this.setState({ configurations });
-    });
+    CollectorConfigurationsActions.list();
   },
 
   _validConfigurationName(name) {
@@ -30,34 +28,28 @@ const ConfigurationsList = React.createClass({
   },
 
   _createConfiguration(name, backendId, callback) {
-    CollectorConfigurationsActions.createConfiguration.triggerPromise(name, backendId)
+    CollectorConfigurationsActions.createConfiguration(name, backendId)
       .then(() => {
         callback();
-        this._reloadConfiguration();
       });
   },
 
   _updateConfiguration(configuration, callback) {
-    CollectorConfigurationsActions.updateConfiguration.triggerPromise(configuration)
+    CollectorConfigurationsActions.updateConfiguration(configuration)
       .then(() => {
         callback();
-        this._reloadConfiguration();
       });
   },
 
   _copyConfiguration(configuration, name, callback) {
-    CollectorConfigurationsActions.copyConfiguration.triggerPromise(configuration, name)
+    CollectorConfigurationsActions.copyConfiguration(configuration, name)
       .then(() => {
         callback();
-        this._reloadConfiguration();
       });
   },
 
   _onDelete(configuration) {
-    CollectorConfigurationsActions.delete.triggerPromise(configuration)
-      .then(() => {
-        this._reloadConfiguration();
-      });
+    CollectorConfigurationsActions.delete(configuration);
   },
 
   _headerCellFormatter(header) {

@@ -75,8 +75,10 @@ const CollectorConfigurationsStore = Reflux.createStore({
 
     const promise = fetch(method, url, configuration);
     promise
-      .then(() => {
+      .then((response) => {
         UserNotification.success('Configuration successfully created');
+        this.list();
+        return response;
       }, (error) => {
         UserNotification.error(`Creating configuration failed with status: ${error.message}`,
           'Could not save configuration');
@@ -98,8 +100,10 @@ const CollectorConfigurationsStore = Reflux.createStore({
 
     const promise = fetch('PUT', url, configuration);
     promise
-      .then(() => {
+      .then((response) => {
         UserNotification.success('Configuration successfully updated');
+        this.list();
+        return response;
       }, (error) => {
         UserNotification.error(`Updating configuration failed with status: ${error.message}`,
           'Could not update configuration');
@@ -225,8 +229,10 @@ const CollectorConfigurationsStore = Reflux.createStore({
 
     const promise = fetch(method, url);
     promise
-      .then(() => {
+      .then((response) => {
         UserNotification.success(`Configuration "${configurationId}" successfully copied`);
+        this.list();
+        return response;
       }, (error) => {
         UserNotification.error(`Saving configuration "${name}" failed with status: ${error.message}`,
           'Could not save Configuration');
@@ -287,8 +293,10 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configuration.id}`);
     const promise = fetch('DELETE', url);
     promise
-      .then(() => {
+      .then((response) => {
         UserNotification.success(`Configuration "${configuration.name}" successfully deleted`);
+        this.list();
+        return response;
       }, (error) => {
         UserNotification.error(`Deleting Output "${configuration.name}" failed with status: ${error.message}`,
           'Could not delete Configuration');
