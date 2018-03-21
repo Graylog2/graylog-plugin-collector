@@ -37,7 +37,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "/usr/bin/filebeat",
                 "/etc/graylog/collector-sidecar/generated/filebeat.yml",
                 new ArrayList<String>(Arrays.asList("-c",  "%s")),
-                "/usr/bin/filebeat -configtest -c %s"
+                new ArrayList<String>(Arrays.asList("-configtest", "-c", "%s"))
         );
         ensureBackend(
                 "winlogbeat",
@@ -46,7 +46,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "C:\\Program Files\\graylog\\collector-sidecar\\winlogbeat.exe",
                 "C:\\Program Files\\graylog\\collector-sidecar\\generated\\winlogbeat.yml",
                 new ArrayList<String>(Arrays.asList("-c", "%s")),
-                "C:\\Program Files\\graylog\\collector-sidecar\\winlogbeat.exe -configtest -c %s"
+                new ArrayList<String>(Arrays.asList("-configtest", "-c", "%s"))
         );
         ensureBackend(
                 "nxlog",
@@ -55,7 +55,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "/usr/bin/nxlog",
                 "/etc/graylog/collector-sidecar/generated/nxlog.conf",
                 new ArrayList<String>(Arrays.asList("-f", "-c", "%s")),
-                "/usr/bin/nxlog -v -c %s"
+                new ArrayList<String>(Arrays.asList("-v", "-c", "%s"))
         );
     }
 
@@ -66,7 +66,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                                  String executablePath,
                                  String configurationPath,
                                  List<String> executeParameters,
-                                 String validationCommand) {
+                                 List<String> validationCommand) {
         CollectorBackend backend = null;
         try {
             backend = backendService.loadForName(backendName);

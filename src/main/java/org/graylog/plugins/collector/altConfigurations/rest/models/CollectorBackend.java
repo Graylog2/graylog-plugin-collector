@@ -38,8 +38,8 @@ public abstract class CollectorBackend {
     @JsonProperty("execute_parameters")
     public abstract List<String> executeParameters();
 
-    @JsonProperty("validation_command")
-    public abstract String validationCommand();
+    @JsonProperty("validation_parameters")
+    public abstract List<String> validationCommand();
 
     @JsonCreator
     public static CollectorBackend create(@JsonProperty("id") String id,
@@ -49,7 +49,7 @@ public abstract class CollectorBackend {
                                           @JsonProperty("executable_path") String executablePath,
                                           @JsonProperty("configuration_path") String configurationPath,
                                           @JsonProperty("execute_parameters") List<String> executeParameters,
-                                          @JsonProperty("validation_command") String validationCommand) {
+                                          @JsonProperty("validation_parameters") List<String> validationCommand) {
         return new AutoValue_CollectorBackend(
                 id,
                 name,
@@ -67,7 +67,7 @@ public abstract class CollectorBackend {
                                           String executablePath,
                                           String configurationPath,
                                           List<String> executeParameters,
-                                          String validationCommand) {
+                                          List<String> validationCommand) {
         return create(new org.bson.types.ObjectId().toHexString(),
                 name,
                 serviceType,
