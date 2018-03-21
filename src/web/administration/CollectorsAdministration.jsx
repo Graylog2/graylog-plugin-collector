@@ -125,6 +125,10 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
+  collectorBackendId(collector, backend) {
+    return `${collector.node_id}-${backend}`;
+  },
+
   formatHeader() {
     const { collectorsByBackend } = this.props;
     const { selected } = this.state;
@@ -148,9 +152,9 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
-  handleCollectorSelect(collectorId) {
+  handleCollectorBackendSelect(collectorBackendId) {
     return (event) => {
-      const newSelection = (event.target.checked ? lodash.union(this.state.selected, [collectorId]) : lodash.without(this.state.selected, collectorId));
+      const newSelection = (event.target.checked ? lodash.union(this.state.selected, [collectorBackendId]) : lodash.without(this.state.selected, collectorBackendId));
       this.setState({ selected: newSelection });
     };
   },
@@ -160,22 +164,23 @@ const CollectorsAdministration = createReactClass({
   },
 
   toggleSelectAll(event) {
-    const newSelection = (event.target.checked ? this.props.collectorsByBackend.map(({ collector }) => collector.id : []);
+    const newSelection = (event.target.checked ? this.props.collectorsByBackend.map(({ collector, backend }) => this.collectorBackendId(collector, backend)) : []);
     this.setState({ selected: newSelection });
   },
 
-  formatCollector(collector, backend) {
+  formatCollectorBackend(collector, backend) {
+    const collectorBackendId = this.collectorBackendId(collector, backend);
     return (
-      <ControlledTableList.Item key={`collector-${collector.id}-${backend}`}>
+      <ControlledTableList.Item key={`collector-${collectorBackendId}`}>
         <div className={style.collectorEntry}>
           <Row>
             <Col md={6}>
-              <Input id={`${collector.id}-checkbox`}
+              <Input id={`${collectorBackendId}-checkbox`}
                      type="checkbox"
-                     label={collector.node_id}
-                     checked={this.state.selected.includes(collector.id)}
-                     onChange={this.handleCollectorSelect(collector.id)} />
-              <span className={style.collectorId}>{collector.id}</span>
+                     label={collector.node_name}
+                     checked={this.state.selected.includes(collectorBackendId)}
+                     onChange={this.handleCollectorBackendSelect(collectorBackendId)} />
+              <span className={style.collectorId}>{collector.node_id}</span>
             </Col>
           </Row>
           <Row>
@@ -222,7 +227,7 @@ const CollectorsAdministration = createReactClass({
     } else {
       formattedCollectors = [];
       filteredCollectors.forEach(({ backend, collector }) => {
-        formattedCollectors.push(this.formatCollector(collector, backend));
+        formattedCollectors.push(this.formatCollectorBackend(collector, backend));
       });
     }
 
