@@ -8,6 +8,7 @@ import { ControlledTableList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
 import BackendIndicator from 'collectors/BackendIndicator';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
+import CollectorAdministrationActions from './CollectorsAdministrationActions';
 
 import style from './CollectorsAdministration.css';
 
@@ -43,15 +44,6 @@ const CollectorsAdministration = createReactClass({
     selectAllCheckbox.indeterminate = selected.length > 0 && !this.isAllSelected(collectors, selected);
   },
 
-  getBulkActions() {
-    return (
-      <ButtonToolbar>
-        <Button bsSize="small" bsStyle="link">Process <span className="caret" /></Button>
-        <Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>
-      </ButtonToolbar>
-    );
-  },
-
   collectorBackendId(collector, backend) {
     return `${collector.node_id}-${backend}`;
   },
@@ -66,7 +58,7 @@ const CollectorsAdministration = createReactClass({
         <div className={style.headerComponentsWrapper}>
           {selectedItems === 0 ?
             <CollectorAdministrationFilters backends={backends} filter={this.filterCollectors} /> :
-            this.getBulkActions()}
+            <CollectorAdministrationActions configurations={configurations} />}
         </div>
 
         <Input ref={(c) => { this.selectAllInput = c; }}
@@ -83,7 +75,9 @@ const CollectorsAdministration = createReactClass({
 
   handleCollectorBackendSelect(collectorBackendId) {
     return (event) => {
-      const newSelection = (event.target.checked ? lodash.union(this.state.selected, [collectorBackendId]) : lodash.without(this.state.selected, collectorBackendId));
+      const newSelection = (event.target.checked ?
+        lodash.union(this.state.selected, [collectorBackendId]) :
+        lodash.without(this.state.selected, collectorBackendId));
       this.setState({ selected: newSelection });
     };
   },
@@ -93,7 +87,9 @@ const CollectorsAdministration = createReactClass({
   },
 
   toggleSelectAll(event) {
-    const newSelection = (event.target.checked ? this.props.collectorsByBackend.map(({ collector, backend }) => this.collectorBackendId(collector, backend)) : []);
+    const newSelection = (event.target.checked ?
+      this.props.collectorsByBackend.map(({ collector, backend }) => this.collectorBackendId(collector, backend)) :
+      []);
     this.setState({ selected: newSelection });
   },
 
