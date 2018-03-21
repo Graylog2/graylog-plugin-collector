@@ -13,25 +13,25 @@ import style from './CollectorsAdministration.css';
 
 const CollectorsAdministration = createReactClass({
   propTypes: {
-    collectors: PropTypes.array.isRequired,
+    collectorsByBackend: PropTypes.array.isRequired,
     backends: PropTypes.array.isRequired,
   },
 
   getInitialState() {
     return {
-      filteredCollectors: this.props.collectors,
+      filteredCollectors: this.props.collectorsByBackend,
       selected: [],
     };
   },
 
   componentWillReceiveProps(nextProps) {
-    if (!lodash.isEqual(this.props.collectors, nextProps.collectors)) {
-      this.setState({ filteredCollectors: nextProps.collectors });
+    if (!lodash.isEqual(this.props.collectorsByBackend, nextProps.collectorsByBackend)) {
+      this.setState({ filteredCollectors: nextProps.collectorsByBackend });
     }
   },
 
   componentDidUpdate() {
-    this.setSelectAllCheckboxState(this.selectAllInput, this.props.collectors, this.state.selected);
+    this.setSelectAllCheckboxState(this.selectAllInput, this.props.collectorsByBackend, this.state.selected);
   },
 
   setSelectAllCheckboxState(selectAllInput, collectors, selected) {
@@ -49,7 +49,7 @@ const CollectorsAdministration = createReactClass({
       .sort(naturalSortIgnoreCase);
 
     const filter = backendName => (
-      this.filterCollectors(({ backend }) => backend.match(backendName, 'i'), this.props.collectors)
+      this.filterCollectors(({ backend }) => backend.match(backendName, 'i'), this.props.collectorsByBackend)
     );
 
     return (
@@ -80,7 +80,7 @@ const CollectorsAdministration = createReactClass({
       .sort(naturalSortIgnoreCase);
 
     const filter = os => (
-      this.filterCollectors(({ collector }) => collector.node_details.operating_system.match(os), this.props.collectors)
+      this.filterCollectors(({ collector }) => collector.node_details.operating_system.match(os), this.props.collectorsByBackend)
     );
 
     return (
@@ -126,7 +126,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   formatHeader() {
-    const { collectors } = this.props;
+    const { collectorsByBackend } = this.props;
     const { selected } = this.state;
     const selectedItems = this.state.selected.length;
 
@@ -140,8 +140,8 @@ const CollectorsAdministration = createReactClass({
                id="select-all-checkbox"
                type="checkbox"
                label={selectedItems === 0 ? 'Select all' : `${selectedItems} selected`}
-               disabled={collectors.length === 0}
-               checked={this.isAllSelected(collectors, selected)}
+               disabled={collectorsByBackend.length === 0}
+               checked={this.isAllSelected(collectorsByBackend, selected)}
                onChange={this.toggleSelectAll}
                wrapperClassName="form-group-inline" />
       </ControlledTableList.Header>
@@ -160,7 +160,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   toggleSelectAll(event) {
-    const newSelection = (event.target.checked ? this.props.collectors.map(collector => collector.id) : []);
+    const newSelection = (event.target.checked ? this.props.collectorsByBackend.map(({ collector }) => collector.id : []);
     this.setState({ selected: newSelection });
   },
 
@@ -203,12 +203,12 @@ const CollectorsAdministration = createReactClass({
   },
 
   handleSearch(query, callback) {
-    this.filterCollectorsByQuery(query, this.props.collectors);
+    this.filterCollectorsByQuery(query, this.props.collectorsByBackend);
     callback();
   },
 
   handleReset() {
-    this.filterCollectorsByQuery('', this.props.collectors);
+    this.filterCollectorsByQuery('', this.props.collectorsByBackend);
   },
 
   render() {

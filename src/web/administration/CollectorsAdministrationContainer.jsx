@@ -39,7 +39,7 @@ const CollectorsAdministrationContainer = createReactClass({
       });
     });
 
-    return <CollectorsAdministration collectors={collectorsByBackend} backends={backends} />;
+    return <CollectorsAdministration collectorsByBackend={collectorsByBackend} backends={backends} />;
   },
 });
 
