@@ -32,10 +32,14 @@ public abstract class CollectorConfigurationSummary {
     @JsonProperty("name")
     public abstract String name();
 
+    @JsonProperty("backend_id")
+    public abstract String backendId();
+
     @JsonCreator
     public static CollectorConfigurationSummary create(@JsonProperty("id") @Id @ObjectId String id,
-                                                       @JsonProperty("name") String name) {
-        return new AutoValue_CollectorConfigurationSummary(id, name);
+                                                       @JsonProperty("name") String name,
+                                                       @JsonProperty("backend_id") String backendId) {
+        return new AutoValue_CollectorConfigurationSummary(id, name, backendId);
     }
 
 }
