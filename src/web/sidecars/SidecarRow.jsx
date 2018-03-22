@@ -87,7 +87,7 @@ const SidecarRow = React.createClass({
     const sidecar = this.props.sidecar;
     const sidecarClass = sidecar.active ? '' : 'greyed-out inactive';
     const style = {};
-    const annotation = sidecar.active ? '' : '(inactive)';
+    const annotation = sidecar.active ? '' : ' (inactive)';
     const osGlyph = this._getOsGlyph(sidecar.node_details.operating_system);
     let sidecarState = null;
     if (sidecar.node_details.status) {
