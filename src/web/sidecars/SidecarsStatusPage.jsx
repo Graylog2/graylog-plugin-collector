@@ -137,7 +137,7 @@ const SidecarsStatusPage = React.createClass({
 
     var collectors = [];
     if (this.state.sidecar.node_details.status) {
-      collectors = this.state.sidecar.node_details.status.collectors;
+      collectors = this.state.sidecar.node_details.status.backends;
     }
     const collectorStates = Object.keys(collectors).map((key) => {
       return this._formatStatus(key, collectors[key]);
