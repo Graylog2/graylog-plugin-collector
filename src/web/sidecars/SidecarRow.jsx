@@ -7,9 +7,9 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
 
-const CollectorRow = React.createClass({
+const SidecarRow = React.createClass({
   propTypes: {
-    collector: PropTypes.object.isRequired,
+    sidecar: PropTypes.object.isRequired,
   },
   getInitialState() {
     return {
@@ -25,10 +25,10 @@ const CollectorRow = React.createClass({
     this.style.unuse();
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!style/useable!css!styles/SidecarStyles.css'),
 
   _getId(prefixIdName) {
-    return prefixIdName + this.props.collector.node_id;
+    return prefixIdName + this.props.sidecar.node_id;
   },
 
   _getOsGlyph(operatingSystem) {
@@ -42,7 +42,7 @@ const CollectorRow = React.createClass({
       glyphClass = 'fa-windows';
     }
 
-    glyphClass += ' collector-os';
+    glyphClass += ' sidecar-os';
 
     return (<i className={`fa ${glyphClass}`} />);
   },
@@ -73,9 +73,9 @@ const CollectorRow = React.createClass({
     }
   },
 
-  _tagsAsBadges(collector) {
-    if (collector.node_details.tags) {
-      return collector.node_details.tags.map((tag) =>
+  _tagsAsBadges(sidecar) {
+    if (sidecar.node_details.tags) {
+      return sidecar.node_details.tags.map((tag) =>
         <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>
       );
     } else {
@@ -84,45 +84,45 @@ const CollectorRow = React.createClass({
   },
 
   render() {
-    const collector = this.props.collector;
-    const collectorClass = collector.active ? '' : 'greyed-out inactive';
+    const sidecar = this.props.sidecar;
+    const sidecarClass = sidecar.active ? '' : 'greyed-out inactive';
     const style = {};
-    const annotation = collector.active ? '' : '(inactive)';
-    const osGlyph = this._getOsGlyph(collector.node_details.operating_system);
-    let collectorState = null;
-    if (collector.node_details.status) {
-      collectorState = collector.node_details.status.status;
+    const annotation = sidecar.active ? '' : '(inactive)';
+    const osGlyph = this._getOsGlyph(sidecar.node_details.operating_system);
+    let sidecarState = null;
+    if (sidecar.node_details.status) {
+      sidecarState = sidecar.node_details.status.status;
     }
     return (
-      <tr className={collectorClass} style={style}>
-        <td className="collector-name">
-          <Link to={Routes.pluginRoute('SYSTEM_COLLECTORS_ID_STATUS')(collector.node_id)}>
-            {collector.node_name}
+      <tr className={sidecarClass} style={style}>
+        <td className="sidecar-name">
+          <Link to={Routes.pluginRoute('SYSTEM_SIDECARS_ID_STATUS')(sidecar.node_id)}>
+            {sidecar.node_name}
           </Link>
           <p>
-            {this._tagsAsBadges(collector)}
+            {this._tagsAsBadges(sidecar)}
           </p>
         </td>
         <td>
-          <Label bsStyle={this._labelClassForState(collectorState)}
-                 bsSize="xsmall">{this._textForState(collectorState)}</Label>
+          <Label bsStyle={this._labelClassForState(sidecarState)}
+                 bsSize="xsmall">{this._textForState(sidecarState)}</Label>
         </td>
         <td>
           {osGlyph}
-          {collector.node_details.operating_system}
+          {sidecar.node_details.operating_system}
         </td>
         <td>
-          <Timestamp dateTime={collector.last_seen} relative={this.state.showRelativeTime} />
+          <Timestamp dateTime={sidecar.last_seen} relative={this.state.showRelativeTime} />
         </td>
         <td>
-          {collector.node_id}
+          {sidecar.node_id}
           {annotation}
         </td>
         <td>
-          {collector.collector_version}
+          {sidecar.sidecar_version}
         </td>
         <td>
-          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${collector.node_id}`, 'relative', 604800)}>
+          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${sidecar.node_id}`, 'relative', 604800)}>
             <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
           </LinkContainer>
         </td>
@@ -131,4 +131,4 @@ const CollectorRow = React.createClass({
   },
 });
 
-export default CollectorRow;
+export default SidecarRow;

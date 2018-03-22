@@ -65,12 +65,12 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.renderPreview.promise(promise);
   },
 
-  createConfiguration(name, backendId) {
+  createConfiguration(name, collectorId) {
     const url = URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/configurations');
     const method = 'POST';
     const configuration = {};
     configuration.name = name;
-    configuration.backend_id = backendId;
+    configuration.backend_id = collectorId;
     configuration.template = '';
 
     const promise = fetch(method, url, configuration);

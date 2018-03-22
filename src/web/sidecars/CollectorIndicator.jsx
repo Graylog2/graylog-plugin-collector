@@ -5,20 +5,20 @@ import lodash from 'lodash';
 
 import OperatingSystemIcon from './OperatingSystemIcon';
 
-const BackendIndicator = createReactClass({
+const CollectorIndicator = createReactClass({
   propTypes: {
-    backend: PropTypes.string.isRequired,
+    collector: PropTypes.string.isRequired,
     operatingSystem: PropTypes.string.isRequired,
   },
 
   render() {
-    const { backend, operatingSystem } = this.props;
+    const { collector, operatingSystem } = this.props;
     return (
       <span>
-        <OperatingSystemIcon operatingSystem={operatingSystem} /> {backend} on {lodash.upperFirst(operatingSystem)}
+        <OperatingSystemIcon operatingSystem={operatingSystem} /> {collector} on {lodash.upperFirst(operatingSystem)}
       </span>
     );
   },
 });
 
-export default BackendIndicator;
+export default CollectorIndicator;

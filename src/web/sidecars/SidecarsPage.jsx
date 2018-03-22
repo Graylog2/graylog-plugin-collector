@@ -6,34 +6,34 @@ import { LinkContainer } from 'react-router-bootstrap';
 import DocsHelper from 'util/DocsHelper';
 
 import { DocumentTitle, PageHeader } from 'components/common';
-import CollectorList from './CollectorsList';
+import SidecarList from './SidecarsList';
 import DocumentationLink from 'components/support/DocumentationLink';
 
 import Routes from 'routing/Routes';
 
-const CollectorsPage = React.createClass({
+const SidecarsPage = React.createClass({
   render() {
     return (
-      <DocumentTitle title="Collectors">
+      <DocumentTitle title="Sidecars">
         <span>
-          <PageHeader title="Collectors Overview">
+          <PageHeader title="Sidecars Overview">
             <span>
-              The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
+              The Graylog sidecars can reliably forward contents of log files or Windows EventLog from your servers.
             </span>
 
             <span>
-              Read more about collectors and how to set them up in the
-              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR} text="Graylog documentation" />.
+              Read more about sidecars and how to set them up in the
+              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
             </span>
 
             <ButtonToolbar>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS')}>
                 <Button bsStyle="info" className="active">Overview</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_ADMINISTRATION')}>
                 <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION')}>
                 <Button bsStyle="info">Configuration</Button>
               </LinkContainer>
             </ButtonToolbar>
@@ -41,7 +41,7 @@ const CollectorsPage = React.createClass({
 
           <Row className="content">
             <Col md={12}>
-              <CollectorList />
+              <SidecarList />
             </Col>
           </Row>
         </span>
@@ -50,4 +50,4 @@ const CollectorsPage = React.createClass({
   },
 });
 
-export default CollectorsPage;
+export default SidecarsPage;

@@ -9,27 +9,27 @@ import StringUtils from 'util/StringUtils';
 import DocsHelper from 'util/DocsHelper';
 import DocumentationLink from 'components/support/DocumentationLink';
 
-import CollectorsActions from 'collectors/CollectorsActions';
-import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
-import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
+import SidecarsActions from 'sidecars/SidecarsActions';
+import SidecarsStatusFileList from 'sidecars/SidecarsStatusFileList';
+import SidecarsRestartButton from 'sidecars/SidecarsRestartButton';
 
 import Routes from 'routing/Routes';
 
-const CollectorsStatusPage = React.createClass({
+const SidecarsStatusPage = React.createClass({
   propTypes: {
     params: PropTypes.object.isRequired,
   },
 
   getInitialState() {
     return {
-      collector: undefined,
+      sidecar: undefined,
     };
   },
 
   componentDidMount() {
     this.style.use();
-    this._reloadCollector();
-    this.interval = setInterval(this._reloadCollector, 5000);
+    this._reloadSidecar();
+    this.interval = setInterval(this._reloadSidecar, 5000);
   },
 
   componentWillUnmount() {
@@ -39,18 +39,18 @@ const CollectorsStatusPage = React.createClass({
     }
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!style/useable!css!styles/SidecarStyles.css'),
 
-  _reloadCollector() {
-    CollectorsActions.getCollector.triggerPromise(this.props.params.id).then(this._setCollector);
+  _reloadSidecar() {
+    SidecarsActions.getSidecar.triggerPromise(this.props.params.id).then(this._setSidecar);
   },
 
-  _setCollector(collector) {
-    this.setState({ collector });
+  _setSidecar(sidecar) {
+    this.setState({ sidecar });
   },
 
   _isLoading() {
-    return !this.state.collector;
+    return !this.state.sidecar;
   },
 
   _formatSystemStats(stats) {
@@ -94,9 +94,9 @@ const CollectorsStatusPage = React.createClass({
 
   _formatStatus(name, item) {
     let restart = null;
-    if (name !== 'Status' && this.state.collector) {
+    if (name !== 'Status' && this.state.sidecar) {
       restart = (<div className="pull-right">
-        <CollectorsRestartButton collector={this.state.collector} backend={name}/>
+        <SidecarsRestartButton sidecar={this.state.sidecar} collector={name}/>
       </div>);
     }
 
@@ -124,7 +124,7 @@ const CollectorsStatusPage = React.createClass({
     } else {
       return (
         <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert`}>
-          <i className="fa fa-cog"/> &nbsp;<i>Collector</i>: no status information found
+          <i className="fa fa-cog"/> &nbsp;<i>Sidecar</i>: no status information found
         </Alert>);
     }
 
@@ -132,39 +132,39 @@ const CollectorsStatusPage = React.createClass({
 
   render() {
     if (this._isLoading()) {
-      return <DocumentTitle title="Collector status"><Spinner /></DocumentTitle>;
+      return <DocumentTitle title="Sidecar status"><Spinner /></DocumentTitle>;
     }
 
-    var backends = [];
-    if (this.state.collector.node_details.status) {
-      backends = this.state.collector.node_details.status.backends;
+    var collectors = [];
+    if (this.state.sidecar.node_details.status) {
+      collectors = this.state.sidecar.node_details.status.collectors;
     }
-    const backendStates = Object.keys(backends).map((key) => {
-      return this._formatStatus(key, backends[key]);
+    const collectorStates = Object.keys(collectors).map((key) => {
+      return this._formatStatus(key, collectors[key]);
     });
-    const logFileList = this.state.collector.node_details.log_file_list || [];
+    const logFileList = this.state.sidecar.node_details.log_file_list || [];
 
     return (
-      <DocumentTitle title={`Collector status ${this.state.collector.node_id}`}>
+      <DocumentTitle title={`Sidecar status ${this.state.sidecar.node_id}`}>
         <span>
-          <PageHeader title={<span>Collector Status <em>{this.state.collector.node_id}</em></span>}>
+          <PageHeader title={<span>Sidecar Status <em>{this.state.sidecar.node_id}</em></span>}>
             <span>
-              A status overview of all running collector backends on this host.
+              A status overview of all running sidecar collectors on this host.
             </span>
 
             <span>
-              Read more about collectors and how to set them up in the
+              Read more about sidecars and how to set them up in the
               {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation"/>.
             </span>
 
             <ButtonToolbar>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS')}>
                 <Button bsStyle="info" className="active">Overview</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_ADMINISTRATION')}>
                 <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION')}>
                 <Button bsStyle="info">Configuration</Button>
               </LinkContainer>
             </ButtonToolbar>
@@ -176,21 +176,21 @@ const CollectorsStatusPage = React.createClass({
                 <div className="top-margin">
                   <Row>
                     <Col md={6}>
-                      {this._formatConfiguration(this.state.collector.node_details)}
+                      {this._formatConfiguration(this.state.sidecar.node_details)}
                     </Col>
                     <Col md={6}>
-                      {this._formatSystemStats(this.state.collector.node_details.metrics)}
+                      {this._formatSystemStats(this.state.sidecar.node_details.metrics)}
                     </Col>
                   </Row>
                   <hr className="separator"/>
                 </div>
-              {this._formatStatus("Status", this.state.collector.node_details.status)}
+              {this._formatStatus("Status", this.state.sidecar.node_details.status)}
             </Col>
           </Row>
-          <Row className="content" key="backend-status" hidden={backendStates.length === 0}>
+          <Row className="content" key="collector-status" hidden={collectorStates.length === 0}>
             <Col md={12}>
-              <h2>Backends</h2>
-              {backendStates}
+              <h2>Collectors</h2>
+              {collectorStates}
             </Col>
           </Row>
           <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
@@ -198,7 +198,7 @@ const CollectorsStatusPage = React.createClass({
               <h2>Log Files</h2>
               <p>Recently modified files will be highlighted in blue.</p>
               <div className="top-margin">
-                <CollectorsStatusFileList files={logFileList}/>
+                <SidecarsStatusFileList files={logFileList}/>
               </div>
             </Col>
           </Row>
@@ -208,4 +208,4 @@ const CollectorsStatusPage = React.createClass({
   },
 });
 
-export default CollectorsStatusPage;
+export default SidecarsStatusPage;

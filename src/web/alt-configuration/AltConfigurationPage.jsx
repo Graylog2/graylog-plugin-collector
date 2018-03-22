@@ -31,7 +31,7 @@ const AltConfigurationPage = React.createClass({
     this.style.unuse();
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!style/useable!css!styles/SidecarStyles.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.getConfiguration.triggerPromise(this.props.params.id).then(this._setConfiguration);
@@ -50,12 +50,10 @@ const AltConfigurationPage = React.createClass({
       return <Spinner />;
     }
 
-    const title = <span>Collector Configuration</span>;
-
     return (
-      <DocumentTitle title="Collectors Administration">
+      <DocumentTitle title="Collector Configuration">
         <span>
-          <PageHeader title={title}>
+          <PageHeader title="Collector Configuration">
             <span>
               Some words about collector configurations.
             </span>
@@ -65,13 +63,13 @@ const AltConfigurationPage = React.createClass({
             </span>
 
             <ButtonToolbar>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS')}>
                 <Button bsStyle="info">Overview</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_ADMINISTRATION')}>
                 <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION')}>
                 <Button bsStyle="info" className="active">Configuration</Button>
               </LinkContainer>
             </ButtonToolbar>

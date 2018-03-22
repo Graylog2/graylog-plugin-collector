@@ -8,7 +8,7 @@ import ISODurationUtils from 'util/ISODurationUtils';
 import FormUtils from 'util/FormsUtils';
 import StringUtils from 'util/StringUtils';
 
-const CollectorSystemConfiguration = React.createClass({
+const SidecarSystemConfiguration = React.createClass({
   propTypes: {
     config: PropTypes.shape({
       collector_expiration_threshold: PropTypes.string,
@@ -94,7 +94,7 @@ const CollectorSystemConfiguration = React.createClass({
   render() {
     return (
       <div>
-        <h3>Collectors System</h3>
+        <h3>Sidecars System</h3>
 
         <dl className="deflist">
           <dt>Inactive threshold:</dt>
@@ -114,7 +114,7 @@ const CollectorSystemConfiguration = React.createClass({
         </IfPermitted>
 
         <BootstrapModalForm ref="configModal"
-                            title="Update Collectors System Configuration"
+                            title="Update Sidecars System Configuration"
                             onSubmitForm={this._saveConfig}
                             onModalClose={this._resetConfig}
                             submitButtonText="Save">
@@ -123,7 +123,7 @@ const CollectorSystemConfiguration = React.createClass({
                               duration={this.state.config.collector_inactive_threshold}
                               update={this._onUpdate('collector_inactive_threshold')}
                               label="Inactive threshold (as ISO8601 Duration)"
-                              help="Amount of time of inactivity after which collectors are flagged as inactive."
+                              help="Amount of time of inactivity after which sidecars are flagged as inactive."
                               validator={this._inactiveThresholdValidator}
                               errorText="invalid (min: 1 second)"
                               required />
@@ -132,7 +132,7 @@ const CollectorSystemConfiguration = React.createClass({
                               duration={this.state.config.collector_expiration_threshold}
                               update={this._onUpdate('collector_expiration_threshold')}
                               label="Expiration threshold (as ISO8601 Duration)"
-                              help="Amount of time after which inactive collectors are purged from the database."
+                              help="Amount of time after which inactive sidecars are purged from the database."
                               validator={this._expirationThresholdValidator}
                               errorText="invalid (min: 1 minute)"
                               required />
@@ -140,7 +140,7 @@ const CollectorSystemConfiguration = React.createClass({
                               duration={this.state.config.collector_update_interval}
                               update={this._onUpdate('collector_update_interval')}
                               label="Update interval (as ISO8601 Duration)"
-                              help="Time between collector update requests."
+                              help="Time between sidecar update requests."
                               validator={this._updateIntervalValidator}
                               errorText="invalid (min: 1 second, lower: inactive/expiration threshold)"
                               required />
@@ -150,7 +150,7 @@ const CollectorSystemConfiguration = React.createClass({
                  label="Send status updates"
                  checked={this.state.config.collector_send_status}
                  onChange={this._onUpdate('collector_send_status')}
-                 help="Send collector status and host metrics from each client" />
+                 help="Send sidecar status and host metrics from each client" />
           <Input type="checkbox"
                  id="override-sidecar-config-checkbox"
                  label="Override Sidecar configuration"
@@ -163,4 +163,4 @@ const CollectorSystemConfiguration = React.createClass({
   },
 });
 
-export default CollectorSystemConfiguration;
+export default SidecarSystemConfiguration;

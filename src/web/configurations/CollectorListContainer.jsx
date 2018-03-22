@@ -3,46 +3,46 @@ import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
 
 import { Spinner } from 'components/common';
-import BackendList from './BackendList';
+import CollectorList from './CollectorList';
 
-import BackendsStore from './BackendsStore';
-import BackendsActions from './BackendsActions';
+import CollectorsStore from './CollectorsStore';
+import CollectorsActions from './CollectorsActions';
 
-const BackendListContainer = createReactClass({
-  mixins: [Reflux.connect(BackendsStore)],
+const CollectorListContainer = createReactClass({
+  mixins: [Reflux.connect(CollectorsStore)],
 
   componentDidMount() {
-    this.loadBackends();
+    this.loadCollectors();
   },
 
-  loadBackends() {
-    BackendsActions.list();
+  loadCollectors() {
+    CollectorsActions.list();
   },
 
   handleCreate() {
     // TODO Implement method
   },
 
-  handleEdit(backend) {
+  handleEdit(collector) {
     // TODO Implement method
   },
 
-  handleClone(backend) {
+  handleClone(collector) {
     // TODO Implement method
   },
 
-  handleDelete(backend) {
+  handleDelete(collector) {
     // TODO Implement method
   },
 
   render() {
-    const { backends } = this.state;
-    if (!backends) {
+    const { collectors } = this.state;
+    if (!collectors) {
       return <Spinner />;
     }
 
     return (
-      <BackendList backends={backends}
+      <CollectorList collectors={collectors}
                    onCreate={this.handleCreate}
                    onEdit={this.handleEdit}
                    onClone={this.handleClone}
@@ -51,4 +51,4 @@ const BackendListContainer = createReactClass({
   },
 });
 
-export default BackendListContainer;
+export default CollectorListContainer;

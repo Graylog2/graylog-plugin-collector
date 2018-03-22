@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 
 import { DataTable } from 'components/common';
-import BackendRow from './BackendRow';
+import CollectorRow from './CollectorRow';
 
-import style from './BackendList.css';
+import style from './CollectorList.css';
 
-const BackendList = createReactClass({
+const CollectorList = createReactClass({
   propTypes: {
-    backends: PropTypes.array.isRequired,
+    collectors: PropTypes.array.isRequired,
     onCreate: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
@@ -22,13 +22,13 @@ const BackendList = createReactClass({
     return <th className={className}>{header}</th>;
   },
 
-  backendFormatter(backend) {
+  collectorFormatter(collector) {
     const { onEdit, onClone, onDelete } = this.props;
-    return <BackendRow backend={backend} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />;
+    return <CollectorRow collector={collector} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />;
   },
 
   render() {
-    const { backends, onCreate } = this.props;
+    const { collectors, onCreate } = this.props;
 
     const headers = ['Name', 'Operating System', 'Actions'];
     const filterKeys = ['name', 'id', 'node_operating_system'];
@@ -38,25 +38,25 @@ const BackendList = createReactClass({
         <Row>
           <Col md={12}>
             <div className="pull-right">
-              <Button bsStyle="success" bsSize="small" onClick={onCreate}>Create Backend</Button>
+              <Button bsStyle="success" bsSize="small" onClick={onCreate}>Create Collector</Button>
             </div>
-            <h2>Backends <small>{backends.length} total</small></h2>
+            <h2>Collectors <small>{collectors.length} total</small></h2>
           </Col>
           <Col md={12}>
-            <p>Manage Backends that you can configure and supervise through Collector Sidecar and Graylog Web Interface.</p>
+            <p>Manage Collectors that you can configure and supervise through Graylog Sidecar and Graylog Web Interface.</p>
           </Col>
         </Row>
-        <DataTable id="backend-list"
+        <DataTable id="collector-list"
                    className="table-hover"
                    headers={headers}
                    headerCellFormatter={this.headerCellFormatter}
                    sortByKey="name"
-                   rows={backends}
+                   rows={collectors}
                    filterBy="tag"
                    filterSuggestions={[]}
-                   dataRowFormatter={this.backendFormatter}
-                   filterLabel="Filter Backends"
-                   noDataText="There are no backends to display, why don't you create one?"
+                   dataRowFormatter={this.collectorFormatter}
+                   filterLabel="Filter Collectors"
+                   noDataText="There are no collectors to display, why don't you create one?"
                    filterKeys={filterKeys}
                    useResponsiveTable={false} />
       </div>
@@ -64,4 +64,4 @@ const BackendList = createReactClass({
   },
 });
 
-export default BackendList;
+export default CollectorList;

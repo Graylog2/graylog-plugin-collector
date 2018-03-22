@@ -27,8 +27,8 @@ const ConfigurationsList = React.createClass({
     return !this.state.configurations.some((configuration) => configuration.name === name);
   },
 
-  _createConfiguration(name, backendId, callback) {
-    CollectorConfigurationsActions.createConfiguration(name, backendId)
+  _createConfiguration(name, collectorId, callback) {
+    CollectorConfigurationsActions.createConfiguration(name, collectorId)
       .then(() => {
         callback();
       });
@@ -93,7 +93,7 @@ const ConfigurationsList = React.createClass({
           </Col>
           <Col md={12}>
             <p>
-              These are the Configurations to use in your Collector Backends. Remember to apply new configurations to
+              These are the Configurations to use in your Collectors. Remember to apply new configurations to
               Collectors in the Administration page.
             </p>
           </Col>

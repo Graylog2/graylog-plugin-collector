@@ -8,7 +8,7 @@ import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
 
 import ConfigurationsList from './ConfigurationsList';
-import BackendListContainer from './BackendListContainer';
+import CollectorListContainer from './CollectorListContainer';
 
 const ConfigurationPage = React.createClass({
   render() {
@@ -27,13 +27,13 @@ const ConfigurationPage = React.createClass({
             </span>
 
             <ButtonToolbar>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS')}>
                 <Button bsStyle="info">Overview</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_ADMINISTRATION')}>
                 <Button bsStyle="info">Administration</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION')}>
                 <Button bsStyle="info" className="active">Configuration</Button>
               </LinkContainer>
             </ButtonToolbar>
@@ -46,7 +46,7 @@ const ConfigurationPage = React.createClass({
           </Row>
           <Row className="content">
             <Col md={12}>
-              <BackendListContainer />
+              <CollectorListContainer />
             </Col>
           </Row>
         </span>

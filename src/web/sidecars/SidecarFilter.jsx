@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 import { TypeAheadInput } from 'components/common';
 
-const CollectorFilter = React.createClass({
+const SidecarFilter = React.createClass({
   propTypes: {
     data: PropTypes.array.isRequired,
     searchInKeys: PropTypes.array.isRequired,
@@ -100,23 +100,23 @@ const CollectorFilter = React.createClass({
         return 'Unknown';
     }
   },
-  _transform(collectors) {
-    return collectors.map((collector) => {
-      const transformedCollector = {
-        id: collector.id,
-        name: collector.node_id,
+  _transform(sidecars) {
+    return sidecars.map((sidecar) => {
+      const transformedSidecar = {
+        id: sidecar.id,
+        name: sidecar.node_id,
         tags: [''],
         operating_system: '',
         status: 'Unknown',
       };
-      if (collector.node_details) {
-        transformedCollector.tags = collector.node_details.tags;
-        transformedCollector.operating_system = collector.node_details.operating_system;
+      if (sidecar.node_details) {
+        transformedSidecar.tags = sidecar.node_details.tags;
+        transformedSidecar.operating_system = sidecar.node_details.operating_system;
       }
-      if (collector.node_details.status) {
-        transformedCollector.status = this._getStatusText(collector.node_details.status.status);
+      if (sidecar.node_details.status) {
+        transformedSidecar.status = this._getStatusText(sidecar.node_details.status.status);
       }
-      return transformedCollector;
+      return transformedSidecar;
     });
   },
   filterData() {
@@ -130,8 +130,8 @@ const CollectorFilter = React.createClass({
     });
 
     const mappedData = filteredData.map((datum) => {
-      return this.props.data.find((collector) => {
-        return collector.id === datum.id;
+      return this.props.data.find((sidecar) => {
+        return sidecar.id === datum.id;
       });
     });
 
@@ -157,14 +157,14 @@ const CollectorFilter = React.createClass({
       suggestions = this.props.filterSuggestions.map(filterSuggestion => filterSuggestion.toLocaleLowerCase());
     } else {
       let filterByValues = [];
-      this._transform(this.props.data).forEach((collector) => {
-        if (!collector[this.props.filterBy]) {
+      this._transform(this.props.data).forEach((sidecar) => {
+        if (!sidecar[this.props.filterBy]) {
           return;
         }
-        if (Array.isArray(collector[this.props.filterBy])) {
-          filterByValues = filterByValues.concat(collector[this.props.filterBy]);
+        if (Array.isArray(sidecar[this.props.filterBy])) {
+          filterByValues = filterByValues.concat(sidecar[this.props.filterBy]);
         } else {
-          filterByValues = filterByValues.concat([collector[this.props.filterBy]]);
+          filterByValues = filterByValues.concat([sidecar[this.props.filterBy]]);
         }
       });
       suggestions = filterByValues.filter((value, index, self) => self.indexOf(value) === index);
@@ -176,7 +176,7 @@ const CollectorFilter = React.createClass({
       <div className="filter">
         <form className="form-inline" onSubmit={this._onSearchTextChanged} style={{ display: 'inline' }}>
           <TypeAheadInput ref={(c) => { this._typeAheadInput = c; }}
-                          id="collector-filter"
+                          id="sidecar-filter"
                           onSuggestionSelected={this._onFilterAdded}
                           suggestionText={`Filter by ${this.props.filterBy}: `}
                           suggestions={suggestions}
@@ -196,4 +196,4 @@ const CollectorFilter = React.createClass({
   },
 });
 
-export default CollectorFilter;
+export default SidecarFilter;

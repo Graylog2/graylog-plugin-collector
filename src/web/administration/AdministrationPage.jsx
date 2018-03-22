@@ -28,13 +28,13 @@ const AdministrationPage = createReactClass({
             </span>
 
             <ButtonToolbar>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS')}>
                 <Button bsStyle="info">Overview</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_ADMINISTRATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_ADMINISTRATION')}>
                 <Button bsStyle="info" className="active">Administration</Button>
               </LinkContainer>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATION')}>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION')}>
                 <Button bsStyle="info">Configuration</Button>
               </LinkContainer>
             </ButtonToolbar>

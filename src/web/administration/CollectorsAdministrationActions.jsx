@@ -5,11 +5,11 @@ import { Button, ButtonToolbar } from 'react-bootstrap';
 
 import { SelectPopover } from 'components/common';
 import { naturalSortIgnoreCase } from 'util/SortUtils';
-import BackendIndicator from '../collectors/BackendIndicator';
+import CollectorIndicator from '../sidecars/CollectorIndicator';
 
 const CollectorsAdministrationActions = createReactClass({
   propTypes: {
-    backends: PropTypes.array.isRequired,
+    collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
   },
 
@@ -19,14 +19,14 @@ const CollectorsAdministrationActions = createReactClass({
       .map(c => c.id);
     const configurationFormatter = (configurationId) => {
       const configuration = this.props.configurations.find(c => c.id === configurationId);
-      const backend = this.props.backends.find(b => b.id === configuration.backend_id);
+      const collector = this.props.collectors.find(b => b.id === configuration.backend_id);
       return (
         <span>
           {configuration.name}&emsp;
           <small>
-            {backend ?
-              <BackendIndicator backend={backend.name} operatingSystem={backend.node_operating_system} /> :
-              <em>Unknown backend</em>
+            {collector ?
+              <CollectorIndicator collector={collector.name} operatingSystem={collector.node_operating_system} /> :
+              <em>Unknown collector</em>
             }
           </small>
         </span>

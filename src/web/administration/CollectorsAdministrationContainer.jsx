@@ -5,45 +5,45 @@ import Reflux from 'reflux';
 import { Spinner } from 'components/common';
 import CollectorsAdministration from './CollectorsAdministration';
 
-import BackendsActions from '../configurations/BackendsActions';
-import BackendsStore from '../configurations/BackendsStore';
-import CollectorsActions from '../collectors/CollectorsActions';
-import CollectorsStore from '../collectors/CollectorsStore';
+import CollectorsActions from '../configurations/CollectorsActions';
+import CollectorsStore from '../configurations/CollectorsStore';
+import SidecarsActions from '../sidecars/SidecarsActions';
+import SidecarsStore from '../sidecars/SidecarsStore';
 import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
 import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
 
 const CollectorsAdministrationContainer = createReactClass({
-  mixins: [Reflux.connect(BackendsStore), Reflux.connect(CollectorsStore), Reflux.connect(CollectorConfigurationsStore)],
+  mixins: [Reflux.connect(CollectorsStore), Reflux.connect(SidecarsStore), Reflux.connect(CollectorConfigurationsStore)],
 
   componentDidMount() {
     this.loadData();
   },
 
   loadData() {
-    BackendsActions.list();
     CollectorsActions.list();
+    SidecarsActions.list();
     CollectorConfigurationsActions.list();
   },
 
   render() {
-    const { backends, collectors, configurations } = this.state;
-    if (!backends || !collectors || !configurations) {
+    const { collectors, sidecars, configurations } = this.state;
+    if (!collectors || !sidecars || !configurations) {
       return <Spinner text="Loading collector list..." />;
     }
 
-    const collectorsByBackend = [];
-    collectors.forEach((collector) => {
-      const backendNames = backends
-        .filter(backend => backend.node_operating_system.toLowerCase() === collector.node_details.operating_system.toLowerCase())
-        .map(backend => backend.name);
-      backendNames.forEach((backend) => {
-        collectorsByBackend.push({ backend: backend, collector: collector });
+    const sidecarCollectors = [];
+    sidecars.forEach((sidecar) => {
+      const collectorNames = collectors
+        .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase())
+        .map(collector => collector.name);
+      collectorNames.forEach((collectorName) => {
+        sidecarCollectors.push({ collector: collectorName, sidecar: sidecar });
       });
     });
 
     return (
-      <CollectorsAdministration collectorsByBackend={collectorsByBackend}
-                                backends={backends}
+      <CollectorsAdministration sidecarCollectors={sidecarCollectors}
+                                collectors={collectors}
                                 configurations={configurations} />
     );
   },

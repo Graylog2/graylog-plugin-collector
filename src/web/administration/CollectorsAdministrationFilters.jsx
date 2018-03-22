@@ -9,25 +9,25 @@ import { naturalSortIgnoreCase } from 'util/SortUtils';
 
 const CollectorsAdministrationFilters = createReactClass({
   propTypes: {
-    backends: PropTypes.array.isRequired,
+    collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
     filter: PropTypes.func.isRequired,
   },
 
-  getBackendsFilter() {
-    const backends = lodash
-      .uniq(this.props.backends.map(backend => backend.name))
+  getCollectorsFilter() {
+    const collectors = lodash
+      .uniq(this.props.collectors.map(collector => collector.name))
       .sort(naturalSortIgnoreCase);
 
-    const filter = backendName => this.props.filter(({ backend }) => backend.match(backendName, 'i'));
+    const filter = collectorName => this.props.filter(({ collector }) => collector.match(collectorName, 'i'));
 
     return (
-      <SelectPopover id="backend-filter"
-                     title="Filter by backend"
-                     triggerNode={<Button bsSize="small" bsStyle="link">Backend <span className="caret" /></Button>}
-                     items={backends}
+      <SelectPopover id="collector-filter"
+                     title="Filter by collector"
+                     triggerNode={<Button bsSize="small" bsStyle="link">Collector <span className="caret" /></Button>}
+                     items={collectors}
                      onItemSelect={filter}
-                     filterPlaceholder="Filter by backend" />
+                     filterPlaceholder="Filter by collector" />
     );
   },
 
@@ -46,10 +46,10 @@ const CollectorsAdministrationFilters = createReactClass({
 
   getOSFilter() {
     const operatingSystems = lodash
-      .uniq(this.props.backends.map(backend => lodash.upperFirst(backend.node_operating_system)))
+      .uniq(this.props.collectors.map(collector => lodash.upperFirst(collector.node_operating_system)))
       .sort(naturalSortIgnoreCase);
 
-    const filter = os => this.props.filter(({ collector }) => collector.node_details.operating_system.match(os, 'i'));
+    const filter = os => this.props.filter(({ sidecar }) => sidecar.node_details.operating_system.match(os, 'i'));
 
     return (
       <SelectPopover id="os-filter"
@@ -76,7 +76,7 @@ const CollectorsAdministrationFilters = createReactClass({
   render() {
     return (
       <ButtonToolbar>
-        {this.getBackendsFilter()}
+        {this.getCollectorsFilter()}
         {this.getConfigurationFilter()}
         {this.getOSFilter()}
         {this.getStatusFilter()}

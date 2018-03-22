@@ -39,7 +39,7 @@ const AltConfigurationTags = React.createClass({
       <Row className="content">
         <Col md={8}>
           <h2>Configuration tags</h2>
-          <p>Manage tags for this configuration. Collectors using one of these tags will automatically apply this configuration.</p>
+          <p>Manage tags for this configuration. Sidecars using one of these tags will automatically apply this configuration.</p>
           <form className="form-horizontal" style={{ marginTop: 15 }} onSubmit={this._updateTags}>
             <Input id="tags-selector"
                    label="Tags"

@@ -6,7 +6,7 @@ import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
-import BackendIndicator from 'collectors/BackendIndicator';
+import CollectorIndicator from 'sidecars/CollectorIndicator';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
 import CollectorAdministrationActions from './CollectorsAdministrationActions';
 
@@ -14,26 +14,26 @@ import style from './CollectorsAdministration.css';
 
 const CollectorsAdministration = createReactClass({
   propTypes: {
-    collectorsByBackend: PropTypes.array.isRequired,
-    backends: PropTypes.array.isRequired,
+    sidecarCollectors: PropTypes.array.isRequired,
+    collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
   },
 
   getInitialState() {
     return {
-      filteredCollectors: this.props.collectorsByBackend,
+      filteredCollectors: this.props.sidecarCollectors,
       selected: [],
     };
   },
 
   componentWillReceiveProps(nextProps) {
-    if (!lodash.isEqual(this.props.collectorsByBackend, nextProps.collectorsByBackend)) {
-      this.setState({ filteredCollectors: nextProps.collectorsByBackend });
+    if (!lodash.isEqual(this.props.sidecarCollectors, nextProps.sidecarCollectors)) {
+      this.setState({ filteredCollectors: nextProps.sidecarCollectors });
     }
   },
 
   componentDidUpdate() {
-    this.setSelectAllCheckboxState(this.selectAllInput, this.props.collectorsByBackend, this.state.selected);
+    this.setSelectAllCheckboxState(this.selectAllInput, this.props.sidecarCollectors, this.state.selected);
   },
 
   setSelectAllCheckboxState(selectAllInput, collectors, selected) {
@@ -45,12 +45,12 @@ const CollectorsAdministration = createReactClass({
     selectAllCheckbox.indeterminate = selected.length > 0 && !this.isAllSelected(collectors, selected);
   },
 
-  collectorBackendId(collector, backend) {
-    return `${collector.node_id}-${backend}`;
+  sidecarCollectorId(sidecar, collector) {
+    return `${sidecar.node_id}-${collector}`;
   },
 
   formatHeader() {
-    const { collectorsByBackend, backends, configurations } = this.props;
+    const { sidecarCollectors, collectors, configurations } = this.props;
     const { selected } = this.state;
     const selectedItems = this.state.selected.length;
 
@@ -58,27 +58,27 @@ const CollectorsAdministration = createReactClass({
       <ControlledTableList.Header>
         <div className={style.headerComponentsWrapper}>
           {selectedItems === 0 ?
-            <CollectorAdministrationFilters backends={backends} configurations={configurations} filter={this.filterCollectors} /> :
-            <CollectorAdministrationActions backends={backends} configurations={configurations} />}
+            <CollectorAdministrationFilters collectors={collectors} configurations={configurations} filter={this.filterCollectors} /> :
+            <CollectorAdministrationActions collectors={collectors} configurations={configurations} />}
         </div>
 
         <Input ref={(c) => { this.selectAllInput = c; }}
                id="select-all-checkbox"
                type="checkbox"
                label={selectedItems === 0 ? 'Select all' : `${selectedItems} selected`}
-               disabled={collectorsByBackend.length === 0}
-               checked={this.isAllSelected(collectorsByBackend, selected)}
+               disabled={sidecarCollectors.length === 0}
+               checked={this.isAllSelected(sidecarCollectors, selected)}
                onChange={this.toggleSelectAll}
                wrapperClassName="form-group-inline" />
       </ControlledTableList.Header>
     );
   },
 
-  handleCollectorBackendSelect(collectorBackendId) {
+  handleSidecarCollectorSelect(sidecarCollectorId) {
     return (event) => {
       const newSelection = (event.target.checked ?
-        lodash.union(this.state.selected, [collectorBackendId]) :
-        lodash.without(this.state.selected, collectorBackendId));
+        lodash.union(this.state.selected, [sidecarCollectorId]) :
+        lodash.without(this.state.selected, sidecarCollectorId));
       this.setState({ selected: newSelection });
     };
   },
@@ -89,31 +89,31 @@ const CollectorsAdministration = createReactClass({
 
   toggleSelectAll(event) {
     const newSelection = (event.target.checked ?
-      this.props.collectorsByBackend.map(({ collector, backend }) => this.collectorBackendId(collector, backend)) :
+      this.props.sidecarCollectors.map(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector)) :
       []);
     this.setState({ selected: newSelection });
   },
 
-  formatCollectorBackend(collector, backend) {
-    const collectorBackendId = this.collectorBackendId(collector, backend);
+  formatSidecarCollector(sidecar, collector) {
+    const sidecarCollectorId = this.sidecarCollectorId(sidecar, collector);
     return (
-      <ControlledTableList.Item key={`collector-${collectorBackendId}`}>
+      <ControlledTableList.Item key={`sidecar-${sidecarCollectorId}`}>
         <div className={style.collectorEntry}>
           <Row>
             <Col md={6}>
-              <Input id={`${collectorBackendId}-checkbox`}
+              <Input id={`${sidecarCollectorId}-checkbox`}
                      type="checkbox"
-                     label={collector.node_name}
-                     checked={this.state.selected.includes(collectorBackendId)}
-                     onChange={this.handleCollectorBackendSelect(collectorBackendId)} />
-              <span className={style.collectorId}>{collector.node_id}</span>
+                     label={sidecar.node_name}
+                     checked={this.state.selected.includes(sidecarCollectorId)}
+                     onChange={this.handleSidecarCollectorSelect(sidecarCollectorId)} />
+              <span className={style.sidecarId}>{sidecar.node_id}</span>
             </Col>
           </Row>
           <Row>
             <Col md={6}>
               <div className={style.additionalInformation}>
                 <em>
-                  <BackendIndicator backend={backend} operatingSystem={collector.node_details.operating_system} />
+                  <CollectorIndicator collector={collector} operatingSystem={sidecar.node_details.operating_system} />
                 </em>
               </div>
             </Col>
@@ -124,12 +124,12 @@ const CollectorsAdministration = createReactClass({
   },
 
   filterCollectors(predicate) {
-    const filteredCollectors = this.props.collectorsByBackend.filter(predicate);
+    const filteredCollectors = this.props.sidecarCollectors.filter(predicate);
     this.setState({ filteredCollectors: filteredCollectors });
   },
 
   filterCollectorsByQuery(query) {
-    const predicate = ({ collector }) => collector.node_name.match(query, 'i') || collector.node_id.match(query, 'i');
+    const predicate = ({ sidecar }) => sidecar.node_name.match(query, 'i') || sidecar.node_id.match(query, 'i');
     this.filterCollectors(predicate);
   },
 
@@ -143,20 +143,20 @@ const CollectorsAdministration = createReactClass({
   },
 
   render() {
-    const { collectorsByBackend } = this.props;
+    const { sidecarCollectors } = this.props;
     const { filteredCollectors } = this.state;
 
     let formattedCollectors;
     if (filteredCollectors.length === 0) {
       formattedCollectors = (
         <ControlledTableList.Item>
-          {collectorsByBackend.length === 0 ? 'There are no collectors to display' : 'Filters do not match any collectors'}
+          {sidecarCollectors.length === 0 ? 'There are no collectors to display' : 'Filters do not match any collectors'}
         </ControlledTableList.Item>
       );
     } else {
       formattedCollectors = [];
-      filteredCollectors.forEach(({ backend, collector }) => {
-        formattedCollectors.push(this.formatCollectorBackend(collector, backend));
+      filteredCollectors.forEach(({ sidecar, collector }) => {
+        formattedCollectors.push(this.formatSidecarCollector(sidecar, collector));
       });
     }
 

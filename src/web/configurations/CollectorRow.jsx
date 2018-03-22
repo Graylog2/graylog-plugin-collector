@@ -4,45 +4,45 @@ import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { Button, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 
-import OperatingSystemIcon from 'collectors/OperatingSystemIcon';
+import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
 
-const BackendRow = createReactClass({
+const CollectorRow = createReactClass({
   propTypes: {
-    backend: PropTypes.object.isRequired,
+    collector: PropTypes.object.isRequired,
     onEdit: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
   },
 
   handleEdit() {
-    this.props.onEdit(this.props.backend);
+    this.props.onEdit(this.props.collector);
   },
 
   handleClone() {
-    this.props.onClone(this.props.backend);
+    this.props.onClone(this.props.collector);
   },
 
   handleDelete() {
-    const backend = this.props.backend;
-    if (window.confirm(`You are about to delete backend "${backend.name}". Are you sure?`)) {
-      this.props.onDelete(backend);
+    const collector = this.props.collector;
+    if (window.confirm(`You are about to delete collector "${collector.name}". Are you sure?`)) {
+      this.props.onDelete(collector);
     }
   },
 
   render() {
-    const { backend } = this.props;
+    const { collector } = this.props;
     return (
       <tr>
         <td>
-          {backend.name}
+          {collector.name}
         </td>
         <td>
-          <OperatingSystemIcon operatingSystem={backend.node_operating_system} /> {lodash.upperFirst(backend.node_operating_system)}
+          <OperatingSystemIcon operatingSystem={collector.node_operating_system} /> {lodash.upperFirst(collector.node_operating_system)}
         </td>
         <td>
           <ButtonToolbar>
             <Button bsStyle="info" bsSize="xsmall" onClick={this.handleEdit}>Edit</Button>
-            <DropdownButton id={`more-actions-${backend.id}`} title="More actions" bsSize="xsmall" pullRight>
+            <DropdownButton id={`more-actions-${collector.id}`} title="More actions" bsSize="xsmall" pullRight>
               <MenuItem onSelect={this.handleClone}>Clone</MenuItem>
               <MenuItem divider />
               <MenuItem onSelect={this.handleDelete}>Delete</MenuItem>
@@ -54,4 +54,4 @@ const BackendRow = createReactClass({
   },
 });
 
-export default BackendRow;
+export default CollectorRow;

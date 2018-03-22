@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-import CollectorsActions from 'collectors/CollectorsActions';
+import SidecarsActions from 'sidecars/SidecarsActions';
 
-const CollectorsRestartButton = React.createClass({
+const SidecarsRestartButton = React.createClass({
   propTypes: {
-    collector: PropTypes.object.isRequired,
-    backend: PropTypes.string.isRequired,
+    sidecar: PropTypes.object.isRequired,
+    collector: PropTypes.string.isRequired,
   },
 
   getInitialState() {
@@ -30,7 +30,7 @@ const CollectorsRestartButton = React.createClass({
 
   _handleRestart() {
     if (window.confirm('You are about to restart the collector process. Are you sure?')) {
-      CollectorsActions.restartCollectorBackend.triggerPromise(this.props.collector.id, this.props.backend).then(this._disableButton);
+      SidecarsActions.restartCollector.triggerPromise(this.props.sidecar.id, this.props.collector).then(this._disableButton);
     }
   },
 
@@ -42,7 +42,7 @@ const CollectorsRestartButton = React.createClass({
     let reset = true;
     if (actions) {
       actions.forEach((action) => {
-        if (action.backend === this.props.backend && action.properties.restart === true) {
+        if (action.collector === this.props.collector && action.properties.restart === true) {
           reset = false;
         }
       });
@@ -54,7 +54,7 @@ const CollectorsRestartButton = React.createClass({
 
   _refreshButtonState() {
     if (this.state.disabled) {
-      CollectorsActions.getCollectorActions.triggerPromise(this.props.collector.id).then(this._resetButton);
+      SidecarsActions.getSidecarActions.triggerPromise(this.props.sidecar.id).then(this._resetButton);
     }
   },
 
@@ -67,4 +67,4 @@ const CollectorsRestartButton = React.createClass({
   },
 });
 
-export default CollectorsRestartButton;
+export default SidecarsRestartButton;

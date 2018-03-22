@@ -18,7 +18,7 @@ const OperatingSystemIcon = createReactClass({
       glyphClass = 'fa-windows';
     }
 
-    glyphClass += ' collector-os';
+    glyphClass += ' sidecar-os';
 
     return (<i className={`fa ${glyphClass}`} />);
   },

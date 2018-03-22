@@ -6,11 +6,11 @@ import { Button } from 'react-bootstrap';
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { Select, Spinner } from 'components/common';
 
-import BackendsActions from './BackendsActions';
-import BackendsStore from './BackendsStore';
+import CollectorsActions from './CollectorsActions';
+import CollectorsStore from './CollectorsStore';
 
 const EditConfigurationModal = React.createClass({
-  mixins: [Reflux.connect(BackendsStore)],
+  mixins: [Reflux.connect(CollectorsStore)],
 
   propTypes: {
     create: PropTypes.bool,
@@ -19,7 +19,7 @@ const EditConfigurationModal = React.createClass({
   },
 
   componentWillMount() {
-    this._loadBackends();
+    this._loadCollectors();
   },
 
   getDefaultProps() {
@@ -30,7 +30,7 @@ const EditConfigurationModal = React.createClass({
   getInitialState() {
     return {
       name: undefined,
-      selectedBackend: undefined,
+      selectedCollector: undefined,
       error: false,
       error_message: '',
     };
@@ -48,8 +48,8 @@ const EditConfigurationModal = React.createClass({
     return prefixIdName + this.state.name;
   },
 
-  _loadBackends() {
-    BackendsActions.list();
+  _loadCollectors() {
+    CollectorsActions.list();
   },
 
   _saved() {
@@ -59,20 +59,20 @@ const EditConfigurationModal = React.createClass({
 
   _save() {
     if (!this.state.error) {
-      this.props.updateConfiguration(this.state.name, this.state.selectedBackend, this._saved);
+      this.props.updateConfiguration(this.state.name, this.state.selectedCollector, this._saved);
     }
   },
 
-  _formatBackendOptions() {
+  _formatCollectorOptions() {
     const options = [];
 
-    if (this.state.backends) {
-      const backendCount = this.state.backends.length;
-      for (let i = 0; i < backendCount; i += 1) {
-        options.push({ value: this.state.backends[i].id, label: this.state.backends[i].name });
+    if (this.state.collectors) {
+      const collectorCount = this.state.collectors.length;
+      for (let i = 0; i < collectorCount; i += 1) {
+        options.push({ value: this.state.collectors[i].id, label: this.state.collectors[i].name });
       }
     } else {
-      options.push({ value: 'none', label: 'Loading backend list...', disable: true });
+      options.push({ value: 'none', label: 'Loading collector list...', disable: true });
     }
 
     return options;
@@ -91,13 +91,13 @@ const EditConfigurationModal = React.createClass({
     }
   },
 
-  _changeBackendDropdown(id) {
-    this.setState({ selectedBackend: id });
+  _changeCollectorDropdown(id) {
+    this.setState({ selectedCollector: id });
   },
 
   render() {
-    const { backends } = this.state;
-    if (!backends) {
+    const { collectors } = this.state;
+    if (!collectors) {
       return <Spinner />;
     }
 
@@ -122,13 +122,13 @@ const EditConfigurationModal = React.createClass({
                    help={this.state.error ? this.state.error_message : 'Name for this configuration'}
                    autoFocus
                    required />
-            <Input id={this._getId('select-backend')}
-                   label="Backend"
-                   help="Choose the backend this configuration will be made for">
-              <Select options={this._formatBackendOptions()}
-                      value={this.state.selectedBackend}
-                      onChange={this._changeBackendDropdown}
-                      placeholder="Backend" />
+            <Input id={this._getId('select-collector')}
+                   label="Collector"
+                   help="Choose the collector this configuration will be made for">
+              <Select options={this._formatCollectorOptions()}
+                      value={this.state.selectedCollector}
+                      onChange={this._changeCollectorDropdown}
+                      placeholder="Collector" />
             </Input>
           </fieldset>
         </BootstrapModalForm>

@@ -25,7 +25,7 @@ const ConfigurationRow = React.createClass({
     this.style.unuse();
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!style/useable!css!styles/SidecarStyles.css'),
 
   _handleDelete() {
     const configuration = this.props.configuration;
@@ -40,7 +40,7 @@ const ConfigurationRow = React.createClass({
     return (
       <tr>
         <td className="name limited">
-          <Link to={Routes.pluginRoute('SYSTEM_COLLECTORS_ALTCONFIGURATION_ID')(configuration.id)}>
+          <Link to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_ID')(configuration.id)}>
             {configuration.name}
           </Link>
         </td>
