@@ -38,12 +38,12 @@ const CollectorList = createReactClass({
         <Row>
           <Col md={12}>
             <div className="pull-right">
-              <Button bsStyle="success" bsSize="small" onClick={onCreate}>Create Collector</Button>
+              <Button bsStyle="success" bsSize="small" onClick={onCreate}>Create Log Collector</Button>
             </div>
-            <h2>Collectors <small>{collectors.length} total</small></h2>
+            <h2>Log Collectors <small>{collectors.length} total</small></h2>
           </Col>
           <Col md={12}>
-            <p>Manage Collectors that you can configure and supervise through Graylog Sidecar and Graylog Web Interface.</p>
+            <p>Manage Log Collectors that you can configure and supervise through Graylog Sidecar and Graylog Web Interface.</p>
           </Col>
         </Row>
         <DataTable id="collector-list"
@@ -55,8 +55,8 @@ const CollectorList = createReactClass({
                    filterBy="tag"
                    filterSuggestions={[]}
                    dataRowFormatter={this.collectorFormatter}
-                   filterLabel="Filter Collectors"
-                   noDataText="There are no collectors to display, why don't you create one?"
+                   filterLabel="Filter Log Collectors"
+                   noDataText="There are no log collectors to display, why don't you create one?"
                    filterKeys={filterKeys}
                    useResponsiveTable={false} />
       </div>
