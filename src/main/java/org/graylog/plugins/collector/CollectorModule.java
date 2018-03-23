@@ -22,6 +22,7 @@ import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
+import org.graylog.plugins.collector.altConfigurations.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.ActionResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltCollectorResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltConfigurationResource;
@@ -71,6 +72,7 @@ public class CollectorModule extends PluginModule {
 
         final Multibinder<Migration> binder = Multibinder.newSetBinder(binder(), Migration.class);
         binder.addBinding().to(V20180212165000_AddDefaultBackends.class);
+        binder.addBinding().to(V20180323150000_AddSidecarUser.class);
 
         serviceBinder().addBinding().to(ConfigurationEtagService.class).in(Scopes.SINGLETON);
     }

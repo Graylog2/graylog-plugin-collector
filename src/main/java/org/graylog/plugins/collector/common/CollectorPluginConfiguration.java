@@ -20,20 +20,28 @@ import com.github.joschi.jadconfig.Parameter;
 import com.github.joschi.jadconfig.util.Duration;
 import com.github.joschi.jadconfig.validators.PositiveDurationValidator;
 import com.github.joschi.jadconfig.validators.PositiveIntegerValidator;
+import com.github.joschi.jadconfig.validators.StringNotEmptyValidator;
 import org.graylog2.plugin.PluginConfigBean;
 
 public class CollectorPluginConfiguration implements PluginConfigBean {
     private static final String PREFIX = "collector_sidecar_";
 
+    @Parameter(value = PREFIX + "user", validator = StringNotEmptyValidator.class)
+    private String user = "graylog-sidecar";
+
     @Parameter(value = PREFIX + "cache_time", validator = PositiveDurationValidator.class)
     private Duration cacheTime = Duration.hours(1L);
+
+    @Parameter(value = PREFIX + "cache_max_size", validator = PositiveIntegerValidator.class)
+    private int cacheMaxSize = 100;
 
     public Duration getCacheTime() {
         return cacheTime;
     }
 
-    @Parameter(value = PREFIX + "cache_max_size", validator = PositiveIntegerValidator.class)
-    private int cacheMaxSize = 100;
+    public String getUser() {
+        return user;
+    }
 
     public int getCacheMaxSize() {
         return cacheMaxSize;

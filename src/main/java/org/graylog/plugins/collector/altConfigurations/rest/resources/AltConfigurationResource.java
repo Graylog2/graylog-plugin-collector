@@ -74,6 +74,8 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @GET
     @Path("/render/{collectorId}/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @ApiOperation(value = "Render collector configuration template")
     public CollectorConfiguration renderConfiguration(@ApiParam(name = "collectorId", required = true)
                                                       @PathParam("collectorId") String collectorId,
@@ -86,6 +88,8 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @GET
     @Path("/render/preview/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
     public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
                                         @PathParam("configurationId") String configurationId) {
