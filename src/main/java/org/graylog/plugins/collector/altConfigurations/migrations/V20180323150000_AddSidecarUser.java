@@ -57,6 +57,7 @@ public class V20180323150000_AddSidecarUser extends Migration {
                 "Grants access to register and pull configurations for a Sidecar node (built-in)",
                 ImmutableSet.of(
                         CollectorRestPermissions.COLLECTORS_READ,
+                        CollectorRestPermissions.COLLECTORS_UPDATE,
                         RestPermissions.USERS_LIST));
 
         ensureUser(
