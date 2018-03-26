@@ -106,6 +106,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @NoAuditEvent("this is only a ping from collectors, and would overflow the audit log")
     public Response register(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
                              @PathParam("collectorId") @NotEmpty String collectorId,
@@ -148,6 +150,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @Timed
     @Path("/{collectorId}/configurations")
     @ApiOperation(value = "Assign configuration to collector backend")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     public Collector assignConfiguration(@ApiParam(name = "collectorId", required = true)
                                          @PathParam("collectorId") String collectorId,
                                          @ApiParam(name = "JSON body", required = true)

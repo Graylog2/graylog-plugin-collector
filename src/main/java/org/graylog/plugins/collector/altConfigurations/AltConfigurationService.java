@@ -76,6 +76,15 @@ public class AltConfigurationService {
         return collectorConfiguration;
     }
 
+    public CollectorConfiguration fromRequest(String id, CollectorConfiguration request) {
+        CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(
+                id,
+                request.backendId(),
+                request.name(),
+                request.template());
+        return collectorConfiguration;
+    }
+
     public CollectorConfiguration renderConfigurationForCollector(Collector collector, String configurationId) {
         Map<String, Object> context = new HashMap<>();
 

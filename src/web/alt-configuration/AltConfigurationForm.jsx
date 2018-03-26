@@ -21,7 +21,7 @@ const AltConfigurationForm = React.createClass({
       formData: {
         id: this.props.configuration.id,
         name: this.props.configuration.name,
-        backend: this.props.configuration.backend,
+        backend_id: this.props.configuration.backend_id,
         template: String(this.props.configuration.template),
       },
     };
@@ -33,7 +33,7 @@ const AltConfigurationForm = React.createClass({
 
   _save() {
     if (this.state.parseErrors.length === 0) {
-      CollectorConfigurationsActions.saveSnippet.triggerPromise(this.state.formData, this.props.configuration.id);
+      CollectorConfigurationsActions.updateConfiguration.triggerPromise(this.state.formData);
     }
   },
 

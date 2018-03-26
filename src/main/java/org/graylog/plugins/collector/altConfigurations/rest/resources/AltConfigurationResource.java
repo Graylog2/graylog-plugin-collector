@@ -9,9 +9,9 @@ import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.ConfigurationPreviewRenderResponse;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -107,6 +108,20 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     public CollectorConfiguration createConfiguration(@ApiParam(name = "JSON body", required = true)
                                                       @Valid @NotNull CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration = configurationService.fromRequest(request);
+        return configurationService.save(collectorConfiguration);
+    }
+
+    @PUT
+    @Path("/configurations/{id}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Update collector configuration")
+    public CollectorConfiguration updateConfiguration(@ApiParam(name = "id", required = true)
+                                                      @PathParam("id") String id,
+                                                      @ApiParam(name = "JSON body", required = true)
+                                                      @Valid @NotNull CollectorConfiguration request) {
+        CollectorConfiguration collectorConfiguration = configurationService.fromRequest(id, request);
         return configurationService.save(collectorConfiguration);
     }
 
