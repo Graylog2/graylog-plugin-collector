@@ -17,7 +17,8 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
-import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorAssignments;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorAssignmentsRequest;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorConfigurationRelationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationConfiguration;
@@ -148,23 +149,24 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
 
     @PUT
     @Timed
-    @Path("/{collectorId}/configurations")
-    @ApiOperation(value = "Assign configuration to collector backend")
+    @Path("/configurations")
+    @ApiOperation(value = "Assign configurations to collector backends")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
-    public Collector assignConfiguration(@ApiParam(name = "collectorId", required = true)
-                                         @PathParam("collectorId") String collectorId,
-                                         @ApiParam(name = "JSON body", required = true)
-                                         @Valid @NotNull CollectorAssignments request) throws NotFoundException {
-        Collector collector = collectorService.findByNodeId(collectorId);
-        for (CollectorConfigurationRelation relation : request.assignments()) {
+    public Response assignConfiguration(@ApiParam(name = "JSON body", required = true)
+                                         @Valid @NotNull CollectorAssignmentsRequest request) throws NotFoundException {
+        for (CollectorConfigurationRelationRequest relation : request.assignments()) {
             try {
-                collector = collectorService.assignConfiguration(collector, relation.backendId(), relation.configurationId());
+                Collector collector = collectorService.assignConfiguration(
+                        relation.collectorNodeId(),
+                        relation.backendId(),
+                        relation.configurationId());
+                collectorService.save(collector);
             } catch (org.graylog2.database.NotFoundException e) {
                 throw new NotFoundException(e.getMessage());
             }
         }
-        return collectorService.save(collector);
+        return Response.accepted().build();
     }
 
     @VisibleForTesting

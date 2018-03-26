@@ -109,12 +109,16 @@ public class AltCollectorService {
                 collectorVersion);
     }
 
-    public Collector assignConfiguration(Collector collector, String backendId, String configurationId) throws NotFoundException{
+    public Collector assignConfiguration(String collectorNodeId, String backendId, String configurationId) throws NotFoundException{
+        Collector collector = findByNodeId(collectorNodeId);
+        if (collector == null) {
+            throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
+        }
         if (backendService.load(backendId) == null) {
             throw new NotFoundException("Couldn't find backend with ID " + backendId);
         }
         if (configurationService.load(configurationId) == null) {
-            throw new NotFoundException("Couldn't find configuration with ID " + backendId);
+            throw new NotFoundException("Couldn't find configuration with ID " + configurationId);
         }
 
         List<CollectorConfigurationRelation> assignments = collector.assignments();
