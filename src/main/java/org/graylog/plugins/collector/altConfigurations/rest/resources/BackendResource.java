@@ -39,8 +39,8 @@ public class BackendResource extends RestResource implements PluginRestResource 
     }
 
     @GET
-//    @RequiresAuthentication
-//    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector backends")
     public CollectorBackendListResponse listBackends() {
