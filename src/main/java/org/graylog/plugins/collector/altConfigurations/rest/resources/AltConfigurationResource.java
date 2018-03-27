@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -29,6 +30,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,6 +125,21 @@ public class AltConfigurationResource extends RestResource implements PluginRest
                                                       @Valid @NotNull CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration = configurationService.fromRequest(id, request);
         return configurationService.save(collectorConfiguration);
+    }
+
+    @DELETE
+    @Path("/configurations/{id}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Delets a collector configuration")
+    public Response updateConfiguration(@ApiParam(name = "id", required = true)
+                                                      @PathParam("id") String id) {
+        int deleted = configurationService.delete(id);
+        if (deleted == 0) {
+            return Response.notModified().build();
+        }
+        return Response.accepted().build();
     }
 
     private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {

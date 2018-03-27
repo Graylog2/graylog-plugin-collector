@@ -142,7 +142,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   delete(configuration) {
-    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configuration.id}`);
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/configurations/${configuration.id}`);
     const promise = fetch('DELETE', url);
     promise
       .then((response) => {
