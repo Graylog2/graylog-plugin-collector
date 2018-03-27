@@ -37,7 +37,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "/usr/bin/filebeat",
                 "/etc/graylog/collector-sidecar/generated/filebeat.yml",
                 new ArrayList<String>(Arrays.asList("-c",  "%s")),
-                new ArrayList<String>(Arrays.asList("-configtest", "-c", "%s"))
+                new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s"))
         );
         ensureBackend(
                 "winlogbeat",
@@ -46,7 +46,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "C:\\Program Files\\graylog\\collector-sidecar\\winlogbeat.exe",
                 "C:\\Program Files\\graylog\\collector-sidecar\\generated\\winlogbeat.yml",
                 new ArrayList<String>(Arrays.asList("-c", "%s")),
-                new ArrayList<String>(Arrays.asList("-configtest", "-c", "%s"))
+                new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s"))
         );
         ensureBackend(
                 "nxlog",
