@@ -68,6 +68,11 @@ public class AltConfigurationService {
         return dbCollection.remove(DBQuery.is("_id", id)).getN();
     }
 
+    public CollectorConfiguration copyConfiguration(String id, String name) {
+        CollectorConfiguration collectorConfiguration = load(id);
+        return CollectorConfiguration.create(collectorConfiguration.backendId(), name, collectorConfiguration.template());
+    }
+
     public CollectorConfiguration fromRequest(CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(
                 request.backendId(),

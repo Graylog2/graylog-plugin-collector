@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -111,6 +112,20 @@ public class AltConfigurationResource extends RestResource implements PluginRest
                                                       @Valid @NotNull CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration = configurationService.fromRequest(request);
         return configurationService.save(collectorConfiguration);
+    }
+
+    @POST
+    @Path("/configurations/{id}/{name}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @ApiOperation(value = "Create a configuration copy")
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CLONE)
+    public Response copyConfiguration(@ApiParam(name = "id", required = true)
+                                      @PathParam("id") String id,
+                                      @PathParam("name") String name) throws NotFoundException {
+        final CollectorConfiguration collectorConfiguration = configurationService.copyConfiguration(id, name);
+        configurationService.save(collectorConfiguration);
+        return Response.accepted().build();
     }
 
     @PUT

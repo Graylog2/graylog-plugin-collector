@@ -124,7 +124,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   copyConfiguration(configurationId, name) {
-    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/${name}`);
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/configurations/${configurationId}/${name}`);
     const method = 'POST';
 
     const promise = fetch(method, url);
