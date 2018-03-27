@@ -12,7 +12,10 @@ import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.base.MoreObjects.firstNonNull;
 
 @AutoValue
 @JsonAutoDetect
@@ -101,6 +104,7 @@ public abstract class Collector {
                 nodeId(),
                 nodeName(),
                 nodeDetails(),
+                firstNonNull(assignments(), new ArrayList<>()),
                 lastSeen(),
                 collectorVersion(),
                 isActive != null && isActive);
