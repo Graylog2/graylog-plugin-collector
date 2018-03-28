@@ -33,11 +33,10 @@ const CollectorsAdministrationContainer = createReactClass({
 
     const sidecarCollectors = [];
     sidecars.forEach((sidecar) => {
-      const collectorNames = collectors
+      const compatibleCollectors = collectors
         .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase())
-        .map(collector => collector.name);
-      collectorNames.forEach((collectorName) => {
-        sidecarCollectors.push({ collector: collectorName, sidecar: sidecar });
+      compatibleCollectors.forEach((compatibleCollector) => {
+        sidecarCollectors.push({ collector: compatibleCollector, sidecar: sidecar });
       });
     });
 

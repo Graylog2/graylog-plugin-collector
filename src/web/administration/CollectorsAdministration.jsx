@@ -46,7 +46,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   sidecarCollectorId(sidecar, collector) {
-    return `${sidecar.node_id}-${collector}`;
+    return `${sidecar.node_id}-${collector.name}`;
   },
 
   formatHeader() {
@@ -113,7 +113,7 @@ const CollectorsAdministration = createReactClass({
             <Col md={6}>
               <div className={style.additionalInformation}>
                 <em>
-                  <CollectorIndicator collector={collector} operatingSystem={sidecar.node_details.operating_system} />
+                  <CollectorIndicator collector={collector.name} operatingSystem={sidecar.node_details.operating_system} />
                 </em>
               </div>
             </Col>
