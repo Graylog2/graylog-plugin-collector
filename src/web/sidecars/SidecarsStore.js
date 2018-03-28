@@ -67,6 +67,34 @@ const SidecarsStore = Reflux.createStore({
         });
     SidecarsActions.getSidecarActions.promise(promise);
   },
+
+  assignConfigurations(sidecars, configurations) {
+    const body = { assignments: [] };
+    sidecars.forEach((sidecar) => {
+      configurations.forEach((configuration) => {
+        body.assignments.push({
+          collector_node_id: sidecar.node_id,
+          backend_id: configuration.backend_id,
+          configuration_id: configuration.id,
+        });
+      });
+    });
+
+    const promise = fetch('PUT', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/configurations'), body)
+      .then(
+        (response) => {
+          UserNotification.success('Collectors will change their configurations shortly.',
+            `Configuration change for ${sidecars.length} collectors requested`);
+          this.list();
+          return response;
+        },
+        (error) => {
+          UserNotification.error(`Fetching Sidecar actions failed with status: ${error}`,
+            'Could not retrieve Sidecar actions');
+        },
+      );
+    SidecarsActions.assignConfigurations.promise(promise);
+  },
 });
 
 export default SidecarsStore;

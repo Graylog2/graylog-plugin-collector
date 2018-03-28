@@ -5,6 +5,7 @@ const SidecarsActions = Reflux.createActions({
   getSidecar: { asyncResult: true },
   getSidecarActions: { asyncResult: true },
   restartCollector: { asyncResult: true },
+  assignConfigurations: { asyncResult: true },
 });
 
 export default SidecarsActions;
