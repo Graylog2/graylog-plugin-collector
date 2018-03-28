@@ -19,7 +19,7 @@ const CollectorsAdministrationFilters = createReactClass({
       .uniq(this.props.collectors.map(collector => collector.name))
       .sort(naturalSortIgnoreCase);
 
-    const filter = collectorName => this.props.filter(({ collector }) => collector.match(collectorName, 'i'));
+    const filter = ([collectorName]) => this.props.filter(({ collector }) => collector.match(collectorName, 'i'));
 
     return (
       <SelectPopover id="collector-filter"
@@ -49,7 +49,7 @@ const CollectorsAdministrationFilters = createReactClass({
       .uniq(this.props.collectors.map(collector => lodash.upperFirst(collector.node_operating_system)))
       .sort(naturalSortIgnoreCase);
 
-    const filter = os => this.props.filter(({ sidecar }) => sidecar.node_details.operating_system.match(os, 'i'));
+    const filter = ([os]) => this.props.filter(({ sidecar }) => sidecar.node_details.operating_system.match(os, 'i'));
 
     return (
       <SelectPopover id="os-filter"
