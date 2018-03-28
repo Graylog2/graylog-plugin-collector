@@ -11,6 +11,13 @@ const CollectorsAdministrationActions = createReactClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
+    onConfigurationSelectionChange: PropTypes.func.isRequired,
+  },
+
+  onConfigurationSelect(configurationIds, hideCallback) {
+    hideCallback();
+    const configurations = this.props.configurations.filter(c => configurationIds.includes(c.id));
+    this.props.onConfigurationSelectionChange(configurations);
   },
 
   getConfigurationAction() {
@@ -39,13 +46,9 @@ const CollectorsAdministrationActions = createReactClass({
                      triggerNode={<Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>}
                      items={configurations}
                      itemFormatter={configurationFormatter}
-                     onItemSelect={this.showConfigurationSummary}
+                     onItemSelect={this.onConfigurationSelect}
                      filterPlaceholder="Filter by configuration" />
     );
-  },
-
-  showConfigurationSummary(item) {
-    alert(`YOLO ${JSON.stringify(item)}`);
   },
 
   render() {
