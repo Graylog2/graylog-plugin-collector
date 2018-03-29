@@ -18,26 +18,26 @@ class CollectorConfigurationSelector extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedConfigurations: [],
+      selectedConfiguration: undefined,
     };
   }
 
   handleConfigurationSelect = (configurationIds, hideCallback) => {
     hideCallback();
     const configurations = this.props.configurations.filter(c => configurationIds.includes(c.id));
-    this.setState({ selectedConfigurations: [configurations[0]] }, this.modal.open);
+    this.setState({ selectedConfiguration: configurations[0] }, this.modal.open);
   };
 
   confirmConfigurationChange = (doneCallback) => {
-    this.props.onConfigurationSelectionChange(this.state.selectedConfigurations, doneCallback);
+    this.props.onConfigurationSelectionChange(this.state.selectedConfiguration, doneCallback);
   };
 
   cancelConfigurationChange = () => {
-    this.setState({ selectedConfigurations: [] });
+    this.setState({ selectedConfiguration: undefined });
   };
 
   render() {
-    const { selectedConfigurations } = this.state;
+    const { selectedConfiguration } = this.state;
     const { selectedCollectors } = this.props;
 
     const configurations = this.props.configurations
@@ -81,8 +81,8 @@ class CollectorConfigurationSelector extends React.Component {
                                onCancel={this.cancelConfigurationChange}>
           <div>
             <p>
-              {selectedConfigurations.length > 0 &&
-              <span>You are going to <b>apply</b> the <em>{selectedConfigurations.name}</em> configuration to:</span>
+              {selectedConfiguration &&
+              <span>You are going to <b>apply</b> the <em>{selectedConfiguration.name}</em> configuration to:</span>
               }
             </p>
 
