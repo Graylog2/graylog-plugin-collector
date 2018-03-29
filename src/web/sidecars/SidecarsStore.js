@@ -73,7 +73,7 @@ const SidecarsStore = Reflux.createStore({
     sidecars.forEach((sidecar) => {
       configurations.forEach((configuration) => {
         body.assignments.push({
-          collector_node_id: sidecar.node_id,
+          node_id: sidecar.node_id,
           backend_id: configuration.backend_id,
           configuration_id: configuration.id,
         });

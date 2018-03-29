@@ -158,7 +158,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         for (CollectorConfigurationRelationRequest relation : request.assignments()) {
             try {
                 Collector collector = collectorService.assignConfiguration(
-                        relation.collectorNodeId(),
+                        relation.nodeId(),
                         relation.backendId(),
                         relation.configurationId());
                 collectorService.save(collector);

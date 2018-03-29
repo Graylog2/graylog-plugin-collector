@@ -9,7 +9,7 @@ import com.google.auto.value.AutoValue;
 @JsonAutoDetect
 public abstract class CollectorConfigurationRelationRequest {
     @JsonProperty
-    public abstract String collectorNodeId();
+    public abstract String nodeId();
 
     @JsonProperty
     public abstract String backendId();
@@ -18,7 +18,7 @@ public abstract class CollectorConfigurationRelationRequest {
     public abstract String configurationId();
 
     @JsonCreator
-    public static CollectorConfigurationRelationRequest create(@JsonProperty("collector_node_id") String collectorNodeId,
+    public static CollectorConfigurationRelationRequest create(@JsonProperty("node_id") String collectorNodeId,
                                                                @JsonProperty("backend_id") String backendId,
                                                                @JsonProperty("configuration_id") String configurationId) {
         return new AutoValue_CollectorConfigurationRelationRequest(collectorNodeId, backendId, configurationId);
