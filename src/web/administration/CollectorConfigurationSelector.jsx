@@ -38,14 +38,15 @@ class CollectorConfigurationSelector extends React.Component {
 
   render() {
     const { selectedConfiguration } = this.state;
-    const { selectedCollectors } = this.props;
+    const { collectors, configurations, selectedCollectors } = this.props;
 
-    const configurations = this.props.configurations
+    const configurationIds = configurations
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
+
     const configurationFormatter = (configurationId) => {
-      const configuration = this.props.configurations.find(c => c.id === configurationId);
-      const collector = this.props.collectors.find(b => b.id === configuration.backend_id);
+      const configuration = configurations.find(c => c.id === configurationId);
+      const collector = collectors.find(b => b.id === configuration.backend_id);
       return (
         <span>
           {configuration.name}&emsp;
@@ -70,7 +71,7 @@ class CollectorConfigurationSelector extends React.Component {
         <SelectPopover id="status-filter"
                        title="Apply configuration"
                        triggerNode={<Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>}
-                       items={configurations}
+                       items={configurationIds}
                        itemFormatter={configurationFormatter}
                        onItemSelect={this.handleConfigurationSelect}
                        filterPlaceholder="Filter by configuration" />
