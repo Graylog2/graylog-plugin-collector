@@ -9,16 +9,18 @@ const CollectorsAdministrationActions = createReactClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
+    selectedCollectors: PropTypes.array.isRequired,
     onConfigurationSelectionChange: PropTypes.func.isRequired,
   },
 
   render() {
-    const { collectors, configurations, onConfigurationSelectionChange } = this.props;
+    const { collectors, configurations, selectedCollectors, onConfigurationSelectionChange } = this.props;
     return (
       <ButtonToolbar>
         <Button bsSize="small" bsStyle="link">Process <span className="caret" /></Button>
         <CollectorConfigurationSelector collectors={collectors}
                                         configurations={configurations}
+                                        selectedCollectors={selectedCollectors}
                                         onConfigurationSelectionChange={onConfigurationSelectionChange} />
       </ButtonToolbar>
     );

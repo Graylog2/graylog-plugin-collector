@@ -5,7 +5,7 @@ import lodash from 'lodash';
 import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, SearchForm } from 'components/common';
-import { BootstrapModalConfirm, Input } from 'components/bootstrap';
+import { Input } from 'components/bootstrap';
 import CollectorIndicator from 'sidecars/CollectorIndicator';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
 import CollectorAdministrationActions from './CollectorsAdministrationActions';
@@ -25,7 +25,6 @@ const CollectorsAdministration = createReactClass({
     return {
       filteredCollectors: this.props.sidecarCollectors,
       selected: [],
-      selectedConfigurations: [],
     };
   },
 
@@ -52,24 +51,46 @@ const CollectorsAdministration = createReactClass({
     return `${sidecar.node_id}-${collector.name}`;
   },
 
-  handleConfigurationChange(nextSelectedConfigurations) {
-    // TODO: Think about how to handle more than one selected configuration, that would apply to several backends
-    // TODO: Handle removing configurations
-    this.setState({ selectedConfigurations: [nextSelectedConfigurations[0]] }, this.modal.open);
+  handleConfigurationChange(selectedConfigurations, doneCallback) {
+    const { selected } = this.state;
+
+    const selectedSidecars = this.props.sidecarCollectors
+      .filter(({ collector }) => selectedConfigurations.find(configuration => configuration.backend_id === collector.id) !== undefined)
+      .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)))
+      .map(({ sidecar }) => sidecar);
+
+    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => doneCallback());
   },
 
   formatHeader() {
     const { sidecarCollectors, collectors, configurations } = this.props;
-    const { selected } = this.state;
+    const { selected, filteredCollectors } = this.state;
     const selectedItems = this.state.selected.length;
+
+    const selectedCollectors = selected.map((selectedCollectorBackendId) => {
+      return {
+        id: selectedCollectorBackendId,
+        collector: filteredCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedCollectorBackendId),
+      };
+    });
+
+    let headerMenu;
+    if (selectedItems === 0) {
+      headerMenu = (
+        <CollectorAdministrationFilters collectors={collectors} configurations={configurations} filter={this.filterCollectors} />
+      );
+    } else {
+      headerMenu = (
+        <CollectorAdministrationActions selectedCollectors={selectedCollectors}
+                                        collectors={collectors}
+                                        configurations={configurations}
+                                        onConfigurationSelectionChange={this.handleConfigurationChange} />
+      );
+    }
 
     return (
       <ControlledTableList.Header>
-        <div className={style.headerComponentsWrapper}>
-          {selectedItems === 0 ?
-            <CollectorAdministrationFilters collectors={collectors} configurations={configurations} filter={this.filterCollectors} /> :
-            <CollectorAdministrationActions collectors={collectors} configurations={configurations} onConfigurationSelectionChange={this.handleConfigurationChange} />}
-        </div>
+        <div className={style.headerComponentsWrapper}>{headerMenu}</div>
 
         <Input ref={(c) => { this.selectAllInput = c; }}
                id="select-all-checkbox"
@@ -151,23 +172,9 @@ const CollectorsAdministration = createReactClass({
     this.filterCollectorsByQuery('');
   },
 
-  confirmConfigurationChange(doneCallback) {
-    const { selected, selectedConfigurations } = this.state;
-
-    const selectedSidecars = this.props.sidecarCollectors
-      .filter(({ collector }) => selectedConfigurations.find(configuration => configuration.backend_id === collector.id) !== undefined)
-      .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)))
-      .map(({ sidecar }) => sidecar);
-    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => doneCallback());
-  },
-
-  cancelConfigurationChange() {
-    this.setState({ selectedConfigurations: [] });
-  },
-
   render() {
     const { sidecarCollectors } = this.props;
-    const { filteredCollectors, selected, selectedConfigurations } = this.state;
+    const { filteredCollectors } = this.state;
 
     let formattedCollectors;
     if (filteredCollectors.length === 0) {
@@ -182,13 +189,6 @@ const CollectorsAdministration = createReactClass({
         formattedCollectors.push(this.formatSidecarCollector(sidecar, collector));
       });
     }
-
-    const formattedSummary = selected.map((selectedCollectorBackendId) => {
-      const selectedCollector = filteredCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedCollectorBackendId);
-      return (
-        <dd key={selectedCollectorBackendId}>{selectedCollector.sidecar.node_name}, {selectedCollector.collector.name}</dd>
-      );
-    });
 
     return (
       <div>
@@ -208,24 +208,6 @@ const CollectorsAdministration = createReactClass({
               {this.formatHeader()}
               {formattedCollectors}
             </ControlledTableList>
-            <BootstrapModalConfirm ref={(c) => { this.modal = c; }}
-                                   title="Configuration summary"
-                                   onConfirm={this.confirmConfigurationChange}
-                                   onCancel={this.cancelConfigurationChange}>
-              <div>
-                <p>
-                  {selectedConfigurations.length > 0 &&
-                    <span>You are going to <b>apply</b> the <em>{selectedConfigurations.name}</em> configuration to:</span>
-                  }
-                </p>
-
-                <dl>
-                  {formattedSummary}
-                </dl>
-
-                <p>Are you sure you want to proceed with this action?</p>
-              </div>
-            </BootstrapModalConfirm>
           </Col>
         </Row>
       </div>
