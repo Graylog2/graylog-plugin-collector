@@ -54,6 +54,11 @@ const CollectorsAdministration = createReactClass({
   handleConfigurationChange(selectedConfiguration, doneCallback) {
     const { selected } = this.state;
 
+    if (!selectedConfiguration) {
+      // TODO: Handle removing configuration
+      return;
+    }
+
     const selectedSidecars = this.props.sidecarCollectors
       .filter(({ collector }) => selectedConfiguration.backend_id === collector.id)
       .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)))
