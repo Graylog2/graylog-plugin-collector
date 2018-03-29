@@ -122,7 +122,7 @@ public class AltCollectorService {
         }
 
         List<CollectorConfigurationRelation> assignments = collector.assignments();
-        if (assignments != null) {
+        if (assignments != null && assignments.size() > 0) {
             for (int i = 0; i < assignments.size(); i++) {
                 CollectorConfigurationRelation relation = assignments.get(i);
                 if (relation.backendId().equalsIgnoreCase(backendId)) {
