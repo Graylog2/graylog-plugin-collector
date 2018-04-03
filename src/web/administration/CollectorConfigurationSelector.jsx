@@ -79,11 +79,11 @@ class CollectorConfigurationSelector extends React.Component {
       .map(c => c.id);
 
     const selectedAssignments = selectedCollectors
+      .filter(({ collector }) => collector.sidecar.assignments && collector.sidecar.assignments.length === 0)
       .map(({ collector }) => {
         const assignments = collector.sidecar.assignments;
         return assignments.find(assignment => assignment.backend_id === collector.collector.id);
-      })
-      .filter(assignment => assignment !== undefined);
+      });
 
     const selectedConfigurationIds = lodash.uniq(selectedAssignments.map(assignment => assignment.configuration_id));
 
