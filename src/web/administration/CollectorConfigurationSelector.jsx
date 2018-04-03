@@ -40,7 +40,7 @@ class CollectorConfigurationSelector extends React.Component {
     this.setState({ selectedConfiguration: undefined });
   };
 
-  renderConfigurationSummary(selectedConfiguration, selectedCollectors) {
+  renderConfigurationSummary = (selectedConfiguration, selectedCollectors) => {
     const formattedSummary = selectedCollectors.map(({ id, collector }) => {
       return (
         <dd key={id}>{collector.sidecar.node_name}, {collector.collector.name}</dd>
