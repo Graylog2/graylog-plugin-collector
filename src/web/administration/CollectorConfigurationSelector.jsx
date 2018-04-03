@@ -99,6 +99,7 @@ class CollectorConfigurationSelector extends React.Component {
     }
 
     const configurationIds = configurations
+      .filter(configuration => selectedLogCollectors[0].id === configuration.backend_id)
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
 
