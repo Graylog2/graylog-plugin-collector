@@ -40,6 +40,36 @@ class CollectorConfigurationSelector extends React.Component {
     this.setState({ selectedConfiguration: undefined });
   };
 
+  renderConfigurationSummary(selectedConfiguration, selectedCollectors) {
+    const formattedSummary = selectedCollectors.map(({ id, collector }) => {
+      return (
+        <dd key={id}>{collector.sidecar.node_name}, {collector.collector.name}</dd>
+      );
+    });
+
+    return (
+      <BootstrapModalConfirm ref={(c) => { this.modal = c; }}
+                             title="Configuration summary"
+                             onConfirm={this.confirmConfigurationChange}
+                             onCancel={this.cancelConfigurationChange}>
+        <div>
+          <p>
+            {selectedConfiguration ?
+              <span>You are going to <b>apply</b> the <em>{selectedConfiguration.name}</em> configuration to:</span> :
+              <span>You are going to <b>remove</b> the configuration for:</span>
+            }
+          </p>
+
+          <dl>
+            {formattedSummary}
+          </dl>
+
+          <p>Are you sure you want to proceed with this action?</p>
+        </div>
+      </BootstrapModalConfirm>
+    );
+  };
+
   render() {
     const { selectedConfiguration } = this.state;
     const { collectors, configurations, selectedCollectors } = this.props;
@@ -73,12 +103,6 @@ class CollectorConfigurationSelector extends React.Component {
       );
     };
 
-    const formattedSummary = selectedCollectors.map(({ id, collector }) => {
-      return (
-        <dd key={id}>{collector.sidecar.node_name}, {collector.collector.name}</dd>
-      );
-    });
-
     return (
       <span>
         <SelectPopover id="status-filter"
@@ -89,26 +113,7 @@ class CollectorConfigurationSelector extends React.Component {
                        onItemSelect={this.handleConfigurationSelect}
                        selectedItems={selectedConfigurationIds}
                        filterPlaceholder="Filter by configuration" />
-
-        <BootstrapModalConfirm ref={(c) => { this.modal = c; }}
-                               title="Configuration summary"
-                               onConfirm={this.confirmConfigurationChange}
-                               onCancel={this.cancelConfigurationChange}>
-          <div>
-            <p>
-              {selectedConfiguration ?
-                <span>You are going to <b>apply</b> the <em>{selectedConfiguration.name}</em> configuration to:</span> :
-                <span>You are going to <b>remove</b> the configuration for:</span>
-              }
-            </p>
-
-            <dl>
-              {formattedSummary}
-            </dl>
-
-            <p>Are you sure you want to proceed with this action?</p>
-          </div>
-        </BootstrapModalConfirm>
+        {this.renderConfigurationSummary(selectedConfiguration, selectedCollectors)}
       </span>
     );
   }
