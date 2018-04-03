@@ -72,10 +72,10 @@ const CollectorsAdministration = createReactClass({
     const { selected, filteredCollectors } = this.state;
     const selectedItems = this.state.selected.length;
 
-    const selectedCollectors = selected.map((selectedCollectorBackendId) => {
+    const selectedCollectors = selected.map((selectedSidecarCollectorId) => {
       return {
-        id: selectedCollectorBackendId,
-        collector: filteredCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedCollectorBackendId),
+        id: selectedSidecarCollectorId,
+        collector: filteredCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedSidecarCollectorId),
       };
     });
 
