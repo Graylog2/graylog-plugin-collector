@@ -23,6 +23,17 @@ class CollectorConfigurationSelector extends React.Component {
     };
   }
 
+  getSelectedConfigurationIds = (selectedCollectors) => {
+    const selectedAssignments = selectedCollectors
+      .filter(({ collector }) => collector.sidecar.assignments && collector.sidecar.assignments.length === 0)
+      .map(({ collector }) => {
+        const assignments = collector.sidecar.assignments;
+        return assignments.find(assignment => assignment.backend_id === collector.collector.id);
+      });
+
+    return lodash.uniq(selectedAssignments.map(assignment => assignment.configuration_id));
+  };
+
   handleConfigurationSelect = (configurationIds, hideCallback) => {
     hideCallback();
     let configuration;
@@ -78,14 +89,7 @@ class CollectorConfigurationSelector extends React.Component {
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
 
-    const selectedAssignments = selectedCollectors
-      .filter(({ collector }) => collector.sidecar.assignments && collector.sidecar.assignments.length === 0)
-      .map(({ collector }) => {
-        const assignments = collector.sidecar.assignments;
-        return assignments.find(assignment => assignment.backend_id === collector.collector.id);
-      });
-
-    const selectedConfigurationIds = lodash.uniq(selectedAssignments.map(assignment => assignment.configuration_id));
+    const selectedConfigurationIds = this.getSelectedConfigurationIds(selectedCollectors);
 
     const configurationFormatter = (configurationId) => {
       const configuration = configurations.find(c => c.id === configurationId);
