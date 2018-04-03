@@ -103,6 +103,17 @@ class CollectorConfigurationSelector extends React.Component {
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
 
+    if (configurationIds.length === 0) {
+      return (
+        <SelectPopover id="status-filter"
+                       title="Apply configuration"
+                       triggerNode={<Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>}
+                       items={['No configurations available for the selected log collector']}
+                       displayDataFilter={false}
+                       disabled />
+      );
+    }
+
     const selectedConfigurationIds = this.getSelectedConfigurationIds(selectedCollectors);
 
     const configurationFormatter = (configurationId) => {
