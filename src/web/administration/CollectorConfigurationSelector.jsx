@@ -85,6 +85,19 @@ class CollectorConfigurationSelector extends React.Component {
     const { selectedConfiguration } = this.state;
     const { collectors, configurations, selectedCollectors } = this.props;
 
+    // Do not allow configuration changes when more than one log collector type is selected
+    const selectedLogCollectors = lodash.uniq(selectedCollectors.map(({ collector }) => collector.collector));
+    if (selectedLogCollectors.length > 1) {
+      return (
+        <SelectPopover id="status-filter"
+                       title="Apply configuration"
+                       triggerNode={<Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>}
+                       items={[`Cannot change configurations of ${selectedLogCollectors.map(collector => collector.name).join(', ')} collectors simultaneously`]}
+                       displayDataFilter={false}
+                       disabled />
+      );
+    }
+
     const configurationIds = configurations
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
