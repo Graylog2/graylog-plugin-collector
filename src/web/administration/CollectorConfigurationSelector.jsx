@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 import { Button } from 'react-bootstrap';
 
 import { SelectPopover } from 'components/common';
@@ -47,6 +48,15 @@ class CollectorConfigurationSelector extends React.Component {
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
 
+    const selectedAssignments = selectedCollectors
+      .map(({ collector }) => {
+        const assignments = collector.sidecar.assignments;
+        return assignments.find(assignment => assignment.backend_id === collector.collector.id);
+      })
+      .filter(assignment => assignment !== undefined);
+
+    const selectedConfigurationIds = lodash.uniq(selectedAssignments.map(assignment => assignment.configuration_id));
+
     const configurationFormatter = (configurationId) => {
       const configuration = configurations.find(c => c.id === configurationId);
       const collector = collectors.find(b => b.id === configuration.backend_id);
@@ -77,6 +87,7 @@ class CollectorConfigurationSelector extends React.Component {
                        items={configurationIds}
                        itemFormatter={configurationFormatter}
                        onItemSelect={this.handleConfigurationSelect}
+                       selectedItems={selectedConfigurationIds}
                        filterPlaceholder="Filter by configuration" />
 
         <BootstrapModalConfirm ref={(c) => { this.modal = c; }}
