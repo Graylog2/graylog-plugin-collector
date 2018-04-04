@@ -63,7 +63,19 @@ class CollectorConfigurationSelector extends React.Component {
     );
   };
 
-  renderConfigurationSummary = (selectedConfiguration, selectedCollectors) => {
+  renderConfigurationSummary = (assignedConfigurations, nextAssignedConfigurations, selectedCollectors) => {
+    const hasNewAssignedConfiguration = nextAssignedConfigurations.length === 1 && !assignedConfigurations.includes(nextAssignedConfigurations[0]);
+
+    let actionSummary;
+    if (nextAssignedConfigurations.length === 0) {
+      actionSummary = <span>You are going to <b>remove</b> the configuration from:</span>;
+    } else if (hasNewAssignedConfiguration) {
+      actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration to:</span>;
+    } else {
+      const removedConfiguration = lodash.without(assignedConfigurations, ...nextAssignedConfigurations)[0];
+      actionSummary = <span>You are going to <b>remove</b> configuration <em>{removedConfiguration.name}</em> from:</span>;
+    }
+
     const formattedSummary = selectedCollectors.map(({ id, collector }) => {
       return (
         <dd key={id}>{collector.sidecar.node_name}, {collector.collector.name}</dd>
@@ -76,17 +88,8 @@ class CollectorConfigurationSelector extends React.Component {
                              onConfirm={this.confirmConfigurationChange}
                              onCancel={this.cancelConfigurationChange}>
         <div>
-          <p>
-            {selectedConfiguration ?
-              <span>You are going to <b>apply</b> the <em>{selectedConfiguration.name}</em> configuration to:</span> :
-              <span>You are going to <b>remove</b> the configuration for:</span>
-            }
-          </p>
-
-          <dl>
-            {formattedSummary}
-          </dl>
-
+          <p>{actionSummary}</p>
+          <dl>{formattedSummary}</dl>
           <p>Are you sure you want to proceed with this action?</p>
         </div>
       </BootstrapModalConfirm>
@@ -138,7 +141,7 @@ class CollectorConfigurationSelector extends React.Component {
                        onItemSelect={this.handleConfigurationSelect}
                        selectedItems={assignedConfigurations.map(config => config.id)}
                        filterPlaceholder="Filter by configuration" />
-        {this.renderConfigurationSummary(assignedConfigurations, selectedCollectors)}
+        {this.renderConfigurationSummary(assignedConfigurations, nextAssignedConfigurations, selectedCollectors)}
       </span>
     );
   }
