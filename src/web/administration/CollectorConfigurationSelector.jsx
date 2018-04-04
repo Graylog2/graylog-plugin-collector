@@ -19,7 +19,7 @@ class CollectorConfigurationSelector extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedConfiguration: undefined,
+      nextAssignedConfigurations: [],
     };
   }
 
@@ -35,15 +35,15 @@ class CollectorConfigurationSelector extends React.Component {
     if (configurationIds.length > 0) {
       configuration = this.props.configurations.find(c => configurationIds[0] === c.id);
     }
-    this.setState({ selectedConfiguration: configuration }, this.modal.open);
+    this.setState({ nextAssignedConfigurations: configuration }, this.modal.open);
   };
 
   confirmConfigurationChange = (doneCallback) => {
-    this.props.onConfigurationSelectionChange(this.state.selectedConfiguration, doneCallback);
+    this.props.onConfigurationSelectionChange(this.state.nextAssignedConfigurations, doneCallback);
   };
 
   cancelConfigurationChange = () => {
-    this.setState({ selectedConfiguration: undefined });
+    this.setState({ nextAssignedConfigurations: [] });
   };
 
   configurationFormatter = (configurationId) => {
@@ -95,7 +95,7 @@ class CollectorConfigurationSelector extends React.Component {
   };
 
   render() {
-    const { selectedConfiguration } = this.state;
+    const { nextAssignedConfigurations } = this.state;
     const { collectors, configurations, selectedCollectors } = this.props;
 
     // Do not allow configuration changes when more than one log collector type is selected
@@ -139,7 +139,7 @@ class CollectorConfigurationSelector extends React.Component {
                        onItemSelect={this.handleConfigurationSelect}
                        selectedItems={assignedConfigurations.map(config => config.id)}
                        filterPlaceholder="Filter by configuration" />
-        {this.renderConfigurationSummary(selectedConfiguration, selectedCollectors)}
+        {this.renderConfigurationSummary(assignedConfigurations, selectedCollectors)}
       </span>
     );
   }
