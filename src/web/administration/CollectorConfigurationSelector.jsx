@@ -23,15 +23,10 @@ class CollectorConfigurationSelector extends React.Component {
     };
   }
 
-  getSelectedConfigurationIds = (selectedCollectors) => {
-    const selectedAssignments = selectedCollectors
-      .filter(({ collector }) => collector.sidecar.assignments && collector.sidecar.assignments.length !== 0)
-      .map(({ collector }) => {
-        const assignments = collector.sidecar.assignments;
-        return assignments.find(assignment => assignment.backend_id === collector.collector.id);
-      });
 
-    return lodash.uniq(selectedAssignments.map(assignment => assignment.configuration_id));
+  getAssignedConfigurations = (selectedCollectors, configurations) => {
+    const assignments = selectedCollectors.map(({ collector }) => collector.sidecar).reduce((accumulator, sidecar) => accumulator.concat(sidecar.assignments), []);
+    return assignments.map(assignment => configurations.find(configuration => configuration.id === assignment.configuration_id));
   };
 
   handleConfigurationSelect = (configurationIds, hideCallback) => {
@@ -132,7 +127,7 @@ class CollectorConfigurationSelector extends React.Component {
       );
     }
 
-    const selectedConfigurationIds = this.getSelectedConfigurationIds(selectedCollectors);
+    const assignedConfigurations = this.getAssignedConfigurations(selectedCollectors, configurations);
 
     return (
       <span>
@@ -142,7 +137,7 @@ class CollectorConfigurationSelector extends React.Component {
                        items={configurationIds}
                        itemFormatter={this.configurationFormatter}
                        onItemSelect={this.handleConfigurationSelect}
-                       selectedItems={selectedConfigurationIds}
+                       selectedItems={assignedConfigurations.map(config => config.id)}
                        filterPlaceholder="Filter by configuration" />
         {this.renderConfigurationSummary(selectedConfiguration, selectedCollectors)}
       </span>
