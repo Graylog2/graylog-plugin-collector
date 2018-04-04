@@ -25,7 +25,7 @@ class CollectorConfigurationSelector extends React.Component {
 
   getSelectedConfigurationIds = (selectedCollectors) => {
     const selectedAssignments = selectedCollectors
-      .filter(({ collector }) => collector.sidecar.assignments && collector.sidecar.assignments.length === 0)
+      .filter(({ collector }) => collector.sidecar.assignments && collector.sidecar.assignments.length !== 0)
       .map(({ collector }) => {
         const assignments = collector.sidecar.assignments;
         return assignments.find(assignment => assignment.backend_id === collector.collector.id);
