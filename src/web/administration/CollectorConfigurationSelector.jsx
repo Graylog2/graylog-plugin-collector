@@ -23,7 +23,6 @@ class CollectorConfigurationSelector extends React.Component {
     };
   }
 
-
   getAssignedConfigurations = (selectedCollectors, configurations) => {
     const assignments = selectedCollectors.map(({ collector }) => collector.sidecar).reduce((accumulator, sidecar) => accumulator.concat(sidecar.assignments), []);
     return assignments.map(assignment => configurations.find(configuration => configuration.id === assignment.configuration_id));
@@ -96,7 +95,7 @@ class CollectorConfigurationSelector extends React.Component {
 
   render() {
     const { nextAssignedConfigurations } = this.state;
-    const { collectors, configurations, selectedCollectors } = this.props;
+    const { configurations, selectedCollectors } = this.props;
 
     // Do not allow configuration changes when more than one log collector type is selected
     const selectedLogCollectors = lodash.uniq(selectedCollectors.map(({ collector }) => collector.collector));
