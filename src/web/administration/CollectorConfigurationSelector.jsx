@@ -51,6 +51,24 @@ class CollectorConfigurationSelector extends React.Component {
     this.setState({ selectedConfiguration: undefined });
   };
 
+  configurationFormatter = (configurationId) => {
+    const { configurations, collectors } = this.props;
+    const configuration = configurations.find(c => c.id === configurationId);
+    const collector = collectors.find(b => b.id === configuration.backend_id);
+    return (
+      <span>
+        {configuration.name}&emsp;
+        <small>
+          {collector ?
+            <CollectorIndicator collector={collector.name}
+                                operatingSystem={collector.node_operating_system} /> :
+            <em>Unknown collector</em>
+          }
+        </small>
+      </span>
+    );
+  };
+
   renderConfigurationSummary = (selectedConfiguration, selectedCollectors) => {
     const formattedSummary = selectedCollectors.map(({ id, collector }) => {
       return (
@@ -116,29 +134,13 @@ class CollectorConfigurationSelector extends React.Component {
 
     const selectedConfigurationIds = this.getSelectedConfigurationIds(selectedCollectors);
 
-    const configurationFormatter = (configurationId) => {
-      const configuration = configurations.find(c => c.id === configurationId);
-      const collector = collectors.find(b => b.id === configuration.backend_id);
-      return (
-        <span>
-          {configuration.name}&emsp;
-          <small>
-            {collector ?
-              <CollectorIndicator collector={collector.name} operatingSystem={collector.node_operating_system} /> :
-              <em>Unknown collector</em>
-            }
-          </small>
-        </span>
-      );
-    };
-
     return (
       <span>
         <SelectPopover id="status-filter"
                        title="Apply configuration"
                        triggerNode={<Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>}
                        items={configurationIds}
-                       itemFormatter={configurationFormatter}
+                       itemFormatter={this.configurationFormatter}
                        onItemSelect={this.handleConfigurationSelect}
                        selectedItems={selectedConfigurationIds}
                        filterPlaceholder="Filter by configuration" />
