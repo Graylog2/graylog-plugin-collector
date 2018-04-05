@@ -33,6 +33,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -48,15 +50,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Api(value = "AltCollector", description = "Manage collector fleet")
 @Path("/altcollectors")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AltCollectorResource extends RestResource implements PluginRestResource {
+    private static final Logger LOG = LoggerFactory.getLogger(AltCollectorResource.class);
+
     private final AltCollectorService collectorService;
     private final ActionService actionService;
-    private final AltCollectorResource.LostCollectorFunction lostCollectorFunction;
+    private final LostCollectorFunction lostCollectorFunction;
     private final Supplier<CollectorSystemConfiguration> configSupplier;
 
     @Inject
@@ -65,7 +73,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                                 Supplier<CollectorSystemConfiguration> configSupplier) {
         this.collectorService = collectorService;
         this.actionService = actionService;
-        this.lostCollectorFunction = new AltCollectorResource.LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
+        this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
     }
 
@@ -155,18 +163,30 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     public Response assignConfiguration(@ApiParam(name = "JSON body", required = true)
                                          @Valid @NotNull CollectorAssignmentsRequest request) throws NotFoundException {
-        for (CollectorConfigurationRelationRequest relation : request.assignments()) {
+        List<String> nodeIdList = request.assignments().stream()
+                .filter(distinctByKey(CollectorConfigurationRelationRequest::nodeId))
+                .map(CollectorConfigurationRelationRequest::nodeId)
+                .collect(Collectors.toList());
+
+        for (String nodeId : nodeIdList) {
+            List<CollectorConfigurationRelation> nodeRelations = request.assignments().stream()
+                    .filter(a -> a.nodeId().equals(nodeId))
+                    .map(a -> CollectorConfigurationRelation.create(a.backendId(), a.configurationId()))
+                    .collect(Collectors.toList());
             try {
-                Collector collector = collectorService.assignConfiguration(
-                        relation.nodeId(),
-                        relation.backendId(),
-                        relation.configurationId());
+                Collector collector = collectorService.assignConfiguration(nodeId, nodeRelations);
                 collectorService.save(collector);
             } catch (org.graylog2.database.NotFoundException e) {
                 throw new NotFoundException(e.getMessage());
             }
         }
+
         return Response.accepted().build();
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
     @VisibleForTesting

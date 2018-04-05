@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
@@ -109,30 +111,25 @@ public class AltCollectorService {
                 collectorVersion);
     }
 
-    public Collector assignConfiguration(String collectorNodeId, String backendId, String configurationId) throws NotFoundException{
+    public Collector assignConfiguration(String collectorNodeId, List<CollectorConfigurationRelation> assignments) throws NotFoundException{
         Collector collector = findByNodeId(collectorNodeId);
         if (collector == null) {
             throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
         }
-        if (backendService.load(backendId) == null) {
-            throw new NotFoundException("Couldn't find backend with ID " + backendId);
-        }
-        if (configurationService.load(configurationId) == null) {
-            throw new NotFoundException("Couldn't find configuration with ID " + configurationId);
+        for (CollectorConfigurationRelation assignment : assignments) {
+            CollectorBackend backend = backendService.load(assignment.backendId());
+            if (backend == null) {
+                throw new NotFoundException("Couldn't find backend with ID " + assignment.backendId());
+            }
+            CollectorConfiguration configuration = configurationService.load(assignment.configurationId());
+            if (configuration == null) {
+                throw new NotFoundException("Couldn't find configuration with ID " + assignment.configurationId());
+            }
+            if (!configuration.backendId().equals(backend.id())) {
+                throw new NotFoundException("Configuration doesn't match backend ID " + assignment.backendId());
+            }
         }
 
-        List<CollectorConfigurationRelation> assignments = collector.assignments();
-        if (assignments != null && assignments.size() > 0) {
-            for (int i = 0; i < assignments.size(); i++) {
-                CollectorConfigurationRelation relation = assignments.get(i);
-                if (relation.backendId().equalsIgnoreCase(backendId)) {
-                    assignments.set(i, CollectorConfigurationRelation.create(backendId, configurationId));
-                }
-            }
-        } else {
-            assignments = Lists.newArrayList();
-            assignments.add(CollectorConfigurationRelation.create(backendId, configurationId));
-        }
         Collector toSave = collector.toBuilder()
                 .assignments(assignments)
                 .build();
