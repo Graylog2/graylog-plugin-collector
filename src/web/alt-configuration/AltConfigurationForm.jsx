@@ -114,7 +114,8 @@ const AltConfigurationForm = React.createClass({
               <HelpBlock>Choose the log collector this configuration is meant for.</HelpBlock>
             </FormGroup>
 
-            <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
+            <FormGroup controlId="configuration-editor">
+              <ControlLabel>Configuration</ControlLabel>
               <SourceCodeEditor id="configuration-text-editor"
                                 value={this.state.formData.template}
                                 onChange={this._onSourceChange} />
@@ -124,7 +125,8 @@ const AltConfigurationForm = React.createClass({
                       onClick={() => this._onShowSource(this.props.configuration.id)}>
                 Preview
               </Button>
-            </Input>
+              <HelpBlock>Collector configuration, see quick reference for more information.</HelpBlock>
+            </FormGroup>
           </fieldset>
 
           <Row>
