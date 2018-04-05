@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Reflux from 'reflux';
-import { Button, Col, ControlLabel, FormGroup, HelpBlock, Row } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, ControlLabel, FormGroup, HelpBlock, Row } from 'react-bootstrap';
 
 import { Select, SourceCodeEditor } from 'components/common';
 import { Input } from 'components/bootstrap';
@@ -150,17 +150,12 @@ const AltConfigurationForm = React.createClass({
 
           <Row>
             <Col md={12}>
-              <div className="form-group">
-                <Button type="submit"
-                        bsStyle="primary"
-                        style={{ marginRight: 10 }}
-                        disabled={this.hasErrors()}>
-                  Save
-                </Button>
-                <Button type="button" onClick={this._onCancel}>
-                  Cancel
-                </Button>
-              </div>
+              <FormGroup>
+                <ButtonToolbar>
+                  <Button type="submit" bsStyle="primary" disabled={this.hasErrors()}>Save</Button>
+                  <Button type="button" onClick={this._onCancel}>Cancel</Button>
+                </ButtonToolbar>
+              </FormGroup>
             </Col>
           </Row>
         </form>
