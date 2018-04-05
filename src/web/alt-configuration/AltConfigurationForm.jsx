@@ -9,6 +9,7 @@ import history from 'util/History';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import SourceViewModal from './SourceViewModal';
+import CollectorsActions from '../configurations/CollectorsActions';
 import CollectorsStore from '../configurations/CollectorsStore';
 
 const AltConfigurationForm = React.createClass({
@@ -31,7 +32,7 @@ const AltConfigurationForm = React.createClass({
   },
 
   componentDidMount() {
-    CollectorsStore.list();
+    CollectorsActions.list();
   },
 
   _save() {
