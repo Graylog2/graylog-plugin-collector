@@ -30,11 +30,11 @@ class CollectorConfigurationSelector extends React.Component {
 
   handleConfigurationSelect = (configurationIds, hideCallback) => {
     hideCallback();
-    let configuration;
+    let configurations = [];
     if (configurationIds.length > 0) {
-      configuration = this.props.configurations.find(c => configurationIds[0] === c.id);
+      configurations = this.props.configurations.filter(c => configurationIds.includes(c.id));
     }
-    this.setState({ nextAssignedConfigurations: configuration }, this.modal.open);
+    this.setState({ nextAssignedConfigurations: configurations }, this.modal.open);
   };
 
   confirmConfigurationChange = (doneCallback) => {
