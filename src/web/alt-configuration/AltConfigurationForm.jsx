@@ -68,8 +68,8 @@ const AltConfigurationForm = React.createClass({
     history.goBack();
   },
 
-  _onShowSource(id) {
-    this.refs[`modal_${id}`].open();
+  _onShowSource() {
+    this.modal.open();
   },
 
   _formatCollectorOptions() {
@@ -119,7 +119,7 @@ const AltConfigurationForm = React.createClass({
               <Button className="pull-right"
                       bsStyle="link"
                       bsSize="sm"
-                      onClick={() => this._onShowSource(this.props.configuration.id)}>
+                      onClick={this._onShowSource}>
                 Preview
               </Button>
               <HelpBlock>Collector configuration, see quick reference for more information.</HelpBlock>
@@ -141,7 +141,7 @@ const AltConfigurationForm = React.createClass({
             </Col>
           </Row>
         </form>
-        <SourceViewModal ref={`modal_${this.props.configuration.id}`}
+        <SourceViewModal ref={(c) => { this.modal = c; }}
                          configurationId={this.props.configuration.id}
                          preview />
       </div>
