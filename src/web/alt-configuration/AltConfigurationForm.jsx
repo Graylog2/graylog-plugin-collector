@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Reflux from 'reflux';
+import lodash from 'lodash';
 import { Button, ButtonToolbar, Col, ControlLabel, FormGroup, HelpBlock, Row } from 'react-bootstrap';
 
 import { Select, SourceCodeEditor } from 'components/common';
@@ -57,27 +58,22 @@ const AltConfigurationForm = React.createClass({
     }
   },
 
+  _formDataUpdate(key) {
+    return (nextValue) => {
+      const nextFormData = lodash.cloneDeep(this.state.formData);
+      nextFormData[key] = nextValue;
+      this.setState({ formData: nextFormData });
+    };
+  },
+
   _onNameChange(event) {
     const nextName = event.target.value;
-    const formData = this.state.formData;
-    formData.name = nextName;
-    if (!this._validConfigurationName(nextName)) {
-      this.setState({ formData, error: true, error_message: 'Configuration with that name already exists!' });
+    this._formDataUpdate('name')(nextName);
+    if (this._validConfigurationName(nextName)) {
+      this.setState({ error: false, error_message: '' });
     } else {
-      this.setState({ formData, error: false, error_message: '' });
+      this.setState({ error: true, error_message: 'Configuration with that name already exists!' });
     }
-  },
-
-  _changeCollectorDropdown(id) {
-    const formData = this.state.formData;
-    formData.backend_id = id;
-    this.setState(formData);
-  },
-
-  _onSourceChange(value) {
-    const formData = this.state.formData;
-    formData.template = value;
-    this.setState({ formData });
   },
 
   _onSubmit(event) {
@@ -127,7 +123,7 @@ const AltConfigurationForm = React.createClass({
               <Select inputProps={{ id: 'backend_id' }}
                       options={this._formatCollectorOptions()}
                       value={this.state.formData.backend_id}
-                      onChange={this._changeCollectorDropdown}
+                      onChange={this._formDataUpdate('backend_id')}
                       placeholder="Collector"
                       required />
               <HelpBlock>Choose the log collector this configuration is meant for.</HelpBlock>
@@ -137,7 +133,7 @@ const AltConfigurationForm = React.createClass({
               <ControlLabel>Configuration</ControlLabel>
               <SourceCodeEditor id="template"
                                 value={this.state.formData.template}
-                                onChange={this._onSourceChange} />
+                                onChange={this._formDataUpdate('template')} />
               <Button className="pull-right"
                       bsStyle="link"
                       bsSize="sm"
