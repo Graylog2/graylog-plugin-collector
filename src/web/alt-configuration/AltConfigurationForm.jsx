@@ -7,13 +7,14 @@ import { Select, SourceCodeEditor } from 'components/common';
 import { Input } from 'components/bootstrap';
 import history from 'util/History';
 
-import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import SourceViewModal from './SourceViewModal';
 import CollectorsActions from '../configurations/CollectorsActions';
 import CollectorsStore from '../configurations/CollectorsStore';
+import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
+import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
 
 const AltConfigurationForm = React.createClass({
-  mixins: [Reflux.connect(CollectorsStore)],
+  mixins: [Reflux.connect(CollectorsStore), Reflux.connect(CollectorConfigurationsStore)],
   propTypes: {
     configuration: PropTypes.object.isRequired,
   },
@@ -22,6 +23,8 @@ const AltConfigurationForm = React.createClass({
     return {
       editor: undefined,
       parseErrors: [],
+      error: false,
+      error_message: '',
       formData: {
         id: this.props.configuration.id,
         name: this.props.configuration.name,
@@ -33,19 +36,36 @@ const AltConfigurationForm = React.createClass({
 
   componentDidMount() {
     CollectorsActions.list();
+    CollectorConfigurationsActions.list();
+  },
+
+  hasErrors() {
+    return this.state.error || this.state.parseErrors.length !== 0;
+  },
+
+  _validConfigurationName(name) {
+    // Check if configurations already contain a configuration with the given name.
+    const currentConfiguration = this.props.configuration;
+    return !this.state.configurations
+      .filter(config => config.id !== currentConfiguration.id)
+      .some(configuration => configuration.name === name);
   },
 
   _save() {
-    if (this.state.parseErrors.length === 0) {
-      CollectorConfigurationsActions.updateConfiguration.triggerPromise(this.state.formData);
+    if (!this.hasErrors()) {
+      CollectorConfigurationsActions.updateConfiguration(this.state.formData);
     }
   },
 
   _onNameChange(event) {
-    // TODO: validate if name is unique
+    const nextName = event.target.value;
     const formData = this.state.formData;
-    formData.name = event.target.value;
-    this.setState({ formData });
+    formData.name = nextName;
+    if (!this._validConfigurationName(nextName)) {
+      this.setState({ formData, error: true, error_message: 'Configuration with that name already exists!' });
+    } else {
+      this.setState({ formData, error: false, error_message: '' });
+    }
   },
 
   _changeCollectorDropdown(id) {
@@ -96,7 +116,8 @@ const AltConfigurationForm = React.createClass({
                    id="name"
                    label="Name"
                    onChange={this._onNameChange}
-                   help="Configuration name."
+                   bsStyle={this.state.error ? 'error' : null}
+                   help={this.state.error ? this.state.error_message : 'Name for this configuration'}
                    value={this.state.formData.name}
                    autoFocus
                    required />
@@ -132,7 +153,8 @@ const AltConfigurationForm = React.createClass({
               <div className="form-group">
                 <Button type="submit"
                         bsStyle="primary"
-                        style={{ marginRight: 10 }}>
+                        style={{ marginRight: 10 }}
+                        disabled={this.hasErrors()}>
                   Save
                 </Button>
                 <Button type="button" onClick={this._onCancel}>
