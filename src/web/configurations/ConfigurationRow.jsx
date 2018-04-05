@@ -2,16 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 
-import EditConfigurationModal from './EditConfigurationModal';
 import CopyConfigurationModal from './CopyConfigurationModal';
 
 const ConfigurationRow = React.createClass({
   propTypes: {
     configuration: PropTypes.object.isRequired,
-    onUpdate: PropTypes.func.isRequired,
     onCopy: PropTypes.func.isRequired,
     validateConfiguration: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -39,17 +38,13 @@ const ConfigurationRow = React.createClass({
 
     return (
       <tr>
-        <td className="name limited">
-          <Link to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_ID')(configuration.id)}>
-            {configuration.name}
-          </Link>
-        </td>
+        <td className="name limited">{configuration.name}</td>
         <td />
         <td>
           <ButtonToolbar>
-            <EditConfigurationModal configuration={this.props.configuration}
-                                    updateConfiguration={this.props.onUpdate}
-                                    validConfigurationName={this.props.validateConfiguration} />
+            <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_ID')(configuration.id)}>
+              <Button onClick={this.openModal} bsStyle="info" bsSize="xsmall">Edit</Button>
+            </LinkContainer>
             <DropdownButton id={`more-actions-${this.props.configuration.id}`}
                             title="More actions"
                             bsSize="xsmall"

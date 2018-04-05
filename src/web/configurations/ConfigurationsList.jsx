@@ -34,13 +34,6 @@ const ConfigurationsList = React.createClass({
       });
   },
 
-  _updateConfiguration(configuration, callback) {
-    CollectorConfigurationsActions.updateConfiguration(configuration)
-      .then(() => {
-        callback();
-      });
-  },
-
   _copyConfiguration(configuration, name, callback) {
     CollectorConfigurationsActions.copyConfiguration(configuration, name)
       .then(() => {
@@ -61,7 +54,6 @@ const ConfigurationsList = React.createClass({
     return (
       <ConfigurationRow key={configuration.id}
                         configuration={configuration}
-                        onUpdate={this._updateConfiguration}
                         onCopy={this._copyConfiguration}
                         validateConfiguration={this._validConfigurationName}
                         onDelete={this._onDelete} />

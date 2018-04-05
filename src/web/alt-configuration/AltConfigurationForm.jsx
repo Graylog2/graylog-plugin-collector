@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import Reflux from 'reflux';
+import { Button, Col, ControlLabel, FormGroup, HelpBlock, Row } from 'react-bootstrap';
 
-import { SourceCodeEditor } from 'components/common';
+import { Select, SourceCodeEditor } from 'components/common';
 import { Input } from 'components/bootstrap';
 import history from 'util/History';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import SourceViewModal from './SourceViewModal';
+import CollectorsStore from '../configurations/CollectorsStore';
 
 const AltConfigurationForm = React.createClass({
+  mixins: [Reflux.connect(CollectorsStore)],
   propTypes: {
     configuration: PropTypes.object.isRequired,
   },
@@ -27,6 +30,10 @@ const AltConfigurationForm = React.createClass({
     };
   },
 
+  componentDidMount() {
+    CollectorsStore.list();
+  },
+
   _getId(prefixIdName) {
     return this.state.name !== undefined ? prefixIdName + this.state.name : prefixIdName;
   },
@@ -38,9 +45,16 @@ const AltConfigurationForm = React.createClass({
   },
 
   _onNameChange(event) {
+    // TODO: validate if name is unique
     const formData = this.state.formData;
     formData.name = event.target.value;
     this.setState({ formData });
+  },
+
+  _changeCollectorDropdown(id) {
+    const formData = this.state.formData;
+    formData.backend_id = id;
+    this.setState(formData);
   },
 
   _onSourceChange(value) {
@@ -62,6 +76,20 @@ const AltConfigurationForm = React.createClass({
     this.refs[`modal_${id}`].open();
   },
 
+  _formatCollectorOptions() {
+    const options = [];
+
+    if (this.state.collectors) {
+      this.state.collectors.forEach((collector) => {
+        options.push({ value: collector.id, label: collector.name });
+      });
+    } else {
+      options.push({ value: 'none', label: 'Loading collector list...', disable: true });
+    }
+
+    return options;
+  },
+
   render() {
     return (
       <div>
@@ -72,8 +100,19 @@ const AltConfigurationForm = React.createClass({
                    label="Name"
                    onChange={this._onNameChange}
                    help="Configuration name."
-                   value={this.state.formData.name} />
+                   value={this.state.formData.name}
+                   autoFocus
+                   required />
 
+            <FormGroup controlId={this._getId('log-collector')}>
+              <ControlLabel>Collector</ControlLabel>
+              <Select options={this._formatCollectorOptions()}
+                      value={this.state.formData.backend_id}
+                      onChange={this._changeCollectorDropdown}
+                      placeholder="Collector"
+                      required />
+              <HelpBlock>Choose the log collector this configuration is meant for.</HelpBlock>
+            </FormGroup>
 
             <Input id="configuration-editor" label="Configuration" help="Collector configuration, see quick reference for more information.">
               <SourceCodeEditor id="configuration-text-editor"
