@@ -2,6 +2,9 @@ package org.graylog.plugins.collector.altConfigurations;
 
 import com.google.common.collect.Iterables;
 import com.mongodb.BasicDBObject;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.StringTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -27,11 +30,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Singleton
 public class AltConfigurationService {
     private static final Logger LOG = LoggerFactory.getLogger(AltConfigurationService.class);
-    private static Configuration templateConfiguration = new Configuration(Configuration.VERSION_2_3_27);
+    private static final Configuration templateConfiguration = new Configuration(Configuration.VERSION_2_3_27);
+    private static final StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
     private static final String COLLECTION_NAME = "collector_configurations";
     private final JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection;
@@ -44,7 +49,11 @@ public class AltConfigurationService {
                 CollectorConfiguration.class,
                 ObjectId.class,
                 mapper.get());
-        templateConfiguration.setTemplateLoader(new MongoDbTemplateLoader(dbCollection));
+        MongoDbTemplateLoader mongoDbTemplateLoader = new MongoDbTemplateLoader(dbCollection);
+        MultiTemplateLoader multiTemplateLoader = new MultiTemplateLoader(new TemplateLoader[] {
+                mongoDbTemplateLoader,
+                stringTemplateLoader });
+        templateConfiguration.setTemplateLoader(multiTemplateLoader);
         templateConfiguration.setSharedVariable("indent", new IndentTemplateDirective());
     }
 
@@ -117,9 +126,8 @@ public class AltConfigurationService {
         );
     }
 
-    public String renderPreview(String configurationId) {
+    public String renderPreview(String template) {
         Map<String, Object> context = new HashMap<>();
-
         context.put("collectorId", "<collector id>");
         context.put("nodeId", "<node id>");
         context.put("collectorVersion", "<version>");
@@ -128,8 +136,17 @@ public class AltConfigurationService {
         context.put("cpuIdle", "<cpu idle>");
         context.put("load1", "<load 1>");
 
-        return renderTemplate(configurationId, context);
+        String previewName = UUID.randomUUID().toString();
+        stringTemplateLoader.putTemplate(previewName, template);
+        String result = renderTemplate(previewName, context);
+        stringTemplateLoader.removeTemplate(previewName);
+        try {
+            templateConfiguration.removeTemplateFromCache(previewName);
+        } catch (IOException e) {
+            LOG.debug("Couldn't remove temporary template from cache: " + e.getMessage());
+        }
 
+        return result;
     }
 
     private String renderTemplate(String configurationId, Map<String, Object> context) {

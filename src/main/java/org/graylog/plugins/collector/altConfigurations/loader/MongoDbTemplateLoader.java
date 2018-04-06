@@ -19,7 +19,13 @@ public class MongoDbTemplateLoader implements TemplateLoader {
 
     @Override
     public Object findTemplateSource(String id) throws IOException {
-        CollectorConfiguration collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", unlocalize(id)));
+        CollectorConfiguration collectorConfiguration;
+        try {
+            collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", unlocalize(id)));
+        } catch (IllegalArgumentException e) {
+            // no ObjectID so skip MongoDB loader and try with next one
+            return null;
+        }
         if (collectorConfiguration == null) {
             throw new IOException("Can't find template: " + unlocalize(id));
         }
@@ -41,6 +47,10 @@ public class MongoDbTemplateLoader implements TemplateLoader {
     }
 
     private String unlocalize(String s) {
-        return s.substring(0, s.indexOf("_"));
+        if (s.contains("_")) {
+            return s.substring(0, s.indexOf("_"));
+        } else {
+            return s;
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationPreviewRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.ConfigurationPreviewRenderResponse;
@@ -89,15 +90,15 @@ public class AltConfigurationResource extends RestResource implements PluginRest
         return this.configurationService.renderConfigurationForCollector(collector, configurationId);
     }
 
-    @GET
-    @Path("/render/preview/{configurationId}")
+    @POST
+    @Path("/render/preview")
     @Produces(MediaType.APPLICATION_JSON)
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
-    public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
-                                                                  @PathParam("configurationId") String configurationId) {
-        String preview = this.configurationService.renderPreview(configurationId);
+    public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "JSON body", required = true)
+                                                                  @Valid @NotNull ConfigurationPreviewRequest request) {
+        String preview = this.configurationService.renderPreview(request.template());
         return ConfigurationPreviewRenderResponse.create(preview);
     }
 
