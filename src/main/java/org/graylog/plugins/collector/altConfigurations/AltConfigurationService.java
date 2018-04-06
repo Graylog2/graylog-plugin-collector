@@ -70,13 +70,14 @@ public class AltConfigurationService {
 
     public CollectorConfiguration copyConfiguration(String id, String name) {
         CollectorConfiguration collectorConfiguration = load(id);
-        return CollectorConfiguration.create(collectorConfiguration.backendId(), name, collectorConfiguration.template());
+        return CollectorConfiguration.create(collectorConfiguration.backendId(), name, collectorConfiguration.color(), collectorConfiguration.template());
     }
 
     public CollectorConfiguration fromRequest(CollectorConfiguration request) {
         CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(
                 request.backendId(),
                 request.name(),
+                request.color(),
                 request.template());
         return collectorConfiguration;
     }
@@ -86,6 +87,7 @@ public class AltConfigurationService {
                 id,
                 request.backendId(),
                 request.name(),
+                request.color(),
                 request.template());
         return collectorConfiguration;
     }
@@ -110,6 +112,7 @@ public class AltConfigurationService {
                 configuration.id(),
                 configuration.backendId(),
                 configuration.name(),
+                configuration.color(),
                 renderTemplate(configuration.id(), context)
         );
     }

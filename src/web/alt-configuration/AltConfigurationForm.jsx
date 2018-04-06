@@ -4,11 +4,12 @@ import Reflux from 'reflux';
 import lodash from 'lodash';
 import { Button, ButtonToolbar, Col, ControlLabel, FormGroup, HelpBlock, Row } from 'react-bootstrap';
 
-import { Select, SourceCodeEditor } from 'components/common';
+import { ColorPickerPopover, Select, SourceCodeEditor } from 'components/common';
 import { Input } from 'components/bootstrap';
 import history from 'util/History';
-
 import SourceViewModal from './SourceViewModal';
+import ColorLabel from '../common/ColorLabel';
+
 import CollectorsActions from '../configurations/CollectorsActions';
 import CollectorsStore from '../configurations/CollectorsStore';
 import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
@@ -29,6 +30,7 @@ const AltConfigurationForm = React.createClass({
       formData: {
         id: this.props.configuration.id,
         name: this.props.configuration.name,
+        color: this.props.configuration.color,
         backend_id: this.props.configuration.backend_id,
         template: String(this.props.configuration.template),
       },
@@ -117,6 +119,21 @@ const AltConfigurationForm = React.createClass({
                    value={this.state.formData.name}
                    autoFocus
                    required />
+
+            <FormGroup controlId="color">
+              <ControlLabel>Configuration color</ControlLabel>
+              <div>
+                <ColorLabel color={this.state.formData.color} />
+                <div style={{ display: 'inline-block', marginLeft: 15 }}>
+                  <ColorPickerPopover id="color"
+                                      placement="right"
+                                      color={this.state.formData.color}
+                                      triggerNode={<Button bsSize="xsmall">Change color</Button>}
+                                      onChange={this._formDataUpdate('color')} />
+                </div>
+              </div>
+              <HelpBlock>Choose a color to use for this configuration.</HelpBlock>
+            </FormGroup>
 
             <FormGroup controlId="backend_id">
               <ControlLabel>Collector</ControlLabel>
