@@ -22,11 +22,11 @@ const SourceViewModal = React.createClass({
 
   open() {
     this._loadConfiguration();
-    this.refs.sourceModal.open();
+    this.sourceModal.open();
   },
 
   hide() {
-    this.refs.sourceModal.close();
+    this.sourceModal.close();
   },
 
   _loadConfiguration() {
@@ -45,7 +45,7 @@ const SourceViewModal = React.createClass({
 
   render() {
     return (
-      <BootstrapModalWrapper ref="sourceModal">
+      <BootstrapModalWrapper ref={(c) => { this.sourceModal = c; }}>
         <Modal.Header closeButton>
           <Modal.Title><span>Configuration <em>{this.state.name}</em></span></Modal.Title>
         </Modal.Header>
