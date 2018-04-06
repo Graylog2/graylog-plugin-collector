@@ -54,13 +54,9 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.renderPreview.promise(promise);
   },
 
-  createConfiguration(name, collectorId) {
+  createConfiguration(configuration) {
     const url = URLUtils.qualifyUrl(`${this.sourceUrl}/configurations`);
     const method = 'POST';
-    const configuration = {};
-    configuration.name = name;
-    configuration.backend_id = collectorId;
-    configuration.template = '';
 
     const promise = fetch(method, url, configuration);
     promise

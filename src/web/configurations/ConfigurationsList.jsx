@@ -1,13 +1,14 @@
 import React from 'react';
 import Reflux from 'reflux';
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import { DataTable, Spinner } from 'components/common';
+import Routes from 'routing/Routes';
 
 import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
-import EditConfigurationModal from './EditConfigurationModal';
 
 import style from './ConfigurationsList.css';
 
@@ -25,13 +26,6 @@ const ConfigurationsList = React.createClass({
   _validConfigurationName(name) {
     // Check if configurations already contain a configuration with the given name.
     return !this.state.configurations.some((configuration) => configuration.name === name);
-  },
-
-  _createConfiguration(name, collectorId, callback) {
-    CollectorConfigurationsActions.createConfiguration(name, collectorId)
-      .then(() => {
-        callback();
-      });
   },
 
   _copyConfiguration(configuration, name, callback) {
@@ -77,9 +71,9 @@ const ConfigurationsList = React.createClass({
         <Row>
           <Col md={12}>
             <div className="pull-right">
-              <EditConfigurationModal create
-                                      updateConfiguration={this._createConfiguration}
-                                      validConfigurationName={this._validConfigurationName} />
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_NEW')}>
+                <Button onClick={this.openModal} bsStyle="success" bsSize="small">Create Configuration</Button>
+              </LinkContainer>
             </div>
             <h2>Configurations <small>{this.state.configurations.length} total</small></h2>
           </Col>

@@ -8,6 +8,7 @@ import SidecarsStatusPage from 'sidecars/SidecarsStatusPage';
 import ConfigurationPage from 'configurations/ConfigurationPage';
 import SidecarSystemConfiguration from 'system-configuration/SidecarSystemConfiguration';
 import AltConfigurationPage from 'alt-configuration/AltConfigurationPage';
+import NewConfigurationPage from 'alt-configuration/NewConfigurationPage';
 import AdministrationPage from 'administration/AdministrationPage';
 
 const manifest = new PluginManifest(packageJson, {
@@ -16,10 +17,9 @@ const manifest = new PluginManifest(packageJson, {
     { path: '/system/sidecars/:id/status', component: SidecarsStatusPage },
     { path: '/system/sidecars/administration', component: AdministrationPage },
     { path: '/system/sidecars/configuration', component: ConfigurationPage },
-    { path: '/system/sidecars/configuration/:id', component: AltConfigurationPage },
+    { path: '/system/sidecars/configuration/new', component: NewConfigurationPage },
+    { path: '/system/sidecars/configuration/edit/:id', component: AltConfigurationPage },
   ],
-
-  // Adding an element to the top navigation pointing to /sample named "Sample":
 
   systemnavigation: [
     { path: '/system/sidecars', description: 'Sidecars', permissions: 'collectors:read' },

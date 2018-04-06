@@ -7,6 +7,8 @@ import { Button, ButtonToolbar, Col, ControlLabel, FormGroup, HelpBlock, Row } f
 import { ColorPickerPopover, Select, SourceCodeEditor } from 'components/common';
 import { Input } from 'components/bootstrap';
 import history from 'util/History';
+import Routes from 'routing/Routes';
+
 import SourceViewModal from './SourceViewModal';
 import ColorLabel from '../common/ColorLabel';
 
@@ -18,7 +20,18 @@ import CollectorConfigurationsStore from '../configurations/CollectorConfigurati
 const AltConfigurationForm = React.createClass({
   mixins: [Reflux.connect(CollectorsStore), Reflux.connect(CollectorConfigurationsStore)],
   propTypes: {
-    configuration: PropTypes.object.isRequired,
+    action: PropTypes.oneOf(['create', 'edit']),
+    configuration: PropTypes.object,
+  },
+
+  getDefaultProps() {
+    return {
+      action: 'edit',
+      configuration: {
+        color: '#FFFFFF',
+        template: '',
+      },
+    };
   },
 
   getInitialState() {
@@ -56,7 +69,12 @@ const AltConfigurationForm = React.createClass({
 
   _save() {
     if (!this.hasErrors()) {
-      CollectorConfigurationsActions.updateConfiguration(this.state.formData);
+      if (this.props.action === 'create') {
+        CollectorConfigurationsActions.createConfiguration(this.state.formData)
+          .then(() => history.push(Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION')));
+      } else {
+        CollectorConfigurationsActions.updateConfiguration(this.state.formData);
+      }
     }
   },
 
@@ -165,16 +183,20 @@ const AltConfigurationForm = React.createClass({
             <Col md={12}>
               <FormGroup>
                 <ButtonToolbar>
-                  <Button type="submit" bsStyle="primary" disabled={this.hasErrors()}>Save</Button>
+                  <Button type="submit" bsStyle="primary" disabled={this.hasErrors()}>
+                    {this.props.action === 'create' ? 'Create' : 'Update'}
+                  </Button>
                   <Button type="button" onClick={this._onCancel}>Cancel</Button>
                 </ButtonToolbar>
               </FormGroup>
             </Col>
           </Row>
         </form>
-        <SourceViewModal ref={(c) => { this.modal = c; }}
+        {this.props.action === 'edit' &&
+          <SourceViewModal ref={(c) => { this.modal = c; }}
                          configurationId={this.props.configuration.id}
                          preview />
+        }
       </div>
     );
   },

@@ -96,7 +96,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
     public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "configurationId", required = true)
-                                        @PathParam("configurationId") String configurationId) {
+                                                                  @PathParam("configurationId") String configurationId) {
         String preview = this.configurationService.renderPreview(configurationId);
         return ConfigurationPreviewRenderResponse.create(preview);
     }

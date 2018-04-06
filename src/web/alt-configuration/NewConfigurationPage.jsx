@@ -1,30 +1,16 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DocumentTitle, PageHeader, Spinner } from 'components/common';
+import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
-
-import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
 import AltConfigurationForm from 'alt-configuration/AltConfigurationForm';
 import ConfigurationHelper from 'alt-configuration/ConfigurationHelper';
 
-const AltConfigurationPage = React.createClass({
-  propTypes: {
-    params: PropTypes.object.isRequired,
-  },
-
-  getInitialState() {
-    return {
-      configuration: undefined,
-    };
-  },
-
+const NewConfigurationPage = React.createClass({
   componentDidMount() {
     this.style.use();
-    this._reloadConfiguration();
   },
 
   componentWillUnmount() {
@@ -33,27 +19,11 @@ const AltConfigurationPage = React.createClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
-  _reloadConfiguration() {
-    CollectorConfigurationsActions.getConfiguration(this.props.params.id).then(this._setConfiguration);
-  },
-
-  _setConfiguration(configuration) {
-    this.setState({ configuration });
-  },
-
-  _isLoading() {
-    return !(this.state.configuration);
-  },
-
   render() {
-    if (this._isLoading()) {
-      return <Spinner />;
-    }
-
     return (
-      <DocumentTitle title="Collector Configuration">
+      <DocumentTitle title="New Collector Configuration">
         <span>
-          <PageHeader title="Collector Configuration">
+          <PageHeader title="New Collector Configuration">
             <span>
               Some words about collector configurations.
             </span>
@@ -77,7 +47,7 @@ const AltConfigurationPage = React.createClass({
 
           <Row className="content">
             <Col md={6}>
-              <AltConfigurationForm configuration={this.state.configuration} />
+              <AltConfigurationForm action="create" />
             </Col>
             <Col md={6}>
               <ConfigurationHelper type="filebeat" />
@@ -89,4 +59,4 @@ const AltConfigurationPage = React.createClass({
   },
 });
 
-export default AltConfigurationPage;
+export default NewConfigurationPage;

@@ -41,7 +41,7 @@ const ConfigurationRow = React.createClass({
         <td />
         <td>
           <ButtonToolbar>
-            <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_ID')(configuration.id)}>
+            <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_EDIT_ID')(configuration.id)}>
               <Button onClick={this.openModal} bsStyle="info" bsSize="xsmall">Edit</Button>
             </LinkContainer>
             <DropdownButton id={`more-actions-${this.props.configuration.id}`}
