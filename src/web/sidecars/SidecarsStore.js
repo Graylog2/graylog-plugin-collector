@@ -68,17 +68,31 @@ const SidecarsStore = Reflux.createStore({
     SidecarsActions.getSidecarActions.promise(promise);
   },
 
-  assignConfigurations(sidecars, configuration) {
-    const body = { assignments: [] };
-    sidecars.forEach((sidecar) => {
-      body.assignments.push({
-        node_id: sidecar.node_id,
-        backend_id: configuration.backend_id,
-        configuration_id: configuration.id,
+  toConfigurationAssignmentDto(nodeId, backendId, configurationId) {
+    return {
+      node_id: nodeId,
+      backend_id: backendId,
+      configuration_id: configurationId,
+    };
+  },
+
+  assignConfigurations(sidecars, configurations) {
+    const assignments = [];
+    sidecars.forEach(({ sidecar, collector }) => {
+      // Add all previous assignments, but the one that was changed
+      sidecar.assignments
+        .filter(assignment => assignment.backend_id !== collector.id)
+        .forEach(({ backend_id, configuration_id }) => {
+          assignments.push(this.toConfigurationAssignmentDto(sidecar.node_id, backend_id, configuration_id));
+        });
+
+      // Add new assignments
+      configurations.forEach((configuration) => {
+        assignments.push(this.toConfigurationAssignmentDto(sidecar.node_id, collector.id, configuration.id));
       });
     });
 
-    const promise = fetch('PUT', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/configurations'), body)
+    const promise = fetch('PUT', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/configurations'), { assignments: assignments })
       .then(
         (response) => {
           UserNotification.success('Collectors will change their configurations shortly.',

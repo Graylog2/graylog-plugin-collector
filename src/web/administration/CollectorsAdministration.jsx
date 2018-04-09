@@ -51,20 +51,14 @@ const CollectorsAdministration = createReactClass({
     return `${sidecar.node_id}-${collector.name}`;
   },
 
-  handleConfigurationChange(selectedConfiguration, doneCallback) {
+  handleConfigurationChange(selectedConfigurations, doneCallback) {
     const { selected } = this.state;
+    const { sidecarCollectors } = this.props;
 
-    if (!selectedConfiguration) {
-      // TODO: Handle removing configuration
-      return;
-    }
+    const selectedSidecars = sidecarCollectors
+      .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)));
 
-    const selectedSidecars = this.props.sidecarCollectors
-      .filter(({ collector }) => selectedConfiguration.backend_id === collector.id)
-      .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)))
-      .map(({ sidecar }) => sidecar);
-
-    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfiguration).then(() => doneCallback());
+    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => doneCallback());
   },
 
   formatHeader() {
