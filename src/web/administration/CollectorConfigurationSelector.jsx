@@ -73,7 +73,7 @@ class CollectorConfigurationSelector extends React.Component {
       actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration to:</span>;
     } else {
       const removedConfiguration = lodash.without(assignedConfigurations, ...nextAssignedConfigurations)[0];
-      actionSummary = <span>You are going to <b>remove</b> configuration <em>{removedConfiguration.name}</em> from:</span>;
+      actionSummary = removedConfiguration ? <span>You are going to <b>remove</b> configuration <em>{removedConfiguration.name}</em> from:</span> : '';
     }
 
     const formattedSummary = selectedCollectors.map(({ id, collector }) => {
@@ -129,7 +129,8 @@ class CollectorConfigurationSelector extends React.Component {
       );
     }
 
-    const assignedConfigurations = this.getAssignedConfigurations(selectedCollectors, configurations);
+    const assignedConfigurations = this.getAssignedConfigurations(selectedCollectors, configurations)
+      .filter(configuration => selectedLogCollectors[0].id === configuration.backend_id);
 
     return (
       <span>
