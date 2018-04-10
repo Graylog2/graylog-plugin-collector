@@ -7,6 +7,7 @@ import { SelectPopover } from 'components/common';
 import { BootstrapModalConfirm } from 'components/bootstrap';
 import { naturalSortIgnoreCase } from 'util/SortUtils';
 import CollectorIndicator from '../sidecars/CollectorIndicator';
+import ColorLabel from '../common/ColorLabel';
 
 class CollectorConfigurationSelector extends React.Component {
   static propTypes = {
@@ -51,7 +52,7 @@ class CollectorConfigurationSelector extends React.Component {
     const collector = collectors.find(b => b.id === configuration.backend_id);
     return (
       <span>
-        {configuration.name}&emsp;
+        <ColorLabel color={configuration.color} size="xsmall" /> {configuration.name}&emsp;
         <small>
           {collector ?
             <CollectorIndicator collector={collector.name}
