@@ -8,14 +8,21 @@ import OperatingSystemIcon from './OperatingSystemIcon';
 const CollectorIndicator = createReactClass({
   propTypes: {
     collector: PropTypes.string.isRequired,
-    operatingSystem: PropTypes.string.isRequired,
+    operatingSystem: PropTypes.string,
+  },
+
+  getDefaultProps() {
+    return {
+      operatingSystem: undefined,
+    };
   },
 
   render() {
     const { collector, operatingSystem } = this.props;
     return (
       <span>
-        <OperatingSystemIcon operatingSystem={operatingSystem} /> {collector} on {lodash.upperFirst(operatingSystem)}
+        <OperatingSystemIcon operatingSystem={operatingSystem} /> {collector}
+        {operatingSystem && <span> on {lodash.upperFirst(operatingSystem)}</span>}
       </span>
     );
   },
