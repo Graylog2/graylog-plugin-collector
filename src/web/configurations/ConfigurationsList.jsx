@@ -7,13 +7,15 @@ import { DataTable, Spinner } from 'components/common';
 import Routes from 'routing/Routes';
 
 import CollectorConfigurationsStore from './CollectorConfigurationsStore';
-import ConfigurationRow from './ConfigurationRow';
 import CollectorConfigurationsActions from './CollectorConfigurationsActions';
+import CollectorsStore from './CollectorsStore';
+import CollectorsActions from './CollectorsActions';
+import ConfigurationRow from './ConfigurationRow';
 
 import style from './ConfigurationsList.css';
 
 const ConfigurationsList = React.createClass({
-  mixins: [Reflux.connect(CollectorConfigurationsStore)],
+  mixins: [Reflux.connect(CollectorConfigurationsStore), Reflux.connect(CollectorsStore)],
 
   componentDidMount() {
     this._reloadConfiguration();
@@ -21,6 +23,7 @@ const ConfigurationsList = React.createClass({
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.list();
+    CollectorsActions.list();
   },
 
   _validConfigurationName(name) {
@@ -45,9 +48,11 @@ const ConfigurationsList = React.createClass({
   },
 
   _collectorConfigurationFormatter(configuration) {
+    const configurationCollector = this.state.collectors.find(collector => collector.id === configuration.backend_id);
     return (
       <ConfigurationRow key={configuration.id}
                         configuration={configuration}
+                        collector={configuration.backend_id === '5abcaed7cbde9341b7db6eb5' ? configurationCollector : undefined}
                         onCopy={this._copyConfiguration}
                         validateConfiguration={this._validConfigurationName}
                         onDelete={this._onDelete} />
@@ -55,7 +60,7 @@ const ConfigurationsList = React.createClass({
   },
 
   _isLoading() {
-    return !this.state.configurations;
+    return !this.state.configurations || !this.state.collectors;
   },
 
   render() {
@@ -63,7 +68,7 @@ const ConfigurationsList = React.createClass({
       return <Spinner />;
     }
 
-    const headers = ['Configuration', 'Tags', 'Actions'];
+    const headers = ['Configuration', 'Color', 'Collector'];
     const filterKeys = ['name', 'id'];
 
     return (

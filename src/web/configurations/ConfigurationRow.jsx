@@ -5,25 +5,26 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 
+import CollectorIndicator from '../sidecars/CollectorIndicator';
+import ColorLabel from '../common/ColorLabel';
 import CopyConfigurationModal from './CopyConfigurationModal';
+
+import styles from './ConfigurationRow.css';
 
 const ConfigurationRow = React.createClass({
   propTypes: {
     configuration: PropTypes.object.isRequired,
+    collector: PropTypes.object,
     onCopy: PropTypes.func.isRequired,
     validateConfiguration: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
   },
 
-  componentDidMount() {
-    this.style.use();
+  getDefaultProps() {
+    return {
+      collector: {},
+    };
   },
-
-  componentWillUnmount() {
-    this.style.unuse();
-  },
-
-  style: require('!style/useable!css!styles/SidecarStyles.css'),
 
   _handleDelete() {
     const configuration = this.props.configuration;
@@ -33,13 +34,17 @@ const ConfigurationRow = React.createClass({
   },
 
   render() {
-    const configuration = this.props.configuration;
+    const { collector, configuration } = this.props;
 
     return (
       <tr>
-        <td className="name limited">{configuration.name}</td>
-        <td />
+        <td className={styles.name}>{configuration.name}</td>
+        <td className={styles.color}><ColorLabel color={configuration.color} size="small" /></td>
         <td>
+          <CollectorIndicator collector={collector.name || 'Unknown collector'}
+                              operatingSystem={collector.node_operating_system} />
+        </td>
+        <td className={styles.actions}>
           <ButtonToolbar>
             <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_CONFIGURATION_EDIT_ID')(configuration.id)}>
               <Button onClick={this.openModal} bsStyle="info" bsSize="xsmall">Edit</Button>
