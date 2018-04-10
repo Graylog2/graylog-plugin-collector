@@ -16,7 +16,6 @@ import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfigurationRequest;
@@ -50,7 +49,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -127,7 +125,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
         final Collector newCollector;
         final Collector oldCollector = collectorService.findByNodeId(collectorId);
-        List<CollectorConfigurationRelation> assignments = null;
+        List<ConfigurationAssignment> assignments = null;
         if (oldCollector != null) {
             assignments = oldCollector.assignments();
             newCollector = oldCollector.toBuilder()
@@ -171,10 +169,9 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                 .collect(Collectors.toList());
 
         for (String nodeId : nodeIdList) {
-            List<CollectorConfigurationRelation> nodeRelations = request.nodes().stream()
+            List<ConfigurationAssignment> nodeRelations = request.nodes().stream()
                     .filter(a -> a.nodeId().equals(nodeId))
                     .flatMap(a -> a.assignments().stream())
-                    .map(a -> CollectorConfigurationRelation.create(a.backendId(), a.configurationId()))
                     .collect(Collectors.toList());
             try {
                 Collector collector = collectorService.assignConfiguration(nodeId, nodeRelations);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -37,7 +38,7 @@ public abstract class Collector {
 
     @JsonProperty
     @Nullable
-    public abstract List<CollectorConfigurationRelation> assignments();
+    public abstract List<ConfigurationAssignment> assignments();
 
     @JsonProperty
     public abstract String collectorVersion();
@@ -57,7 +58,7 @@ public abstract class Collector {
         public abstract Builder nodeId(String title);
         public abstract Builder nodeName(String title);
         public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
-        public abstract Builder assignments(List<CollectorConfigurationRelation> assignments);
+        public abstract Builder assignments(List<ConfigurationAssignment> assignments);
         public abstract Builder collectorVersion(String collectorVersion);
         public abstract Builder lastSeen(DateTime lastSeen);
         public abstract Collector build();
@@ -68,7 +69,7 @@ public abstract class Collector {
                                    @JsonProperty("node_id") String nodeId,
                                    @JsonProperty("node_name") String nodeName,
                                    @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
-                                   @JsonProperty("assignments") @Nullable List<CollectorConfigurationRelation> assignments,
+                                   @JsonProperty("assignments") @Nullable List<ConfigurationAssignment> assignments,
                                    @JsonProperty("collector_version") String collectorVersion,
                                    @JsonProperty("last_seen") DateTime lastSeen) {
 

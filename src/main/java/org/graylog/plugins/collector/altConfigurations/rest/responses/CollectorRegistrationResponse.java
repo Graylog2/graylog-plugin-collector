@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,14 +42,14 @@ public abstract class CollectorRegistrationResponse {
 
     @JsonProperty
     @Nullable
-    public abstract List<CollectorConfigurationRelation> assignments();
+    public abstract List<ConfigurationAssignment> assignments();
 
     @JsonCreator
     public static CollectorRegistrationResponse create(
             @JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
             @JsonProperty("configuration_override") boolean configurationOverride,
             @JsonProperty("actions") @Nullable List<CollectorAction> actions,
-            @JsonProperty("assignments") @Nullable List<CollectorConfigurationRelation> assignments) {
+            @JsonProperty("assignments") @Nullable List<ConfigurationAssignment> assignments) {
         return new AutoValue_CollectorRegistrationResponse(
                 collectorRegistrationConfiguration,
                 configurationOverride,

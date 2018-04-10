@@ -7,9 +7,9 @@ import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
@@ -111,12 +111,12 @@ public class AltCollectorService {
                 collectorVersion);
     }
 
-    public Collector assignConfiguration(String collectorNodeId, List<CollectorConfigurationRelation> assignments) throws NotFoundException{
+    public Collector assignConfiguration(String collectorNodeId, List<ConfigurationAssignment> assignments) throws NotFoundException{
         Collector collector = findByNodeId(collectorNodeId);
         if (collector == null) {
             throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
         }
-        for (CollectorConfigurationRelation assignment : assignments) {
+        for (ConfigurationAssignment assignment : assignments) {
             CollectorBackend backend = backendService.load(assignment.backendId());
             if (backend == null) {
                 throw new NotFoundException("Couldn't find backend with ID " + assignment.backendId());
