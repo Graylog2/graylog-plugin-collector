@@ -9,13 +9,13 @@ import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorAssignmentsRequest {
+public abstract class NodeConfigurationRequest {
     @JsonProperty
-    public abstract List<CollectorConfigurationRelationRequest> assignments();
+    public abstract List<NodeConfiguration> nodes();
 
     @JsonCreator
-    public static CollectorAssignmentsRequest create(
-            @JsonProperty("assignments") List<CollectorConfigurationRelationRequest> assignments) {
-        return new AutoValue_CollectorAssignmentsRequest(assignments);
+    public static NodeConfigurationRequest create(
+            @JsonProperty("nodes") List<NodeConfiguration> nodeConfigurations) {
+        return new AutoValue_NodeConfigurationRequest(nodeConfigurations);
     }
 }

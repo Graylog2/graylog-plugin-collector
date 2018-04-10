@@ -17,8 +17,9 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfigurationRelation;
-import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorAssignmentsRequest;
-import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorConfigurationRelationRequest;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfiguration;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfigurationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationConfiguration;
@@ -49,6 +50,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -162,15 +164,16 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     public Response assignConfiguration(@ApiParam(name = "JSON body", required = true)
-                                         @Valid @NotNull CollectorAssignmentsRequest request) throws NotFoundException {
-        List<String> nodeIdList = request.assignments().stream()
-                .filter(distinctByKey(CollectorConfigurationRelationRequest::nodeId))
-                .map(CollectorConfigurationRelationRequest::nodeId)
+                                         @Valid @NotNull NodeConfigurationRequest request) throws NotFoundException {
+        List<String> nodeIdList = request.nodes().stream()
+                .filter(distinctByKey(NodeConfiguration::nodeId))
+                .map(NodeConfiguration::nodeId)
                 .collect(Collectors.toList());
 
         for (String nodeId : nodeIdList) {
-            List<CollectorConfigurationRelation> nodeRelations = request.assignments().stream()
+            List<CollectorConfigurationRelation> nodeRelations = request.nodes().stream()
                     .filter(a -> a.nodeId().equals(nodeId))
+                    .flatMap(a -> a.assignments().stream())
                     .map(a -> CollectorConfigurationRelation.create(a.backendId(), a.configurationId()))
                     .collect(Collectors.toList());
             try {
