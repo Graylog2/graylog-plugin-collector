@@ -160,6 +160,6 @@ public class AltConfigurationResource extends RestResource implements PluginRest
 
     private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {
         return CollectorConfigurationSummary.create(collectorConfiguration.id(),
-                collectorConfiguration.name(), collectorConfiguration.backendId());
+                collectorConfiguration.name(), collectorConfiguration.backendId(), collectorConfiguration.color());
     }
 }

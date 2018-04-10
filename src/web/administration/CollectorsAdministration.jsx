@@ -13,6 +13,7 @@ import CollectorAdministrationActions from './CollectorsAdministrationActions';
 import SidecarsActions from '../sidecars/SidecarsActions';
 
 import style from './CollectorsAdministration.css';
+import ColorLabel from '../common/ColorLabel';
 
 const CollectorsAdministration = createReactClass({
   propTypes: {
@@ -123,19 +124,27 @@ const CollectorsAdministration = createReactClass({
     this.setState({ selected: newSelection });
   },
 
-  formatSidecarCollector(sidecar, collector) {
+  formatSidecarCollector(sidecar, collector, configurations) {
     const sidecarCollectorId = this.sidecarCollectorId(sidecar, collector);
+    const configAssignment = sidecar.assignments.find(assignment => assignment.backend_id === collector.id) || {};
+    const configuration = configurations.find(config => config.id === configAssignment.configuration_id);
+
     return (
       <ControlledTableList.Item key={`sidecar-${sidecarCollectorId}`}>
         <div className={style.collectorEntry}>
           <Row>
-            <Col md={6}>
+            <Col md={4}>
               <Input id={`${sidecarCollectorId}-checkbox`}
                      type="checkbox"
                      label={sidecar.node_name}
                      checked={this.state.selected.includes(sidecarCollectorId)}
                      onChange={this.handleSidecarCollectorSelect(sidecarCollectorId)} />
               <span className={style.sidecarId}>{sidecar.node_id}</span>
+            </Col>
+            <Col md={3}>
+              <div className={style.configurationLabel}>
+                {configuration && <ColorLabel color={configuration.color} text={configuration.name} />}
+              </div>
             </Col>
           </Row>
           <Row>
@@ -172,7 +181,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   render() {
-    const { sidecarCollectors } = this.props;
+    const { configurations, sidecarCollectors } = this.props;
     const { filteredCollectors } = this.state;
 
     let formattedCollectors;
@@ -185,7 +194,7 @@ const CollectorsAdministration = createReactClass({
     } else {
       formattedCollectors = [];
       filteredCollectors.forEach(({ sidecar, collector }) => {
-        formattedCollectors.push(this.formatSidecarCollector(sidecar, collector));
+        formattedCollectors.push(this.formatSidecarCollector(sidecar, collector, configurations));
       });
     }
 

@@ -24,3 +24,8 @@
 :local(.headerComponentsWrapper) .btn-link {
     color: #666;
 }
+
+:local(.configurationLabel) {
+    display: block;
+    padding: 10px 0;
+}

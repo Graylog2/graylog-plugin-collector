@@ -35,11 +35,15 @@ public abstract class CollectorConfigurationSummary {
     @JsonProperty("backend_id")
     public abstract String backendId();
 
+    @JsonProperty("color")
+    public abstract String color();
+
     @JsonCreator
     public static CollectorConfigurationSummary create(@JsonProperty("id") @Id @ObjectId String id,
                                                        @JsonProperty("name") String name,
-                                                       @JsonProperty("backend_id") String backendId) {
-        return new AutoValue_CollectorConfigurationSummary(id, name, backendId);
+                                                       @JsonProperty("backend_id") String backendId,
+                                                       @JsonProperty("color") String color) {
+        return new AutoValue_CollectorConfigurationSummary(id, name, backendId, color);
     }
 
 }
