@@ -124,10 +124,37 @@ const CollectorsAdministration = createReactClass({
     this.setState({ selected: newSelection });
   },
 
+  formatCollectorState(state) {
+    let text;
+    let icon;
+    let className;
+    switch (state) {
+      case 0:
+        text = 'Running';
+        className = 'text-success';
+        icon = 'fa-play';
+        break;
+      case 2:
+        text = 'Failing';
+        className = 'text-danger';
+        icon = 'fa-exclamation-triangle';
+        break;
+      default:
+        text = 'Unknown';
+        className = 'text-info';
+        icon = 'fa-question-circle';
+    }
+
+    return (
+      <span className={`${style.additionalInformation} ${className}`}><i className={`fa ${icon}`} /> {text}</span>
+    );
+  },
+
   formatSidecarCollector(sidecar, collector, configurations) {
     const sidecarCollectorId = this.sidecarCollectorId(sidecar, collector);
     const configAssignment = sidecar.assignments.find(assignment => assignment.backend_id === collector.id) || {};
     const configuration = configurations.find(config => config.id === configAssignment.configuration_id);
+    const backendStatus = (sidecar.node_details.status.backends[collector.name] || {}).status;
 
     return (
       <ControlledTableList.Item key={`sidecar-${sidecarCollectorId}`}>
@@ -148,12 +175,13 @@ const CollectorsAdministration = createReactClass({
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
-              <div className={style.additionalInformation}>
+            <Col md={4}>
+              <span className={style.additionalInformation}>
                 <em>
                   <CollectorIndicator collector={collector.name} operatingSystem={sidecar.node_details.operating_system} />
                 </em>
-              </div>
+              </span>
+              {configuration && this.formatCollectorState(backendStatus)}
             </Col>
           </Row>
         </div>
