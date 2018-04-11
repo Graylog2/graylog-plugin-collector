@@ -31,10 +31,7 @@ class CollectorConfigurationSelector extends React.Component {
 
   handleConfigurationSelect = (configurationIds, hideCallback) => {
     hideCallback();
-    let configurations = [];
-    if (configurationIds.length > 0) {
-      configurations = this.props.configurations.filter(c => configurationIds.includes(c.id));
-    }
+    const configurations = this.props.configurations.filter(c => configurationIds.includes(c.id));
     this.setState({ nextAssignedConfigurations: configurations }, this.modal.open);
   };
 
@@ -64,17 +61,12 @@ class CollectorConfigurationSelector extends React.Component {
     );
   };
 
-  renderConfigurationSummary = (assignedConfigurations, nextAssignedConfigurations, selectedCollectors) => {
-    const hasNewAssignedConfiguration = nextAssignedConfigurations.length === 1 && !assignedConfigurations.includes(nextAssignedConfigurations[0]);
-
+  renderConfigurationSummary = (nextAssignedConfigurations, selectedCollectors) => {
     let actionSummary;
     if (nextAssignedConfigurations.length === 0) {
       actionSummary = <span>You are going to <b>remove</b> the configuration from:</span>;
-    } else if (hasNewAssignedConfiguration) {
-      actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration to:</span>;
     } else {
-      const removedConfiguration = lodash.without(assignedConfigurations, ...nextAssignedConfigurations)[0];
-      actionSummary = removedConfiguration ? <span>You are going to <b>remove</b> configuration <em>{removedConfiguration.name}</em> from:</span> : '';
+      actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration to:</span>;
     }
 
     const formattedSummary = selectedCollectors.map(({ id, collector }) => {
@@ -143,7 +135,7 @@ class CollectorConfigurationSelector extends React.Component {
                        onItemSelect={this.handleConfigurationSelect}
                        selectedItems={assignedConfigurations.map(config => config.id)}
                        filterPlaceholder="Filter by configuration" />
-        {this.renderConfigurationSummary(assignedConfigurations, nextAssignedConfigurations, selectedCollectors)}
+        {this.renderConfigurationSummary(nextAssignedConfigurations, selectedCollectors)}
       </span>
     );
   }
