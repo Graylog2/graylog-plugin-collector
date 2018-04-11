@@ -106,6 +106,9 @@ class EditInputFields extends React.Component {
         if (!value.hasOwnProperty('ignore_older')) {
           this.props.injectProperties('ignore_older', '0');
         };
+        if (!value.hasOwnProperty('symlinks')) {
+          this.props.injectProperties('symlinks', false);
+        };
         if (!value.hasOwnProperty('document_type')) {
           this.props.injectProperties('document_type', 'log');
         };
@@ -455,6 +458,13 @@ class EditInputFields extends React.Component {
                        onChange={this._changeDuration('ignore_older')}
                        bsStyle={this._fieldError('ignore-older') ? 'error' : null}
                        help={this._fieldError('ignore-older') ? this.state.errorMessage: "Ignore files which were modified more than the defined timespan in the past (e.g. 2h)"}
+                       required />
+                <Input type="checkbox"
+                       id={this._getId('sym-links')}
+                       label="Follow and collect from symlinks"
+                       checked={this.props.properties.symlinks}
+                       onChange={this._injectProperty('symlinks')}
+                       help="Follow and collect logs from symbolic links"
                        required />
                 <Input type="text"
                        id={this._getId('scan-frequency')}
