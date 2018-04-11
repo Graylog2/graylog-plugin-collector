@@ -62,18 +62,22 @@ class CollectorConfigurationSelector extends React.Component {
   };
 
   renderConfigurationSummary = (nextAssignedConfigurations, selectedCollectors) => {
+    const exampleCollector = selectedCollectors[0].collector;
+    const collectorIndicator = (
+      <em>
+        <CollectorIndicator collector={exampleCollector.collector.name}
+                            operatingSystem={exampleCollector.collector.node_operating_system} />
+      </em>
+    );
+
     let actionSummary;
     if (nextAssignedConfigurations.length === 0) {
-      actionSummary = <span>You are going to <b>remove</b> the configuration from:</span>;
+      actionSummary = <span>You are going to <b>remove</b> the configuration for collector {collectorIndicator} from:</span>;
     } else {
-      actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration to:</span>;
+      actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration for collector {collectorIndicator} to:</span>;
     }
 
-    const formattedSummary = selectedCollectors.map(({ id, collector }) => {
-      return (
-        <dd key={id}>{collector.sidecar.node_name}, {collector.collector.name}</dd>
-      );
-    });
+    const formattedSummary = selectedCollectors.map(({ collector }) => collector.sidecar.node_name).join(', ');
 
     return (
       <BootstrapModalConfirm ref={(c) => { this.modal = c; }}
@@ -82,7 +86,7 @@ class CollectorConfigurationSelector extends React.Component {
                              onCancel={this.cancelConfigurationChange}>
         <div>
           <p>{actionSummary}</p>
-          <dl>{formattedSummary}</dl>
+          <p>{formattedSummary}</p>
           <p>Are you sure you want to proceed with this action?</p>
         </div>
       </BootstrapModalConfirm>
