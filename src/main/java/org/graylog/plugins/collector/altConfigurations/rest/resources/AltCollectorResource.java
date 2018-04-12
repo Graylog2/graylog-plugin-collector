@@ -83,8 +83,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorListResponse list() {
-        final List<Collector> collectors = collectorService.all();
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectorService.streamAll(), lostCollectorFunction);
         return CollectorListResponse.create(collectorSummaries.size(), collectorSummaries);
     }
 

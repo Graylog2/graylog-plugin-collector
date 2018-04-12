@@ -1,9 +1,7 @@
 package org.graylog.plugins.collector.altConfigurations;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
-import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
@@ -14,22 +12,22 @@ import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorS
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.NotFoundException;
+import org.graylog2.database.PaginatedDbService;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
-import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
-import org.mongojack.JacksonDBCollection;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class AltCollectorService {
+public class AltCollectorService extends PaginatedDbService<Collector> {
     private static final String COLLECTION_NAME = "collectors";
-    private final JacksonDBCollection<Collector, ObjectId> dbCollection;
     private final BackendService backendService;
     private final AltConfigurationService configurationService;
 
@@ -41,27 +39,24 @@ public class AltCollectorService {
                                MongoConnection mongoConnection,
                                MongoJackObjectMapperProvider mapper,
                                Validator validator) {
+        super(mongoConnection, mapper, Collector.class, COLLECTION_NAME);
         this.backendService = backendService;
         this.configurationService = configurationService;
         this.validator = validator;
-        dbCollection = JacksonDBCollection.wrap(
-                mongoConnection.getDatabase().getCollection(COLLECTION_NAME),
-                Collector.class,
-                ObjectId.class,
-                mapper.get());
 
-        this.dbCollection.createIndex(new BasicDBObject("node_id", 1), new BasicDBObject("unique", true));
+        db.createIndex(new BasicDBObject("node_id", 1), new BasicDBObject("unique", true));
     }
 
     public long count() {
-        return dbCollection.count();
+        return db.count();
     }
 
+    @Override
     public Collector save(Collector collector) {
         if (collector != null) {
             final Set<ConstraintViolation<Collector>> violations = validator.validate(collector);
             if (violations.isEmpty()) {
-                return dbCollection.findAndModify(
+                return db.findAndModify(
                         DBQuery.is("node_id", collector.nodeId()),
                         new BasicDBObject(),
                         new BasicDBObject(),
@@ -76,24 +71,22 @@ public class AltCollectorService {
             throw new IllegalArgumentException("Specified object is not of correct implementation type (" + collector.getClass() + ")!");
     }
 
-    public List<Collector> all() {
-        return toAbstractListType(dbCollection.find());
-    }
-
     public Collector findByNodeId(String id) {
-        return dbCollection.findOne(DBQuery.is("node_id", id));
-    }
-
-    public int destroy(Collector collector) {
-        return dbCollection.remove(DBQuery.is("id", collector.id())).getN();
+        return db.findOne(DBQuery.is("node_id", id));
     }
 
     public int destroyExpired(Period period) {
-        int count = 0;
         final DateTime threshold = DateTime.now(DateTimeZone.UTC).minus(period);
-        for (Collector collector : all())
-            if (collector.lastSeen().isBefore(threshold))
-                count += destroy(collector);
+        final Stream<Collector> collectorStream = streamAll();
+
+        final Integer count = collectorStream
+                .mapToInt(collector -> {
+                    if (collector.lastSeen().isBefore(threshold)) {
+                        return delete(collector.id());
+                    }
+                    return 0;
+                })
+                .sum();
 
         return count;
     }
@@ -136,22 +129,9 @@ public class AltCollectorService {
         return save(toSave);
     }
 
-    public List<CollectorSummary> toSummaryList(List<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
-        final List<CollectorSummary> collectorSummaries = Lists.newArrayListWithCapacity(collectors.size());
-        for (Collector collector : collectors)
-            collectorSummaries.add(collector.toSummary(isActiveFunction));
-
-        return collectorSummaries;
+    public List<CollectorSummary> toSummaryList(Stream<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
+        return collectors
+                .map(collector -> collector.toSummary(isActiveFunction))
+                .collect(Collectors.toList());
     }
-
-    private List<Collector> toAbstractListType(DBCursor<Collector> collectors) {
-        return toAbstractListType(collectors.toArray());
-    }
-    private List<Collector> toAbstractListType(List<Collector> collectors) {
-        final List<Collector> result = Lists.newArrayListWithCapacity(collectors.size());
-        result.addAll(collectors);
-
-        return result;
-    }
-
 }
