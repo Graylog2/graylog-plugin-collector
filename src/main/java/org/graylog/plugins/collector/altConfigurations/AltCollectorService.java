@@ -44,7 +44,7 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
         this.configurationService = configurationService;
         this.validator = validator;
 
-        db.createIndex(new BasicDBObject("node_id", 1), new BasicDBObject("unique", true));
+        db.createIndex(new BasicDBObject(Collector.FIELD_NODE_ID, 1), new BasicDBObject("unique", true));
     }
 
     public long count() {
@@ -57,7 +57,7 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
             final Set<ConstraintViolation<Collector>> violations = validator.validate(collector);
             if (violations.isEmpty()) {
                 return db.findAndModify(
-                        DBQuery.is("node_id", collector.nodeId()),
+                        DBQuery.is(Collector.FIELD_NODE_ID, collector.nodeId()),
                         new BasicDBObject(),
                         new BasicDBObject(),
                         false,
@@ -72,7 +72,7 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
     }
 
     public Collector findByNodeId(String id) {
-        return db.findOne(DBQuery.is("node_id", id));
+        return db.findOne(DBQuery.is(Collector.FIELD_NODE_ID, id));
     }
 
     public int destroyExpired(Period period) {

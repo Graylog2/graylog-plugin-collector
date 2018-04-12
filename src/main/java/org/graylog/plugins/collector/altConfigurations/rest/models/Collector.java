@@ -21,6 +21,15 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 @AutoValue
 @JsonAutoDetect
 public abstract class Collector {
+
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_NODE_ID = "node_id";
+    public static final String FIELD_NODE_NAME = "node_name";
+    public static final String FIELD_NODE_DETAILS = "node_details";
+    public static final String FIELD_ASSIGNMENTS = "assignments";
+    public static final String FIELD_COLLECTOR_VERSION = "collector_version";
+    public static final String FIELD_LAST_SEEN = "last_seen";
+
     @JsonProperty
     @Id
     @ObjectId
@@ -65,13 +74,13 @@ public abstract class Collector {
     }
 
     @JsonCreator
-    public static Collector create(@JsonProperty("id") @Id @ObjectId String id,
-                                   @JsonProperty("node_id") String nodeId,
-                                   @JsonProperty("node_name") String nodeName,
-                                   @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
-                                   @JsonProperty("assignments") @Nullable List<ConfigurationAssignment> assignments,
-                                   @JsonProperty("collector_version") String collectorVersion,
-                                   @JsonProperty("last_seen") DateTime lastSeen) {
+    public static Collector create(@JsonProperty(FIELD_ID) @Id @ObjectId String id,
+                                   @JsonProperty(FIELD_NODE_ID) String nodeId,
+                                   @JsonProperty(FIELD_NODE_NAME) String nodeName,
+                                   @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
+                                   @JsonProperty(FIELD_ASSIGNMENTS) @Nullable List<ConfigurationAssignment> assignments,
+                                   @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion,
+                                   @JsonProperty(FIELD_LAST_SEEN) DateTime lastSeen) {
 
         return builder()
                 .id(id)
@@ -84,10 +93,10 @@ public abstract class Collector {
                 .build();
     }
 
-    public static Collector create(@JsonProperty("node_id") String nodeId,
-                                   @JsonProperty("node_name") String nodeName,
-                                   @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
-                                   @JsonProperty("collector_version") String collectorVersion) {
+    public static Collector create(@JsonProperty(FIELD_NODE_ID) String nodeId,
+                                   @JsonProperty(FIELD_NODE_NAME) String nodeName,
+                                   @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
+                                   @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion) {
 
         return builder()
                 .id(new org.bson.types.ObjectId().toHexString())
