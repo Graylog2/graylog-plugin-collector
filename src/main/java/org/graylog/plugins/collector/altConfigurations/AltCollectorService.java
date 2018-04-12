@@ -87,6 +87,7 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
                     return 0;
                 })
                 .sum();
+        collectorStream.close();
 
         return count;
     }
