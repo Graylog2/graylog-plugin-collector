@@ -3,6 +3,10 @@
     font-size: 0.9em;
 }
 
+:local(.disabledCollector) {
+    color: #aaaaaa;
+}
+
 :local(.collectorEntry) .row {
     margin-bottom: 0;
 }

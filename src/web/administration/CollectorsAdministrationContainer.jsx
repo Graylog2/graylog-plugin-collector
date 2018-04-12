@@ -34,10 +34,15 @@ const CollectorsAdministrationContainer = createReactClass({
     const sidecarCollectors = [];
     sidecars.forEach((sidecar) => {
       const compatibleCollectors = collectors
-        .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase())
-      compatibleCollectors.forEach((compatibleCollector) => {
-        sidecarCollectors.push({ collector: compatibleCollector, sidecar: sidecar });
-      });
+        .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase());
+
+      if (compatibleCollectors.length === 0) {
+        sidecarCollectors.push({ collector: {}, sidecar: sidecar });
+      } else {
+        compatibleCollectors.forEach((compatibleCollector) => {
+          sidecarCollectors.push({ collector: compatibleCollector, sidecar: sidecar });
+        });
+      }
     });
 
     return (

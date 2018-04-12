@@ -23,20 +23,30 @@ const CollectorsAdministration = createReactClass({
   },
 
   getInitialState() {
+    const { sidecarCollectors } = this.props;
     return {
-      filteredCollectors: this.props.sidecarCollectors,
+      filteredCollectors: sidecarCollectors,
+      enabledCollectors: this.getEnabledCollectors(sidecarCollectors),
       selected: [],
     };
   },
 
   componentWillReceiveProps(nextProps) {
     if (!lodash.isEqual(this.props.sidecarCollectors, nextProps.sidecarCollectors)) {
-      this.setState({ filteredCollectors: nextProps.sidecarCollectors });
+      this.setState({
+        filteredCollectors: nextProps.sidecarCollectors,
+        enabledCollectors: this.getEnabledCollectors(nextProps.sidecarCollectors),
+      });
     }
   },
 
   componentDidUpdate() {
-    this.setSelectAllCheckboxState(this.selectAllInput, this.props.sidecarCollectors, this.state.selected);
+    this.setSelectAllCheckboxState(this.selectAllInput, this.state.enabledCollectors, this.state.selected);
+  },
+
+  // Filter out sidecars with no compatible collectors
+  getEnabledCollectors(collectors) {
+    return collectors.filter(({ collector }) => !lodash.isEmpty(collector));
   },
 
   setSelectAllCheckboxState(selectAllInput, collectors, selected) {
@@ -53,18 +63,17 @@ const CollectorsAdministration = createReactClass({
   },
 
   handleConfigurationChange(selectedConfigurations, doneCallback) {
-    const { selected } = this.state;
-    const { sidecarCollectors } = this.props;
+    const { selected, enabledCollectors } = this.state;
 
-    const selectedSidecars = sidecarCollectors
+    const selectedSidecars = enabledCollectors
       .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)));
 
     SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => doneCallback());
   },
 
   formatHeader() {
-    const { sidecarCollectors, collectors, configurations } = this.props;
-    const { selected, filteredCollectors } = this.state;
+    const { collectors, configurations } = this.props;
+    const { selected, filteredCollectors, enabledCollectors } = this.state;
     const selectedItems = this.state.selected.length;
 
     const selectedCollectors = selected.map((selectedSidecarCollectorId) => {
@@ -96,8 +105,8 @@ const CollectorsAdministration = createReactClass({
                id="select-all-checkbox"
                type="checkbox"
                label={selectedItems === 0 ? 'Select all' : `${selectedItems} selected`}
-               disabled={sidecarCollectors.length === 0}
-               checked={this.isAllSelected(sidecarCollectors, selected)}
+               disabled={enabledCollectors.length === 0}
+               checked={this.isAllSelected(enabledCollectors, selected)}
                onChange={this.toggleSelectAll}
                wrapperClassName="form-group-inline" />
       </ControlledTableList.Header>
@@ -119,7 +128,7 @@ const CollectorsAdministration = createReactClass({
 
   toggleSelectAll(event) {
     const newSelection = (event.target.checked ?
-      this.props.sidecarCollectors.map(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector)) :
+      this.state.enabledCollectors.map(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector)) :
       []);
     this.setState({ selected: newSelection });
   },
@@ -150,7 +159,37 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
+  formatSidecarNoCollectors(sidecar) {
+    return (
+      <ControlledTableList.Item key={`sidecar-${sidecar.node_id}`}>
+        <div className={`${style.collectorEntry} ${style.disabledCollector}`}>
+          <Row>
+            <Col md={4}>
+              <Input id={`${sidecar.node_id}-checkbox`}
+                     type="checkbox"
+                     label={sidecar.node_name}
+                     checked={false}
+                     disabled />
+              <span className={style.sidecarId}>{sidecar.node_id}</span>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={4}>
+              <span className={style.additionalInformation}>
+                No collectors compatible with {sidecar.node_details.operating_system}
+              </span>
+            </Col>
+          </Row>
+        </div>
+      </ControlledTableList.Item>
+    );
+  },
+
   formatSidecarCollector(sidecar, collector, configurations) {
+    if (lodash.isEmpty(collector)) {
+      return this.formatSidecarNoCollectors(sidecar);
+    }
+
     const sidecarCollectorId = this.sidecarCollectorId(sidecar, collector);
     const configAssignment = sidecar.assignments.find(assignment => assignment.backend_id === collector.id) || {};
     const configuration = configurations.find(config => config.id === configAssignment.configuration_id);
