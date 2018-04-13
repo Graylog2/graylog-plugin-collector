@@ -105,6 +105,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                         collectorSummaries.size(),
                         1,
                         collectorSummaries.size()),
+                false,
                 collectorSummaries);
     }
 
@@ -122,7 +123,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                 collectorService.findPaginated(searchQuery, lostCollectorFunction, page, perPage) :
                 collectorService.findPaginated(searchQuery, page, perPage);
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
-        return CollectorListResponse.create(query, collectors.pagination(), collectorSummaries);
+        return CollectorListResponse.create(query, collectors.pagination(), onlyActive, collectorSummaries);
     }
 
     @GET

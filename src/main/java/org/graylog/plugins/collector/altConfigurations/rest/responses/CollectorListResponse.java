@@ -19,12 +19,16 @@ public abstract class CollectorListResponse {
     public abstract PaginatedList.PaginationInfo paginationInfo();
 
     @JsonProperty
+    public abstract Boolean onlyActive();
+
+    @JsonProperty
     public abstract Collection<CollectorSummary> collectors();
 
     @JsonCreator
     public static CollectorListResponse create(@JsonProperty("query") @Nullable String query,
                                                @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
+                                               @JsonProperty("only_active") Boolean onlyActive,
                                                @JsonProperty("collectors") Collection<CollectorSummary> collectors) {
-        return new AutoValue_CollectorListResponse(query, paginationInfo, collectors);
+        return new AutoValue_CollectorListResponse(query, paginationInfo, onlyActive, collectors);
     }
 }
