@@ -1,4 +1,5 @@
 import Reflux from 'reflux';
+import URI from 'urijs';
 import URLUtils from 'util/URLUtils';
 import UserNotification from 'util/UserNotification';
 import fetch, { fetchPeriodically } from 'logic/rest/FetchProvider';
@@ -33,7 +34,14 @@ const SidecarsStore = Reflux.createStore({
 
   listPaginated(query = '', page = 1, pageSize = 50) {
     const baseUrl = '/plugins/org.graylog.plugins.collector/altcollectors';
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${baseUrl}?query=${query}&page=${page}&per_page=${pageSize}`));
+    const search = {
+      query: query,
+      page: page,
+      per_page: pageSize,
+    };
+
+    const uri = URI(baseUrl).search(search).toString();
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(uri));
 
     promise.then(
       (response) => {

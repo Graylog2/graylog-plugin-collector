@@ -16,7 +16,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "d3": "3.5.17",
-    "immutable": "^3.7.5"
+    "immutable": "^3.7.5",
+    "urijs": "^1.19.1"
   },
   "devDependencies": {
     "graylog-web-plugin": "file:../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin"
