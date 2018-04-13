@@ -32,12 +32,13 @@ const SidecarsStore = Reflux.createStore({
     SidecarsActions.list.promise(promise);
   },
 
-  listPaginated(query = '', page = 1, pageSize = 50) {
+  listPaginated({ query = '', page = 1, pageSize = 50, onlyActive = false }) {
     const baseUrl = '/plugins/org.graylog.plugins.collector/altcollectors';
     const search = {
       query: query,
       page: page,
       per_page: pageSize,
+      only_active: onlyActive,
     };
 
     const uri = URI(baseUrl).search(search).toString();
@@ -48,6 +49,7 @@ const SidecarsStore = Reflux.createStore({
         this.trigger({
           sidecars: response.collectors,
           query: response.query,
+          onlyActive: response.only_active,
           pagination: {
             total: response.total,
             count: response.count,
