@@ -3,7 +3,7 @@ import Reflux from 'reflux';
 import { Row, Col, Alert, Button } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
 
-import { Spinner } from 'components/common';
+import { PaginatedList, Spinner } from 'components/common';
 
 import SidecarsStore from './SidecarsStore';
 import SidecarsActions from './SidecarsActions';
@@ -20,13 +20,12 @@ const SidecarList = React.createClass({
       sortBy: 'node_name',
       sortDesc: false,
       sort: (sidecar) => sidecar.node_id,
-      showInactive: false,
     };
   },
   componentDidMount() {
     this.style.use();
-    this._reloadSidecars();
-    this.interval = setInterval(this._reloadSidecars, this.SIDECAR_DATA_REFRESH);
+    this._reloadSidecars({});
+    this.interval = setInterval(() => this._reloadSidecars({}), this.SIDECAR_DATA_REFRESH);
   },
   componentWillUnmount() {
     this.style.unuse();
@@ -38,9 +37,28 @@ const SidecarList = React.createClass({
   style: require('!style/useable!css!styles/SidecarStyles.css'),
   SIDECAR_DATA_REFRESH: 5 * 1000,
 
-  _reloadSidecars() {
-    SidecarsActions.list();
+  _reloadSidecars({ page, pageSize, onlyActive }) {
+    if (!this.state.pagination) {
+      SidecarsActions.listPaginated({ onlyActive: 'true' });
+      return;
+    }
+
+    const effectivePageSize = pageSize || this.state.pagination.pageSize;
+    const effectiveOnlyActive = onlyActive === undefined ? this.state.onlyActive : onlyActive; // Avoid || to handle false values
+    let effectivePage = 1; // Reset page to 1 if other params changed
+    if (effectivePageSize === this.state.pagination.pageSize && effectiveOnlyActive === this.state.onlyActive) {
+      effectivePage = page || this.state.pagination.page;
+      console.log(effectivePage);
+    }
+
+    SidecarsActions.listPaginated({
+      query: '',
+      page: effectivePage,
+      pageSize: effectivePageSize,
+      onlyActive: effectiveOnlyActive,
+    });
   },
+
   _bySortField(sidecar1, sidecar2) {
     const sort = this.state.sort;
     const field1 = sort(sidecar1);
@@ -55,33 +73,33 @@ const SidecarList = React.createClass({
       <div className="table-responsive">
         <table className="table table-striped sidecars-list">
           <thead>
-          <tr>
-            <th className={this._getTableHeaderClassName('node_name')} onClick={this.sortByNodeName}>Name</th>
-            <th className={this._getTableHeaderClassName('sidecar_status')} onClick={this.sortBySidecarStatus}>
-              Status
-            </th>
-            <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
-              Operating System
-            </th>
-            <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
-            <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeID}>
-              Node Id
-            </th>
-            <th className={this._getTableHeaderClassName('sidecar_version')} onClick={this.sortBySidecarVersion}>
-              Sidecar Version
-            </th>
-            <th className="actions">&nbsp;</th>
-          </tr>
+            <tr>
+              <th className={this._getTableHeaderClassName('node_name')} onClick={this.sortByNodeName}>Name</th>
+              <th className={this._getTableHeaderClassName('sidecar_status')} onClick={this.sortBySidecarStatus}>
+                Status
+              </th>
+              <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
+                Operating System
+              </th>
+              <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
+              <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeID}>
+                Node Id
+              </th>
+              <th className={this._getTableHeaderClassName('sidecar_version')} onClick={this.sortBySidecarVersion}>
+                Sidecar Version
+              </th>
+              <th className="actions">&nbsp;</th>
+            </tr>
           </thead>
           <tbody>
-          {sidecars}
+            {sidecars}
           </tbody>
         </table>
       </div>
     );
   },
   toggleShowInactive() {
-    this.setState({ showInactive: !this.state.showInactive });
+    this._reloadSidecars({ onlyActive: !this.state.onlyActive });
   },
   sortByNodeId() {
     this.setState({
@@ -142,11 +160,14 @@ const SidecarList = React.createClass({
     });
   },
   _formatEmptyListAlert() {
-    const showInactiveHint = (this.state.showInactive ? null : ' and/or click on "Include inactive sidecars"');
+    const showInactiveHint = (this.state.onlyActive ? ' and/or click on "Include inactive sidecars"' : null);
     return <Alert>There are no sidecars to show. Try adjusting your search filter{showInactiveHint}.</Alert>;
   },
   _onFilterChange(filteredRows) {
     this.setState({ filteredRows });
+  },
+  handlePageChange(page, pageSize) {
+    this._reloadSidecars({ page: page, pageSize: pageSize });
   },
   _isLoading() {
     return !this.state.sidecars;
@@ -157,16 +178,15 @@ const SidecarList = React.createClass({
       return <Spinner />;
     }
 
+    const { pagination, onlyActive } = this.state;
+
     const sidecars = (this.state.filteredRows || this.state.sidecars)
-      .filter((sidecar) => {
-        return (this.state.showInactive || sidecar.active);
-      })
       .sort(this._bySortField)
       .map((sidecar) => {
         return <SidecarRow key={sidecar.node_id} sidecar={sidecar} />;
       });
 
-    const showOrHideInactive = (this.state.showInactive ? 'Hide' : 'Include');
+    const showOrHideInactive = (onlyActive ? 'Include' : 'Hide');
 
     const sidecarList = (sidecars.length > 0 ? this._formatSidecarList(sidecars) : this._formatEmptyListAlert());
 
@@ -185,11 +205,17 @@ const SidecarList = React.createClass({
                 onClick={this.toggleShowInactive}>
           {showOrHideInactive} inactive sidecars
         </Button>
-        <Row>
-          <Col md={12}>
-            {sidecarList}
-          </Col>
-        </Row>
+        <PaginatedList page={pagination.page}
+                       pageSize={pagination.pageSize}
+                       pageSizes={[1, 10, 25, 50, 100]}
+                       totalItems={pagination.total}
+                       onChange={this.handlePageChange}>
+          <Row>
+            <Col md={12}>
+              {sidecarList}
+            </Col>
+          </Row>
+        </PaginatedList>
       </div>
     );
   },
