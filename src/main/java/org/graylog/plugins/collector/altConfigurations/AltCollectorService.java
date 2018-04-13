@@ -1,6 +1,5 @@
 package org.graylog.plugins.collector.altConfigurations;
 
-import com.google.common.base.Function;
 import com.mongodb.BasicDBObject;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
@@ -26,6 +25,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -145,7 +145,7 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
         return save(toSave);
     }
 
-    public List<CollectorSummary> toSummaryList(List<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
+    public List<CollectorSummary> toSummaryList(List<Collector> collectors, Predicate<Collector> isActiveFunction) {
         return collectors.stream()
                 .map(collector -> collector.toSummary(isActiveFunction))
                 .collect(Collectors.toList());

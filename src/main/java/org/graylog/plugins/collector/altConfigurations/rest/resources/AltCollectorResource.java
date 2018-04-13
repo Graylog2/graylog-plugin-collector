@@ -1,7 +1,6 @@
 package org.graylog.plugins.collector.altConfigurations.rest.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
@@ -224,17 +223,15 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
-    @VisibleForTesting
-    protected static class LostCollectorFunction implements Function<Collector, Boolean> {
+    protected static class LostCollectorFunction implements Predicate<Collector> {
         private final Period timeoutPeriod;
 
-        @Inject
-        public LostCollectorFunction(Period timeoutPeriod) {
+        LostCollectorFunction(Period timeoutPeriod) {
             this.timeoutPeriod = timeoutPeriod;
         }
 
         @Override
-        public Boolean apply(Collector collector) {
+        public boolean test(Collector collector) {
             final DateTime threshold = DateTime.now().minus(timeoutPeriod);
             return collector.lastSeen().isAfter(threshold);
         }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Function;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.joda.time.DateTime;
@@ -15,6 +14,7 @@ import org.mongojack.ObjectId;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
@@ -108,8 +108,7 @@ public abstract class Collector {
                 .build();
     }
 
-    public CollectorSummary toSummary(Function<Collector, Boolean> isActiveFunction) {
-        final Boolean isActive = isActiveFunction.apply(this);
+    public CollectorSummary toSummary(Predicate<Collector> isActiveFunction) {
         return CollectorSummary.create(
                 nodeId(),
                 nodeName(),
@@ -117,6 +116,6 @@ public abstract class Collector {
                 firstNonNull(assignments(), new ArrayList<>()),
                 lastSeen(),
                 collectorVersion(),
-                isActive != null && isActive);
+                isActiveFunction != null && isActiveFunction.test(this));
     }
 }
