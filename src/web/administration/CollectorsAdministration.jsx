@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { Col, Row } from 'react-bootstrap';
 
-import { ControlledTableList, SearchForm } from 'components/common';
+import { ControlledTableList, PaginatedList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
 import CollectorIndicator from 'sidecars/CollectorIndicator';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
@@ -20,6 +20,8 @@ const CollectorsAdministration = createReactClass({
     sidecarCollectors: PropTypes.array.isRequired,
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
+    pagination: PropTypes.object.isRequired,
+    onPageChange: PropTypes.func.isRequired,
   },
 
   getInitialState() {
@@ -248,7 +250,7 @@ const CollectorsAdministration = createReactClass({
   },
 
   render() {
-    const { configurations, sidecarCollectors } = this.props;
+    const { configurations, pagination, sidecarCollectors } = this.props;
     const { filteredCollectors } = this.state;
 
     let formattedCollectors;
@@ -266,25 +268,27 @@ const CollectorsAdministration = createReactClass({
     }
 
     return (
-      <div>
-        <Row>
-          <Col md={12}>
-            <SearchForm onSearch={this.handleSearch}
-                        onReset={this.handleReset}
-                        searchButtonLabel="Filter"
-                        resetButtonLabel="Reset"
-                        label="Filter collectors"
-                        useLoadingState />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <ControlledTableList>
-              {this.formatHeader()}
-              {formattedCollectors}
-            </ControlledTableList>
-          </Col>
-        </Row>
+      <div className={style.paginatedList}>
+        <PaginatedList activePage={pagination.page}
+                       pageSize={pagination.pageSize}
+                       pageSizes={[1, 10, 25, 50, 100]}
+                       totalItems={pagination.total}
+                       onChange={this.props.onPageChange}>
+          <SearchForm onSearch={this.handleSearch}
+                      onReset={this.handleReset}
+                      searchButtonLabel="Filter"
+                      resetButtonLabel="Reset"
+                      label="Filter collectors"
+                      useLoadingState />
+          <Row>
+            <Col md={12}>
+              <ControlledTableList>
+                {this.formatHeader()}
+                {formattedCollectors}
+              </ControlledTableList>
+            </Col>
+          </Row>
+        </PaginatedList>
       </div>
     );
   },

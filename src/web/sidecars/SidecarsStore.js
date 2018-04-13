@@ -15,7 +15,7 @@ const SidecarsStore = Reflux.createStore({
   },
 
   list() {
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors'));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/all'));
     promise
       .then(
         response => {
@@ -29,6 +29,33 @@ const SidecarsStore = Reflux.createStore({
             'Could not retrieve Sidecars');
         });
     SidecarsActions.list.promise(promise);
+  },
+
+  listPaginated(query = '', page = 1, pageSize = 50) {
+    const baseUrl = '/plugins/org.graylog.plugins.collector/altcollectors';
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${baseUrl}?query=${query}&page=${page}&per_page=${pageSize}`));
+
+    promise.then(
+      (response) => {
+        this.trigger({
+          sidecars: response.collectors,
+          query: response.query,
+          pagination: {
+            total: response.total,
+            count: response.count,
+            page: response.page,
+            pageSize: response.per_page,
+          },
+        });
+
+        return response;
+      },
+      (error) => {
+        UserNotification.error(`Fetching Sidecars failed with status: ${error}`,
+          'Could not retrieve Sidecars');
+      });
+
+    SidecarsActions.listPaginated.promise(promise);
   },
 
   getSidecar(sidecarId) {

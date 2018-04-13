@@ -33,3 +33,11 @@
     display: block;
     padding: 10px 0;
 }
+
+:local(.paginatedList) .page-size {
+    padding-top: 4px;
+}
+
+:local(.paginatedList) .search {
+    margin: 15px 0;
+}

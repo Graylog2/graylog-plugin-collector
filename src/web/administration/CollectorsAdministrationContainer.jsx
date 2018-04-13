@@ -21,12 +21,17 @@ const CollectorsAdministrationContainer = createReactClass({
 
   loadData() {
     CollectorsActions.list();
-    SidecarsActions.list();
+    SidecarsActions.listPaginated();
     CollectorConfigurationsActions.list();
   },
 
+  handlePageChange(page, pageSize) {
+    const effectivePage = this.state.pagination.pageSize !== pageSize ? 1 : page;
+    SidecarsActions.listPaginated('', effectivePage, pageSize);
+  },
+
   render() {
-    const { collectors, sidecars, configurations } = this.state;
+    const { collectors, sidecars, pagination, configurations } = this.state;
     if (!collectors || !sidecars || !configurations) {
       return <Spinner text="Loading collector list..." />;
     }
@@ -48,7 +53,9 @@ const CollectorsAdministrationContainer = createReactClass({
     return (
       <CollectorsAdministration sidecarCollectors={sidecarCollectors}
                                 collectors={collectors}
-                                configurations={configurations} />
+                                configurations={configurations}
+                                pagination={pagination}
+                                onPageChange={this.handlePageChange} />
     );
   },
 });
