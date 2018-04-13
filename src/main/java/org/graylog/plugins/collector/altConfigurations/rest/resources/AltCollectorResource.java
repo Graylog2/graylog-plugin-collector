@@ -61,7 +61,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Api(value = "AltCollector", description = "Manage collector fleet")
 @Path("/altcollectors")
@@ -100,9 +99,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorListResponse all() {
-        final Stream<Collector> collectorStream = collectorService.streamAll();
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectorStream, lostCollectorFunction);
-        collectorStream.close();
+        final List<Collector> collectors = collectorService.all();
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
         return CollectorListResponse.create("",
                 PaginatedList.PaginationInfo.create(collectorSummaries.size(),
                         collectorSummaries.size(),
@@ -121,7 +119,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                                             @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query) {
         final SearchQuery searchQuery = searchQueryParser.parse(query);
         final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, page, perPage);
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors.stream(), lostCollectorFunction);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
         return CollectorListResponse.create(query, collectors.pagination(), collectorSummaries);
     }
 

@@ -74,6 +74,12 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
             throw new IllegalArgumentException("Specified object is not of correct implementation type (" + collector.getClass() + ")!");
     }
 
+    public List<Collector> all() {
+        try (final Stream<Collector> collectorStream = streamAll()) {
+            return collectorStream.collect(Collectors.toList());
+        }
+    }
+
     public Collector findByNodeId(String id) {
         return db.findOne(DBQuery.is(Collector.FIELD_NODE_ID, id));
     }
@@ -85,17 +91,18 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
 
     public int destroyExpired(Period period) {
         final DateTime threshold = DateTime.now(DateTimeZone.UTC).minus(period);
-        final Stream<Collector> collectorStream = streamAll();
+        int count;
 
-        final Integer count = collectorStream
-                .mapToInt(collector -> {
-                    if (collector.lastSeen().isBefore(threshold)) {
-                        return delete(collector.id());
-                    }
-                    return 0;
-                })
-                .sum();
-        collectorStream.close();
+        try (final Stream<Collector> collectorStream = streamAll()) {
+            count = collectorStream
+                    .mapToInt(collector -> {
+                        if (collector.lastSeen().isBefore(threshold)) {
+                            return delete(collector.id());
+                        }
+                        return 0;
+                    })
+                    .sum();
+        }
 
         return count;
     }
@@ -138,8 +145,8 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
         return save(toSave);
     }
 
-    public List<CollectorSummary> toSummaryList(Stream<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
-        return collectors
+    public List<CollectorSummary> toSummaryList(List<Collector> collectors, Function<Collector, Boolean> isActiveFunction) {
+        return collectors.stream()
                 .map(collector -> collector.toSummary(isActiveFunction))
                 .collect(Collectors.toList());
     }
