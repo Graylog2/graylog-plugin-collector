@@ -115,9 +115,12 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorListResponse collectors(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
                                             @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
-                                            @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query) {
+                                            @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
+                                            @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
         final SearchQuery searchQuery = searchQueryParser.parse(query);
-        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, page, perPage);
+        final PaginatedList<Collector> collectors = onlyActive ?
+                collectorService.findPaginated(searchQuery, lostCollectorFunction, page, perPage) :
+                collectorService.findPaginated(searchQuery, page, perPage);
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
         return CollectorListResponse.create(query, collectors.pagination(), collectorSummaries);
     }

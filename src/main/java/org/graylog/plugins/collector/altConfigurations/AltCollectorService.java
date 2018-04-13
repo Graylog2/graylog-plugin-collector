@@ -29,6 +29,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 public class AltCollectorService extends PaginatedDbService<Collector> {
     private static final String COLLECTION_NAME = "collectors";
     private final BackendService backendService;
@@ -87,6 +89,11 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
     public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, int page, int perPage) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
         return findPaginatedWithQueryAndSort(dbQuery, DBSort.asc(Collector.FIELD_NODE_NAME), page, perPage);
+    }
+
+    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, Predicate<Collector> isActiveFunction, int page, int perPage) {
+        final DBQuery.Query dbQuery = searchQuery.toDBQuery();
+        return findPaginatedWithQueryFilterAndSort(dbQuery, firstNonNull(isActiveFunction, collector -> true), DBSort.asc(Collector.FIELD_NODE_NAME), page, perPage);
     }
 
     public int destroyExpired(Period period) {
