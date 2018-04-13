@@ -171,24 +171,26 @@ const SidecarList = React.createClass({
     const sidecarList = (sidecars.length > 0 ? this._formatSidecarList(sidecars) : this._formatEmptyListAlert());
 
     return (
-      <Row>
-        <Col md={12}>
-          <div className="pull-right">
-            <Button bsStyle="primary" bsSize="small" onClick={this.toggleShowInactive}>
-              {showOrHideInactive} inactive sidecars
-            </Button>
-          </div>
-          <div className="form-inline sidecars-filter-form">
-            <SidecarFilter label="Filter sidecars"
-                             data={this.state.sidecars}
-                             filterBy={'tags'}
-                             displayKey={'tags'}
-                             searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
-                             onDataFiltered={this._onFilterChange} />
-          </div>
-          {sidecarList}
-        </Col>
-      </Row>
+      <div>
+        <div className="sidecars-filter-form inline">
+          <SidecarFilter label="Filter sidecars"
+                         data={this.state.sidecars}
+                         filterBy={'tags'}
+                         displayKey={'tags'}
+                         searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
+                         onDataFiltered={this._onFilterChange} />
+        </div>
+        <Button bsStyle="primary"
+                bsSize="small"
+                onClick={this.toggleShowInactive}>
+          {showOrHideInactive} inactive sidecars
+        </Button>
+        <Row>
+          <Col md={12}>
+            {sidecarList}
+          </Col>
+        </Row>
+      </div>
     );
   },
 });

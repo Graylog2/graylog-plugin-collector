@@ -7,6 +7,10 @@ form.sidecars-filter-form {
     margin-top: 5px;
 }
 
+.sidecars-filter-form.inline {
+    display: inline-block;
+}
+
 table.sidecars-list {
     margin-top: 15px;
     margin-bottom: 0px;
