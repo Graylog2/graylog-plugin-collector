@@ -13,10 +13,13 @@ import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.NotFoundException;
 import org.graylog2.database.PaginatedDbService;
+import org.graylog2.database.PaginatedList;
+import org.graylog2.search.SearchQuery;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.mongojack.DBQuery;
+import org.mongojack.DBSort;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -73,6 +76,11 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
 
     public Collector findByNodeId(String id) {
         return db.findOne(DBQuery.is(Collector.FIELD_NODE_ID, id));
+    }
+
+    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, int page, int perPage) {
+        final DBQuery.Query dbQuery = searchQuery.toDBQuery();
+        return findPaginatedWithQueryAndSort(dbQuery, DBSort.asc(Collector.FIELD_NODE_NAME), page, perPage);
     }
 
     public int destroyExpired(Period period) {

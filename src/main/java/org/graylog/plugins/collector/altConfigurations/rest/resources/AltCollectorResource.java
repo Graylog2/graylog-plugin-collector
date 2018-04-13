@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,10 +17,10 @@ import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfigurationRequest;
-import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorRegistrationResponse;
@@ -27,7 +28,11 @@ import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorS
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.audit.jersey.NoAuditEvent;
+import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
+import org.graylog2.search.SearchQuery;
+import org.graylog2.search.SearchQueryField;
+import org.graylog2.search.SearchQueryParser;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
@@ -40,6 +45,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.NotFoundException;
@@ -47,6 +53,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -54,6 +61,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Api(value = "AltCollector", description = "Manage collector fleet")
 @Path("/altcollectors")
@@ -61,10 +69,17 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 public class AltCollectorResource extends RestResource implements PluginRestResource {
     private static final Logger LOG = LoggerFactory.getLogger(AltCollectorResource.class);
+    private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
+            .put("id", SearchQueryField.create(Collector.FIELD_ID))
+            .put("node_id", SearchQueryField.create(Collector.FIELD_NODE_ID))
+            .put("collector_version", SearchQueryField.create(Collector.FIELD_COLLECTOR_VERSION))
+            .put("last_seen", SearchQueryField.create(Collector.FIELD_LAST_SEEN, SearchQueryField.Type.DATE))
+            .build();
 
     private final AltCollectorService collectorService;
     private final ActionService actionService;
     private final LostCollectorFunction lostCollectorFunction;
+    private final SearchQueryParser searchQueryParser;
     private final Supplier<CollectorSystemConfiguration> configSupplier;
 
     @Inject
@@ -75,16 +90,39 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         this.actionService = actionService;
         this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
+        this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
     }
 
     @GET
     @Timed
+    @Path("/all")
     @ApiOperation(value = "Lists all existing collector registrations")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
-    public CollectorListResponse list() {
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectorService.streamAll(), lostCollectorFunction);
-        return CollectorListResponse.create(collectorSummaries.size(), collectorSummaries);
+    public CollectorListResponse all() {
+        final Stream<Collector> collectorStream = collectorService.streamAll();
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectorStream, lostCollectorFunction);
+        collectorStream.close();
+        return CollectorListResponse.create("",
+                PaginatedList.PaginationInfo.create(collectorSummaries.size(),
+                        collectorSummaries.size(),
+                        1,
+                        collectorSummaries.size()),
+                collectorSummaries);
+    }
+
+    @GET
+    @Timed
+    @ApiOperation(value = "Lists existing collector registrations using pagination")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    public CollectorListResponse collectors(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
+                                            @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
+                                            @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query) {
+        final SearchQuery searchQuery = searchQueryParser.parse(query);
+        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, page, perPage);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors.stream(), lostCollectorFunction);
+        return CollectorListResponse.create(query, collectors.pagination(), collectorSummaries);
     }
 
     @GET
