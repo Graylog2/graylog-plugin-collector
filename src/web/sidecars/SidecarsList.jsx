@@ -48,7 +48,6 @@ const SidecarList = React.createClass({
     let effectivePage = 1; // Reset page to 1 if other params changed
     if (effectivePageSize === this.state.pagination.pageSize && effectiveOnlyActive === this.state.onlyActive) {
       effectivePage = page || this.state.pagination.page;
-      console.log(effectivePage);
     }
 
     SidecarsActions.listPaginated({
