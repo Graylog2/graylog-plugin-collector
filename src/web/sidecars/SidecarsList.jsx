@@ -204,7 +204,7 @@ const SidecarList = React.createClass({
                 onClick={this.toggleShowInactive}>
           {showOrHideInactive} inactive sidecars
         </Button>
-        <PaginatedList page={pagination.page}
+        <PaginatedList activePage={pagination.page}
                        pageSize={pagination.pageSize}
                        pageSizes={[1, 10, 25, 50, 100]}
                        totalItems={pagination.total}
