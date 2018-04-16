@@ -1,7 +1,6 @@
 import React from 'react';
 import Reflux from 'reflux';
 import { Row, Col, Alert, Button } from 'react-bootstrap';
-import naturalSort from 'javascript-natural-sort';
 
 import { PaginatedList, Spinner } from 'components/common';
 
@@ -17,9 +16,6 @@ const SidecarList = React.createClass({
     return {
       sidecars: undefined,
       filteredRows: undefined,
-      sortBy: 'node_name',
-      sortDesc: false,
-      sort: sidecar => sidecar.node_name,
     };
   },
   componentDidMount() {
@@ -37,35 +33,32 @@ const SidecarList = React.createClass({
   style: require('!style/useable!css!styles/SidecarStyles.css'),
   SIDECAR_DATA_REFRESH: 5 * 1000,
 
-  _reloadSidecars({ page, pageSize, onlyActive }) {
-    if (!this.state.pagination) {
-      SidecarsActions.listPaginated({ onlyActive: 'true' });
-      return;
-    }
+  _reloadSidecars({ page, pageSize, onlyActive, sortField, order }) {
+    const effectiveSortField = sortField || this.state.sortField;
+    const effectiveOrder = order || this.state.order;
 
-    const effectivePageSize = pageSize || this.state.pagination.pageSize;
-    const effectiveOnlyActive = onlyActive === undefined ? this.state.onlyActive : onlyActive; // Avoid || to handle false values
-    let effectivePage = 1; // Reset page to 1 if other params changed
-    if (effectivePageSize === this.state.pagination.pageSize && effectiveOnlyActive === this.state.onlyActive) {
-      effectivePage = page || this.state.pagination.page;
-    }
-
-    SidecarsActions.listPaginated({
+    const options = {
       query: '',
-      page: effectivePage,
-      pageSize: effectivePageSize,
-      onlyActive: effectiveOnlyActive,
-    });
+      onlyActive: 'true',
+      sortField: effectiveSortField,
+      order: effectiveOrder,
+    };
+
+    if (this.state.pagination) {
+      options.pageSize = pageSize || this.state.pagination.pageSize;
+      options.onlyActive = onlyActive === undefined ? this.state.onlyActive : onlyActive; // Avoid || to handle false values
+      let effectivePage = 1; // Reset page to 1 if other params changed
+      if (options.pageSize === this.state.pagination.pageSize && options.onlyActive === this.state.onlyActive) {
+        effectivePage = page || this.state.pagination.page;
+      }
+      options.page = effectivePage;
+    }
+
+    SidecarsActions.listPaginated(options);
   },
 
-  _bySortField(sidecar1, sidecar2) {
-    const sort = this.state.sort;
-    const field1 = sort(sidecar1);
-    const field2 = sort(sidecar2);
-    return (this.state.sortDesc ? naturalSort(field2, field1) : naturalSort(field1, field2));
-  },
   _getTableHeaderClassName(field) {
-    return (this.state.sortBy === field ? (this.state.sortDesc ? 'sort-desc' : 'sort-asc') : 'sortable');
+    return (this.state.sortField === field ? `sort-${this.state.order}` : 'sortable');
   },
   _formatSidecarList(sidecars) {
     return (
@@ -73,18 +66,18 @@ const SidecarList = React.createClass({
         <table className="table table-striped sidecars-list">
           <thead>
             <tr>
-              <th className={this._getTableHeaderClassName('node_name')} onClick={this.sortByNodeName}>Name</th>
-              <th className={this._getTableHeaderClassName('sidecar_status')} onClick={this.sortBySidecarStatus}>
+              <th className={this._getTableHeaderClassName('node_name')} onClick={this.sortBy('node_name')}>Name</th>
+              <th className={this._getTableHeaderClassName('node_details.status.status')} onClick={this.sortBy('node_details.status.status')}>
                 Status
               </th>
-              <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
+              <th className={this._getTableHeaderClassName('node_details.operating_system')} onClick={this.sortBy('node_details.operating_system')}>
                 Operating System
               </th>
-              <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
-              <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeID}>
+              <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortBy('last_seen')}>Last Seen</th>
+              <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortBy('node_id')}>
                 Node Id
               </th>
-              <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortBySidecarVersion}>
+              <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortBy('collector_version')}>
                 Sidecar Version
               </th>
               <th className="actions">&nbsp;</th>
@@ -100,63 +93,13 @@ const SidecarList = React.createClass({
   toggleShowInactive() {
     this._reloadSidecars({ onlyActive: !this.state.onlyActive });
   },
-  sortByNodeId() {
-    this.setState({
-      sortBy: 'node_id',
-      sortDesc: this.state.sortBy === 'node_id' && !this.state.sortDesc,
-      sort: (sidecar) => {
-        return sidecar.node_id;
-      },
-    });
-  },
-  sortByNodeName() {
-    this.setState({
-      sortBy: 'node_name',
-      sortDesc: this.state.sortBy === 'node_name' && !this.state.sortDesc,
-      sort: (sidecar) => {
-        return sidecar.node_name;
-      },
-    });
-  },
-  sortByOperatingSystem() {
-    this.setState({
-      sortBy: 'operating_system',
-      sortDesc: this.state.sortBy === 'operating_system' && !this.state.sortDesc,
-      sort: (sidecar) => {
-        return sidecar.node_details.operating_system;
-      },
-    });
-  },
-  sortByLastSeen() {
-    this.setState({
-      sortBy: 'last_seen',
-      sortDesc: this.state.sortBy === 'last_seen' && !this.state.sortDesc,
-      sort: (sidecar) => {
-        return sidecar.last_seen;
-      },
-    });
-  },
-  sortBySidecarVersion() {
-    this.setState({
-      sortBy: 'collector_version',
-      sortDesc: this.state.sortBy === 'collector_version' && !this.state.sortDesc,
-      sort: (sidecar) => {
-        return sidecar.collector_version;
-      },
-    });
-  },
-  sortBySidecarStatus() {
-    this.setState({
-      sortBy: 'sidecar_status',
-      sortDesc: this.state.sortBy === 'sidecar_status' && !this.state.sortDesc,
-      sort: (sidecar) => {
-        if (sidecar.status) {
-          return sidecar.status.status;
-        } else {
-          return null;
-        }
-      },
-    });
+  sortBy(field) {
+    return () => {
+      this._reloadSidecars({
+        sortField: field,
+        order: (this.state.sortField === field ? (this.state.order === 'asc' ? 'desc' : 'asc') : 'asc'),
+      });
+    };
   },
   _formatEmptyListAlert() {
     const showInactiveHint = (this.state.onlyActive ? ' and/or click on "Include inactive sidecars"' : null);
@@ -180,7 +123,6 @@ const SidecarList = React.createClass({
     const { pagination, onlyActive } = this.state;
 
     const sidecars = (this.state.filteredRows || this.state.sidecars)
-      .sort(this._bySortField)
       .map((sidecar) => {
         return <SidecarRow key={sidecar.node_id} sidecar={sidecar} />;
       });
