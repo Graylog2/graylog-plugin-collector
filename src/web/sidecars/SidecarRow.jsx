@@ -73,16 +73,6 @@ const SidecarRow = React.createClass({
     }
   },
 
-  _tagsAsBadges(sidecar) {
-    if (sidecar.node_details.tags) {
-      return sidecar.node_details.tags.map((tag) =>
-        <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>
-      );
-    } else {
-      return;
-    }
-  },
-
   render() {
     const sidecar = this.props.sidecar;
     const sidecarClass = sidecar.active ? '' : 'greyed-out inactive';
@@ -102,9 +92,6 @@ const SidecarRow = React.createClass({
             </Link> :
             sidecar.node_name
           }
-          <p>
-            {this._tagsAsBadges(sidecar)}
-          </p>
         </td>
         <td>
           <Label bsStyle={this._labelClassForState(sidecarState)}
