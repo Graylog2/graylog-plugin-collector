@@ -96,9 +96,12 @@ const SidecarRow = React.createClass({
     return (
       <tr className={sidecarClass} style={style}>
         <td className="sidecar-name">
-          <Link to={Routes.pluginRoute('SYSTEM_SIDECARS_ID_STATUS')(sidecar.node_id)}>
-            {sidecar.node_name}
-          </Link>
+          {sidecar.active ?
+            <Link to={Routes.pluginRoute('SYSTEM_SIDECARS_ID_STATUS')(sidecar.node_id)}>
+              {sidecar.node_name}
+            </Link> :
+            sidecar.node_name
+          }
           <p>
             {this._tagsAsBadges(sidecar)}
           </p>
