@@ -21,13 +21,13 @@ const CollectorsAdministrationContainer = createReactClass({
 
   loadData() {
     CollectorsActions.list();
-    SidecarsActions.listPaginated();
+    SidecarsActions.listPaginated({});
     CollectorConfigurationsActions.list();
   },
 
   handlePageChange(page, pageSize) {
     const effectivePage = this.state.pagination.pageSize !== pageSize ? 1 : page;
-    SidecarsActions.listPaginated('', effectivePage, pageSize);
+    SidecarsActions.listPaginated({ page: effectivePage, pageSize: pageSize });
   },
 
   render() {
