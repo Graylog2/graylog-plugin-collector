@@ -21,6 +21,14 @@ public abstract class CollectorListResponse {
     @JsonProperty
     public abstract Boolean onlyActive();
 
+    @Nullable
+    @JsonProperty
+    public abstract String sort();
+
+    @Nullable
+    @JsonProperty
+    public abstract String order();
+
     @JsonProperty
     public abstract Collection<CollectorSummary> collectors();
 
@@ -28,7 +36,9 @@ public abstract class CollectorListResponse {
     public static CollectorListResponse create(@JsonProperty("query") @Nullable String query,
                                                @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
                                                @JsonProperty("only_active") Boolean onlyActive,
+                                               @JsonProperty("sort") @Nullable String sort,
+                                               @JsonProperty("order") @Nullable String order,
                                                @JsonProperty("collectors") Collection<CollectorSummary> collectors) {
-        return new AutoValue_CollectorListResponse(query, paginationInfo, onlyActive, collectors);
+        return new AutoValue_CollectorListResponse(query, paginationInfo, onlyActive, sort, order, collectors);
     }
 }

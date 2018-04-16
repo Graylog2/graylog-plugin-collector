@@ -86,14 +86,16 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
         return db.findOne(DBQuery.is(Collector.FIELD_NODE_ID, id));
     }
 
-    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, int page, int perPage) {
+    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
-        return findPaginatedWithQueryAndSort(dbQuery, DBSort.asc(Collector.FIELD_NODE_NAME), page, perPage);
+        final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
+        return findPaginatedWithQueryAndSort(dbQuery, sortBuilder, page, perPage);
     }
 
-    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, Predicate<Collector> isActiveFunction, int page, int perPage) {
+    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, Predicate<Collector> isActiveFunction, int page, int perPage, String sortField, String order) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
-        return findPaginatedWithQueryFilterAndSort(dbQuery, firstNonNull(isActiveFunction, collector -> true), DBSort.asc(Collector.FIELD_NODE_NAME), page, perPage);
+        final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
+        return findPaginatedWithQueryFilterAndSort(dbQuery, firstNonNull(isActiveFunction, collector -> true), sortBuilder, page, perPage);
     }
 
     public int destroyExpired(Period period) {

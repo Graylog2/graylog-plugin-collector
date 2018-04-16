@@ -106,6 +106,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                         1,
                         collectorSummaries.size()),
                 false,
+                null,
+                null,
                 collectorSummaries);
     }
 
@@ -117,13 +119,20 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     public CollectorListResponse collectors(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
                                             @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
                                             @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
+                                            @ApiParam(name = "sort",
+                                                    value = "The field to sort the result on",
+                                                    required = true,
+                                                    allowableValues = "title,description,name,id")
+                                            @DefaultValue(Collector.FIELD_NODE_NAME) @QueryParam("sort") String sort,
+                                            @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
+                                            @DefaultValue("desc") @QueryParam("order") String order,
                                             @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
         final SearchQuery searchQuery = searchQueryParser.parse(query);
         final PaginatedList<Collector> collectors = onlyActive ?
-                collectorService.findPaginated(searchQuery, lostCollectorFunction, page, perPage) :
-                collectorService.findPaginated(searchQuery, page, perPage);
+                collectorService.findPaginated(searchQuery, lostCollectorFunction, page, perPage, sort, order) :
+                collectorService.findPaginated(searchQuery, page, perPage, sort, order);
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
-        return CollectorListResponse.create(query, collectors.pagination(), onlyActive, collectorSummaries);
+        return CollectorListResponse.create(query, collectors.pagination(), onlyActive, sort, order, collectorSummaries);
     }
 
     @GET
