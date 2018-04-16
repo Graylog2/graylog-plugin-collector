@@ -41,10 +41,15 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.getConfiguration.promise(promise);
   },
 
-  renderPreview(configurationId) {
+  renderPreview(template) {
+    const requestTemplate = {
+      template: template,
+    };
+
     const promise = fetch(
-      'GET',
-      URLUtils.qualifyUrl(`${this.sourceUrl}/render/preview/${configurationId}`));
+      'POST',
+      URLUtils.qualifyUrl(`${this.sourceUrl}/render/preview`),
+      requestTemplate);
     promise
       .catch(
         (error) => {

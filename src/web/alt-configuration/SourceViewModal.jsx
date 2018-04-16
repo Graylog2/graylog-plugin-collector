@@ -9,8 +9,8 @@ import CollectorConfigurationsActions from 'configurations/CollectorConfiguratio
 
 const SourceViewModal = React.createClass({
   propTypes: {
-    configurationId: PropTypes.string.isRequired,
-    preview: PropTypes.bool,
+    configurationId: PropTypes.string,
+    templateString: PropTypes.string,
   },
 
   getInitialState() {
@@ -30,15 +30,15 @@ const SourceViewModal = React.createClass({
   },
 
   _loadConfiguration() {
-    if (this.props.preview === true) {
-      CollectorConfigurationsActions.renderPreview(this.props.configurationId)
+    if (this.props.templateString) {
+      CollectorConfigurationsActions.renderPreview(this.props.templateString)
         .then((response) => {
           this.setState({ source: response.preview, name: 'preview' });
         });
     } else {
       CollectorConfigurationsActions.getConfiguration(this.props.configurationId)
         .then((configuration) => {
-          this.setState({ source: configuration.snippets[0].snippet, name: configuration.name });
+          this.setState({ source: configuration.template, name: configuration.name });
         });
     }
   },

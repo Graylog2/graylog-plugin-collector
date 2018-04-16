@@ -194,8 +194,8 @@ const AltConfigurationForm = React.createClass({
         </form>
         {this.props.action === 'edit' &&
           <SourceViewModal ref={(c) => { this.modal = c; }}
-                         configurationId={this.props.configuration.id}
-                         preview />
+                         templateString={this.state.formData.template}
+          />
         }
       </div>
     );
