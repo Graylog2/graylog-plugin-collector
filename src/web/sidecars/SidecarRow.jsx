@@ -89,7 +89,7 @@ const SidecarRow = React.createClass({
           {annotation}
         </td>
         <td>
-          {sidecar.sidecar_version}
+          {sidecar.collector_version}
         </td>
         <td>
           <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${sidecar.node_id}`, 'relative', 604800)}>

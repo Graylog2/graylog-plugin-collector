@@ -84,7 +84,7 @@ const SidecarList = React.createClass({
               <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeID}>
                 Node Id
               </th>
-              <th className={this._getTableHeaderClassName('sidecar_version')} onClick={this.sortBySidecarVersion}>
+              <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortBySidecarVersion}>
                 Sidecar Version
               </th>
               <th className="actions">&nbsp;</th>
@@ -138,8 +138,8 @@ const SidecarList = React.createClass({
   },
   sortBySidecarVersion() {
     this.setState({
-      sortBy: 'sidecar_version',
-      sortDesc: this.state.sortBy === 'sidecar_version' && !this.state.sortDesc,
+      sortBy: 'collector_version',
+      sortDesc: this.state.sortBy === 'collector_version' && !this.state.sortDesc,
       sort: (sidecar) => {
         return sidecar.collector_version;
       },
