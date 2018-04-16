@@ -19,7 +19,7 @@ const SidecarList = React.createClass({
       filteredRows: undefined,
       sortBy: 'node_name',
       sortDesc: false,
-      sort: (sidecar) => sidecar.node_id,
+      sort: sidecar => sidecar.node_name,
     };
   },
   componentDidMount() {
