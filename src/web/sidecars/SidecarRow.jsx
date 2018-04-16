@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
+import OperatingSystemIcon from './OperatingSystemIcon';
 
 const SidecarRow = React.createClass({
   propTypes: {
@@ -26,26 +27,6 @@ const SidecarRow = React.createClass({
   },
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
-
-  _getId(prefixIdName) {
-    return prefixIdName + this.props.sidecar.node_id;
-  },
-
-  _getOsGlyph(operatingSystem) {
-    let glyphClass = 'fa-question-circle';
-    const os = operatingSystem.trim().toLowerCase();
-    if (os.indexOf('darwin') !== -1 || os.indexOf('mac os') !== -1) {
-      glyphClass = 'fa-apple';
-    } else if (os.indexOf('linux') !== -1) {
-      glyphClass = 'fa-linux';
-    } else if (os.indexOf('win') !== -1) {
-      glyphClass = 'fa-windows';
-    }
-
-    glyphClass += ' sidecar-os';
-
-    return (<i className={`fa ${glyphClass}`} />);
-  },
 
   _labelClassForState(state) {
     switch (state) {
@@ -78,7 +59,6 @@ const SidecarRow = React.createClass({
     const sidecarClass = sidecar.active ? '' : 'greyed-out inactive';
     const style = {};
     const annotation = sidecar.active ? '' : ' (inactive)';
-    const osGlyph = this._getOsGlyph(sidecar.node_details.operating_system);
     let sidecarState = null;
     if (sidecar.node_details.status) {
       sidecarState = sidecar.node_details.status.status;
@@ -98,7 +78,7 @@ const SidecarRow = React.createClass({
                  bsSize="xsmall">{this._textForState(sidecarState)}</Label>
         </td>
         <td>
-          {osGlyph}
+          <OperatingSystemIcon operatingSystem={sidecar.node_details.operating_system} />&ensp;
           {sidecar.node_details.operating_system}
         </td>
         <td>
