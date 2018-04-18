@@ -99,3 +99,11 @@ hr.separator {
 .configuration-tag-sm {
     font-size: 80%;
 }
+
+.inactive-sidecars-button {
+    margin-left: 5px;
+}
+
+.popover-wide {
+    max-width: 500px;
+}

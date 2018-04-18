@@ -1,23 +1,16 @@
 import React from 'react';
 import Reflux from 'reflux';
-import { Row, Col, Alert, Button } from 'react-bootstrap';
+import { Alert, Button, Col, OverlayTrigger, Popover, Row, Table } from 'react-bootstrap';
 
-import { PaginatedList, Spinner } from 'components/common';
+import { PaginatedList, SearchForm, Spinner } from 'components/common';
 
 import SidecarsStore from './SidecarsStore';
 import SidecarsActions from './SidecarsActions';
 import SidecarRow from './SidecarRow';
-import SidecarFilter from './SidecarFilter';
 
 const SidecarList = React.createClass({
   mixins: [Reflux.connect(SidecarsStore)],
 
-  getInitialState() {
-    return {
-      sidecars: undefined,
-      filteredRows: undefined,
-    };
-  },
   componentDidMount() {
     this.style.use();
     this._reloadSidecars({});
@@ -33,12 +26,13 @@ const SidecarList = React.createClass({
   style: require('!style/useable!css!styles/SidecarStyles.css'),
   SIDECAR_DATA_REFRESH: 5 * 1000,
 
-  _reloadSidecars({ page, pageSize, onlyActive, sortField, order }) {
+  _reloadSidecars({ query, page, pageSize, onlyActive, sortField, order }) {
+    const effectiveQuery = query === undefined ? this.state.query : query;
     const effectiveSortField = sortField || this.state.sortField;
     const effectiveOrder = order || this.state.order;
 
     const options = {
-      query: '',
+      query: effectiveQuery,
       onlyActive: 'true',
       sortField: effectiveSortField,
       order: effectiveOrder,
@@ -47,14 +41,17 @@ const SidecarList = React.createClass({
     if (this.state.pagination) {
       options.pageSize = pageSize || this.state.pagination.pageSize;
       options.onlyActive = onlyActive === undefined ? this.state.onlyActive : onlyActive; // Avoid || to handle false values
-      let effectivePage = 1; // Reset page to 1 if other params changed
-      if (options.pageSize === this.state.pagination.pageSize && options.onlyActive === this.state.onlyActive) {
+      const shouldKeepPage = options.pageSize === this.state.pagination.pageSize &&
+        options.onlyActive === this.state.onlyActive &&
+        options.query === this.state.query; // Only keep page number when other parameters don't change
+      let effectivePage = 1;
+      if (shouldKeepPage) {
         effectivePage = page || this.state.pagination.page;
       }
       options.page = effectivePage;
     }
 
-    SidecarsActions.listPaginated(options);
+    return SidecarsActions.listPaginated(options);
   },
 
   _getTableHeaderClassName(field) {
@@ -105,12 +102,19 @@ const SidecarList = React.createClass({
     const showInactiveHint = (this.state.onlyActive ? ' and/or click on "Include inactive sidecars"' : null);
     return <Alert>There are no sidecars to show. Try adjusting your search filter{showInactiveHint}.</Alert>;
   },
-  _onFilterChange(filteredRows) {
-    this.setState({ filteredRows });
-  },
+
   handlePageChange(page, pageSize) {
     this._reloadSidecars({ page: page, pageSize: pageSize });
   },
+
+  handleSearchChange(query, callback) {
+    this._reloadSidecars({ query: query }).finally(callback);
+  },
+
+  handleSearchReset() {
+    this._reloadSidecars({ query: '' });
+  },
+
   _isLoading() {
     return !this.state.sidecars;
   },
@@ -120,32 +124,85 @@ const SidecarList = React.createClass({
       return <Spinner />;
     }
 
-    const { pagination, onlyActive } = this.state;
-
-    const sidecars = (this.state.filteredRows || this.state.sidecars)
-      .map((sidecar) => {
-        return <SidecarRow key={sidecar.node_id} sidecar={sidecar} />;
-      });
-
+    const { onlyActive, pagination, query } = this.state;
+    const sidecars = this.state.sidecars.map(sidecar => <SidecarRow key={sidecar.node_id} sidecar={sidecar} />);
     const showOrHideInactive = (onlyActive ? 'Include' : 'Hide');
-
     const sidecarList = (sidecars.length > 0 ? this._formatSidecarList(sidecars) : this._formatEmptyListAlert());
+
+    const queryHelpPopover = (
+      <Popover id="search-query-help" className="popover-wide" title="Search Syntax Help">
+        <p><strong>Available search fields</strong></p>
+        <Table condensed>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td>Sidecar name</td>
+            </tr>
+            <tr>
+              <td>status</td>
+              <td>Status of the sidecar as it appears in the list, i.e. running, failing, or unknown</td>
+            </tr>
+            <tr>
+              <td>operating_system</td>
+              <td>Operating system the sidecar is running on</td>
+            </tr>
+            <tr>
+              <td>last_seen</td>
+              <td>Date and time when the sidecar last communicated with Graylog</td>
+            </tr>
+            <tr>
+              <td>node_id</td>
+              <td>Identifier of the sidecar</td>
+            </tr>
+            <tr>
+              <td>collector_version</td>
+              <td>Sidecar version</td>
+            </tr>
+          </tbody>
+        </Table>
+        <p><strong>Examples</strong></p>
+        <p>
+          Find sidecars that did not communicate with Graylog since a date:<br />
+          <kbd>{'last_seen:<=2018-04-10'}</kbd><br />
+        </p>
+        <p>
+          Find sidecars with <code>failing</code> or <code>unknown</code> status:<br />
+          <kbd>{'status:failing status:unknown'}</kbd><br />
+        </p>
+      </Popover>
+    );
+
+    const queryHelp = (
+      <OverlayTrigger trigger="click" rootClose placement="right" overlay={queryHelpPopover}>
+        <Button bsStyle="link"><i className="fa fa-question-circle" /></Button>
+      </OverlayTrigger>
+    );
 
     return (
       <div>
         <div className="sidecars-filter-form inline">
-          <SidecarFilter label="Filter sidecars"
-                         data={this.state.sidecars}
-                         filterBy={'tags'}
-                         displayKey={'tags'}
-                         searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
-                         onDataFiltered={this._onFilterChange} />
+          <SearchForm query={query}
+                      onSearch={this.handleSearchChange}
+                      onReset={this.handleSearchReset}
+                      searchButtonLabel="Find"
+                      placeholder="Find sidecars"
+                      queryWidth={400}
+                      queryHelpComponent={queryHelp}
+                      useLoadingState>
+            <Button bsStyle="primary"
+                    onClick={this.toggleShowInactive}
+                    className="inactive-sidecars-button">
+              {showOrHideInactive} inactive sidecars
+            </Button>
+          </SearchForm>
         </div>
-        <Button bsStyle="primary"
-                bsSize="small"
-                onClick={this.toggleShowInactive}>
-          {showOrHideInactive} inactive sidecars
-        </Button>
+
         <PaginatedList activePage={pagination.page}
                        pageSize={pagination.pageSize}
                        pageSizes={[1, 10, 25, 50, 100]}
