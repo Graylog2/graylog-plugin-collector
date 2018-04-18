@@ -14,7 +14,7 @@ const FilebeatHelper = React.createClass({
     toc: {
       prospectors: ['log'],
       outputs: ['logstash'],
-      filters: ['processors', 'json', 'drop events', 'add fields']
+      processors: ['fields', 'drop events'],
     },
   },
 
@@ -150,6 +150,35 @@ const FilebeatHelper = React.createClass({
         <b>ssl.key_passphrase</b><br/>
         Optional passphrase for decrypting the Certificate Key.
         {this.example(`ssl.key_passphrase: 'secure'`)}
+      </div>
+    );
+  },
+
+  processorsFields() {
+    return (
+      <div>
+        Processors are used to reduce the number of fields in the exported event or to
+        enhance the event with external metadata.<br/>
+        <b>fields</b><br/>
+        {this.example(`processors:
+  - include_fields:
+    fields: ["cpu"]
+  - drop_fields:
+    fields: ["cpu.user", "cpu.system"]`)}
+      </div>
+    );
+  },
+
+  processorsDropEvents() {
+    return (
+      <div>
+        The following example drops the events that have the HTTP response code 200:<br/>
+        <b>drop_event</b><br/>
+        {this.example(`processors:
+  - drop_event:
+      when:
+         equals:
+             http.code: 200`)}
       </div>
     );
   },
