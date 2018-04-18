@@ -59,32 +59,38 @@ const SidecarList = React.createClass({
   },
   _formatSidecarList(sidecars) {
     return (
-      <div className="table-responsive">
-        <table className="table table-striped sidecars-list">
-          <thead>
-            <tr>
-              <th className={this._getTableHeaderClassName('node_name')} onClick={this.sortBy('node_name')}>Name</th>
-              <th className={this._getTableHeaderClassName('node_details.status.status')} onClick={this.sortBy('node_details.status.status')}>
-                Status
-              </th>
-              <th className={this._getTableHeaderClassName('node_details.operating_system')} onClick={this.sortBy('node_details.operating_system')}>
-                Operating System
-              </th>
-              <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortBy('last_seen')}>Last Seen</th>
-              <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortBy('node_id')}>
-                Node Id
-              </th>
-              <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortBy('collector_version')}>
-                Sidecar Version
-              </th>
-              <th className="actions">&nbsp;</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sidecars}
-          </tbody>
-        </table>
-      </div>
+      <Table striped responsive className="sidecars-list">
+        <thead>
+          <tr>
+            <th className={this._getTableHeaderClassName('node_name')}
+                onClick={this.sortBy('node_name')}>Name
+            </th>
+            <th className={this._getTableHeaderClassName('node_details.status.status')}
+                onClick={this.sortBy('node_details.status.status')}>
+              Status
+            </th>
+            <th className={this._getTableHeaderClassName('node_details.operating_system')}
+                onClick={this.sortBy('node_details.operating_system')}>
+              Operating System
+            </th>
+            <th className={this._getTableHeaderClassName('last_seen')}
+                onClick={this.sortBy('last_seen')}>Last Seen
+            </th>
+            <th className={this._getTableHeaderClassName('node_id')}
+                onClick={this.sortBy('node_id')}>
+              Node Id
+            </th>
+            <th className={this._getTableHeaderClassName('collector_version')}
+                onClick={this.sortBy('collector_version')}>
+              Sidecar Version
+            </th>
+            <th className="actions">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sidecars}
+        </tbody>
+      </Table>
     );
   },
   toggleShowInactive() {
