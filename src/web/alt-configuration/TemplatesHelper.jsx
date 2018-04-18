@@ -20,7 +20,7 @@ const TemplatesHelper = React.createClass({
               <td>Name of the agents operating system, e.g. <code>&quot;Linux&quot;, &quot;Windows&quot;</code></td>
             </tr>
             <tr>
-              <td><code>{'${'}collectorId{'}'}</code></td>
+              <td><code>{'${'}nodeName{'}'}</code></td>
               <td>The name of the agent, defaults to hostname if not set.</td>
             </tr>
             <tr>
