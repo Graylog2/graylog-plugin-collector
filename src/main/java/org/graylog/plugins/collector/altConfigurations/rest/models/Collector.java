@@ -30,6 +30,9 @@ public abstract class Collector {
     public static final String FIELD_COLLECTOR_VERSION = "collector_version";
     public static final String FIELD_LAST_SEEN = "last_seen";
 
+    public static final String FIELD_OPERATING_SYSTEM = FIELD_NODE_DETAILS + ".operating_system";
+    public static final String FIELD_STATUS = FIELD_NODE_DETAILS + ".status.status";
+
     @JsonProperty
     @Id
     @ObjectId

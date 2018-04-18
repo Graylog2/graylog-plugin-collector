@@ -70,8 +70,11 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
             .put("id", SearchQueryField.create(Collector.FIELD_ID))
             .put("node_id", SearchQueryField.create(Collector.FIELD_NODE_ID))
+            .put("name", SearchQueryField.create(Collector.FIELD_NODE_NAME))
             .put("collector_version", SearchQueryField.create(Collector.FIELD_COLLECTOR_VERSION))
             .put("last_seen", SearchQueryField.create(Collector.FIELD_LAST_SEEN, SearchQueryField.Type.DATE))
+            .put("operating_system", SearchQueryField.create(Collector.FIELD_OPERATING_SYSTEM))
+            .put("status", SearchQueryField.create(Collector.FIELD_STATUS, SearchQueryField.Type.INT))
             .build();
 
     private final AltCollectorService collectorService;
