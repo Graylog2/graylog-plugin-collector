@@ -49,7 +49,8 @@ public class BackendService {
                 request.executablePath(),
                 request.configurationPath(),
                 request.executeParameters(),
-                request.validationCommand());
+                request.validationCommand(),
+                request.defaultTemplate());
         return collectorBackend;
     }
 

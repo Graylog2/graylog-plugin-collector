@@ -2,8 +2,10 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import { DataTable } from 'components/common';
+import Routes from 'routing/Routes';
 import CollectorRow from './CollectorRow';
 
 import style from './CollectorList.css';
@@ -38,7 +40,9 @@ const CollectorList = createReactClass({
         <Row>
           <Col md={12}>
             <div className="pull-right">
-              <Button bsStyle="success" bsSize="small" onClick={onCreate}>Create Log Collector</Button>
+              <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_COLLECTOR_NEW')}>
+                <Button bsStyle="success" bsSize="small">Create Log Collector</Button>
+              </LinkContainer>
             </div>
             <h2>Log Collectors <small>{collectors.length} total</small></h2>
           </Col>

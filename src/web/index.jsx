@@ -10,6 +10,7 @@ import SidecarSystemConfiguration from 'system-configuration/SidecarSystemConfig
 import AltConfigurationPage from 'alt-configuration/AltConfigurationPage';
 import NewConfigurationPage from 'alt-configuration/NewConfigurationPage';
 import AdministrationPage from 'administration/AdministrationPage';
+import NewCollectorPage from 'alt-configuration/NewCollectorPage';
 
 const manifest = new PluginManifest(packageJson, {
   routes: [
@@ -19,6 +20,7 @@ const manifest = new PluginManifest(packageJson, {
     { path: '/system/sidecars/configuration', component: ConfigurationPage },
     { path: '/system/sidecars/configuration/new', component: NewConfigurationPage },
     { path: '/system/sidecars/configuration/edit/:id', component: AltConfigurationPage },
+    { path: '/system/sidecars/collector/new', component: NewCollectorPage },
   ],
 
   systemnavigation: [

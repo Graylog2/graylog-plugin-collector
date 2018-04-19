@@ -41,6 +41,9 @@ public abstract class CollectorBackend {
     @JsonProperty("validation_parameters")
     public abstract List<String> validationCommand();
 
+    @JsonProperty("default_template")
+    public abstract String defaultTemplate();
+
     @JsonCreator
     public static CollectorBackend create(@JsonProperty("id") String id,
                                           @JsonProperty("name") String name,
@@ -49,7 +52,8 @@ public abstract class CollectorBackend {
                                           @JsonProperty("executable_path") String executablePath,
                                           @JsonProperty("configuration_path") String configurationPath,
                                           @JsonProperty("execute_parameters") List<String> executeParameters,
-                                          @JsonProperty("validation_parameters") List<String> validationCommand) {
+                                          @JsonProperty("validation_parameters") List<String> validationCommand,
+                                          @JsonProperty("default_template") String defaultTemplate) {
         return new AutoValue_CollectorBackend(
                 id,
                 name,
@@ -58,7 +62,8 @@ public abstract class CollectorBackend {
                 executablePath,
                 configurationPath,
                 executeParameters,
-                validationCommand);
+                validationCommand,
+                defaultTemplate);
     }
 
     public static CollectorBackend create(String name,
@@ -67,7 +72,8 @@ public abstract class CollectorBackend {
                                           String executablePath,
                                           String configurationPath,
                                           List<String> executeParameters,
-                                          List<String> validationCommand) {
+                                          List<String> validationCommand,
+                                          String defaultTemplate) {
         return create(new org.bson.types.ObjectId().toHexString(),
                 name,
                 serviceType,
@@ -75,7 +81,8 @@ public abstract class CollectorBackend {
                 executablePath,
                 configurationPath,
                 executeParameters,
-                validationCommand);
+                validationCommand,
+                defaultTemplate);
     }
 
 }

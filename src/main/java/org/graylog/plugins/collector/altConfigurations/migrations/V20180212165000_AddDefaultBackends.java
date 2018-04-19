@@ -37,7 +37,8 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "/usr/bin/filebeat",
                 "/etc/graylog/collector-sidecar/generated/filebeat.yml",
                 new ArrayList<String>(Arrays.asList("-c",  "%s")),
-                new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s"))
+                new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s")),
+                ""
         );
         ensureBackend(
                 "winlogbeat",
@@ -46,7 +47,8 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "C:\\Program Files\\graylog\\collector-sidecar\\winlogbeat.exe",
                 "C:\\Program Files\\graylog\\collector-sidecar\\generated\\winlogbeat.yml",
                 new ArrayList<String>(Arrays.asList("-c", "%s")),
-                new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s"))
+                new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s")),
+                ""
         );
         ensureBackend(
                 "nxlog",
@@ -55,7 +57,8 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                 "/usr/bin/nxlog",
                 "/etc/graylog/collector-sidecar/generated/nxlog.conf",
                 new ArrayList<String>(Arrays.asList("-f", "-c", "%s")),
-                new ArrayList<String>(Arrays.asList("-v", "-c", "%s"))
+                new ArrayList<String>(Arrays.asList("-v", "-c", "%s")),
+                ""
         );
     }
 
@@ -66,7 +69,8 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                                  String executablePath,
                                  String configurationPath,
                                  List<String> executeParameters,
-                                 List<String> validationCommand) {
+                                 List<String> validationCommand,
+                                 String defaultTemplate) {
         CollectorBackend backend = null;
         try {
             backend = backendService.loadForName(backendName);
@@ -86,7 +90,8 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                     executablePath,
                     configurationPath,
                     executeParameters,
-                    validationCommand
+                    validationCommand,
+                    defaultTemplate
             );
             try {
                 return backendService.save(collectorBackend).id();
