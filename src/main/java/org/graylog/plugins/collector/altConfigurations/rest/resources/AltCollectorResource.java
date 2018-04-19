@@ -13,6 +13,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
@@ -82,15 +83,18 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     private final LostCollectorFunction lostCollectorFunction;
     private final SearchQueryParser searchQueryParser;
     private final Supplier<CollectorSystemConfiguration> configSupplier;
+    private final CollectorStatusMapper collectorStatusMapper;
 
     @Inject
     public AltCollectorResource(AltCollectorService collectorService,
                                 ActionService actionService,
-                                Supplier<CollectorSystemConfiguration> configSupplier) {
+                                Supplier<CollectorSystemConfiguration> configSupplier,
+                                CollectorStatusMapper collectorStatusMapper) {
         this.collectorService = collectorService;
         this.actionService = actionService;
         this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
+        this.collectorStatusMapper = collectorStatusMapper;
         this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
     }
 
@@ -130,7 +134,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                                             @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
                                             @DefaultValue("desc") @QueryParam("order") String order,
                                             @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
-        final SearchQuery searchQuery = searchQueryParser.parse(query);
+        final String mappedQuery = collectorStatusMapper.replaceStringStatusSearchQuery(query);
+        final SearchQuery searchQuery = searchQueryParser.parse(mappedQuery);
         final PaginatedList<Collector> collectors = onlyActive ?
                 collectorService.findPaginated(searchQuery, lostCollectorFunction, page, perPage, sort, order) :
                 collectorService.findPaginated(searchQuery, page, perPage, sort, order);
