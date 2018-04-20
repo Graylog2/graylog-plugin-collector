@@ -15,6 +15,17 @@ const CollectorsStore = Reflux.createStore({
     };
   },
 
+  getCollector(collectorId) {
+    const promise = fetch('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collectorId}`));
+    promise
+      .catch(
+        (error) => {
+          UserNotification.error(`Fetching collector failed with status: ${error}`,
+            'Could not retrieve collector');
+        });
+    CollectorsActions.getCollector.promise(promise);
+  },
+
   list() {
     const promise = fetch('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'))
       .then(
@@ -49,8 +60,8 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.list.promise(promise);
   },
 
-  update(collectorId) {
-    const promise = fetch('PUT', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collectorId}`))
+  update(collector) {
+    const promise = fetch('PUT', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collector.id}`), collector)
       .then(
         (response) => {
           UserNotification.success('Collector successfully updated');

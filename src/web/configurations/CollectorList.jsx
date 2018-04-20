@@ -13,7 +13,6 @@ import style from './CollectorList.css';
 const CollectorList = createReactClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
-    onCreate: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -30,7 +29,7 @@ const CollectorList = createReactClass({
   },
 
   render() {
-    const { collectors, onCreate } = this.props;
+    const { collectors } = this.props;
 
     const headers = ['Name', 'Operating System', 'Actions'];
     const filterKeys = ['name', 'id', 'node_operating_system'];

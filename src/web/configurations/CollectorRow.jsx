@@ -3,19 +3,17 @@ import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { Button, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+
+import Routes from 'routing/Routes';
 
 import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
 
 const CollectorRow = createReactClass({
   propTypes: {
     collector: PropTypes.object.isRequired,
-    onEdit: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-  },
-
-  handleEdit() {
-    this.props.onEdit(this.props.collector);
   },
 
   handleClone() {
@@ -41,7 +39,9 @@ const CollectorRow = createReactClass({
         </td>
         <td>
           <ButtonToolbar>
-            <Button bsStyle="info" bsSize="xsmall" onClick={this.handleEdit}>Edit</Button>
+            <LinkContainer to={Routes.pluginRoute('SYSTEM_SIDECARS_COLLECTOR_EDIT_ID')(collector.id)}>
+              <Button bsStyle="info" bsSize="xsmall">Edit</Button>
+            </LinkContainer>
             <DropdownButton id={`more-actions-${collector.id}`} title="More actions" bsSize="xsmall" pullRight>
               <MenuItem onSelect={this.handleClone}>Clone</MenuItem>
               <MenuItem divider />

@@ -54,6 +54,20 @@ public class BackendService {
         return collectorBackend;
     }
 
+    public CollectorBackend fromRequest(String id, CollectorBackend request) {
+        CollectorBackend collectorBackend = CollectorBackend.create(
+                id,
+                request.name(),
+                request.serviceType(),
+                request.nodeOperatingSystem(),
+                request.executablePath(),
+                request.configurationPath(),
+                request.executeParameters(),
+                request.validationCommand(),
+                request.defaultTemplate());
+        return collectorBackend;
+    }
+
     public CollectorBackend save(CollectorBackend backend) {
         final WriteResult<CollectorBackend, ObjectId> result = dbCollection.save(backend);
         return result.getSavedObject();
