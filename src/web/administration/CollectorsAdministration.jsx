@@ -27,7 +27,6 @@ const CollectorsAdministration = createReactClass({
   getInitialState() {
     const { sidecarCollectors } = this.props;
     return {
-      filteredCollectors: sidecarCollectors,
       enabledCollectors: this.getEnabledCollectors(sidecarCollectors),
       selected: [],
     };
@@ -36,7 +35,6 @@ const CollectorsAdministration = createReactClass({
   componentWillReceiveProps(nextProps) {
     if (!lodash.isEqual(this.props.sidecarCollectors, nextProps.sidecarCollectors)) {
       this.setState({
-        filteredCollectors: nextProps.sidecarCollectors,
         enabledCollectors: this.getEnabledCollectors(nextProps.sidecarCollectors),
       });
     }
@@ -74,21 +72,21 @@ const CollectorsAdministration = createReactClass({
   },
 
   formatHeader() {
-    const { collectors, configurations } = this.props;
-    const { selected, filteredCollectors, enabledCollectors } = this.state;
+    const { collectors, configurations, sidecarCollectors } = this.props;
+    const { selected, enabledCollectors } = this.state;
     const selectedItems = this.state.selected.length;
 
     const selectedCollectors = selected.map((selectedSidecarCollectorId) => {
       return {
         id: selectedSidecarCollectorId,
-        collector: filteredCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedSidecarCollectorId),
+        collector: sidecarCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedSidecarCollectorId),
       };
     });
 
     let headerMenu;
     if (selectedItems === 0) {
       headerMenu = (
-        <CollectorAdministrationFilters collectors={collectors} configurations={configurations} filter={this.filterCollectors} />
+        <CollectorAdministrationFilters collectors={collectors} configurations={configurations} filter={() => {}} />
       );
     } else {
       headerMenu = (
@@ -230,31 +228,18 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
-  filterCollectors(predicate) {
-    const filteredCollectors = this.props.sidecarCollectors.filter(predicate);
-    this.setState({ filteredCollectors: filteredCollectors });
-  },
-
-  filterCollectorsByQuery(query) {
-    const predicate = ({ sidecar }) => sidecar.node_name.match(query, 'i') || sidecar.node_id.match(query, 'i');
-    this.filterCollectors(predicate);
-  },
-
   handleSearch(query, callback) {
-    this.filterCollectorsByQuery(query);
     callback();
   },
 
   handleReset() {
-    this.filterCollectorsByQuery('');
   },
 
   render() {
     const { configurations, pagination, sidecarCollectors } = this.props;
-    const { filteredCollectors } = this.state;
 
     let formattedCollectors;
-    if (filteredCollectors.length === 0) {
+    if (sidecarCollectors.length === 0) {
       formattedCollectors = (
         <ControlledTableList.Item>
           {sidecarCollectors.length === 0 ? 'There are no collectors to display' : 'Filters do not match any collectors'}
@@ -262,7 +247,7 @@ const CollectorsAdministration = createReactClass({
       );
     } else {
       formattedCollectors = [];
-      filteredCollectors.forEach(({ sidecar, collector }) => {
+      sidecarCollectors.forEach(({ sidecar, collector }) => {
         formattedCollectors.push(this.formatSidecarCollector(sidecar, collector, configurations));
       });
     }
