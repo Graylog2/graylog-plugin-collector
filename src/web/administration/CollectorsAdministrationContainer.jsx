@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
+import { naturalSortIgnoreCase } from 'util/SortUtils';
 
 import { Spinner } from 'components/common';
 import CollectorsAdministration from './CollectorsAdministration';
@@ -37,18 +38,20 @@ const CollectorsAdministrationContainer = createReactClass({
     }
 
     const sidecarCollectors = [];
-    sidecars.forEach((sidecar) => {
-      const compatibleCollectors = collectors
-        .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase());
+    sidecars
+      .sort((s1, s2) => naturalSortIgnoreCase(s1.node_name, s2.node_name))
+      .forEach((sidecar) => {
+        const compatibleCollectors = collectors
+          .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase());
 
-      if (compatibleCollectors.length === 0) {
-        sidecarCollectors.push({ collector: {}, sidecar: sidecar });
-      } else {
-        compatibleCollectors.forEach((compatibleCollector) => {
-          sidecarCollectors.push({ collector: compatibleCollector, sidecar: sidecar });
-        });
-      }
-    });
+        if (compatibleCollectors.length === 0) {
+          sidecarCollectors.push({ collector: {}, sidecar: sidecar });
+        } else {
+          compatibleCollectors.forEach((compatibleCollector) => {
+            sidecarCollectors.push({ collector: compatibleCollector, sidecar: sidecar });
+          });
+        }
+      });
 
     return (
       <CollectorsAdministration sidecarCollectorPairs={sidecarCollectors}
