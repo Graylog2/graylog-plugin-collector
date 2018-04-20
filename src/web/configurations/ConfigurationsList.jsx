@@ -52,7 +52,7 @@ const ConfigurationsList = React.createClass({
     return (
       <ConfigurationRow key={configuration.id}
                         configuration={configuration}
-                        collector={configuration.backend_id === '5abcaed7cbde9341b7db6eb5' ? configurationCollector : undefined}
+                        collector={configurationCollector}
                         onCopy={this._copyConfiguration}
                         validateConfiguration={this._validConfigurationName}
                         onDelete={this._onDelete} />
