@@ -17,7 +17,7 @@ import ColorLabel from '../common/ColorLabel';
 
 const CollectorsAdministration = createReactClass({
   propTypes: {
-    sidecarCollectors: PropTypes.array.isRequired,
+    sidecarCollectorPairs: PropTypes.array.isRequired,
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
     pagination: PropTypes.object.isRequired,
@@ -25,17 +25,17 @@ const CollectorsAdministration = createReactClass({
   },
 
   getInitialState() {
-    const { sidecarCollectors } = this.props;
+    const { sidecarCollectorPairs } = this.props;
     return {
-      enabledCollectors: this.getEnabledCollectors(sidecarCollectors),
+      enabledCollectors: this.getEnabledCollectors(sidecarCollectorPairs),
       selected: [],
     };
   },
 
   componentWillReceiveProps(nextProps) {
-    if (!lodash.isEqual(this.props.sidecarCollectors, nextProps.sidecarCollectors)) {
+    if (!lodash.isEqual(this.props.sidecarCollectorPairs, nextProps.sidecarCollectorPairs)) {
       this.setState({
-        enabledCollectors: this.getEnabledCollectors(nextProps.sidecarCollectors),
+        enabledCollectors: this.getEnabledCollectors(nextProps.sidecarCollectorPairs),
       });
     }
   },
@@ -72,15 +72,12 @@ const CollectorsAdministration = createReactClass({
   },
 
   formatHeader() {
-    const { collectors, configurations, sidecarCollectors } = this.props;
+    const { collectors, configurations, sidecarCollectorPairs } = this.props;
     const { selected, enabledCollectors } = this.state;
     const selectedItems = this.state.selected.length;
 
-    const selectedCollectors = selected.map((selectedSidecarCollectorId) => {
-      return {
-        id: selectedSidecarCollectorId,
-        collector: sidecarCollectors.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedSidecarCollectorId),
-      };
+    const selectedSidecarCollectorPairs = selected.map((selectedSidecarCollectorId) => {
+      return sidecarCollectorPairs.find(({ sidecar, collector }) => this.sidecarCollectorId(sidecar, collector) === selectedSidecarCollectorId);
     });
 
     let headerMenu;
@@ -90,7 +87,7 @@ const CollectorsAdministration = createReactClass({
       );
     } else {
       headerMenu = (
-        <CollectorAdministrationActions selectedCollectors={selectedCollectors}
+        <CollectorAdministrationActions selectedSidecarCollectorPairs={selectedSidecarCollectorPairs}
                                         collectors={collectors}
                                         configurations={configurations}
                                         onConfigurationSelectionChange={this.handleConfigurationChange} />
@@ -236,18 +233,18 @@ const CollectorsAdministration = createReactClass({
   },
 
   render() {
-    const { configurations, pagination, sidecarCollectors } = this.props;
+    const { configurations, pagination, sidecarCollectorPairs } = this.props;
 
     let formattedCollectors;
-    if (sidecarCollectors.length === 0) {
+    if (sidecarCollectorPairs.length === 0) {
       formattedCollectors = (
         <ControlledTableList.Item>
-          {sidecarCollectors.length === 0 ? 'There are no collectors to display' : 'Filters do not match any collectors'}
+          {sidecarCollectorPairs.length === 0 ? 'There are no collectors to display' : 'Filters do not match any collectors'}
         </ControlledTableList.Item>
       );
     } else {
       formattedCollectors = [];
-      sidecarCollectors.forEach(({ sidecar, collector }) => {
+      sidecarCollectorPairs.forEach(({ sidecar, collector }) => {
         formattedCollectors.push(this.formatSidecarCollector(sidecar, collector, configurations));
       });
     }

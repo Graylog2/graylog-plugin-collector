@@ -13,7 +13,7 @@ class CollectorConfigurationSelector extends React.Component {
   static propTypes = {
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
-    selectedCollectors: PropTypes.array.isRequired,
+    selectedSidecarCollectorPairs: PropTypes.array.isRequired,
     onConfigurationSelectionChange: PropTypes.func.isRequired,
   };
 
@@ -24,8 +24,8 @@ class CollectorConfigurationSelector extends React.Component {
     };
   }
 
-  getAssignedConfigurations = (selectedCollectors, configurations) => {
-    const assignments = selectedCollectors.map(({ collector }) => collector.sidecar).reduce((accumulator, sidecar) => accumulator.concat(sidecar.assignments), []);
+  getAssignedConfigurations = (selectedSidecarCollectorPairs, configurations) => {
+    const assignments = selectedSidecarCollectorPairs.map(({ sidecar }) => sidecar).reduce((accumulator, sidecar) => accumulator.concat(sidecar.assignments), []);
     return assignments.map(assignment => configurations.find(configuration => configuration.id === assignment.configuration_id));
   };
 
@@ -61,12 +61,12 @@ class CollectorConfigurationSelector extends React.Component {
     );
   };
 
-  renderConfigurationSummary = (nextAssignedConfigurations, selectedCollectors) => {
-    const exampleCollector = selectedCollectors[0].collector;
+  renderConfigurationSummary = (nextAssignedConfigurations, selectedSidecarCollectorPairs) => {
+    const exampleSidecarCollectorPair = selectedSidecarCollectorPairs[0];
     const collectorIndicator = (
       <em>
-        <CollectorIndicator collector={exampleCollector.collector.name}
-                            operatingSystem={exampleCollector.collector.node_operating_system} />
+        <CollectorIndicator collector={exampleSidecarCollectorPair.collector.name}
+                            operatingSystem={exampleSidecarCollectorPair.collector.node_operating_system} />
       </em>
     );
 
@@ -77,7 +77,7 @@ class CollectorConfigurationSelector extends React.Component {
       actionSummary = <span>You are going to <b>apply</b> the <em>{nextAssignedConfigurations[0].name}</em> configuration for collector {collectorIndicator} to:</span>;
     }
 
-    const formattedSummary = selectedCollectors.map(({ collector }) => collector.sidecar.node_name).join(', ');
+    const formattedSummary = selectedSidecarCollectorPairs.map(({ sidecar }) => sidecar.node_name).join(', ');
 
     return (
       <BootstrapModalConfirm ref={(c) => { this.modal = c; }}
@@ -95,10 +95,10 @@ class CollectorConfigurationSelector extends React.Component {
 
   render() {
     const { nextAssignedConfigurations } = this.state;
-    const { configurations, selectedCollectors } = this.props;
+    const { configurations, selectedSidecarCollectorPairs } = this.props;
 
     // Do not allow configuration changes when more than one log collector type is selected
-    const selectedLogCollectors = lodash.uniq(selectedCollectors.map(({ collector }) => collector.collector));
+    const selectedLogCollectors = lodash.uniq(selectedSidecarCollectorPairs.map(({ collector }) => collector));
     if (selectedLogCollectors.length > 1) {
       return (
         <SelectPopover id="status-filter"
@@ -126,7 +126,8 @@ class CollectorConfigurationSelector extends React.Component {
       );
     }
 
-    const assignedConfigurations = this.getAssignedConfigurations(selectedCollectors, configurations)
+    console.log(this.getAssignedConfigurations(selectedSidecarCollectorPairs, configurations));
+    const assignedConfigurations = this.getAssignedConfigurations(selectedSidecarCollectorPairs, configurations)
       .filter(configuration => selectedLogCollectors[0].id === configuration.backend_id);
 
     return (
@@ -139,7 +140,7 @@ class CollectorConfigurationSelector extends React.Component {
                        onItemSelect={this.handleConfigurationSelect}
                        selectedItems={assignedConfigurations.map(config => config.id)}
                        filterPlaceholder="Filter by configuration" />
-        {this.renderConfigurationSummary(nextAssignedConfigurations, selectedCollectors)}
+        {this.renderConfigurationSummary(nextAssignedConfigurations, selectedSidecarCollectorPairs)}
       </span>
     );
   }

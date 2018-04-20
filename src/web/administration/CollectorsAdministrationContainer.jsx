@@ -51,7 +51,7 @@ const CollectorsAdministrationContainer = createReactClass({
     });
 
     return (
-      <CollectorsAdministration sidecarCollectors={sidecarCollectors}
+      <CollectorsAdministration sidecarCollectorPairs={sidecarCollectors}
                                 collectors={collectors}
                                 configurations={configurations}
                                 pagination={pagination}
