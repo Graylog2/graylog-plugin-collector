@@ -200,6 +200,7 @@ const SidecarList = React.createClass({
                       placeholder="Find sidecars"
                       queryWidth={400}
                       queryHelpComponent={queryHelp}
+                      topMargin={0}
                       useLoadingState>
             <Button bsStyle="primary"
                     onClick={this.toggleShowInactive}
