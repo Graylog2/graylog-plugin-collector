@@ -13,9 +13,9 @@ import style from './CollectorList.css';
 const CollectorList = createReactClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
-    onEdit: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    validateCollector: PropTypes.func.isRequired,
   },
 
   headerCellFormatter(header) {
@@ -24,8 +24,11 @@ const CollectorList = createReactClass({
   },
 
   collectorFormatter(collector) {
-    const { onEdit, onClone, onDelete } = this.props;
-    return <CollectorRow collector={collector} onEdit={onEdit} onClone={onClone} onDelete={onDelete} />;
+    const { onClone, onDelete, validateCollector } = this.props;
+    return (<CollectorRow collector={collector}
+                          onClone={onClone}
+                          onDelete={onDelete}
+                          validateCollector={validateCollector} />);
   },
 
   render() {

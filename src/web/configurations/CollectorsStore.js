@@ -94,6 +94,25 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.delete.promise(promise);
   },
 
+  copy(collectorId, name) {
+    console.log(`${name} ${collectorId}`);
+    const url = URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collectorId}/${name}`);
+    const method = 'POST';
+
+    const promise = fetch(method, url);
+    promise
+      .then((response) => {
+        UserNotification.success(`Collector "${collectorId}" successfully copied`);
+        this.list();
+        return response;
+      }, (error) => {
+        UserNotification.error(`Saving collector "${name}" failed with status: ${error.message}`,
+          'Could not save Collector');
+      });
+
+    CollectorsActions.copy.promise(promise);
+  },
+
 });
 
 export default CollectorsStore;

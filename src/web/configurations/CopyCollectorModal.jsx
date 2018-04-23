@@ -6,11 +6,11 @@ import { BootstrapModalForm, Input } from 'components/bootstrap';
 
 import style from './CopyModal.css';
 
-const CopyConfigurationModal = React.createClass({
+const CopyCollectorModal = React.createClass({
   propTypes: {
     id: PropTypes.string,
-    copyConfiguration: PropTypes.func.isRequired,
-    validConfigurationName: PropTypes.func.isRequired,
+    copyCollector: PropTypes.func.isRequired,
+    validCollectorName: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
@@ -47,10 +47,10 @@ const CopyConfigurationModal = React.createClass({
   },
 
   _save() {
-    const configuration = this.state;
+    const collector = this.state;
 
-    if (!configuration.error) {
-      this.props.copyConfiguration(this.props.id, this.state.name, this._saved);
+    if (!collector.error) {
+      this.props.copyCollector(this.props.id, this.state.name, this._saved);
     }
   },
 
@@ -68,12 +68,12 @@ const CopyConfigurationModal = React.createClass({
                             submitButtonText="Create">
           <fieldset>
             <Input type="text"
-                   id={this._getId('configuration-name')}
+                   id={this._getId('collector-name')}
                    label="Name"
                    defaultValue={this.state.name}
                    onChange={this._changeName}
                    bsStyle={this.state.error ? 'error' : null}
-                   help={this.state.error ? this.state.error_message : 'Type a name for the new configuration'}
+                   help={this.state.error ? this.state.error_message : 'Type a name for the new collector'}
                    autoFocus
                    required />
           </fieldset>
@@ -83,4 +83,4 @@ const CopyConfigurationModal = React.createClass({
   },
 });
 
-export default CopyConfigurationModal;
+export default CopyCollectorModal;

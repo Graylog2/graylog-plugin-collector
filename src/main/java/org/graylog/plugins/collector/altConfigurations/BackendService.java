@@ -77,6 +77,20 @@ public class BackendService {
         return dbCollection.remove(DBQuery.is("_id", id)).getN();
     }
 
+    public CollectorBackend copy(String id, String name) {
+        CollectorBackend collectorBackend = load(id);
+        return CollectorBackend.create(
+                name,
+                collectorBackend.serviceType(),
+                collectorBackend.nodeOperatingSystem(),
+                collectorBackend.executablePath(),
+                collectorBackend.configurationPath(),
+                collectorBackend.executeParameters(),
+                collectorBackend.validationCommand(),
+                collectorBackend.defaultTemplate()
+        );
+    }
+
     private List<CollectorBackend> toAbstractListType(DBCursor<CollectorBackend> backends) {
         return toAbstractListType(backends.toArray());
     }

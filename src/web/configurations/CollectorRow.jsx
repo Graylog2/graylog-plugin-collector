@@ -9,11 +9,14 @@ import Routes from 'routing/Routes';
 
 import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
 
+import CopyCollectorModal from './CopyCollectorModal';
+
 const CollectorRow = createReactClass({
   propTypes: {
     collector: PropTypes.object.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    validateCollector: PropTypes.func.isRequired,
   },
 
   handleClone() {
@@ -43,7 +46,9 @@ const CollectorRow = createReactClass({
               <Button bsStyle="info" bsSize="xsmall">Edit</Button>
             </LinkContainer>
             <DropdownButton id={`more-actions-${collector.id}`} title="More actions" bsSize="xsmall" pullRight>
-              <MenuItem onSelect={this.handleClone}>Clone</MenuItem>
+              <CopyCollectorModal id={collector.id}
+                                  validCollectorName={this.props.validateCollector}
+                                  copyCollector={this.props.onClone} />
               <MenuItem divider />
               <MenuItem onSelect={this.handleDelete}>Delete</MenuItem>
             </DropdownButton>

@@ -10,7 +10,9 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBack
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummaryResponse;
+import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -110,6 +113,20 @@ public class BackendResource extends RestResource implements PluginRestResource 
                                           @Valid @NotNull CollectorBackend request) {
         CollectorBackend collectorBackend = backendService.fromRequest(id, request);
         return backendService.save(collectorBackend);
+    }
+
+    @POST
+    @Path("/{id}/{name}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @ApiOperation(value = "Create a collector copy")
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CLONE)
+    public Response copyCollector(@ApiParam(name = "id", required = true)
+                                  @PathParam("id") String id,
+                                  @PathParam("name") String name) throws NotFoundException {
+        final CollectorBackend collectorBackend = backendService.copy(id, name);
+        backendService.save(collectorBackend);
+        return Response.accepted().build();
     }
 
     @DELETE

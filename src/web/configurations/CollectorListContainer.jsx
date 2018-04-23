@@ -19,20 +19,19 @@ const CollectorListContainer = createReactClass({
     CollectorsActions.list();
   },
 
-  handleCreate() {
-    // TODO Implement method
-  },
-
-  handleEdit(collector) {
-    // TODO Implement method
-  },
-
-  handleClone(collector) {
-    // TODO Implement method
+  handleClone(collector, name, callback) {
+    CollectorsActions.copy(collector, name)
+      .then(() => {
+        callback();
+      });
   },
 
   handleDelete(collector) {
     CollectorsActions.delete(collector);
+  },
+
+  _validCollectorName(name) {
+    return !this.state.collectors.some((collector) => collector.name === name);
   },
 
   render() {
@@ -43,10 +42,9 @@ const CollectorListContainer = createReactClass({
 
     return (
       <CollectorList collectors={collectors}
-                   onCreate={this.handleCreate}
-                   onEdit={this.handleEdit}
-                   onClone={this.handleClone}
-                   onDelete={this.handleDelete} />
+                     onClone={this.handleClone}
+                     onDelete={this.handleDelete}
+                     validateCollector={this._validCollectorName} />
     );
   },
 });
