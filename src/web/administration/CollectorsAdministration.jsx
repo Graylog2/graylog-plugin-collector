@@ -6,7 +6,7 @@ import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, PaginatedList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
-import CollectorIndicator from 'sidecars/CollectorIndicator';
+import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
 import CollectorAdministrationActions from './CollectorsAdministrationActions';
 
@@ -152,27 +152,25 @@ const CollectorsAdministration = createReactClass({
     }
 
     return (
-      <span className={`${style.additionalInformation} ${className}`}><i className={`fa ${icon}`} /> {text}</span>
+      <span className={`${className}`}><i className={`fa ${icon}`} /> {text}</span>
     );
   },
 
   formatSidecarNoCollectors(sidecar) {
     return (
       <ControlledTableList.Item key={`sidecar-${sidecar.node_id}`}>
-        <div className={`${style.collectorEntry} ${style.disabledCollector}`}>
+        <div className={`${style.collectorEntry} ${style.disabledCollector} ${style.alignedInformation}`}>
           <Row>
-            <Col md={4}>
-              <Input id={`${sidecar.node_id}-checkbox`}
-                     type="checkbox"
-                     label={sidecar.node_name}
-                     checked={false}
-                     disabled />
-              <span className={style.sidecarId}>{sidecar.node_id}</span>
+            <Col md={12}>
+              <h4 className="list-group-item-heading">
+                {sidecar.node_name} <OperatingSystemIcon operatingSystem={sidecar.node_details.operating_system} />
+                &emsp;<small>{sidecar.node_id}</small>
+              </h4>
             </Col>
           </Row>
           <Row>
-            <Col md={4}>
-              <span className={style.additionalInformation}>
+            <Col md={12}>
+              <span>
                 No collectors compatible with {sidecar.node_details.operating_system}
               </span>
             </Col>
@@ -182,44 +180,52 @@ const CollectorsAdministration = createReactClass({
     );
   },
 
-  formatSidecarCollector(sidecar, collector, configurations) {
-    if (lodash.isEmpty(collector)) {
-      return this.formatSidecarNoCollectors(sidecar);
-    }
-
+  formatCollector(sidecar, collector, configurations) {
     const sidecarCollectorId = this.sidecarCollectorId(sidecar, collector);
     const configAssignment = sidecar.assignments.find(assignment => assignment.backend_id === collector.id) || {};
     const configuration = configurations.find(config => config.id === configAssignment.configuration_id);
     const backendStatus = (sidecar.node_details.status.backends[collector.name] || {}).status;
 
     return (
-      <ControlledTableList.Item key={`sidecar-${sidecarCollectorId}`}>
+      <Row key={sidecarCollectorId}>
+        <Col lg={2} md={4} xs={6}>
+          <Input id={`${sidecarCollectorId}-checkbox`}
+                 type="checkbox"
+                 label={collector.name}
+                 checked={this.state.selected.includes(sidecarCollectorId)}
+                 onChange={this.handleSidecarCollectorSelect(sidecarCollectorId)} />
+        </Col>
+        <Col lg={1} md={2} xs={3}>
+          <span className={style.additionalContent}>
+            {configuration && this.formatCollectorState(backendStatus)}
+          </span>
+        </Col>
+        <Col lg={1} md={2} xs={3}>
+          <span className={style.additionalContent}>
+            {configuration && <ColorLabel color={configuration.color} text={configuration.name} />}
+          </span>
+        </Col>
+      </Row>
+    );
+  },
+
+  formatSidecar(sidecar, collectors, configurations) {
+    if (collectors.length === 0) {
+      return this.formatSidecarNoCollectors(sidecar);
+    }
+
+    return (
+      <ControlledTableList.Item key={`sidecar-${sidecar.node_id}`}>
         <div className={style.collectorEntry}>
           <Row>
-            <Col md={4}>
-              <Input id={`${sidecarCollectorId}-checkbox`}
-                     type="checkbox"
-                     label={sidecar.node_name}
-                     checked={this.state.selected.includes(sidecarCollectorId)}
-                     onChange={this.handleSidecarCollectorSelect(sidecarCollectorId)} />
-              <span className={style.sidecarId}>{sidecar.node_id}</span>
-            </Col>
-            <Col md={3}>
-              <div className={style.configurationLabel}>
-                {configuration && <ColorLabel color={configuration.color} text={configuration.name} />}
-              </div>
+            <Col md={12}>
+              <h4 className={`list-group-item-heading ${style.alignedInformation}`}>
+                {sidecar.node_name} <OperatingSystemIcon operatingSystem={sidecar.node_details.operating_system} />
+                &emsp;<small>{sidecar.node_id}</small>
+              </h4>
             </Col>
           </Row>
-          <Row>
-            <Col md={4}>
-              <span className={style.additionalInformation}>
-                <em>
-                  <CollectorIndicator collector={collector.name} operatingSystem={sidecar.node_details.operating_system} />
-                </em>
-              </span>
-              {configuration && this.formatCollectorState(backendStatus)}
-            </Col>
-          </Row>
+          {collectors.map(collector => this.formatCollector(sidecar, collector, configurations))}
         </div>
       </ControlledTableList.Item>
     );
@@ -243,9 +249,13 @@ const CollectorsAdministration = createReactClass({
         </ControlledTableList.Item>
       );
     } else {
-      formattedCollectors = [];
-      sidecarCollectorPairs.forEach(({ sidecar, collector }) => {
-        formattedCollectors.push(this.formatSidecarCollector(sidecar, collector, configurations));
+      const sidecars = lodash.uniq(sidecarCollectorPairs.map(({ sidecar }) => sidecar));
+      formattedCollectors = sidecars.map((sidecarToMap) => {
+        const collectors = sidecarCollectorPairs
+          .filter(({ sidecar }) => sidecar.node_id === sidecarToMap.node_id)
+          .map(({ collector }) => collector)
+          .filter(collector => !lodash.isEmpty(collector));
+        return this.formatSidecar(sidecarToMap, collectors, configurations);
       });
     }
 

@@ -8,7 +8,7 @@
 }
 
 :local(.collectorEntry) .row {
-    margin-bottom: 0;
+    margin-bottom: 5px;
 }
 
 :local(.collectorEntry) .form-group {
@@ -16,7 +16,16 @@
     margin: 0 10px 0 0;
 }
 
-:local(.additionalInformation) {
+:local(.collectorEntry) .checkbox {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+:local(.collectorEntry) .checkbox label {
+    font-size: 1.1em;
+}
+
+:local(.alignedInformation) {
     margin-left: 20px;
 }
 
@@ -29,9 +38,9 @@
     color: #666;
 }
 
-:local(.configurationLabel) {
+:local(.additionalContent) {
     display: block;
-    padding: 10px 0;
+    padding: 5px 0;
 }
 
 :local(.paginatedList) .page-size {
