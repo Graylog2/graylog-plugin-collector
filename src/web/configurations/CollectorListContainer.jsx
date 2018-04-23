@@ -32,7 +32,7 @@ const CollectorListContainer = createReactClass({
   },
 
   handleDelete(collector) {
-    // TODO Implement method
+    CollectorsActions.delete(collector);
   },
 
   render() {
@@ -46,7 +46,7 @@ const CollectorListContainer = createReactClass({
                    onCreate={this.handleCreate}
                    onEdit={this.handleEdit}
                    onClone={this.handleClone}
-                   onDelete={this.handleDelete}/>
+                   onDelete={this.handleDelete} />
     );
   },
 });

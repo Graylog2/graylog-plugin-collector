@@ -4,6 +4,7 @@ import fetch from 'logic/rest/FetchProvider';
 import UserNotification from 'util/UserNotification';
 
 import CollectorsActions from './CollectorsActions';
+import CollectorConfigurationsActions from "./CollectorConfigurationsActions";
 
 const CollectorsStore = Reflux.createStore({
   listenables: [CollectorsActions],
@@ -75,6 +76,22 @@ const CollectorsStore = Reflux.createStore({
             'Could not retrieve collectors');
         });
     CollectorsActions.list.promise(promise);
+  },
+
+  delete(collector) {
+    const url = URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collector.id}`);
+    const promise = fetch('DELETE', url);
+    promise
+      .then((response) => {
+        UserNotification.success(`Collector "${collector.name}" successfully deleted`);
+        this.list();
+        return response;
+      }, (error) => {
+        UserNotification.error(`Deleting Collector "${collector.name}" failed with status: ${error.message}`,
+          'Could not delete Collector');
+      });
+
+    CollectorsActions.delete.promise(promise);
   },
 
 });

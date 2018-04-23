@@ -7,9 +7,8 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummaryResponse;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -19,6 +18,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -26,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,4 +112,18 @@ public class BackendResource extends RestResource implements PluginRestResource 
         return backendService.save(collectorBackend);
     }
 
+    @DELETE
+    @Path("/{id}")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Delets a collector configuration")
+    public Response deleteCollector(@ApiParam(name = "id", required = true)
+                                    @PathParam("id") String id) {
+        int deleted = backendService.delete(id);
+        if (deleted == 0) {
+            return Response.notModified().build();
+        }
+        return Response.accepted().build();
+    }
 }
