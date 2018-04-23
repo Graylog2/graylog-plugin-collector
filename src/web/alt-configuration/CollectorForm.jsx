@@ -170,7 +170,7 @@ const CollectorForm = React.createClass({
               <ControlLabel>Operating System</ControlLabel>
               <Select inputProps={{ id: 'node_operating_system' }}
                       options={this._formatOperatingSystems()}
-                      value={this.state.formData.operating_system}
+                      value={this.state.formData.node_operating_system}
                       onChange={this._formDataUpdate('node_operating_system')}
                       placeholder="Name"
                       required />

@@ -94,7 +94,6 @@ const CollectorsStore = Reflux.createStore({
   },
 
   copy(collectorId, name) {
-    console.log(`${name} ${collectorId}`);
     const url = URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collectorId}/${name}`);
     const method = 'POST';
 
