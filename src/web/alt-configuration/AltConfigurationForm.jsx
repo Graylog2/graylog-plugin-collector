@@ -96,6 +96,13 @@ const AltConfigurationForm = React.createClass({
     }
   },
 
+  _onCollectorChange(nextId) {
+    this._formDataUpdate('backend_id')(nextId);
+    const formData = this.state.formData;
+    formData.template = this._collectorDefaultTemplate(nextId);
+    this.setState({ formData: formData });
+  },
+
   _onSubmit(event) {
     event.preventDefault();
     this._save();
@@ -121,6 +128,16 @@ const AltConfigurationForm = React.createClass({
     }
 
     return options;
+  },
+
+  _collectorDefaultTemplate(collectorId) {
+    let defaultTemplate = '';
+    this.state.collectors.forEach((collector) => {
+      if (collector.id === collectorId) {
+        defaultTemplate = collector.default_template;
+      }
+    });
+    return defaultTemplate;
   },
 
   render() {
@@ -158,7 +175,7 @@ const AltConfigurationForm = React.createClass({
               <Select inputProps={{ id: 'backend_id' }}
                       options={this._formatCollectorOptions()}
                       value={this.state.formData.backend_id}
-                      onChange={this._formDataUpdate('backend_id')}
+                      onChange={this._onCollectorChange}
                       placeholder="Collector"
                       required />
               <HelpBlock>Choose the log collector this configuration is meant for.</HelpBlock>
