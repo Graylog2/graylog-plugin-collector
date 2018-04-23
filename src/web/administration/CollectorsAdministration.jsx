@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, PaginatedList, SearchForm } from 'components/common';
 import { Input } from 'components/bootstrap';
@@ -268,9 +268,11 @@ const CollectorsAdministration = createReactClass({
                        onChange={this.props.onPageChange}>
           <SearchForm onSearch={this.handleSearch}
                       onReset={this.handleReset}
-                      searchButtonLabel="Filter"
-                      resetButtonLabel="Reset"
-                      label="Filter collectors"
+                      searchButtonLabel="Find"
+                      placeholder="Find collectors"
+                      queryWidth={400}
+                      topMargin={0}
+                      queryHelpComponent={<Button bsStyle="link"><i className="fa fa-question-circle" /></Button>}
                       useLoadingState />
           <Row>
             <Col md={12}>
