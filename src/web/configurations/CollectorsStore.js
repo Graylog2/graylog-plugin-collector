@@ -44,7 +44,6 @@ const CollectorsStore = Reflux.createStore({
   },
 
   create(collector) {
-    console.log(collector);
     const promise = fetch('POST', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'), collector)
       .then(
         (response) => {

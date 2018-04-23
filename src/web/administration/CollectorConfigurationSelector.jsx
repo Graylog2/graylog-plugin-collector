@@ -126,7 +126,6 @@ class CollectorConfigurationSelector extends React.Component {
       );
     }
 
-    console.log(this.getAssignedConfigurations(selectedSidecarCollectorPairs, configurations));
     const assignedConfigurations = this.getAssignedConfigurations(selectedSidecarCollectorPairs, configurations)
       .filter(configuration => selectedLogCollectors[0].id === configuration.backend_id);
 
