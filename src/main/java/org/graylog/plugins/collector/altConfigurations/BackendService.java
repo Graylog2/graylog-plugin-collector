@@ -38,7 +38,8 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
     }
 
     public CollectorBackend fromRequest(CollectorBackend request) {
-        CollectorBackend collectorBackend = CollectorBackend.create(
+        return CollectorBackend.create(
+                null,
                 request.name(),
                 request.serviceType(),
                 request.nodeOperatingSystem(),
@@ -47,35 +48,21 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
                 request.executeParameters(),
                 request.validationCommand(),
                 request.defaultTemplate());
-        return collectorBackend;
     }
 
     public CollectorBackend fromRequest(String id, CollectorBackend request) {
-        CollectorBackend collectorBackend = CollectorBackend.create(
-                id,
-                request.name(),
-                request.serviceType(),
-                request.nodeOperatingSystem(),
-                request.executablePath(),
-                request.configurationPath(),
-                request.executeParameters(),
-                request.validationCommand(),
-                request.defaultTemplate());
-        return collectorBackend;
+        final CollectorBackend collectorBackend = fromRequest(request);
+        return collectorBackend.toBuilder()
+                .id(id)
+                .build();
     }
 
     public CollectorBackend copy(String id, String name) {
         CollectorBackend collectorBackend = load(id);
-        return CollectorBackend.create(
-                name,
-                collectorBackend.serviceType(),
-                collectorBackend.nodeOperatingSystem(),
-                collectorBackend.executablePath(),
-                collectorBackend.configurationPath(),
-                collectorBackend.executeParameters(),
-                collectorBackend.validationCommand(),
-                collectorBackend.defaultTemplate()
-        );
+        return collectorBackend.toBuilder()
+                .id(null)
+                .name(name)
+                .build();
     }
 
     private List<CollectorBackend> toAbstractListType(List<CollectorBackend> backends) {
