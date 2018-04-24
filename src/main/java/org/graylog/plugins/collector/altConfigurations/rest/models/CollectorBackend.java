@@ -8,7 +8,10 @@ import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 @AutoValue
 @JsonAutoDetect
@@ -51,8 +54,8 @@ public abstract class CollectorBackend {
                                           @JsonProperty("node_operating_system") String nodeOperatingSystem,
                                           @JsonProperty("executable_path") String executablePath,
                                           @JsonProperty("configuration_path") String configurationPath,
-                                          @JsonProperty("execute_parameters") List<String> executeParameters,
-                                          @JsonProperty("validation_parameters") List<String> validationCommand,
+                                          @JsonProperty("execute_parameters") @Nullable List<String> executeParameters,
+                                          @JsonProperty("validation_parameters") @Nullable List<String> validationCommand,
                                           @JsonProperty("default_template") String defaultTemplate) {
         return new AutoValue_CollectorBackend(
                 id,
@@ -61,8 +64,8 @@ public abstract class CollectorBackend {
                 nodeOperatingSystem,
                 executablePath,
                 configurationPath,
-                executeParameters,
-                validationCommand,
+                firstNonNull(executeParameters, new ArrayList<>()),
+                firstNonNull(validationCommand, new ArrayList<>()),
                 defaultTemplate);
     }
 
