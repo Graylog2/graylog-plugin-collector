@@ -464,8 +464,7 @@ class EditInputFields extends React.Component {
                        label="Follow and collect from symlinks"
                        checked={this.props.properties.symlinks}
                        onChange={this._injectProperty('symlinks')}
-                       help="Follow and collect logs from symbolic links"
-                       required />
+                       help="Follow and collect logs from symbolic links">
                 <Input type="text"
                        id={this._getId('scan-frequency')}
                        label="Scan frequency in seconds"
