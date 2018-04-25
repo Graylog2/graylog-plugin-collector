@@ -15,6 +15,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
+import org.graylog2.database.NotFoundException;
 import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
@@ -101,7 +102,7 @@ public class AltConfigurationService {
         return collectorConfiguration;
     }
 
-    public CollectorConfiguration renderConfigurationForCollector(Collector collector, String configurationId) {
+    public CollectorConfiguration renderConfigurationForCollector(Collector collector, CollectorConfiguration configuration) {
         Map<String, Object> context = new HashMap<>();
 
         context.put("nodeId", collector.nodeId());
@@ -116,7 +117,6 @@ public class AltConfigurationService {
             context.put("load1", collector.nodeDetails().metrics().load1());
         }
 
-        CollectorConfiguration configuration = load(configurationId);
         return CollectorConfiguration.create(
                 configuration.id(),
                 configuration.backendId(),
