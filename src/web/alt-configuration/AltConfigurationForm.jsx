@@ -97,10 +97,10 @@ const AltConfigurationForm = React.createClass({
   },
 
   _onCollectorChange(nextId) {
-    this._formDataUpdate('backend_id')(nextId);
-    const formData = this.state.formData;
-    formData.template = this._collectorDefaultTemplate(nextId);
-    this.setState({ formData: formData });
+    const nextFormData = lodash.cloneDeep(this.state.formData);
+    nextFormData.backend_id = nextId;
+    nextFormData.template = this._collectorDefaultTemplate(nextId);
+    this.setState({ formData: nextFormData });
   },
 
   _onSubmit(event) {
