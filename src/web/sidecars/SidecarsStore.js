@@ -72,6 +72,40 @@ const SidecarsStore = Reflux.createStore({
     SidecarsActions.listPaginated.promise(promise);
   },
 
+  listAdministration({ query = '', page = 1, pageSize = 50 }) {
+    const baseUrl = '/plugins/org.graylog.plugins.collector/altcollectors/administration';
+    const search = {
+      query: query,
+      page: page,
+      per_page: pageSize,
+    };
+
+    const uri = URI(baseUrl).search(search).toString();
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(uri));
+
+    promise.then(
+      (response) => {
+        this.trigger({
+          sidecars: response.collectors,
+          query: response.query,
+          pagination: {
+            total: response.total,
+            count: response.count,
+            page: response.page,
+            pageSize: response.per_page,
+          },
+        });
+
+        return response;
+      },
+      (error) => {
+        UserNotification.error(`Fetching Sidecars failed with status: ${error}`,
+          'Could not retrieve Sidecars');
+      });
+
+    SidecarsActions.listAdministration.promise(promise);
+  },
+
   getSidecar(sidecarId) {
     const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altcollectors/${sidecarId}`));
     promise

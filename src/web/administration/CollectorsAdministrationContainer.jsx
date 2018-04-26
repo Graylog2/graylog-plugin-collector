@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
+import lodash from 'lodash';
 import { naturalSortIgnoreCase } from 'util/SortUtils';
 
 import { Spinner } from 'components/common';
@@ -22,13 +23,13 @@ const CollectorsAdministrationContainer = createReactClass({
 
   loadData() {
     CollectorsActions.list();
-    SidecarsActions.listPaginated({});
+    SidecarsActions.listAdministration({});
     CollectorConfigurationsActions.list();
   },
 
   handlePageChange(page, pageSize) {
     const effectivePage = this.state.pagination.pageSize !== pageSize ? 1 : page;
-    SidecarsActions.listPaginated({ page: effectivePage, pageSize: pageSize });
+    SidecarsActions.listAdministration({ page: effectivePage, pageSize: pageSize });
   },
 
   render() {
@@ -41,16 +42,17 @@ const CollectorsAdministrationContainer = createReactClass({
     sidecars
       .sort((s1, s2) => naturalSortIgnoreCase(s1.node_name, s2.node_name))
       .forEach((sidecar) => {
-        const compatibleCollectors = collectors
-          .filter(collector => collector.node_operating_system.toLowerCase() === sidecar.node_details.operating_system.toLowerCase());
-
-        if (compatibleCollectors.length === 0) {
+        const compatibleCollectorIds = sidecar.compatible_backends;
+        if (lodash.isEmpty(compatibleCollectorIds)) {
           sidecarCollectors.push({ collector: {}, sidecar: sidecar });
-        } else {
-          compatibleCollectors.forEach((compatibleCollector) => {
+          return;
+        }
+
+        compatibleCollectorIds
+          .map(id => lodash.find(collectors, { id: id }))
+          .forEach((compatibleCollector) => {
             sidecarCollectors.push({ collector: compatibleCollector, sidecar: sidecar });
           });
-        }
       });
 
     return (
