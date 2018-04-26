@@ -23,15 +23,15 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
         super(mongoConnection, mapper, CollectorBackend.class, COLLECTION_NAME);
     }
 
-    public CollectorBackend load(String id) {
+    public CollectorBackend find(String id) {
         return db.findOne(DBQuery.is("_id", id));
     }
 
-    public CollectorBackend loadForName(String name) {
+    public CollectorBackend findByName(String name) {
         return db.findOne(DBQuery.is("name", name));
     }
 
-    public List<CollectorBackend> loadAll() {
+    public List<CollectorBackend> all() {
         try (final Stream<CollectorBackend> backendsStream = streamAll()) {
             return toAbstractListType(backendsStream.collect(Collectors.toList()));
         }
@@ -58,7 +58,7 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
     }
 
     public CollectorBackend copy(String id, String name) {
-        CollectorBackend collectorBackend = load(id);
+        CollectorBackend collectorBackend = find(id);
         return collectorBackend.toBuilder()
                 .id(null)
                 .name(name)

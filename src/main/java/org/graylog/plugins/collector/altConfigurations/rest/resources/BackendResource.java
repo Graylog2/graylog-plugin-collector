@@ -7,9 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
-import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorBackendSummaryResponse;
@@ -64,7 +62,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @ApiOperation(value = "Show collector details")
     public CollectorBackend getBackend(@ApiParam(name = "id", required = true)
                                          @PathParam("id") String id) {
-        return this.backendService.load(id);
+        return this.backendService.find(id);
     }
 
     @GET
@@ -89,7 +87,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
 
         // fetch backend list from database if client is outdated
         if (!etagCached) {
-            final List<CollectorBackend> result = this.backendService.loadAll();
+            final List<CollectorBackend> result = this.backendService.all();
             CollectorBackendListResponse collectorBackendListResponse = CollectorBackendListResponse.create(result.size(), result);
 
             // add new etag to cache
@@ -117,7 +115,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List a summary of all collector backends")
     public CollectorBackendSummaryResponse listSummary() {
-        final List<CollectorBackendSummary> result = this.backendService.loadAll().stream()
+        final List<CollectorBackendSummary> result = this.backendService.all().stream()
                 .map(this::getCollectorBackendSummary)
                 .collect(Collectors.toList());
 

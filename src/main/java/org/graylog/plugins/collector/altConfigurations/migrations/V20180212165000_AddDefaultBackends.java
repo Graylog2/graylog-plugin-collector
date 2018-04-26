@@ -73,7 +73,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                                  String defaultTemplate) {
         CollectorBackend backend = null;
         try {
-            backend = backendService.loadForName(backendName);
+            backend = backendService.findByName(backendName);
             if (backend == null) {
                 final String msg = "Couldn't find backend '" + backendName + "' fixing it.";
                 LOG.error(msg);
