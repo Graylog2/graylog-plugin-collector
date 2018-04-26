@@ -112,13 +112,14 @@ public abstract class Collector {
     }
 
     public CollectorSummary toSummary(Predicate<Collector> isActiveFunction) {
-        return CollectorSummary.create(
-                nodeId(),
-                nodeName(),
-                nodeDetails(),
-                firstNonNull(assignments(), new ArrayList<>()),
-                lastSeen(),
-                collectorVersion(),
-                isActiveFunction != null && isActiveFunction.test(this));
+        return CollectorSummary.builder()
+                .nodeId(nodeId())
+                .nodeName(nodeName())
+                .nodeDetails(nodeDetails())
+                .assignments(firstNonNull(assignments(), new ArrayList<>()))
+                .lastSeen(lastSeen())
+                .collectorVersion(collectorVersion())
+                .active(isActiveFunction != null && isActiveFunction.test(this))
+                .build();
     }
 }

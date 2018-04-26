@@ -13,10 +13,12 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfiguration;
@@ -79,6 +81,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
             .build();
 
     private final AltCollectorService collectorService;
+    private final BackendService backendService;
     private final ActionService actionService;
     private final LostCollectorFunction lostCollectorFunction;
     private final SearchQueryParser searchQueryParser;
@@ -87,10 +90,12 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
 
     @Inject
     public AltCollectorResource(AltCollectorService collectorService,
+                                BackendService backendService,
                                 ActionService actionService,
                                 Supplier<CollectorSystemConfiguration> configSupplier,
                                 CollectorStatusMapper collectorStatusMapper) {
         this.collectorService = collectorService;
+        this.backendService = backendService;
         this.actionService = actionService;
         this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
@@ -141,6 +146,37 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                 collectorService.findPaginated(searchQuery, page, perPage, sort, order);
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
         return CollectorListResponse.create(query, collectors.pagination(), onlyActive, sort, order, collectorSummaries);
+    }
+
+    @GET
+    @Timed
+    @Path("/administration")
+    @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    public CollectorListResponse administration(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
+                                            @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
+                                            @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query) {
+        final String sort = Collector.FIELD_NODE_NAME;
+        final String order = "asc";
+        final List<CollectorBackend> backends = backendService.all();
+        final SearchQuery searchQuery = searchQueryParser.parse("");
+        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, page, perPage, sort, order);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
+
+        final List<CollectorSummary> summariesWithBackends = collectorSummaries.stream()
+                .map(collector -> {
+                    final List<String> compatibleBackends = backends.stream()
+                            .filter(backend -> backend.nodeOperatingSystem().equalsIgnoreCase(collector.nodeDetails().operatingSystem()))
+                            .map(CollectorBackend::id)
+                            .collect(Collectors.toList());
+                    return collector.toBuilder()
+                            .compatibleBackends(compatibleBackends)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return CollectorListResponse.create(query, collectors.pagination(), false, sort, order, summariesWithBackends);
     }
 
     @GET

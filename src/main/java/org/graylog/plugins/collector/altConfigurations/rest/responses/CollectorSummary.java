@@ -8,6 +8,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNode
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.joda.time.DateTime;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @AutoValue
@@ -31,8 +32,31 @@ public abstract class CollectorSummary {
     @JsonProperty("collector_version")
     public abstract String collectorVersion();
 
+    @Nullable
+    @JsonProperty("compatible_backends")
+    public abstract List<String> compatibleBackends();
+
     @JsonProperty
     public abstract boolean active();
+
+    public static Builder builder() {
+        return new AutoValue_CollectorSummary.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder nodeId(String nodeId);
+        public abstract Builder nodeName(String nodeName);
+        public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
+        public abstract Builder assignments(List<ConfigurationAssignment> assignments);
+        public abstract Builder lastSeen(DateTime lastSeen);
+        public abstract Builder collectorVersion(String collectorVersion);
+        public abstract Builder active(boolean active);
+        public abstract Builder compatibleBackends(List<String> compatibleBackends);
+        public abstract CollectorSummary build();
+    }
 
     @JsonCreator
     public static CollectorSummary create(@JsonProperty("node_id") String nodeId,
@@ -41,7 +65,18 @@ public abstract class CollectorSummary {
                                           @JsonProperty("assignments") List<ConfigurationAssignment> assignments,
                                           @JsonProperty("last_seen") DateTime lastSeen,
                                           @JsonProperty("collector_version") String collectorVersion,
-                                          @JsonProperty("active") boolean active) {
-        return new AutoValue_CollectorSummary(nodeId, nodeName, nodeDetails, assignments, lastSeen, collectorVersion, active);
+                                          @JsonProperty("active") boolean active,
+                                          @JsonProperty("compatible_backends") @Nullable List<String> compatibleBackends) {
+        return builder()
+                .nodeId(nodeId)
+                .nodeName(nodeName)
+                .nodeDetails(nodeDetails)
+                .assignments(assignments)
+                .lastSeen(lastSeen)
+                .collectorVersion(collectorVersion)
+                .active(active)
+                .compatibleBackends(compatibleBackends)
+                .build();
+
     }
 }
