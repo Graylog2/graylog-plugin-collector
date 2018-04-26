@@ -1,4 +1,4 @@
-package org.graylog.plugins.collector.configurations.rest;
+package org.graylog.plugins.collector.altConfigurations;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

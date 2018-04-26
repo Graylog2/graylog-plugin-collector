@@ -23,6 +23,11 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb;
 import com.lordofthejars.nosqlunit.mongodb.MongoFlexibleComparisonStrategy;
+import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
+import org.graylog.plugins.collector.altConfigurations.BackendService;
+import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.database.MongoConnectionRule;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.shared.bindings.ObjectMapperModule;
@@ -36,6 +41,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import javax.validation.Validator;
 import java.util.List;
@@ -51,18 +57,23 @@ import static org.mockito.Mockito.when;
 @UseModules({ObjectMapperModule.class, ValidatorModule.class})
 @CustomComparisonStrategy(comparisonStrategy = MongoFlexibleComparisonStrategy.class)
 public class CollectorServiceImplTest {
+    @Mock
+    private BackendService backendService;
+
+    @Mock private AltConfigurationService configurationService;
+
     @ClassRule
     public static final InMemoryMongoDb IN_MEMORY_MONGO_DB = newInMemoryMongoDbRule().build();
 
     @Rule
     public MongoConnectionRule mongoRule = MongoConnectionRule.build("test");
 
-    private CollectorService collectorService;
+    private AltCollectorService collectorService;
 
     @Before
     public void setUp(MongoJackObjectMapperProvider mapperProvider,
                       Validator validator) throws Exception {
-        this.collectorService = new CollectorServiceImpl(mongoRule.getMongoConnection(), mapperProvider, validator);
+        this.collectorService = new AltCollectorService(backendService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
     }
 
     @Test
@@ -86,7 +97,17 @@ public class CollectorServiceImplTest {
     @ShouldMatchDataSet(location = "collectorsSingleDataset.json")
     @IgnorePropertyValue(properties = {"_id", "last_seen"})
     public void testSaveFirstRecord() throws Exception {
-        final Collector collector = CollectorImpl.create("collectorId", "nodeId", "0.0.1", CollectorNodeDetails.create("DummyOS 1.0", null, null, null, null, null), DateTime.now(DateTimeZone.UTC));
+        final Collector collector = Collector.create(
+                "nodeId",
+                "nodeName",
+                CollectorNodeDetails.create(
+                        "DummyOS 1.0",
+                        null,
+                        null,
+                        null,
+                        null),
+                "0.0.1"
+                );
 
         final Collector result = this.collectorService.save(collector);
 
@@ -116,10 +137,10 @@ public class CollectorServiceImplTest {
     public void testFindById() throws Exception {
         final String collector1id = "collector1id";
 
-        final Collector collector = this.collectorService.findById(collector1id);
+        final Collector collector = this.collectorService.findByNodeId(collector1id);
 
         assertNotNull(collector);
-        assertEquals(collector1id, collector.getId());
+        assertEquals(collector1id, collector.nodeId());
     }
 
     @Test
@@ -127,36 +148,9 @@ public class CollectorServiceImplTest {
     public void testFindByIdNonexisting() throws Exception {
         final String collector1id = "nonexisting";
 
-        final Collector collector = this.collectorService.findById(collector1id);
+        final Collector collector = this.collectorService.findByNodeId(collector1id);
 
         assertNull(collector);
-    }
-
-    @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testFindByNodeId() throws Exception {
-        final String nodeId = "uniqueid1";
-
-        final List<Collector> collectors = this.collectorService.findByNodeId(nodeId);
-
-        assertNotNull(collectors);
-        assertEquals(1, collectors.size());
-
-        for (Collector collector : collectors) {
-            assertNotNull(collector);
-            assertEquals(nodeId, collector.getNodeId());
-        }
-    }
-
-    @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    public void testFindByNodeIdNonexisting() throws Exception {
-        final String nodeId = "nonexisting";
-
-        final List<Collector> collectors = this.collectorService.findByNodeId(nodeId);
-
-        assertNotNull(collectors);
-        assertEquals(0, collectors.size());
     }
 
     @Test
@@ -164,9 +158,9 @@ public class CollectorServiceImplTest {
     @ShouldMatchDataSet
     public void testDestroy() throws Exception {
         final Collector collector = mock(Collector.class);
-        when(collector.getId()).thenReturn("collector2id");
+        when(collector.nodeId()).thenReturn("collector2id");
 
-        final int result = this.collectorService.destroy(collector);
+        final int result = this.collectorService.delete(collector.id());
 
         assertEquals(1, result);
     }

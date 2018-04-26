@@ -21,6 +21,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
+import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
+import org.graylog.plugins.collector.altConfigurations.BackendService;
+import org.graylog.plugins.collector.altConfigurations.ConfigurationEtagService;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.ActionResource;
@@ -28,14 +32,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.resources.AltCollect
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltConfigurationResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.BackendResource;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
-import org.graylog.plugins.collector.collectors.CollectorService;
-import org.graylog.plugins.collector.collectors.CollectorServiceImpl;
-import org.graylog.plugins.collector.collectors.rest.CollectorResource;
 import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
-import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
-import org.graylog.plugins.collector.configurations.rest.ConfigurationEtagService;
-import org.graylog.plugins.collector.configurations.rest.resources.CollectorConfigurationResource;
-import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
@@ -55,13 +52,12 @@ public class CollectorModule extends PluginModule {
 
     @Override
     protected void configure() {
-        bind(CollectorService.class).to(CollectorServiceImpl.class);
-        bind(CollectorConfigurationService.class).asEagerSingleton();
+        bind(AltConfigurationService.class).asEagerSingleton();
+        bind(AltCollectorService.class).asEagerSingleton();
+        bind(BackendService.class).asEagerSingleton();
         bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
 
 //        addPeriodical(PurgeExpiredCollectorsThread.class);
-        addRestResource(CollectorResource.class);
-        addRestResource(CollectorConfigurationResource.class);
         addRestResource(AltConfigurationResource.class);
         addRestResource(BackendResource.class);
         addRestResource(ActionResource.class);

@@ -17,11 +17,16 @@
 package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
-import org.graylog.plugins.collector.collectors.Collector;
-import org.graylog.plugins.collector.collectors.rest.models.CollectorNodeDetailsSummary;
-import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
-import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
-import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
+import org.graylog.plugins.collector.altConfigurations.ActionService;
+import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.BackendService;
+import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
+import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.altConfigurations.rest.resources.AltCollectorResource;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorListResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
@@ -46,22 +51,36 @@ import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class CollectorResourceTest extends RestResourceBaseTest {
-    private CollectorResource resource;
+    private AltCollectorResource resource;
     private List<Collector> collectors;
 
     @Mock
-    private org.graylog.plugins.collector.collectors.CollectorService collectorService;
+    private AltCollectorService collectorService;
+
+    @Mock
+    private BackendService backendService;
+
+    @Mock
+    private ActionService actionService;
+
+    @Mock
+    private CollectorStatusMapper statusMapper;
 
     @Before
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
-        this.resource = new CollectorResource(collectorService, new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()));
+        this.resource = new AltCollectorResource(
+                collectorService,
+                backendService,
+                actionService,
+                new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
+                statusMapper);
         when(collectorService.all()).thenReturn(collectors);
     }
 
     @Test
     public void testList() throws Exception {
-        final CollectorList response = this.resource.list();
+        final CollectorListResponse response = this.resource.all();
 
         assertNotNull(response);
         assertNotNull(response.collectors());
@@ -78,11 +97,11 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     public void testGet() throws Exception {
         final Collector collector = collectors.get(collectors.size() - 1);
-        when(collectorService.findById(collector.getId())).thenReturn(collector);
+        when(collectorService.findByNodeId(collector.nodeId())).thenReturn(collector);
         final CollectorSummary collectorSummary = mock(CollectorSummary.class);
-        when(collector.toSummary(any(CollectorResource.LostCollectorFunction.class))).thenReturn(collectorSummary);
+        when(collector.toSummary(any(AltCollectorResource.LostCollectorFunction.class))).thenReturn(collectorSummary);
 
-        final CollectorSummary response = this.resource.get(collector.getId());
+        final CollectorSummary response = this.resource.get(collector.nodeId());
 
         assertNotNull(response);
         assertEquals(collectorSummary, response);
@@ -90,7 +109,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
 
     private Collector getDummyCollector(String id) {
         final Collector collector = mock(Collector.class);
-        when(collector.getId()).thenReturn(id);
+        when(collector.nodeId()).thenReturn(id);
 
         return collector;
     }
@@ -105,7 +124,16 @@ public class CollectorResourceTest extends RestResourceBaseTest {
 
     @Test
     public void testRegister() throws Exception {
-        final CollectorRegistrationRequest input = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null));
+        final CollectorRegistrationRequest input = CollectorRegistrationRequest.create(
+                "nodeName",
+                CollectorNodeDetails.create(
+                        "DummyOS 1.0",
+                        null,
+                        null,
+                        null,
+                        null
+                )
+        );
 
         final Response response = this.resource.register("collectorId", input, "0.0.1");
 
@@ -115,7 +143,16 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterInvalidCollectorId() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null));
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+                "nodeName",
+                CollectorNodeDetails.create(
+                        "DummyOS 1.0",
+                        null,
+                        null,
+                        null,
+                        null
+                )
+        );
 
         final Response response = this.resource.register("", invalid, "0.0.1");
 
@@ -126,7 +163,16 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterInvalidNodeId() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null));
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+                "",
+                CollectorNodeDetails.create(
+                        "DummyOS 1.0",
+                        null,
+                        null,
+                        null,
+                        null
+                )
+        );
 
         final Response response = this.resource.register("collectorId", invalid, "0.0.1");
 
@@ -137,7 +183,10 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterMissingNodeDetails() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", null);
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+                "nodeName",
+                null
+        );
 
         final Response response = this.resource.register("collectorId", invalid, "0.0.1");
 
@@ -148,7 +197,16 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterMissingOperatingSystem() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("", null, null, null, null, null));
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+                "nodeName",
+                CollectorNodeDetails.create(
+                        "",
+                        null,
+                        null,
+                        null,
+                        null
+                )
+        );
 
         final Response response = this.resource.register("collectorId", invalid, "0.0.1");
 

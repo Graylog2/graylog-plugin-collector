@@ -1,4 +1,4 @@
-package org.graylog.plugins.collector.configurations.rest;
+package org.graylog.plugins.collector.altConfigurations;
 
 import com.codahale.metrics.MetricRegistry;
 import com.github.joschi.jadconfig.util.Duration;
@@ -8,7 +8,6 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractIdleService;
 import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
-import org.graylog.plugins.collector.configurations.CollectorConfigurationService;
 import org.graylog2.events.ClusterEventBus;
 import org.graylog2.metrics.CacheStatsSet;
 import org.graylog2.shared.metrics.MetricUtils;
@@ -76,12 +75,12 @@ public class ConfigurationEtagService extends AbstractIdleService {
     @Override
     protected void startUp() throws Exception {
         eventBus.register(this);
-        MetricUtils.safelyRegisterAll(metricRegistry, new CacheStatsSet(name(CollectorConfigurationService.class, "etag-cache"), cache));
+        MetricUtils.safelyRegisterAll(metricRegistry, new CacheStatsSet(name(AltConfigurationService.class, "etag-cache"), cache));
     }
 
     @Override
     protected void shutDown() throws Exception {
         eventBus.unregister(this);
-        metricRegistry.removeMatching((name, metric) -> name.startsWith(name(CollectorConfigurationService.class, "etag-cache")));
+        metricRegistry.removeMatching((name, metric) -> name.startsWith(name(AltConfigurationService.class, "etag-cache")));
     }
 }

@@ -280,7 +280,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
-    protected static class LostCollectorFunction implements Predicate<Collector> {
+    public static class LostCollectorFunction implements Predicate<Collector> {
         private final Period timeoutPeriod;
 
         LostCollectorFunction(Period timeoutPeriod) {
