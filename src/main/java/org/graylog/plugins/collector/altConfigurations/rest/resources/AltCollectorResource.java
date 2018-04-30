@@ -168,6 +168,9 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
             if (filterBy.equals("configuration")) {
                 collectorFilter = new FilterByConfiguration(filterValue);
             }
+            if (filterBy.equals("os")) {
+                collectorFilter = new FilterByOs(filterValue);
+            }
             if (filterBy.equals("backend")) {
                 backendFilter = new FilterByBackend(filterValue);
             }
@@ -322,6 +325,19 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                 return false;
             }
             return assignments.stream().anyMatch(assignment -> assignment.configurationId().equals(configurationId));
+        }
+    }
+
+    public static class FilterByOs implements Predicate<Collector> {
+        private final String os;
+
+        FilterByOs(String os) {
+            this.os = os;
+        }
+
+        @Override
+        public boolean test(Collector collector) {
+            return collector.nodeDetails().operatingSystem().equals(os);
         }
     }
 

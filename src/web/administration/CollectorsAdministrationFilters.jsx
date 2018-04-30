@@ -77,7 +77,7 @@ const CollectorsAdministrationFilters = createReactClass({
       .uniq(this.props.collectors.map(collector => lodash.upperFirst(collector.node_operating_system)))
       .sort(naturalSortIgnoreCase);
 
-    const filter = ([os]) => this.props.filter(({ sidecar }) => sidecar.node_details.operating_system.match(os, 'i'));
+    const filter = ([os]) => this.props.filter('os', os);
 
     return (
       <SelectPopover id="os-filter"
