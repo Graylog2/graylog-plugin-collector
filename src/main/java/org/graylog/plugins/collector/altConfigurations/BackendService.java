@@ -10,6 +10,7 @@ import org.mongojack.DBQuery;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,10 +32,15 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
         return db.findOne(DBQuery.is("name", name));
     }
 
-    public List<CollectorBackend> all() {
+    public List<CollectorBackend> findWithFilter(Predicate<CollectorBackend> filter) {
         try (final Stream<CollectorBackend> backendsStream = streamAll()) {
-            return toAbstractListType(backendsStream.collect(Collectors.toList()));
+            final Stream<CollectorBackend> filteredStream = filter == null ? backendsStream : backendsStream.filter(filter);
+            return toAbstractListType(filteredStream.collect(Collectors.toList()));
         }
+    }
+
+    public List<CollectorBackend> all() {
+        return findWithFilter(null);
     }
 
     public CollectorBackend fromRequest(CollectorBackend request) {

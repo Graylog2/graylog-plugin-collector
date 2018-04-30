@@ -32,6 +32,10 @@ const CollectorsAdministrationContainer = createReactClass({
     SidecarsActions.listAdministration({ page: effectivePage, pageSize: pageSize });
   },
 
+  handleFilter(property, value) {
+    SidecarsActions.listAdministration({ filterBy: property, filterValue: value });
+  },
+
   render() {
     const { collectors, sidecars, pagination, configurations } = this.state;
     if (!collectors || !sidecars || !configurations) {
@@ -60,7 +64,8 @@ const CollectorsAdministrationContainer = createReactClass({
                                 collectors={collectors}
                                 configurations={configurations}
                                 pagination={pagination}
-                                onPageChange={this.handlePageChange} />
+                                onPageChange={this.handlePageChange}
+                                onFilter={this.handleFilter} />
     );
   },
 });
