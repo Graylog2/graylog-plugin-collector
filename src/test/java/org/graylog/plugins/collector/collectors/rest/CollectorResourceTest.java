@@ -18,6 +18,7 @@ package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
+import org.graylog.plugins.collector.altConfigurations.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
@@ -66,6 +67,9 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Mock
     private CollectorStatusMapper statusMapper;
 
+    @Mock
+    private AdministrationFiltersFactory administrationFilters;
+
     @Before
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
@@ -74,7 +78,8 @@ public class CollectorResourceTest extends RestResourceBaseTest {
                 backendService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
-                statusMapper);
+                statusMapper,
+                administrationFilters);
         when(collectorService.all()).thenReturn(collectors);
     }
 

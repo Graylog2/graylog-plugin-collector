@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
+import org.graylog.plugins.collector.altConfigurations.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
@@ -19,6 +20,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
+import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorAdministrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfiguration;
@@ -51,6 +53,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -60,6 +63,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -87,19 +91,22 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     private final SearchQueryParser searchQueryParser;
     private final Supplier<CollectorSystemConfiguration> configSupplier;
     private final CollectorStatusMapper collectorStatusMapper;
+    private final AdministrationFiltersFactory administrationFiltersFactory;
 
     @Inject
     public AltCollectorResource(AltCollectorService collectorService,
                                 BackendService backendService,
                                 ActionService actionService,
                                 Supplier<CollectorSystemConfiguration> configSupplier,
-                                CollectorStatusMapper collectorStatusMapper) {
+                                CollectorStatusMapper collectorStatusMapper,
+                                AdministrationFiltersFactory administrationFiltersFactory) {
         this.collectorService = collectorService;
         this.backendService = backendService;
         this.actionService = actionService;
         this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
         this.collectorStatusMapper = collectorStatusMapper;
+        this.administrationFiltersFactory = administrationFiltersFactory;
         this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
     }
 
@@ -148,38 +155,24 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         return CollectorListResponse.create(query, collectors.pagination(), onlyActive, sort, order, collectorSummaries);
     }
 
-    @GET
+    @POST
     @Timed
     @Path("/administration")
     @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
-    public CollectorListResponse administration(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
-                                                @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
-                                                @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
-                                                @ApiParam(name = "filter_by") @QueryParam("filter_by") @DefaultValue("") String filterBy,
-                                                @ApiParam(name = "filter_value") @QueryParam("filter_value") @DefaultValue("") String filterValue) {
+    public CollectorListResponse administration(@ApiParam(name = "JSON body", required = true)
+                                                    @Valid @NotNull CollectorAdministrationRequest request) {
         final String sort = Collector.FIELD_NODE_NAME;
         final String order = "asc";
-        final SearchQuery searchQuery = searchQueryParser.parse("");
-        Predicate<Collector> collectorFilter = null;
-        Predicate<CollectorBackend> backendFilter = null;
-        if (!filterValue.equals("")) {
-            if (filterBy.equals("configuration")) {
-                collectorFilter = new FilterByConfiguration(filterValue);
-            }
-            if (filterBy.equals("os")) {
-                collectorFilter = new FilterByOs(filterValue);
-            }
-            if (filterBy.equals("backend")) {
-                backendFilter = new FilterByBackend(filterValue);
-            }
-        }
-        final List<CollectorBackend> backends = backendFilter == null ? backendService.all() : backendService.findWithFilter(backendFilter);
-        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, collectorFilter, page, perPage, sort, order);
+        final SearchQuery searchQuery = searchQueryParser.parse(request.query());
+
+        final Optional<Predicate<Collector>> filters = administrationFiltersFactory.getFilters(request.filters());
+
+        final List<CollectorBackend> backends = backendService.all();
+        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
 
-        Predicate<CollectorBackend> finalBackendFilter = backendFilter;
         final List<CollectorSummary> summariesWithBackends = collectorSummaries.stream()
                 .map(collector -> {
                     final List<String> compatibleBackends = backends.stream()
@@ -190,10 +183,10 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                             .compatibleBackends(compatibleBackends)
                             .build();
                 })
-                .filter(collectorSummary -> finalBackendFilter == null || collectorSummary.compatibleBackends().size() > 0)
+                .filter(collectorSummary -> !filters.isPresent() || collectorSummary.compatibleBackends().size() > 0)
                 .collect(Collectors.toList());
 
-        return CollectorListResponse.create(query, collectors.pagination(), false, sort, order, summariesWithBackends);
+        return CollectorListResponse.create(request.query(), collectors.pagination(), false, sort, order, summariesWithBackends);
     }
 
     @GET
@@ -308,49 +301,6 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         public boolean test(Collector collector) {
             final DateTime threshold = DateTime.now().minus(timeoutPeriod);
             return collector.lastSeen().isAfter(threshold);
-        }
-    }
-
-    public static class FilterByConfiguration implements Predicate<Collector> {
-        private final String configurationId;
-
-        FilterByConfiguration(String configurationId) {
-            this.configurationId = configurationId;
-        }
-
-        @Override
-        public boolean test(Collector collector) {
-            final List<ConfigurationAssignment> assignments = collector.assignments();
-            if (assignments == null) {
-                return false;
-            }
-            return assignments.stream().anyMatch(assignment -> assignment.configurationId().equals(configurationId));
-        }
-    }
-
-    public static class FilterByOs implements Predicate<Collector> {
-        private final String os;
-
-        FilterByOs(String os) {
-            this.os = os;
-        }
-
-        @Override
-        public boolean test(Collector collector) {
-            return collector.nodeDetails().operatingSystem().equals(os);
-        }
-    }
-
-    public static class FilterByBackend implements Predicate<CollectorBackend> {
-        private final String backendId;
-
-        FilterByBackend(String backendId) {
-            this.backendId = backendId;
-        }
-
-        @Override
-        public boolean test(CollectorBackend backend) {
-            return backend.id() != null && backend.id().equals(backendId);
         }
     }
 }

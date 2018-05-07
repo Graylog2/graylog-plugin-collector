@@ -20,11 +20,17 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
 import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.ConfigurationEtagService;
+import org.graylog.plugins.collector.altConfigurations.filter.AdministrationFilter;
+import org.graylog.plugins.collector.altConfigurations.filter.BackendAdministrationFilter;
+import org.graylog.plugins.collector.altConfigurations.filter.ConfigurationAdministrationFilter;
+import org.graylog.plugins.collector.altConfigurations.filter.OsAdministrationFilter;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.ActionResource;
@@ -57,7 +63,12 @@ public class CollectorModule extends PluginModule {
         bind(BackendService.class).asEagerSingleton();
         bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
 
-//        addPeriodical(PurgeExpiredCollectorsThread.class);
+        install(new FactoryModuleBuilder()
+                .implement(AdministrationFilter.class, Names.named("backend"), BackendAdministrationFilter.class)
+                .implement(AdministrationFilter.class, Names.named("configuration"), ConfigurationAdministrationFilter.class)
+                .implement(AdministrationFilter.class, Names.named("os"), OsAdministrationFilter.class)
+                .build(AdministrationFilter.Factory.class));
+
         addRestResource(AltConfigurationResource.class);
         addRestResource(BackendResource.class);
         addRestResource(ActionResource.class);
