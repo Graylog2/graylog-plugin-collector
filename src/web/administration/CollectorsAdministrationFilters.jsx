@@ -95,13 +95,28 @@ const CollectorsAdministrationFilters = createReactClass({
   },
 
   getStatusFilter() {
-    // TODO Implement this filter
+    // 0: running, 1: unknown, 2: failing
+    const status = ['0', '1', '2'];
+    const statusFormatter = (statusCode) => {
+      switch (Number(statusCode)) {
+        case 0:
+          return 'Running';
+        case 2:
+          return 'Failing';
+        default:
+          return 'Unknown';
+      }
+    };
+
+    const filter = ([statusCode], callback) => this.onFilterChange('status', statusCode === undefined ? undefined : Number(statusCode), callback);
+
     return (
       <SelectPopover id="status-filter"
                      title="Filter by status"
                      triggerNode={<Button bsSize="small" bsStyle="link">Status <span className="caret" /></Button>}
-                     items={[]}
-                     onItemSelect={() => {}}
+                     items={status}
+                     itemFormatter={statusFormatter}
+                     onItemSelect={filter}
                      filterPlaceholder="Filter by status" />
     );
   },

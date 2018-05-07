@@ -32,6 +32,8 @@ public class AdministrationFiltersFactory {
                             return administrationFilterFactory.createConfigurationFilter(value);
                         case OS:
                             return administrationFilterFactory.createOsFilter(value);
+                        case STATUS:
+                            return administrationFilterFactory.createStatusFilter(Integer.valueOf(value));
                     }
                     return null;
                 })

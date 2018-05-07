@@ -31,6 +31,7 @@ import org.graylog.plugins.collector.altConfigurations.filter.AdministrationFilt
 import org.graylog.plugins.collector.altConfigurations.filter.BackendAdministrationFilter;
 import org.graylog.plugins.collector.altConfigurations.filter.ConfigurationAdministrationFilter;
 import org.graylog.plugins.collector.altConfigurations.filter.OsAdministrationFilter;
+import org.graylog.plugins.collector.altConfigurations.filter.StatusAdministrationFilter;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.ActionResource;
@@ -67,6 +68,7 @@ public class CollectorModule extends PluginModule {
                 .implement(AdministrationFilter.class, Names.named("backend"), BackendAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("configuration"), ConfigurationAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("os"), OsAdministrationFilter.class)
+                .implement(AdministrationFilter.class, Names.named("status"), StatusAdministrationFilter.class)
                 .build(AdministrationFilter.Factory.class));
 
         addRestResource(AltConfigurationResource.class);
