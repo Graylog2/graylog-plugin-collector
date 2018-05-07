@@ -1,6 +1,5 @@
 package org.graylog.plugins.collector.altConfigurations;
 
-import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
@@ -32,15 +31,15 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
         return db.findOne(DBQuery.is("name", name));
     }
 
-    public List<CollectorBackend> findWithFilter(Predicate<CollectorBackend> filter) {
+    public List<CollectorBackend> allFilter(Predicate<CollectorBackend> filter) {
         try (final Stream<CollectorBackend> backendsStream = streamAll()) {
             final Stream<CollectorBackend> filteredStream = filter == null ? backendsStream : backendsStream.filter(filter);
-            return toAbstractListType(filteredStream.collect(Collectors.toList()));
+            return filteredStream.collect(Collectors.toList());
         }
     }
 
     public List<CollectorBackend> all() {
-        return findWithFilter(null);
+        return allFilter(null);
     }
 
     public CollectorBackend fromRequest(CollectorBackend request) {
@@ -69,12 +68,5 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
                 .id(null)
                 .name(name)
                 .build();
-    }
-
-    private List<CollectorBackend> toAbstractListType(List<CollectorBackend> backends) {
-        final List<CollectorBackend> result = Lists.newArrayListWithCapacity(backends.size());
-        result.addAll(backends);
-
-        return result;
     }
 }
