@@ -72,26 +72,22 @@ const SidecarsStore = Reflux.createStore({
     SidecarsActions.listPaginated.promise(promise);
   },
 
-  listAdministration({ query = '', page = 1, pageSize = 50, filterBy, filterValue }) {
-    const baseUrl = '/plugins/org.graylog.plugins.collector/altcollectors/administration';
-    const search = {
+  listAdministration({ query = '', page = 1, pageSize = 50, filters }) {
+    const body = {
       query: query,
       page: page,
       per_page: pageSize,
-      filter_by: filterBy,
-      filter_value: filterValue,
+      filters: filters,
     };
 
-    const uri = URI(baseUrl).search(search).toString();
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(uri));
+    const promise = fetchPeriodically('POST', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/administration'), body);
 
     promise.then(
       (response) => {
         this.trigger({
           sidecars: response.collectors,
           query: response.query,
-          filterBy: response.filter_by,
-          filterValue: response.filter_value,
+          filters: response.filters,
           pagination: {
             total: response.total,
             count: response.count,

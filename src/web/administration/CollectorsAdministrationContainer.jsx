@@ -33,7 +33,9 @@ const CollectorsAdministrationContainer = createReactClass({
   },
 
   handleFilter(property, value) {
-    SidecarsActions.listAdministration({ filterBy: property, filterValue: value });
+    const filters = {};
+    filters[property] = value;
+    SidecarsActions.listAdministration({ filters: filters });
   },
 
   render() {
