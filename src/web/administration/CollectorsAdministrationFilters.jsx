@@ -16,6 +16,11 @@ const CollectorsAdministrationFilters = createReactClass({
     filter: PropTypes.func.isRequired,
   },
 
+  onFilterChange(name, value, callback) {
+    this.props.filter(name, value);
+    callback();
+  },
+
   getCollectorsFilter() {
     const collectors = this.props.collectors
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
@@ -28,9 +33,9 @@ const CollectorsAdministrationFilters = createReactClass({
       return <CollectorIndicator collector={collector.name} operatingSystem={collector.node_operating_system} />;
     };
 
-    const filter = ([collectorId]) => {
+    const filter = ([collectorId], callback) => {
       const [id] = collectorId ? collectorId.split(';') : [];
-      this.props.filter('backend', id);
+      this.onFilterChange('backend', id, callback);
     };
 
     return (
@@ -56,9 +61,9 @@ const CollectorsAdministrationFilters = createReactClass({
       return <span><ColorLabel color={configuration.color} size="xsmall" /> {configuration.name}</span>;
     };
 
-    const filter = ([configurationId]) => {
+    const filter = ([configurationId], callback) => {
       const [id] = configurationId ? configurationId.split(';') : [];
-      this.props.filter('configuration', id);
+      this.onFilterChange('configuration', id, callback);
     };
 
     return (
@@ -77,7 +82,7 @@ const CollectorsAdministrationFilters = createReactClass({
       .uniq(this.props.collectors.map(collector => lodash.upperFirst(collector.node_operating_system)))
       .sort(naturalSortIgnoreCase);
 
-    const filter = ([os]) => this.props.filter('os', os);
+    const filter = ([os], callback) => this.onFilterChange('os', os, callback);
 
     return (
       <SelectPopover id="os-filter"
