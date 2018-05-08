@@ -3,6 +3,7 @@ package org.graylog.plugins.collector.altConfigurations.rest.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,12 +15,15 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
 import org.graylog.plugins.collector.altConfigurations.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
+import org.graylog.plugins.collector.altConfigurations.filter.AdministrationFilter;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorAdministrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
@@ -61,6 +65,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -85,6 +90,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
             .build();
 
     private final AltCollectorService collectorService;
+    private final AltConfigurationService configurationService;
     private final BackendService backendService;
     private final ActionService actionService;
     private final LostCollectorFunction lostCollectorFunction;
@@ -95,12 +101,14 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
 
     @Inject
     public AltCollectorResource(AltCollectorService collectorService,
+                                AltConfigurationService configurationService,
                                 BackendService backendService,
                                 ActionService actionService,
                                 Supplier<CollectorSystemConfiguration> configSupplier,
                                 CollectorStatusMapper collectorStatusMapper,
                                 AdministrationFiltersFactory administrationFiltersFactory) {
         this.collectorService = collectorService;
+        this.configurationService = configurationService;
         this.backendService = backendService;
         this.actionService = actionService;
         this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
@@ -169,7 +177,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
 
         final Optional<Predicate<Collector>> filters = administrationFiltersFactory.getFilters(request.filters());
 
-        final List<CollectorBackend> backends = backendService.all();
+        final List<CollectorBackend> backends = getCollectorBackends(request.filters());
         final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
 
@@ -283,6 +291,32 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         }
 
         return Response.accepted().build();
+    }
+
+    private List<CollectorBackend> getCollectorBackends(Map<String, String> filters) {
+        final String backendKey = AdministrationFilter.Type.BACKEND.toString().toLowerCase();
+        final String configurationKey = AdministrationFilter.Type.CONFIGURATION.toString().toLowerCase();
+
+        final List<String> backendIds = new ArrayList<>();
+
+        if (filters.containsKey(backendKey)) {
+            backendIds.add(filters.get(backendKey));
+        }
+        if (filters.containsKey(configurationKey)) {
+            final CollectorConfiguration configuration = configurationService.load(filters.get(configurationKey));
+            if (!backendIds.contains(configuration.backendId())) {
+                backendIds.add(configuration.backendId());
+            }
+        }
+
+        switch (backendIds.size()) {
+            case 0:
+                return backendService.all();
+            case 1:
+                return ImmutableList.of(backendService.find(backendIds.get(0)));
+            default:
+                return new ArrayList<>();
+        }
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {

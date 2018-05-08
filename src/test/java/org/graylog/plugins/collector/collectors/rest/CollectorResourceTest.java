@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
 import org.graylog.plugins.collector.altConfigurations.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
+import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
 import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
@@ -62,6 +63,9 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     private BackendService backendService;
 
     @Mock
+    private AltConfigurationService configurationService;
+
+    @Mock
     private ActionService actionService;
 
     @Mock
@@ -75,6 +79,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
         this.collectors = getDummyCollectorList();
         this.resource = new AltCollectorResource(
                 collectorService,
+                configurationService,
                 backendService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
