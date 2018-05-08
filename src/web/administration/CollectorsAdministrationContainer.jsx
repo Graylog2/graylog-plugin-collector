@@ -48,7 +48,7 @@ const CollectorsAdministrationContainer = createReactClass({
     sidecars
       .sort((s1, s2) => naturalSortIgnoreCase(s1.node_name, s2.node_name))
       .forEach((sidecar) => {
-        const compatibleCollectorIds = sidecar.compatible_backends;
+        const compatibleCollectorIds = sidecar.backends;
         if (lodash.isEmpty(compatibleCollectorIds)) {
           sidecarCollectors.push({ collector: {}, sidecar: sidecar });
           return;

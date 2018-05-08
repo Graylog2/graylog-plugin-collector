@@ -3,7 +3,6 @@ package org.graylog.plugins.collector.altConfigurations.rest.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,18 +12,12 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
-import org.graylog.plugins.collector.altConfigurations.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
-import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
-import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
-import org.graylog.plugins.collector.altConfigurations.filter.AdministrationFilter;
+import org.graylog.plugins.collector.altConfigurations.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorAction;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorActions;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorAdministrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.NodeConfiguration;
@@ -45,7 +38,6 @@ import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +49,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -65,10 +56,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -79,7 +68,7 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 public class AltCollectorResource extends RestResource implements PluginRestResource {
     private static final Logger LOG = LoggerFactory.getLogger(AltCollectorResource.class);
-    private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
+    protected static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
             .put("id", SearchQueryField.create(Collector.FIELD_ID))
             .put("node_id", SearchQueryField.create(Collector.FIELD_NODE_ID))
             .put("name", SearchQueryField.create(Collector.FIELD_NODE_NAME))
@@ -90,31 +79,22 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
             .build();
 
     private final AltCollectorService collectorService;
-    private final AltConfigurationService configurationService;
-    private final BackendService backendService;
     private final ActionService actionService;
-    private final LostCollectorFunction lostCollectorFunction;
+    private final ActiveCollectorFilter activeCollectorFilter;
     private final SearchQueryParser searchQueryParser;
     private final Supplier<CollectorSystemConfiguration> configSupplier;
     private final CollectorStatusMapper collectorStatusMapper;
-    private final AdministrationFiltersFactory administrationFiltersFactory;
 
     @Inject
     public AltCollectorResource(AltCollectorService collectorService,
-                                AltConfigurationService configurationService,
-                                BackendService backendService,
                                 ActionService actionService,
                                 Supplier<CollectorSystemConfiguration> configSupplier,
-                                CollectorStatusMapper collectorStatusMapper,
-                                AdministrationFiltersFactory administrationFiltersFactory) {
+                                CollectorStatusMapper collectorStatusMapper) {
         this.collectorService = collectorService;
-        this.configurationService = configurationService;
-        this.backendService = backendService;
         this.actionService = actionService;
-        this.lostCollectorFunction = new LostCollectorFunction(configSupplier.get().collectorInactiveThreshold());
+        this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
         this.collectorStatusMapper = collectorStatusMapper;
-        this.administrationFiltersFactory = administrationFiltersFactory;
         this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
     }
 
@@ -126,7 +106,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     public CollectorListResponse all() {
         final List<Collector> collectors = collectorService.all();
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, activeCollectorFilter);
         return CollectorListResponse.create("",
                 PaginatedList.PaginationInfo.create(collectorSummaries.size(),
                         collectorSummaries.size(),
@@ -157,44 +137,10 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         final String mappedQuery = collectorStatusMapper.replaceStringStatusSearchQuery(query);
         final SearchQuery searchQuery = searchQueryParser.parse(mappedQuery);
         final PaginatedList<Collector> collectors = onlyActive ?
-                collectorService.findPaginated(searchQuery, lostCollectorFunction, page, perPage, sort, order) :
+                collectorService.findPaginated(searchQuery, activeCollectorFilter, page, perPage, sort, order) :
                 collectorService.findPaginated(searchQuery, page, perPage, sort, order);
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
+        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, activeCollectorFilter);
         return CollectorListResponse.create(query, collectors.pagination(), onlyActive, sort, order, collectorSummaries);
-    }
-
-    @POST
-    @Timed
-    @Path("/administration")
-    @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
-    @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
-    public CollectorListResponse administration(@ApiParam(name = "JSON body", required = true)
-                                                    @Valid @NotNull CollectorAdministrationRequest request) {
-        final String sort = Collector.FIELD_NODE_NAME;
-        final String order = "asc";
-        final SearchQuery searchQuery = searchQueryParser.parse(request.query());
-
-        final Optional<Predicate<Collector>> filters = administrationFiltersFactory.getFilters(request.filters());
-
-        final List<CollectorBackend> backends = getCollectorBackends(request.filters());
-        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, lostCollectorFunction);
-
-        final List<CollectorSummary> summariesWithBackends = collectorSummaries.stream()
-                .map(collector -> {
-                    final List<String> compatibleBackends = backends.stream()
-                            .filter(backend -> backend.nodeOperatingSystem().equalsIgnoreCase(collector.nodeDetails().operatingSystem()))
-                            .map(CollectorBackend::id)
-                            .collect(Collectors.toList());
-                    return collector.toBuilder()
-                            .compatibleBackends(compatibleBackends)
-                            .build();
-                })
-                .filter(collectorSummary -> !filters.isPresent() || collectorSummary.compatibleBackends().size() > 0)
-                .collect(Collectors.toList());
-
-        return CollectorListResponse.create(request.query(), collectors.pagination(), false, sort, order, summariesWithBackends);
     }
 
     @GET
@@ -210,7 +156,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                                 @PathParam("collectorId") @NotEmpty String collectorId) {
         final Collector collector = collectorService.findByNodeId(collectorId);
         if (collector != null) {
-            return collector.toSummary(lostCollectorFunction);
+            return collector.toSummary(activeCollectorFilter);
         } else {
             throw new NotFoundException("Collector <" + collectorId + "> not found!");
         }
@@ -293,48 +239,8 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
         return Response.accepted().build();
     }
 
-    private List<CollectorBackend> getCollectorBackends(Map<String, String> filters) {
-        final String backendKey = AdministrationFilter.Type.BACKEND.toString().toLowerCase();
-        final String configurationKey = AdministrationFilter.Type.CONFIGURATION.toString().toLowerCase();
-
-        final List<String> backendIds = new ArrayList<>();
-
-        if (filters.containsKey(backendKey)) {
-            backendIds.add(filters.get(backendKey));
-        }
-        if (filters.containsKey(configurationKey)) {
-            final CollectorConfiguration configuration = configurationService.load(filters.get(configurationKey));
-            if (!backendIds.contains(configuration.backendId())) {
-                backendIds.add(configuration.backendId());
-            }
-        }
-
-        switch (backendIds.size()) {
-            case 0:
-                return backendService.all();
-            case 1:
-                return ImmutableList.of(backendService.find(backendIds.get(0)));
-            default:
-                return new ArrayList<>();
-        }
-    }
-
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-    }
-
-    public static class LostCollectorFunction implements Predicate<Collector> {
-        private final Period timeoutPeriod;
-
-        LostCollectorFunction(Period timeoutPeriod) {
-            this.timeoutPeriod = timeoutPeriod;
-        }
-
-        @Override
-        public boolean test(Collector collector) {
-            final DateTime threshold = DateTime.now().minus(timeoutPeriod);
-            return collector.lastSeen().isAfter(threshold);
-        }
     }
 }

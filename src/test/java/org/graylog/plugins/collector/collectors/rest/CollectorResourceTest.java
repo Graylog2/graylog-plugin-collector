@@ -18,11 +18,9 @@ package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.altConfigurations.ActionService;
-import org.graylog.plugins.collector.altConfigurations.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
-import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
-import org.graylog.plugins.collector.altConfigurations.BackendService;
 import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
+import org.graylog.plugins.collector.altConfigurations.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
@@ -60,31 +58,19 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     private AltCollectorService collectorService;
 
     @Mock
-    private BackendService backendService;
-
-    @Mock
-    private AltConfigurationService configurationService;
-
-    @Mock
     private ActionService actionService;
 
     @Mock
     private CollectorStatusMapper statusMapper;
-
-    @Mock
-    private AdministrationFiltersFactory administrationFilters;
 
     @Before
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
         this.resource = new AltCollectorResource(
                 collectorService,
-                configurationService,
-                backendService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
-                statusMapper,
-                administrationFilters);
+                statusMapper);
         when(collectorService.all()).thenReturn(collectors);
     }
 
@@ -109,7 +95,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
         final Collector collector = collectors.get(collectors.size() - 1);
         when(collectorService.findByNodeId(collector.nodeId())).thenReturn(collector);
         final CollectorSummary collectorSummary = mock(CollectorSummary.class);
-        when(collector.toSummary(any(AltCollectorResource.LostCollectorFunction.class))).thenReturn(collectorSummary);
+        when(collector.toSummary(any(ActiveCollectorFilter.class))).thenReturn(collectorSummary);
 
         final CollectorSummary response = this.resource.get(collector.nodeId());
 

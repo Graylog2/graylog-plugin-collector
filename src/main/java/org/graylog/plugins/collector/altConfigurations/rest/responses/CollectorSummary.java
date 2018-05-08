@@ -33,8 +33,8 @@ public abstract class CollectorSummary {
     public abstract String collectorVersion();
 
     @Nullable
-    @JsonProperty("compatible_backends")
-    public abstract List<String> compatibleBackends();
+    @JsonProperty("backends")
+    public abstract List<String> backends();
 
     @JsonProperty
     public abstract boolean active();
@@ -54,7 +54,7 @@ public abstract class CollectorSummary {
         public abstract Builder lastSeen(DateTime lastSeen);
         public abstract Builder collectorVersion(String collectorVersion);
         public abstract Builder active(boolean active);
-        public abstract Builder compatibleBackends(List<String> compatibleBackends);
+        public abstract Builder backends(List<String> backends);
         public abstract CollectorSummary build();
     }
 
@@ -66,7 +66,7 @@ public abstract class CollectorSummary {
                                           @JsonProperty("last_seen") DateTime lastSeen,
                                           @JsonProperty("collector_version") String collectorVersion,
                                           @JsonProperty("active") boolean active,
-                                          @JsonProperty("compatible_backends") @Nullable List<String> compatibleBackends) {
+                                          @JsonProperty("backends") @Nullable List<String> backends) {
         return builder()
                 .nodeId(nodeId)
                 .nodeName(nodeName)
@@ -75,7 +75,7 @@ public abstract class CollectorSummary {
                 .lastSeen(lastSeen)
                 .collectorVersion(collectorVersion)
                 .active(active)
-                .compatibleBackends(compatibleBackends)
+                .backends(backends)
                 .build();
 
     }

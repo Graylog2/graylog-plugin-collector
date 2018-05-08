@@ -35,6 +35,7 @@ import org.graylog.plugins.collector.altConfigurations.filter.StatusAdministrati
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180212165000_AddDefaultBackends;
 import org.graylog.plugins.collector.altConfigurations.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.ActionResource;
+import org.graylog.plugins.collector.altConfigurations.rest.resources.AdministrationResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltCollectorResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.AltConfigurationResource;
 import org.graylog.plugins.collector.altConfigurations.rest.resources.BackendResource;
@@ -74,6 +75,7 @@ public class CollectorModule extends PluginModule {
         addRestResource(AltConfigurationResource.class);
         addRestResource(BackendResource.class);
         addRestResource(ActionResource.class);
+        addRestResource(AdministrationResource.class);
         addRestResource(AltCollectorResource.class);
         addPermissions(CollectorRestPermissions.class);
 
