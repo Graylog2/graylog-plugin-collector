@@ -21,8 +21,10 @@ const CollectorsAdministration = createReactClass({
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
     pagination: PropTypes.object.isRequired,
+    query: PropTypes.string.isRequired,
     onPageChange: PropTypes.func.isRequired,
     onFilter: PropTypes.func.isRequired,
+    onQueryChange: PropTypes.func.isRequired,
   },
 
   getInitialState() {
@@ -233,14 +235,15 @@ const CollectorsAdministration = createReactClass({
   },
 
   handleSearch(query, callback) {
-    callback();
+    this.props.onQueryChange(query, callback());
   },
 
   handleReset() {
+    this.props.onQueryChange();
   },
 
   render() {
-    const { configurations, pagination, sidecarCollectorPairs } = this.props;
+    const { configurations, onPageChange, pagination, query, sidecarCollectorPairs } = this.props;
 
     let formattedCollectors;
     if (sidecarCollectorPairs.length === 0) {
@@ -266,8 +269,9 @@ const CollectorsAdministration = createReactClass({
                        pageSize={pagination.pageSize}
                        pageSizes={[1, 10, 25, 50, 100]}
                        totalItems={pagination.total}
-                       onChange={this.props.onPageChange}>
-          <SearchForm onSearch={this.handleSearch}
+                       onChange={onPageChange}>
+          <SearchForm query={query}
+                      onSearch={this.handleSearch}
                       onReset={this.handleReset}
                       searchButtonLabel="Find"
                       placeholder="Find collectors"

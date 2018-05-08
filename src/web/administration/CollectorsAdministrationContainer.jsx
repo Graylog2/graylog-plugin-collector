@@ -38,8 +38,13 @@ const CollectorsAdministrationContainer = createReactClass({
     SidecarsActions.listAdministration({ filters: filters });
   },
 
+  handleQueryChange(query = '', callback = () => {}) {
+    const { filters } = this.state;
+    SidecarsActions.listAdministration({ query: query, filters: filters }).finally(callback);
+  },
+
   render() {
-    const { collectors, sidecars, pagination, configurations } = this.state;
+    const { collectors, configurations, sidecars, pagination, query } = this.state;
     if (!collectors || !sidecars || !configurations) {
       return <Spinner text="Loading collector list..." />;
     }
@@ -66,8 +71,10 @@ const CollectorsAdministrationContainer = createReactClass({
                                 collectors={collectors}
                                 configurations={configurations}
                                 pagination={pagination}
+                                query={query}
                                 onPageChange={this.handlePageChange}
-                                onFilter={this.handleFilter} />
+                                onFilter={this.handleFilter}
+                                onQueryChange={this.handleQueryChange} />
     );
   },
 });
