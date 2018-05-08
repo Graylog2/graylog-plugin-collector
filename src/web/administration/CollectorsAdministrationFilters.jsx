@@ -108,7 +108,7 @@ const CollectorsAdministrationFilters = createReactClass({
       }
     };
 
-    const filter = ([statusCode], callback) => this.onFilterChange('status', statusCode === undefined ? undefined : Number(statusCode), callback);
+    const filter = ([statusCode], callback) => this.onFilterChange('status', statusCode, callback);
 
     return (
       <SelectPopover id="status-filter"
