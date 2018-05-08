@@ -34,15 +34,15 @@ const CollectorsAdministrationContainer = createReactClass({
   },
 
   handleFilter(property, value) {
-    const { filters, query } = this.state;
+    const { filters, pagination, query } = this.state;
     const newFilters = lodash.cloneDeep(filters);
     newFilters[property] = value;
-    SidecarsActions.listAdministration({ query: query, filters: newFilters });
+    SidecarsActions.listAdministration({ query: query, filters: newFilters, pageSize: pagination.pageSize });
   },
 
   handleQueryChange(query = '', callback = () => {}) {
-    const { filters } = this.state;
-    SidecarsActions.listAdministration({ query: query, filters: filters }).finally(callback);
+    const { filters, pagination } = this.state;
+    SidecarsActions.listAdministration({ query: query, filters: filters, pageSize: pagination.pageSize }).finally(callback);
   },
 
   render() {
