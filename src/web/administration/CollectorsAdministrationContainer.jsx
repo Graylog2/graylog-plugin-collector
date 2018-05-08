@@ -33,7 +33,7 @@ const CollectorsAdministrationContainer = createReactClass({
   },
 
   handleFilter(property, value) {
-    const filters = {};
+    const filters = lodash.cloneDeep(this.state.filters);
     filters[property] = value;
     SidecarsActions.listAdministration({ filters: filters });
   },
