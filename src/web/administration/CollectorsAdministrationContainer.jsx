@@ -28,14 +28,16 @@ const CollectorsAdministrationContainer = createReactClass({
   },
 
   handlePageChange(page, pageSize) {
-    const effectivePage = this.state.pagination.pageSize !== pageSize ? 1 : page;
-    SidecarsActions.listAdministration({ page: effectivePage, pageSize: pageSize });
+    const { filters, pagination, query } = this.state;
+    const effectivePage = pagination.pageSize !== pageSize ? 1 : page;
+    SidecarsActions.listAdministration({ query: query, filters: filters, page: effectivePage, pageSize: pageSize });
   },
 
   handleFilter(property, value) {
-    const filters = lodash.cloneDeep(this.state.filters);
-    filters[property] = value;
-    SidecarsActions.listAdministration({ filters: filters });
+    const { filters, query } = this.state;
+    const newFilters = lodash.cloneDeep(filters);
+    newFilters[property] = value;
+    SidecarsActions.listAdministration({ query: query, filters: newFilters });
   },
 
   handleQueryChange(query = '', callback = () => {}) {
