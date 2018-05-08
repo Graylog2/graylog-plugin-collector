@@ -8,6 +8,7 @@ import org.graylog2.database.PaginatedList;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Map;
 
 @AutoValue
 public abstract class CollectorListResponse {
@@ -32,13 +33,27 @@ public abstract class CollectorListResponse {
     @JsonProperty
     public abstract Collection<CollectorSummary> collectors();
 
+    @Nullable
+    @JsonProperty
+    public abstract Map<String, String> filters();
+
     @JsonCreator
     public static CollectorListResponse create(@JsonProperty("query") @Nullable String query,
                                                @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
                                                @JsonProperty("only_active") Boolean onlyActive,
                                                @JsonProperty("sort") @Nullable String sort,
                                                @JsonProperty("order") @Nullable String order,
+                                               @JsonProperty("collectors") Collection<CollectorSummary> collectors,
+                                               @JsonProperty("filters") @Nullable Map<String, String> filters) {
+        return new AutoValue_CollectorListResponse(query, paginationInfo, onlyActive, sort, order, collectors, filters);
+    }
+
+    public static CollectorListResponse create(@JsonProperty("query") @Nullable String query,
+                                               @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
+                                               @JsonProperty("only_active") Boolean onlyActive,
+                                               @JsonProperty("sort") @Nullable String sort,
+                                               @JsonProperty("order") @Nullable String order,
                                                @JsonProperty("collectors") Collection<CollectorSummary> collectors) {
-        return new AutoValue_CollectorListResponse(query, paginationInfo, onlyActive, sort, order, collectors);
+        return create(query, paginationInfo, onlyActive, sort, order, collectors, null);
     }
 }

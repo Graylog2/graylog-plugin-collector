@@ -103,7 +103,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
                 .filter(collectorSummary -> !filters.isPresent() || collectorSummary.backends().size() > 0)
                 .collect(Collectors.toList());
 
-        return CollectorListResponse.create(request.query(), collectors.pagination(), false, sort, order, summariesWithBackends);
+        return CollectorListResponse.create(request.query(), collectors.pagination(), false, sort, order, summariesWithBackends, request.filters());
     }
 
     private List<CollectorBackend> getCollectorBackends(Map<String, String> filters) {
