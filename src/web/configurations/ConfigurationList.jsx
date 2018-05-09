@@ -1,45 +1,22 @@
 import React from 'react';
-import Reflux from 'reflux';
+import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DataTable, Spinner } from 'components/common';
+import { DataTable } from 'components/common';
 import Routes from 'routing/Routes';
 
-import CollectorConfigurationsStore from './CollectorConfigurationsStore';
-import CollectorConfigurationsActions from './CollectorConfigurationsActions';
-import CollectorsStore from './CollectorsStore';
-import CollectorsActions from './CollectorsActions';
 import ConfigurationRow from './ConfigurationRow';
 
 import style from './ConfigurationList.css';
 
 const ConfigurationList = React.createClass({
-  mixins: [Reflux.connect(CollectorConfigurationsStore), Reflux.connect(CollectorsStore)],
-
-  componentDidMount() {
-    this._reloadConfiguration();
-  },
-
-  _reloadConfiguration() {
-    CollectorConfigurationsActions.list();
-    CollectorsActions.list();
-  },
-
-  _validConfigurationName(name) {
-    // Check if configurations already contain a configuration with the given name.
-    return !this.state.configurations.some((configuration) => configuration.name === name);
-  },
-
-  _copyConfiguration(configuration, name, callback) {
-    CollectorConfigurationsActions.copyConfiguration(configuration, name)
-      .then(() => {
-        callback();
-      });
-  },
-
-  _onDelete(configuration) {
-    CollectorConfigurationsActions.delete(configuration);
+  propTypes: {
+    collectors: PropTypes.array.isRequired,
+    configurations: PropTypes.array.isRequired,
+    onClone: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    validateConfiguration: PropTypes.func.isRequired,
   },
 
   _headerCellFormatter(header) {
@@ -48,28 +25,21 @@ const ConfigurationList = React.createClass({
   },
 
   _collectorConfigurationFormatter(configuration) {
-    const configurationCollector = this.state.collectors.find(collector => collector.id === configuration.backend_id);
+    const { collectors, onClone, onDelete, validateConfiguration } = this.props;
+    const configurationCollector = collectors.find(collector => collector.id === configuration.backend_id);
     return (
       <ConfigurationRow key={configuration.id}
                         configuration={configuration}
                         collector={configurationCollector}
-                        onCopy={this._copyConfiguration}
-                        validateConfiguration={this._validConfigurationName}
-                        onDelete={this._onDelete} />
+                        onCopy={onClone}
+                        validateConfiguration={validateConfiguration}
+                        onDelete={onDelete} />
     );
   },
 
-  _isLoading() {
-    return !this.state.configurations || !this.state.collectors;
-  },
-
   render() {
-    if (this._isLoading()) {
-      return <Spinner />;
-    }
-
+    const { configurations } = this.props;
     const headers = ['Configuration', 'Color', 'Collector', 'Actions'];
-    const filterKeys = ['name', 'id'];
 
     return (
       <div>
@@ -80,7 +50,7 @@ const ConfigurationList = React.createClass({
                 <Button onClick={this.openModal} bsStyle="success" bsSize="small">Create Configuration</Button>
               </LinkContainer>
             </div>
-            <h2>Configurations <small>{this.state.configurations.length} total</small></h2>
+            <h2>Configurations <small>{configurations.length} total</small></h2>
           </Col>
           <Col md={12}>
             <p>
@@ -94,13 +64,11 @@ const ConfigurationList = React.createClass({
                    headers={headers}
                    headerCellFormatter={this._headerCellFormatter}
                    sortByKey="name"
-                   rows={this.state.configurations}
-                   filterBy="tag"
-                   filterSuggestions={this.state.tags}
+                   rows={configurations}
                    dataRowFormatter={this._collectorConfigurationFormatter}
-                   filterLabel="Filter Configurations"
+                   filterLabel=""
                    noDataText="There are no configurations to display, why don't you create one?"
-                   filterKeys={filterKeys}
+                   filterKeys={[]}
                    useResponsiveTable={false} />
       </div>
     );
