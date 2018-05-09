@@ -57,6 +57,10 @@ public class AltConfigurationService extends PaginatedDbService<CollectorConfigu
         return db.findOne(DBQuery.is("_id", id));
     }
 
+    public CollectorConfiguration findByName(String name) {
+        return db.findOne(DBQuery.is(CollectorConfiguration.FIELD_NAME, name));
+    }
+
     public List<CollectorConfiguration> all() {
         try (final Stream<CollectorConfiguration> collectorConfigurationStream = streamAll()) {
             return collectorConfigurationStream.collect(Collectors.toList());

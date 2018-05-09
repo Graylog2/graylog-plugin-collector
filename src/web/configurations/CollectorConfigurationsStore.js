@@ -168,6 +168,19 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.delete.promise(promise);
   },
 
+  validateConfiguration(name) {
+    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/validate/?name=${name}`));
+    promise
+      .then(
+        response => response,
+        error => (
+          UserNotification.error(`Validating configuration with name "${name}" failed with status: ${error.message}`,
+            'Could not validate configuration')
+        ));
+
+    CollectorConfigurationsActions.validateConfiguration.promise(promise);
+  },
+
 });
 
 export default CollectorConfigurationsStore;

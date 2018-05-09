@@ -16,6 +16,7 @@ import org.graylog.plugins.collector.altConfigurations.rest.requests.Configurati
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationListResponse;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorConfigurationSummary;
 import org.graylog.plugins.collector.altConfigurations.rest.responses.ConfigurationPreviewRenderResponse;
+import org.graylog.plugins.collector.altConfigurations.rest.responses.ValidationResponse;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
@@ -108,6 +109,20 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     public CollectorConfiguration getConfigurations(@ApiParam(name = "id", required = true)
                                                     @PathParam("id") String id) {
         return this.configurationService.find(id);
+    }
+
+    @GET
+    @Path("/validate")
+    @RequiresAuthentication
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Validates configuration name")
+    public ValidationResponse validateConfiguration(@ApiParam(name = "name", required = true) @QueryParam("name") String name) {
+        final CollectorConfiguration configuration = this.configurationService.findByName(name);
+        if (configuration == null) {
+            return ValidationResponse.create(false, null);
+        }
+        return ValidationResponse.create(true, "Configuration with name \"" + name + "\" already exists");
     }
 
     @GET

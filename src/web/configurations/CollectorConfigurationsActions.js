@@ -9,6 +9,7 @@ const CollectorConfigurationsActions = Reflux.createActions({
   saveSnippet: { asyncResult: true },
   copyConfiguration: { asyncResult: true },
   delete: { asyncResult: true },
+  validateConfiguration: { asyncResult: true },
 });
 
 export default CollectorConfigurationsActions;

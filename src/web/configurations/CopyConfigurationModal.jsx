@@ -10,7 +10,7 @@ const CopyConfigurationModal = React.createClass({
   propTypes: {
     id: PropTypes.string,
     copyConfiguration: PropTypes.func.isRequired,
-    validConfigurationName: PropTypes.func.isRequired,
+    validateConfiguration: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
@@ -55,7 +55,11 @@ const CopyConfigurationModal = React.createClass({
   },
 
   _changeName(event) {
-    this.setState({ name: event.target.value });
+    const nextName = event.target.value;
+    this.setState({ name: nextName });
+    this.props.validateConfiguration(nextName).then(validation => (
+      this.setState({ error: validation.error, error_message: validation.error_message })
+    ));
   },
 
   render() {
@@ -65,6 +69,7 @@ const CopyConfigurationModal = React.createClass({
         <BootstrapModalForm ref="modal"
                             title="Clone"
                             onSubmitForm={this._save}
+                            submitButtonDisabled={this.state.error}
                             submitButtonText="Create">
           <fieldset>
             <Input type="text"

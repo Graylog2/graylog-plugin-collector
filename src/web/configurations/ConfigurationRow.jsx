@@ -54,7 +54,7 @@ const ConfigurationRow = React.createClass({
                             bsSize="xsmall"
                             pullRight>
               <CopyConfigurationModal id={this.props.configuration.id}
-                                      validConfigurationName={this.props.validateConfiguration}
+                                      validateConfiguration={this.props.validateConfiguration}
                                       copyConfiguration={this.props.onCopy} />
               <MenuItem divider />
               <MenuItem onSelect={this._handleDelete}>Delete</MenuItem>

@@ -24,9 +24,7 @@ const ConfigurationListContainer = createReactClass({
   },
 
   validateConfiguration(name) {
-    // TODO: do this in backend
-    // Check if configurations already contain a configuration with the given name.
-    return !this.state.configurations.some(configuration => configuration.name === name);
+    return CollectorConfigurationsActions.validateConfiguration(name);
   },
 
   handlePageChange(page, pageSize) {
