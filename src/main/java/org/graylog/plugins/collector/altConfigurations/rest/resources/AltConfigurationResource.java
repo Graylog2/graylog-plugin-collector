@@ -89,7 +89,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
                                                                          allowableValues = "name,id,backend_id")
                                                                      @DefaultValue(CollectorConfiguration.FIELD_NAME) @QueryParam("sort") String sort,
                                                                  @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
-                                                                     @DefaultValue("desc") @QueryParam("order") String order) {
+                                                                     @DefaultValue("asc") @QueryParam("order") String order) {
         final SearchQuery searchQuery = searchQueryParser.parse(query);
         final PaginatedList<CollectorConfiguration> configurations = this.configurationService.findPaginated(searchQuery, page, perPage, sort, order);
         final List<CollectorConfigurationSummary> result = configurations.stream()

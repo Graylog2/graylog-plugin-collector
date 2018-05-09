@@ -132,7 +132,7 @@ public class AltCollectorResource extends RestResource implements PluginRestReso
                                                     allowableValues = "title,description,name,id")
                                             @DefaultValue(Collector.FIELD_NODE_NAME) @QueryParam("sort") String sort,
                                             @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
-                                            @DefaultValue("desc") @QueryParam("order") String order,
+                                            @DefaultValue("asc") @QueryParam("order") String order,
                                             @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
         final String mappedQuery = collectorStatusMapper.replaceStringStatusSearchQuery(query);
         final SearchQuery searchQuery = searchQueryParser.parse(mappedQuery);
