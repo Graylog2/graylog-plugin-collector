@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Label } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
 import OperatingSystemIcon from './OperatingSystemIcon';
+import StatusIndicator from '../common/StatusIndicator';
 
 const SidecarRow = React.createClass({
   propTypes: {
@@ -28,40 +29,14 @@ const SidecarRow = React.createClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
-  _labelClassForState(state) {
-    switch (state) {
-      case 0:
-        return 'success';
-      case 1:
-        return 'warning';
-      case 2:
-        return 'danger';
-      default:
-        return 'warning';
-    }
-  },
-
-  _textForState(state) {
-    switch (state) {
-      case 0:
-        return 'Running';
-      case 1:
-        return 'Unknown';
-      case 2:
-        return 'Failing';
-      default:
-        return 'Unknown';
-    }
-  },
-
   render() {
     const sidecar = this.props.sidecar;
     const sidecarClass = sidecar.active ? '' : 'greyed-out inactive';
     const style = {};
     const annotation = sidecar.active ? '' : ' (inactive)';
-    let sidecarState = null;
+    let sidecarStatus = null;
     if (sidecar.node_details.status) {
-      sidecarState = sidecar.node_details.status.status;
+      sidecarStatus = sidecar.node_details.status.status;
     }
     return (
       <tr className={sidecarClass} style={style}>
@@ -74,8 +49,7 @@ const SidecarRow = React.createClass({
           }
         </td>
         <td>
-          <Label bsStyle={this._labelClassForState(sidecarState)}
-                 bsSize="xsmall">{this._textForState(sidecarState)}</Label>
+          <StatusIndicator status={sidecarStatus} />
         </td>
         <td>
           <OperatingSystemIcon operatingSystem={sidecar.node_details.operating_system} />&ensp;

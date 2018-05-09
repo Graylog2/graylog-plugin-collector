@@ -15,6 +15,7 @@ import SidecarsActions from '../sidecars/SidecarsActions';
 import style from './CollectorsAdministration.css';
 import ColorLabel from '../common/ColorLabel';
 import SidecarSearchForm from '../common/SidecarSearchForm';
+import StatusIndicator from '../common/StatusIndicator';
 
 const CollectorsAdministration = createReactClass({
   propTypes: {
@@ -134,32 +135,6 @@ const CollectorsAdministration = createReactClass({
     this.setState({ selected: newSelection });
   },
 
-  formatCollectorState(state) {
-    let text;
-    let icon;
-    let className;
-    switch (state) {
-      case 0:
-        text = 'Running';
-        className = 'text-success';
-        icon = 'fa-play';
-        break;
-      case 2:
-        text = 'Failing';
-        className = 'text-danger';
-        icon = 'fa-exclamation-triangle';
-        break;
-      default:
-        text = 'Unknown';
-        className = 'text-info';
-        icon = 'fa-question-circle';
-    }
-
-    return (
-      <span className={`${className}`}><i className={`fa ${icon}`} /> {text}</span>
-    );
-  },
-
   formatSidecarNoCollectors(sidecar) {
     return (
       <ControlledTableList.Item key={`sidecar-${sidecar.node_id}`}>
@@ -201,7 +176,7 @@ const CollectorsAdministration = createReactClass({
         </Col>
         <Col lg={1} md={2} xs={3}>
           <span className={style.additionalContent}>
-            {configuration && this.formatCollectorState(backendStatus)}
+            {configuration && <StatusIndicator status={backendStatus} />}
           </span>
         </Col>
         <Col lg={1} md={2} xs={3}>
