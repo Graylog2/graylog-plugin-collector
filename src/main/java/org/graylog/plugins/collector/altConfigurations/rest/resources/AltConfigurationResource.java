@@ -67,7 +67,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
     public CollectorConfigurationListResponse listConfigurations() {
-        final List<CollectorConfigurationSummary> result = this.configurationService.loadAll().stream()
+        final List<CollectorConfigurationSummary> result = this.configurationService.all().stream()
                 .map(this::getCollectorConfigurationSummary)
                 .collect(Collectors.toList());
 
@@ -82,7 +82,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @ApiOperation(value = "Show collector configuration details")
     public CollectorConfiguration getConfigurations(@ApiParam(name = "id", required = true)
                                                     @PathParam("id") String id) {
-        return this.configurationService.load(id);
+        return this.configurationService.find(id);
     }
 
     @GET
@@ -116,7 +116,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
             if (collector == null) {
                 throw new NotFoundException("Couldn't find collector by ID: " + collectorId);
             }
-            CollectorConfiguration configuration = configurationService.load(configurationId);
+            CollectorConfiguration configuration = configurationService.find(configurationId);
             if (configuration == null) {
                 throw new NotFoundException("Couldn't find configuration by ID: " + configurationId);
             }

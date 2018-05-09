@@ -1,6 +1,5 @@
 package org.graylog.plugins.collector.altConfigurations;
 
-import com.google.common.collect.Iterables;
 import com.mongodb.BasicDBObject;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.StringTemplateLoader;
@@ -8,17 +7,14 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.bson.types.ObjectId;
 import org.graylog.plugins.collector.altConfigurations.directives.IndentTemplateDirective;
 import org.graylog.plugins.collector.altConfigurations.loader.MongoDbTemplateLoader;
 import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
 import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
-import org.graylog2.database.NotFoundException;
-import org.mongojack.DBCursor;
+import org.graylog2.database.PaginatedDbService;
 import org.mongojack.DBQuery;
-import org.mongojack.JacksonDBCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,30 +23,26 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Singleton
-public class AltConfigurationService {
+public class AltConfigurationService extends PaginatedDbService<CollectorConfiguration> {
     private static final Logger LOG = LoggerFactory.getLogger(AltConfigurationService.class);
     private static final Configuration templateConfiguration = new Configuration(Configuration.VERSION_2_3_27);
     private static final StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
     private static final String COLLECTION_NAME = "collector_configurations";
-    private final JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection;
 
     @Inject
     public AltConfigurationService(MongoConnection mongoConnection,
                                    MongoJackObjectMapperProvider mapper) {
-        dbCollection = JacksonDBCollection.wrap(
-                mongoConnection.getDatabase().getCollection(COLLECTION_NAME),
-                CollectorConfiguration.class,
-                ObjectId.class,
-                mapper.get());
-        MongoDbTemplateLoader mongoDbTemplateLoader = new MongoDbTemplateLoader(dbCollection);
+        super(mongoConnection, mapper, CollectorConfiguration.class, COLLECTION_NAME);
+        MongoDbTemplateLoader mongoDbTemplateLoader = new MongoDbTemplateLoader(db);
         MultiTemplateLoader multiTemplateLoader = new MultiTemplateLoader(new TemplateLoader[] {
                 mongoDbTemplateLoader,
                 stringTemplateLoader });
@@ -58,48 +50,42 @@ public class AltConfigurationService {
         templateConfiguration.setSharedVariable("indent", new IndentTemplateDirective());
     }
 
-    public CollectorConfiguration load(String id) {
-        return dbCollection.findOne(DBQuery.is("_id", id));
+    public CollectorConfiguration find(String id) {
+        return db.findOne(DBQuery.is("_id", id));
     }
 
-    public List<CollectorConfiguration> loadAll() {
-        final DBCursor<CollectorConfiguration> cursor = dbCollection.find();
-        final List<CollectorConfiguration> collectorConfigurationList = new ArrayList<>();
-        Iterables.addAll(collectorConfigurationList, cursor);
-        return collectorConfigurationList;
+    public List<CollectorConfiguration> all() {
+        try (final Stream<CollectorConfiguration> collectorConfigurationStream = streamAll()) {
+            return collectorConfigurationStream.collect(Collectors.toList());
+        }
     }
 
+    @Override
     public CollectorConfiguration save(CollectorConfiguration configuration) {
-        return dbCollection.findAndModify(DBQuery.is("_id", configuration.id()), new BasicDBObject(),
+        return db.findAndModify(DBQuery.is("_id", configuration.id()), new BasicDBObject(),
                 new BasicDBObject(), false, configuration, true, true);
     }
 
-    public int delete(String id) {
-        return dbCollection.remove(DBQuery.is("_id", id)).getN();
-    }
-
     public CollectorConfiguration copyConfiguration(String id, String name) {
-        CollectorConfiguration collectorConfiguration = load(id);
+        CollectorConfiguration collectorConfiguration = find(id);
         return CollectorConfiguration.create(collectorConfiguration.backendId(), name, collectorConfiguration.color(), collectorConfiguration.template());
     }
 
     public CollectorConfiguration fromRequest(CollectorConfiguration request) {
-        CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(
+        return CollectorConfiguration.create(
                 request.backendId(),
                 request.name(),
                 request.color(),
                 request.template());
-        return collectorConfiguration;
     }
 
     public CollectorConfiguration fromRequest(String id, CollectorConfiguration request) {
-        CollectorConfiguration collectorConfiguration = CollectorConfiguration.create(
+        return CollectorConfiguration.create(
                 id,
                 request.backendId(),
                 request.name(),
                 request.color(),
                 request.template());
-        return collectorConfiguration;
     }
 
     public CollectorConfiguration renderConfigurationForCollector(Collector collector, CollectorConfiguration configuration) {

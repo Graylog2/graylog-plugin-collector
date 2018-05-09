@@ -140,7 +140,7 @@ public class AltCollectorService extends PaginatedDbService<Collector> {
             if (backend == null) {
                 throw new NotFoundException("Couldn't find backend with ID " + assignment.backendId());
             }
-            CollectorConfiguration configuration = configurationService.load(assignment.configurationId());
+            CollectorConfiguration configuration = configurationService.find(assignment.configurationId());
             if (configuration == null) {
                 throw new NotFoundException("Couldn't find configuration with ID " + assignment.configurationId());
             }

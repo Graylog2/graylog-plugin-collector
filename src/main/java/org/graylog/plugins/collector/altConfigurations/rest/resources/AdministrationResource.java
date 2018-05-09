@@ -116,7 +116,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
             backendIds.add(filters.get(backendKey));
         }
         if (filters.containsKey(configurationKey)) {
-            final CollectorConfiguration configuration = configurationService.load(filters.get(configurationKey));
+            final CollectorConfiguration configuration = configurationService.find(filters.get(configurationKey));
             if (!backendIds.contains(configuration.backendId())) {
                 backendIds.add(configuration.backendId());
             }
