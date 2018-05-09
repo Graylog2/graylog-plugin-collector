@@ -7,7 +7,7 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
 
-import ConfigurationsList from './ConfigurationsList';
+import ConfigurationList from './ConfigurationList';
 import CollectorListContainer from './CollectorListContainer';
 
 const ConfigurationPage = React.createClass({
@@ -41,7 +41,7 @@ const ConfigurationPage = React.createClass({
 
           <Row className="content">
             <Col md={12}>
-              <ConfigurationsList />
+              <ConfigurationList />
             </Col>
           </Row>
           <Row className="content">

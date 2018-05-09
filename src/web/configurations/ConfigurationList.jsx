@@ -12,9 +12,9 @@ import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 import ConfigurationRow from './ConfigurationRow';
 
-import style from './ConfigurationsList.css';
+import style from './ConfigurationList.css';
 
-const ConfigurationsList = React.createClass({
+const ConfigurationList = React.createClass({
   mixins: [Reflux.connect(CollectorConfigurationsStore), Reflux.connect(CollectorsStore)],
 
   componentDidMount() {
@@ -107,4 +107,4 @@ const ConfigurationsList = React.createClass({
   },
 });
 
-export default ConfigurationsList;
+export default ConfigurationList;
