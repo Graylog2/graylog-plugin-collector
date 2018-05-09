@@ -268,7 +268,7 @@ const CollectorsAdministration = createReactClass({
       <div className={style.paginatedList}>
         <PaginatedList activePage={pagination.page}
                        pageSize={pagination.pageSize}
-                       pageSizes={[1, 10, 25, 50, 100]}
+                       pageSizes={[10, 25, 50, 100]}
                        totalItems={pagination.total}
                        onChange={onPageChange}>
           <SidecarSearchForm query={query} onSearch={this.handleSearch} onReset={this.handleReset} />

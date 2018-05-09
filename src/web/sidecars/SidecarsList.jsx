@@ -152,7 +152,7 @@ const SidecarList = React.createClass({
 
         <PaginatedList activePage={pagination.page}
                        pageSize={pagination.pageSize}
-                       pageSizes={[1, 10, 25, 50, 100]}
+                       pageSizes={[10, 25, 50, 100]}
                        totalItems={pagination.total}
                        onChange={this.handlePageChange}>
           <Row>
