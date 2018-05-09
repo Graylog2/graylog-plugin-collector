@@ -2,9 +2,9 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
-import { ControlledTableList, PaginatedList, SearchForm } from 'components/common';
+import { ControlledTableList, PaginatedList } from 'components/common';
 import { Input } from 'components/bootstrap';
 import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
@@ -14,6 +14,7 @@ import SidecarsActions from '../sidecars/SidecarsActions';
 
 import style from './CollectorsAdministration.css';
 import ColorLabel from '../common/ColorLabel';
+import SidecarSearchForm from '../common/SidecarSearchForm';
 
 const CollectorsAdministration = createReactClass({
   propTypes: {
@@ -270,15 +271,7 @@ const CollectorsAdministration = createReactClass({
                        pageSizes={[1, 10, 25, 50, 100]}
                        totalItems={pagination.total}
                        onChange={onPageChange}>
-          <SearchForm query={query}
-                      onSearch={this.handleSearch}
-                      onReset={this.handleReset}
-                      searchButtonLabel="Find"
-                      placeholder="Find collectors"
-                      queryWidth={400}
-                      topMargin={0}
-                      queryHelpComponent={<Button bsStyle="link"><i className="fa fa-question-circle" /></Button>}
-                      useLoadingState />
+          <SidecarSearchForm query={query} onSearch={this.handleSearch} onReset={this.handleReset} />
           <Row>
             <Col md={12}>
               <ControlledTableList>

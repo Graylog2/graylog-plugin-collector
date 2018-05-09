@@ -1,12 +1,13 @@
 import React from 'react';
 import Reflux from 'reflux';
-import { Alert, Button, Col, OverlayTrigger, Popover, Row, Table } from 'react-bootstrap';
+import { Alert, Button, Col, Row, Table } from 'react-bootstrap';
 
-import { PaginatedList, SearchForm, Spinner } from 'components/common';
+import { PaginatedList, Spinner } from 'components/common';
 
 import SidecarsStore from './SidecarsStore';
 import SidecarsActions from './SidecarsActions';
 import SidecarRow from './SidecarRow';
+import SidecarSearchForm from '../common/SidecarSearchForm';
 
 const SidecarList = React.createClass({
   mixins: [Reflux.connect(SidecarsStore)],
@@ -135,79 +136,18 @@ const SidecarList = React.createClass({
     const showOrHideInactive = (onlyActive ? 'Include' : 'Hide');
     const sidecarList = (sidecars.length > 0 ? this._formatSidecarList(sidecars) : this._formatEmptyListAlert());
 
-    const queryHelpPopover = (
-      <Popover id="search-query-help" className="popover-wide" title="Search Syntax Help">
-        <p><strong>Available search fields</strong></p>
-        <Table condensed>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>name</td>
-              <td>Sidecar name</td>
-            </tr>
-            <tr>
-              <td>status</td>
-              <td>Status of the sidecar as it appears in the list, i.e. running, failing, or unknown</td>
-            </tr>
-            <tr>
-              <td>operating_system</td>
-              <td>Operating system the sidecar is running on</td>
-            </tr>
-            <tr>
-              <td>last_seen</td>
-              <td>Date and time when the sidecar last communicated with Graylog</td>
-            </tr>
-            <tr>
-              <td>node_id</td>
-              <td>Identifier of the sidecar</td>
-            </tr>
-            <tr>
-              <td>collector_version</td>
-              <td>Sidecar version</td>
-            </tr>
-          </tbody>
-        </Table>
-        <p><strong>Examples</strong></p>
-        <p>
-          Find sidecars that did not communicate with Graylog since a date:<br />
-          <kbd>{'last_seen:<=2018-04-10'}</kbd><br />
-        </p>
-        <p>
-          Find sidecars with <code>failing</code> or <code>unknown</code> status:<br />
-          <kbd>{'status:failing status:unknown'}</kbd><br />
-        </p>
-      </Popover>
-    );
-
-    const queryHelp = (
-      <OverlayTrigger trigger="click" rootClose placement="right" overlay={queryHelpPopover}>
-        <Button bsStyle="link"><i className="fa fa-question-circle" /></Button>
-      </OverlayTrigger>
-    );
-
     return (
       <div>
         <div className="sidecars-filter-form inline">
-          <SearchForm query={query}
-                      onSearch={this.handleSearchChange}
-                      onReset={this.handleSearchReset}
-                      searchButtonLabel="Find"
-                      placeholder="Find sidecars"
-                      queryWidth={400}
-                      queryHelpComponent={queryHelp}
-                      topMargin={0}
-                      useLoadingState>
+          <SidecarSearchForm query={query}
+                             onSearch={this.handleSearchChange}
+                             onReset={this.handleSearchReset}>
             <Button bsStyle="primary"
                     onClick={this.toggleShowInactive}
                     className="inactive-sidecars-button">
               {showOrHideInactive} inactive sidecars
             </Button>
-          </SearchForm>
+          </SidecarSearchForm>
         </div>
 
         <PaginatedList activePage={pagination.page}
