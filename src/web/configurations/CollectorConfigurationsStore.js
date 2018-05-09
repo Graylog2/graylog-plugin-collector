@@ -28,7 +28,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
             configurations: response.configurations,
             query: response.query,
             page: response.page,
-            pageSize: response.pageSize,
+            pageSize: response.per_page,
             total: response.total,
           });
           return response.configurations;

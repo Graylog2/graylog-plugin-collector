@@ -52,7 +52,7 @@ const AltConfigurationForm = React.createClass({
 
   componentDidMount() {
     CollectorsActions.list();
-    CollectorConfigurationsActions.list();
+    CollectorConfigurationsActions.list({ pageSize: 0 });
   },
 
   hasErrors() {
