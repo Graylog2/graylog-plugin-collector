@@ -68,7 +68,7 @@ const ConfigurationsList = React.createClass({
       return <Spinner />;
     }
 
-    const headers = ['Configuration', 'Color', 'Collector'];
+    const headers = ['Configuration', 'Color', 'Collector', 'Actions'];
     const filterKeys = ['name', 'id'];
 
     return (
