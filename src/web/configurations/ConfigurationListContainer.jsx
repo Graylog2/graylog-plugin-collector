@@ -19,7 +19,7 @@ const ConfigurationListContainer = createReactClass({
   },
 
   _reloadConfiguration() {
-    CollectorConfigurationsActions.list();
+    CollectorConfigurationsActions.list({});
     CollectorsActions.list();
   },
 
@@ -27,6 +27,10 @@ const ConfigurationListContainer = createReactClass({
     // TODO: do this in backend
     // Check if configurations already contain a configuration with the given name.
     return !this.state.configurations.some(configuration => configuration.name === name);
+  },
+
+  handlePageChange(page, pageSize) {
+    CollectorConfigurationsActions.list({ page: page, pageSize: pageSize });
   },
 
   handleClone(configuration, name, callback) {
@@ -41,7 +45,7 @@ const ConfigurationListContainer = createReactClass({
   },
 
   render() {
-    const { collectors, configurations } = this.state;
+    const { collectors, configurations, query, page, pageSize, total } = this.state;
     const isLoading = !collectors || !configurations;
 
     if (isLoading) {
@@ -50,7 +54,9 @@ const ConfigurationListContainer = createReactClass({
 
     return (
       <ConfigurationList collectors={collectors}
+                         pagination={{ page: page, pageSize: pageSize, total: total }}
                          configurations={configurations}
+                         onPageChange={this.handlePageChange}
                          onClone={this.handleClone}
                          onDelete={this.handleDelete}
                          validateConfiguration={this.validateConfiguration} />

@@ -1,4 +1,6 @@
 import Reflux from 'reflux';
+import URI from 'urijs';
+
 import URLUtils from 'util/URLUtils';
 import UserNotification from 'util/UserNotification';
 import fetch from 'logic/rest/FetchProvider';
@@ -8,20 +10,28 @@ import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 const CollectorConfigurationsStore = Reflux.createStore({
   listenables: [CollectorConfigurationsActions],
   sourceUrl: '/plugins/org.graylog.plugins.collector/altconfiguration',
-  configurations: undefined,
 
-  init() {
-    this.trigger({ configurations: this.configurations });
-  },
+  list({ query = '', page = 1, pageSize = 10 }) {
+    const baseUrl = `${this.sourceUrl}/configurations`;
+    const search = {
+      query: query,
+      page: page,
+      per_page: pageSize,
+    };
 
-  list() {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/configurations`))
+    const uri = URI(baseUrl).search(search).toString();
+
+    const promise = fetch('GET', URLUtils.qualifyUrl(uri))
       .then(
         (response) => {
-          this.configurations = response.configurations;
-          this.trigger({ configurations: this.configurations });
-
-          return this.configurations;
+          this.trigger({
+            configurations: response.configurations,
+            query: response.query,
+            page: response.page,
+            pageSize: response.pageSize,
+            total: response.total,
+          });
+          return response.configurations;
         },
         (error) => {
           UserNotification.error(`Fetching collector configurations failed with status: ${error}`,

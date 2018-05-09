@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DataTable } from 'components/common';
+import { DataTable, PaginatedList } from 'components/common';
 import Routes from 'routing/Routes';
 
 import ConfigurationRow from './ConfigurationRow';
@@ -14,6 +14,8 @@ const ConfigurationList = React.createClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
+    pagination: PropTypes.object.isRequired,
+    onPageChange: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     validateConfiguration: PropTypes.func.isRequired,
@@ -38,7 +40,7 @@ const ConfigurationList = React.createClass({
   },
 
   render() {
-    const { configurations } = this.props;
+    const { configurations, pagination, onPageChange } = this.props;
     const headers = ['Configuration', 'Color', 'Collector', 'Actions'];
 
     return (
@@ -59,17 +61,24 @@ const ConfigurationList = React.createClass({
             </p>
           </Col>
         </Row>
-        <DataTable id="collector-configurations-list"
-                   className="table-hover"
-                   headers={headers}
-                   headerCellFormatter={this._headerCellFormatter}
-                   sortByKey="name"
-                   rows={configurations}
-                   dataRowFormatter={this._collectorConfigurationFormatter}
-                   filterLabel=""
-                   noDataText="There are no configurations to display, why don't you create one?"
-                   filterKeys={[]}
-                   useResponsiveTable={false} />
+
+        <PaginatedList activePage={pagination.page}
+                       pageSize={pagination.pageSize}
+                       pageSizes={[10, 25]}
+                       totalItems={pagination.total}
+                       onChange={onPageChange}>
+          <DataTable id="collector-configurations-list"
+                     className="table-hover"
+                     headers={headers}
+                     headerCellFormatter={this._headerCellFormatter}
+                     sortByKey="name"
+                     rows={configurations}
+                     dataRowFormatter={this._collectorConfigurationFormatter}
+                     filterLabel=""
+                     noDataText="There are no configurations to display, why don't you create one?"
+                     filterKeys={[]}
+                     useResponsiveTable={false} />
+        </PaginatedList>
       </div>
     );
   },
