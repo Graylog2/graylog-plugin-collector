@@ -30,7 +30,11 @@ const ConfigurationListContainer = createReactClass({
   },
 
   handlePageChange(page, pageSize) {
-    CollectorConfigurationsActions.list({ page: page, pageSize: pageSize });
+    CollectorConfigurationsActions.list({ query: this.state.query, page: page, pageSize: pageSize });
+  },
+
+  handleQueryChange(query = '', callback = () => {}) {
+    CollectorConfigurationsActions.list({ query: query, pageSize: this.state.pageSize }).finally(callback);
   },
 
   handleClone(configuration, name, callback) {
@@ -54,9 +58,11 @@ const ConfigurationListContainer = createReactClass({
 
     return (
       <ConfigurationList collectors={collectors}
+                         query={query}
                          pagination={{ page: page, pageSize: pageSize, total: total }}
                          configurations={configurations}
                          onPageChange={this.handlePageChange}
+                         onQueryChange={this.handleQueryChange}
                          onClone={this.handleClone}
                          onDelete={this.handleDelete}
                          validateConfiguration={this.validateConfiguration} />

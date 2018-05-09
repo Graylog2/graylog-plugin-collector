@@ -1,3 +1,11 @@
 :local(.actionsColumn) {
     width: 160px;
 }
+
+:local(.inline) {
+    display: inline-block;
+}
+
+:local(.configurationTable) {
+    margin-top: 15px;
+}

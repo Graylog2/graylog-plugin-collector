@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DataTable, PaginatedList } from 'components/common';
+import { DataTable, PaginatedList, SearchForm } from 'components/common';
 import Routes from 'routing/Routes';
 
 import ConfigurationRow from './ConfigurationRow';
@@ -15,7 +15,9 @@ const ConfigurationList = React.createClass({
     collectors: PropTypes.array.isRequired,
     configurations: PropTypes.array.isRequired,
     pagination: PropTypes.object.isRequired,
+    query: PropTypes.string.isRequired,
     onPageChange: PropTypes.func.isRequired,
+    onQueryChange: PropTypes.func.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     validateConfiguration: PropTypes.func.isRequired,
@@ -40,7 +42,7 @@ const ConfigurationList = React.createClass({
   },
 
   render() {
-    const { configurations, pagination, onPageChange } = this.props;
+    const { configurations, pagination, query, onPageChange, onQueryChange } = this.props;
     const headers = ['Configuration', 'Color', 'Collector', 'Actions'];
 
     return (
@@ -52,7 +54,7 @@ const ConfigurationList = React.createClass({
                 <Button onClick={this.openModal} bsStyle="success" bsSize="small">Create Configuration</Button>
               </LinkContainer>
             </div>
-            <h2>Configurations <small>{configurations.length} total</small></h2>
+            <h2>Configurations <small>{pagination.total} total</small></h2>
           </Col>
           <Col md={12}>
             <p>
@@ -62,23 +64,38 @@ const ConfigurationList = React.createClass({
           </Col>
         </Row>
 
-        <PaginatedList activePage={pagination.page}
-                       pageSize={pagination.pageSize}
-                       pageSizes={[10, 25]}
-                       totalItems={pagination.total}
-                       onChange={onPageChange}>
-          <DataTable id="collector-configurations-list"
-                     className="table-hover"
-                     headers={headers}
-                     headerCellFormatter={this._headerCellFormatter}
-                     sortByKey="name"
-                     rows={configurations}
-                     dataRowFormatter={this._collectorConfigurationFormatter}
-                     filterLabel=""
-                     noDataText="There are no configurations to display, why don't you create one?"
-                     filterKeys={[]}
-                     useResponsiveTable={false} />
-        </PaginatedList>
+        <Row>
+          <Col md={12}>
+            <SearchForm query={query}
+                        onSearch={onQueryChange}
+                        onReset={onQueryChange}
+                        searchButtonLabel="Find"
+                        placeholder="Find configurations"
+                        wrapperClass={style.inline}
+                        queryWidth={300}
+                        topMargin={0}
+                        useLoadingState />
+
+            <PaginatedList activePage={pagination.page}
+                           pageSize={pagination.pageSize}
+                           pageSizes={[1, 10, 25]}
+                           totalItems={pagination.total}
+                           onChange={onPageChange}>
+              <div className={style.configurationTable}>
+                <DataTable id="collector-configurations-list"
+                           className="table-hover"
+                           headers={headers}
+                           headerCellFormatter={this._headerCellFormatter}
+                           rows={configurations}
+                           dataRowFormatter={this._collectorConfigurationFormatter}
+                           noDataText="There are no configurations to display, try creating one or changing your query."
+                           filterLabel=""
+                           filterKeys={[]}
+                           useResponsiveTable={false} />
+              </div>
+            </PaginatedList>
+          </Col>
+        </Row>
       </div>
     );
   },
