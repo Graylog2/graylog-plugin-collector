@@ -40,7 +40,8 @@
 
 :local(.additionalContent) {
     display: block;
-    padding: 5px 0;
+    height: 20px;
+    margin: 5px 0;
 }
 
 :local(.paginatedList) .page-size {

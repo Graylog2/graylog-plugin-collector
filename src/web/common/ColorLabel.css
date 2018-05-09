@@ -1,5 +1,5 @@
 :local(.colorLabel) {
-    vertical-align: baseline;
+    vertical-align: middle;
 }
 
 :local(.normal) {
