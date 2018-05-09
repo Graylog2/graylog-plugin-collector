@@ -15,10 +15,9 @@ import ColorLabel from '../common/ColorLabel';
 import CollectorsActions from '../configurations/CollectorsActions';
 import CollectorsStore from '../configurations/CollectorsStore';
 import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
-import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
 
 const AltConfigurationForm = React.createClass({
-  mixins: [Reflux.connect(CollectorsStore), Reflux.connect(CollectorConfigurationsStore)],
+  mixins: [Reflux.connect(CollectorsStore)],
   propTypes: {
     action: PropTypes.oneOf(['create', 'edit']),
     configuration: PropTypes.object,
@@ -52,19 +51,10 @@ const AltConfigurationForm = React.createClass({
 
   componentDidMount() {
     CollectorsActions.list();
-    CollectorConfigurationsActions.list({ pageSize: 0 });
   },
 
   hasErrors() {
     return this.state.error || this.state.parseErrors.length !== 0;
-  },
-
-  _validConfigurationName(name) {
-    // Check if configurations already contain a configuration with the given name.
-    const currentConfiguration = this.props.configuration;
-    return !this.state.configurations
-      .filter(config => config.id !== currentConfiguration.id)
-      .some(configuration => configuration.name === name);
   },
 
   _save() {
@@ -89,11 +79,9 @@ const AltConfigurationForm = React.createClass({
   _onNameChange(event) {
     const nextName = event.target.value;
     this._formDataUpdate('name')(nextName);
-    if (this._validConfigurationName(nextName)) {
-      this.setState({ error: false, error_message: '' });
-    } else {
-      this.setState({ error: true, error_message: 'Configuration with that name already exists!' });
-    }
+    CollectorConfigurationsActions.validateConfiguration(nextName).then(validation => (
+      this.setState({ error: validation.error, error_message: validation.error_message })
+    ));
   },
 
   _onCollectorChange(nextId) {
