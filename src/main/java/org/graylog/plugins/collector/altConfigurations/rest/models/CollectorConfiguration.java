@@ -10,30 +10,36 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class CollectorConfiguration {
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_BACKEND_ID = "backend_id";
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_COLOR = "color";
+    public static final String FIELD_TEMPLATE = "template";
+
     @Id
     @ObjectId
     @Nullable
-    @JsonProperty("id")
+    @JsonProperty(FIELD_ID)
     public abstract String id();
 
-    @JsonProperty("backend_id")
+    @JsonProperty(FIELD_BACKEND_ID)
     public abstract String backendId();
 
-    @JsonProperty("name")
+    @JsonProperty(FIELD_NAME)
     public abstract String name();
 
-    @JsonProperty("color")
+    @JsonProperty(FIELD_COLOR)
     public abstract String color();
 
-    @JsonProperty("template")
+    @JsonProperty(FIELD_TEMPLATE)
     public abstract String template();
 
     @JsonCreator
-    public static CollectorConfiguration create(@JsonProperty("id") String id,
-                                                @JsonProperty("backend_id") String backendId,
-                                                @JsonProperty("name") String name,
-                                                @JsonProperty("color") String color,
-                                                @JsonProperty("template") String template) {
+    public static CollectorConfiguration create(@JsonProperty(FIELD_ID) String id,
+                                                @JsonProperty(FIELD_BACKEND_ID) String backendId,
+                                                @JsonProperty(FIELD_NAME) String name,
+                                                @JsonProperty(FIELD_COLOR) String color,
+                                                @JsonProperty(FIELD_TEMPLATE) String template) {
         return new AutoValue_CollectorConfiguration(id, backendId, name, color, template);
     }
 

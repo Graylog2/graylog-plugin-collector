@@ -19,6 +19,7 @@ package org.graylog.plugins.collector.altConfigurations.rest.responses;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConfiguration;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
@@ -44,6 +45,10 @@ public abstract class CollectorConfigurationSummary {
                                                        @JsonProperty("backend_id") String backendId,
                                                        @JsonProperty("color") String color) {
         return new AutoValue_CollectorConfigurationSummary(id, name, backendId, color);
+    }
+
+    public static CollectorConfigurationSummary create(CollectorConfiguration configuration) {
+        return create(configuration.id(), configuration.name(), configuration.backendId(), configuration.color());
     }
 
 }

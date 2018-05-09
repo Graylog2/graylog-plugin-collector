@@ -14,7 +14,10 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorConf
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.PaginatedDbService;
+import org.graylog2.database.PaginatedList;
+import org.graylog2.search.SearchQuery;
 import org.mongojack.DBQuery;
+import org.mongojack.DBSort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +61,12 @@ public class AltConfigurationService extends PaginatedDbService<CollectorConfigu
         try (final Stream<CollectorConfiguration> collectorConfigurationStream = streamAll()) {
             return collectorConfigurationStream.collect(Collectors.toList());
         }
+    }
+
+    public PaginatedList<CollectorConfiguration> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
+        final DBQuery.Query dbQuery = searchQuery.toDBQuery();
+        final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
+        return findPaginatedWithQueryAndSort(dbQuery, sortBuilder, page, perPage);
     }
 
     @Override

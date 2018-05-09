@@ -1,5 +1,6 @@
 package org.graylog.plugins.collector.altConfigurations.rest.resources;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.Hashing;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +19,11 @@ import org.graylog.plugins.collector.altConfigurations.rest.responses.Configurat
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
+import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
+import org.graylog2.search.SearchQuery;
+import org.graylog2.search.SearchQueryField;
+import org.graylog2.search.SearchQueryParser;
 import org.graylog2.shared.rest.resources.RestResource;
 
 import javax.inject.Inject;
@@ -26,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -33,6 +39,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
@@ -50,6 +57,12 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     private final AltConfigurationService configurationService;
     private final AltCollectorService collectorService;
     private final ConfigurationEtagService etagService;
+    private final SearchQueryParser searchQueryParser;
+    private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
+            .put("id", SearchQueryField.create(CollectorConfiguration.FIELD_ID))
+            .put("backend_id", SearchQueryField.create(CollectorConfiguration.FIELD_BACKEND_ID))
+            .put("name", SearchQueryField.create(CollectorConfiguration.FIELD_NAME))
+            .build();
 
     @Inject
     public AltConfigurationResource(AltConfigurationService configurationService,
@@ -58,6 +71,7 @@ public class AltConfigurationResource extends RestResource implements PluginRest
         this.configurationService = configurationService;
         this.collectorService = collectorService;
         this.etagService = etagService;
+        this.searchQueryParser = new SearchQueryParser(CollectorConfiguration.FIELD_NAME, SEARCH_FIELD_MAPPING);;
     }
 
     @GET
@@ -66,12 +80,23 @@ public class AltConfigurationResource extends RestResource implements PluginRest
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
-    public CollectorConfigurationListResponse listConfigurations() {
-        final List<CollectorConfigurationSummary> result = this.configurationService.all().stream()
-                .map(this::getCollectorConfigurationSummary)
+    public CollectorConfigurationListResponse listConfigurations(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
+                                                                 @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
+                                                                 @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
+                                                                 @ApiParam(name = "sort",
+                                                                         value = "The field to sort the result on",
+                                                                         required = true,
+                                                                         allowableValues = "name,id,backend_id")
+                                                                     @DefaultValue(CollectorConfiguration.FIELD_NAME) @QueryParam("sort") String sort,
+                                                                 @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
+                                                                     @DefaultValue("desc") @QueryParam("order") String order) {
+        final SearchQuery searchQuery = searchQueryParser.parse(query);
+        final PaginatedList<CollectorConfiguration> configurations = this.configurationService.findPaginated(searchQuery, page, perPage, sort, order);
+        final List<CollectorConfigurationSummary> result = configurations.stream()
+                .map(CollectorConfigurationSummary::create)
                 .collect(Collectors.toList());
 
-        return CollectorConfigurationListResponse.create(result.size(), result);
+        return CollectorConfigurationListResponse.create(query, configurations.pagination(), sort, order, result);
     }
 
     @GET
@@ -210,11 +235,6 @@ public class AltConfigurationResource extends RestResource implements PluginRest
         }
         etagService.invalidateAll();
         return Response.accepted().build();
-    }
-
-    private CollectorConfigurationSummary getCollectorConfigurationSummary(CollectorConfiguration collectorConfiguration) {
-        return CollectorConfigurationSummary.create(collectorConfiguration.id(),
-                collectorConfiguration.name(), collectorConfiguration.backendId(), collectorConfiguration.color());
     }
 
     private String configurationToEtag(CollectorConfiguration collectorConfiguration) {
