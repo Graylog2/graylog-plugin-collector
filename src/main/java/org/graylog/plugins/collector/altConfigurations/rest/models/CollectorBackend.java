@@ -16,35 +16,45 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 @AutoValue
 @JsonAutoDetect
 public abstract class CollectorBackend {
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_SERVICE_TYPE = "service_type";
+    public static final String FIELD_NODE_OPERATING_SYSTEM = "node_operating_system";
+    public static final String FIELD_EXECUTABLE_PATH = "executable_path";
+    public static final String FIELD_CONFIGURATION_PATH = "configuration_path";
+    public static final String FIELD_EXECUTE_PARAMETERS = "execute_parameters";
+    public static final String FIELD_VALIDATION_PARAMETERS = "validation_parameters";
+    public static final String FIELD_DEFAULT_TEMPLATE = "default_template";
+
     @Id
     @ObjectId
     @Nullable
-    @JsonProperty("id")
+    @JsonProperty(FIELD_ID)
     public abstract String id();
 
-    @JsonProperty("name")
+    @JsonProperty(FIELD_NAME)
     public abstract String name();
 
     // exec, svc, systemd, ...
-    @JsonProperty("service_type")
+    @JsonProperty(FIELD_SERVICE_TYPE)
     public abstract String serviceType();
 
-    @JsonProperty("node_operating_system")
+    @JsonProperty(FIELD_NODE_OPERATING_SYSTEM)
     public abstract String nodeOperatingSystem();
 
-    @JsonProperty("executable_path")
+    @JsonProperty(FIELD_EXECUTABLE_PATH)
     public abstract String executablePath();
 
-    @JsonProperty("configuration_path")
+    @JsonProperty(FIELD_CONFIGURATION_PATH)
     public abstract String configurationPath();
 
-    @JsonProperty("execute_parameters")
+    @JsonProperty(FIELD_EXECUTE_PARAMETERS)
     public abstract List<String> executeParameters();
 
-    @JsonProperty("validation_parameters")
+    @JsonProperty(FIELD_VALIDATION_PARAMETERS)
     public abstract List<String> validationCommand();
 
-    @JsonProperty("default_template")
+    @JsonProperty(FIELD_DEFAULT_TEMPLATE)
     public abstract String defaultTemplate();
 
     public static Builder builder() {
@@ -68,15 +78,15 @@ public abstract class CollectorBackend {
     }
 
     @JsonCreator
-    public static CollectorBackend create(@JsonProperty("id") @Nullable String id,
-                                          @JsonProperty("name") String name,
-                                          @JsonProperty("service_type") String serviceType,
-                                          @JsonProperty("node_operating_system") String nodeOperatingSystem,
-                                          @JsonProperty("executable_path") String executablePath,
-                                          @JsonProperty("configuration_path") String configurationPath,
-                                          @JsonProperty("execute_parameters") @Nullable List<String> executeParameters,
-                                          @JsonProperty("validation_parameters") @Nullable List<String> validationCommand,
-                                          @JsonProperty("default_template") String defaultTemplate) {
+    public static CollectorBackend create(@JsonProperty(FIELD_ID) @Nullable String id,
+                                          @JsonProperty(FIELD_NAME) String name,
+                                          @JsonProperty(FIELD_SERVICE_TYPE) String serviceType,
+                                          @JsonProperty(FIELD_NODE_OPERATING_SYSTEM) String nodeOperatingSystem,
+                                          @JsonProperty(FIELD_EXECUTABLE_PATH) String executablePath,
+                                          @JsonProperty(FIELD_CONFIGURATION_PATH) String configurationPath,
+                                          @JsonProperty(FIELD_EXECUTE_PARAMETERS) @Nullable List<String> executeParameters,
+                                          @JsonProperty(FIELD_VALIDATION_PARAMETERS) @Nullable List<String> validationCommand,
+                                          @JsonProperty(FIELD_DEFAULT_TEMPLATE) String defaultTemplate) {
         return builder()
                 .id(id)
                 .name(name)

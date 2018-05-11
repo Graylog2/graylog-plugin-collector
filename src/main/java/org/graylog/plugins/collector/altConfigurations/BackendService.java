@@ -4,7 +4,10 @@ import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBack
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.PaginatedDbService;
+import org.graylog2.database.PaginatedList;
+import org.graylog2.search.SearchQuery;
 import org.mongojack.DBQuery;
+import org.mongojack.DBSort;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,6 +43,12 @@ public class BackendService extends PaginatedDbService<CollectorBackend> {
 
     public List<CollectorBackend> all() {
         return allFilter(null);
+    }
+
+    public PaginatedList<CollectorBackend> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
+        final DBQuery.Query dbQuery = searchQuery.toDBQuery();
+        final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
+        return findPaginatedWithQueryAndSort(dbQuery, sortBuilder, page, perPage);
     }
 
     public CollectorBackend fromRequest(CollectorBackend request) {

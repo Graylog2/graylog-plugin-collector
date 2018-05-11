@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorBackend;
 
 @AutoValue
 @JsonAutoDetect
@@ -28,4 +29,11 @@ public abstract class CollectorBackendSummary {
         return new AutoValue_CollectorBackendSummary(id, name, serviceType, nodeOperatingSystem);
     }
 
+    public static CollectorBackendSummary create(CollectorBackend backend) {
+        return create(
+                backend.id(),
+                backend.name(),
+                backend.serviceType(),
+                backend.nodeOperatingSystem());
+    }
 }
