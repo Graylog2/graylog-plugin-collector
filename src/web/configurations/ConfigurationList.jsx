@@ -64,7 +64,7 @@ const ConfigurationList = React.createClass({
           </Col>
         </Row>
 
-        <Row>
+        <Row className={`row-sm ${style.configurationRow}`}>
           <Col md={12}>
             <SearchForm query={query}
                         onSearch={onQueryChange}
@@ -87,6 +87,7 @@ const ConfigurationList = React.createClass({
                            headers={headers}
                            headerCellFormatter={this._headerCellFormatter}
                            rows={configurations}
+                           rowClassName="row-sm"
                            dataRowFormatter={this._collectorConfigurationFormatter}
                            noDataText="There are no configurations to display, try creating one or changing your query."
                            filterLabel=""
