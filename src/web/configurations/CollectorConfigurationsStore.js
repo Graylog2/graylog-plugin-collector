@@ -10,6 +10,9 @@ import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 const CollectorConfigurationsStore = Reflux.createStore({
   listenables: [CollectorConfigurationsActions],
   sourceUrl: '/plugins/org.graylog.plugins.collector/altconfiguration',
+  query: undefined,
+  page: undefined,
+  pageSize: undefined,
 
   list({ query = '', page = 1, pageSize = 10 }) {
     const baseUrl = `${this.sourceUrl}/configurations`;
@@ -24,11 +27,15 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch('GET', URLUtils.qualifyUrl(uri))
       .then(
         (response) => {
+          this.query = response.query;
+          this.page = response.page;
+          this.pageSize = response.per_page;
+
           this.trigger({
             configurations: response.configurations,
-            query: response.query,
-            page: response.page,
-            pageSize: response.per_page,
+            query: this.query,
+            page: this.page,
+            pageSize: this.pageSize,
             total: response.total,
           });
           return response.configurations;
@@ -38,6 +45,10 @@ const CollectorConfigurationsStore = Reflux.createStore({
             'Could not retrieve configurations');
         });
     CollectorConfigurationsActions.list.promise(promise);
+  },
+
+  refreshList() {
+    this.list({ query: this.query, page: this.page, pageSize: this.pageSize });
   },
 
   getConfiguration(configurationId) {
@@ -77,7 +88,6 @@ const CollectorConfigurationsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success('Configuration successfully created');
-        this.list();
         return response;
       }, (error) => {
         UserNotification.error(`Creating configuration failed with status: ${error.message}`,
@@ -94,7 +104,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success('Configuration successfully updated');
-        this.list();
+        this.refreshList();
         return response;
       }, (error) => {
         UserNotification.error(`Updating configuration failed with status: ${error.message}`,
@@ -124,7 +134,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch(method, url, requestSnippet);
     promise
       .then(() => {
-        var action = snippet.id === '' ? 'created' : 'updated';
+        const action = snippet.id === '' ? 'created' : 'updated';
         UserNotification.success(`Configuration snippet "${snippet.name}" successfully ${action}`);
       }, (error) => {
         UserNotification.error(`Saving snippet "${snippet.name}" failed with status: ${error.message}`,
@@ -142,7 +152,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success(`Configuration "${configurationId}" successfully copied`);
-        this.list();
+        this.refreshList();
         return response;
       }, (error) => {
         UserNotification.error(`Saving configuration "${name}" failed with status: ${error.message}`,
@@ -158,7 +168,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success(`Configuration "${configuration.name}" successfully deleted`);
-        this.list();
+        this.refreshList();
         return response;
       }, (error) => {
         UserNotification.error(`Deleting Output "${configuration.name}" failed with status: ${error.message}`,
