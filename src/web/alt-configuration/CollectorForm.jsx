@@ -223,7 +223,9 @@ const CollectorForm = React.createClass({
                   <Button type="submit" bsStyle="primary" disabled={this.hasErrors()}>
                     {this.props.action === 'create' ? 'Create' : 'Update'}
                   </Button>
-                  <Button type="button" onClick={this._onCancel}>Cancel</Button>
+                  <Button type="button" onClick={this._onCancel}>
+                    {this.props.action === 'create' ? 'Cancel' : 'Back'}
+                  </Button>
                 </ButtonToolbar>
               </FormGroup>
             </Col>

@@ -4,7 +4,6 @@ import fetch from 'logic/rest/FetchProvider';
 import UserNotification from 'util/UserNotification';
 
 import CollectorsActions from './CollectorsActions';
-import CollectorConfigurationsActions from "./CollectorConfigurationsActions";
 
 const CollectorsStore = Reflux.createStore({
   listenables: [CollectorsActions],
@@ -57,7 +56,7 @@ const CollectorsStore = Reflux.createStore({
           UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
-    CollectorsActions.list.promise(promise);
+    CollectorsActions.create.promise(promise);
   },
 
   update(collector) {
@@ -74,7 +73,7 @@ const CollectorsStore = Reflux.createStore({
           UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
-    CollectorsActions.list.promise(promise);
+    CollectorsActions.update.promise(promise);
   },
 
   delete(collector) {
