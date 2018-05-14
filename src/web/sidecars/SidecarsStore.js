@@ -10,7 +10,6 @@ const SidecarsStore = Reflux.createStore({
   listenables: [SidecarsActions],
   sourceUrl: '/plugins/org.graylog.plugins.collector/collectors',
   sidecars: undefined,
-  filters: undefined,
   onlyActive: undefined,
   pagination: {
     count: undefined,
@@ -31,11 +30,10 @@ const SidecarsStore = Reflux.createStore({
   propagateChanges() {
     this.trigger({
       sidecars: this.sidecars,
-      filters: this.filters,
       query: this.query,
       onlyActive: this.onlyActive,
-      sort: this.sort,
       pagination: this.pagination,
+      sort: this.sort,
     });
   },
 
@@ -78,39 +76,6 @@ const SidecarsStore = Reflux.createStore({
       });
 
     SidecarsActions.listPaginated.promise(promise);
-  },
-
-  listAdministration({ query = '', page = 1, pageSize = 50, filters }) {
-    const body = {
-      query: query,
-      page: page,
-      per_page: pageSize,
-      filters: filters,
-    };
-
-    const promise = fetchPeriodically('POST', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/administration'), body);
-
-    promise.then(
-      (response) => {
-        this.sidecars = response.collectors;
-        this.query = response.query;
-        this.filters = response.filters;
-        this.pagination = {
-          total: response.total,
-          count: response.count,
-          page: response.page,
-          pageSize: response.per_page,
-        };
-        this.propagateChanges();
-
-        return response;
-      },
-      (error) => {
-        UserNotification.error(`Fetching Sidecars failed with status: ${error}`,
-          'Could not retrieve Sidecars');
-      });
-
-    SidecarsActions.listAdministration.promise(promise);
   },
 
   getSidecar(sidecarId) {

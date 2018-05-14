@@ -9,13 +9,13 @@ import CollectorsAdministration from './CollectorsAdministration';
 
 import CollectorsActions from '../configurations/CollectorsActions';
 import CollectorsStore from '../configurations/CollectorsStore';
-import SidecarsActions from '../sidecars/SidecarsActions';
-import SidecarsStore from '../sidecars/SidecarsStore';
+import AdministrationActions from './AdministrationActions';
+import AdministrationStore from './AdministrationStore';
 import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
 import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
 
 const CollectorsAdministrationContainer = createReactClass({
-  mixins: [Reflux.connect(CollectorsStore, 'collectors'), Reflux.connect(SidecarsStore, 'sidecars'), Reflux.connect(CollectorConfigurationsStore, 'configurations')],
+  mixins: [Reflux.connect(CollectorsStore, 'collectors'), Reflux.connect(AdministrationStore, 'sidecars'), Reflux.connect(CollectorConfigurationsStore, 'configurations')],
 
   componentDidMount() {
     this.loadData();
@@ -23,26 +23,26 @@ const CollectorsAdministrationContainer = createReactClass({
 
   loadData() {
     CollectorsActions.all();
-    SidecarsActions.listAdministration({});
+    AdministrationActions.list({});
     CollectorConfigurationsActions.all();
   },
 
   handlePageChange(page, pageSize) {
     const { filters, pagination, query } = this.state.sidecars;
     const effectivePage = pagination.pageSize !== pageSize ? 1 : page;
-    SidecarsActions.listAdministration({ query: query, filters: filters, page: effectivePage, pageSize: pageSize });
+    AdministrationActions.list({ query: query, filters: filters, page: effectivePage, pageSize: pageSize });
   },
 
   handleFilter(property, value) {
     const { filters, pagination, query } = this.state.sidecars;
     const newFilters = lodash.cloneDeep(filters);
     newFilters[property] = value;
-    SidecarsActions.listAdministration({ query: query, filters: newFilters, pageSize: pagination.pageSize });
+    AdministrationActions.list({ query: query, filters: newFilters, pageSize: pagination.pageSize });
   },
 
   handleQueryChange(query = '', callback = () => {}) {
     const { filters, pagination } = this.state.sidecars;
-    SidecarsActions.listAdministration({ query: query, filters: filters, pageSize: pagination.pageSize }).finally(callback);
+    AdministrationActions.list({ query: query, filters: filters, pageSize: pagination.pageSize }).finally(callback);
   },
 
   render() {
