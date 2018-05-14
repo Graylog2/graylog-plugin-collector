@@ -33,7 +33,7 @@ const ConfigurationListContainer = createReactClass({
   },
 
   handleQueryChange(query = '', callback = () => {}) {
-    const pageSize = this.state.configurations.pageSize;
+    const pageSize = this.state.configurations.pagination.pageSize;
     CollectorConfigurationsActions.list({ query: query, pageSize: pageSize }).finally(callback);
   },
 
@@ -50,7 +50,7 @@ const ConfigurationListContainer = createReactClass({
 
   render() {
     const { collectors, configurations } = this.state;
-    const isLoading = !collectors || !collectors.collectors || !configurations || !configurations.configurations;
+    const isLoading = !collectors || !collectors.collectors || !configurations || !configurations.paginatedConfigurations;
 
     if (isLoading) {
       return <Spinner />;
@@ -59,8 +59,8 @@ const ConfigurationListContainer = createReactClass({
     return (
       <ConfigurationList collectors={collectors.collectors}
                          query={configurations.query}
-                         pagination={{ page: configurations.page, pageSize: configurations.pageSize, total: configurations.total }}
-                         configurations={configurations.configurations}
+                         pagination={configurations.pagination}
+                         configurations={configurations.paginatedConfigurations}
                          onPageChange={this.handlePageChange}
                          onQueryChange={this.handleQueryChange}
                          onClone={this.handleClone}

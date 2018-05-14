@@ -51,7 +51,7 @@ const CollectorForm = React.createClass({
 
   componentDidMount() {
     CollectorsActions.all();
-    CollectorConfigurationsActions.list({ pageSize: 0 });
+    CollectorConfigurationsActions.all();
   },
 
   hasErrors() {

@@ -24,7 +24,7 @@ const CollectorsAdministrationContainer = createReactClass({
   loadData() {
     CollectorsActions.all();
     SidecarsActions.listAdministration({});
-    CollectorConfigurationsActions.list({ pageSize: 0 });
+    CollectorConfigurationsActions.all();
   },
 
   handlePageChange(page, pageSize) {

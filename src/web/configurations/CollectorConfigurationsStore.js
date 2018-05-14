@@ -10,11 +10,25 @@ import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 const CollectorConfigurationsStore = Reflux.createStore({
   listenables: [CollectorConfigurationsActions],
   sourceUrl: '/plugins/org.graylog.plugins.collector/altconfiguration',
+  configurations: undefined,
+  pagination: {
+    page: undefined,
+    pageSize: undefined,
+    total: undefined,
+  },
+  paginatedConfigurations: undefined,
   query: undefined,
-  page: undefined,
-  pageSize: undefined,
 
-  list({ query = '', page = 1, pageSize = 10 }) {
+  propagateChanges() {
+    this.trigger({
+      configurations: this.configurations,
+      query: this.query,
+      pagination: this.pagination,
+      paginatedConfigurations: this.paginatedConfigurations,
+    });
+  },
+
+  _fetchConfigurations({ query, page, pageSize }) {
     const baseUrl = `${this.sourceUrl}/configurations`;
     const search = {
       query: query,
@@ -24,26 +38,46 @@ const CollectorConfigurationsStore = Reflux.createStore({
 
     const uri = URI(baseUrl).search(search).toString();
 
-    const promise = fetch('GET', URLUtils.qualifyUrl(uri))
+    return fetch('GET', URLUtils.qualifyUrl(uri));
+  },
+
+  all() {
+    const promise = this._fetchConfigurations({ pageSize: 0 })
       .then(
         (response) => {
-          this.query = response.query;
-          this.page = response.page;
-          this.pageSize = response.per_page;
+          this.configurations = response.configurations;
+          this.propagateChanges();
 
-          this.trigger({
-            configurations: response.configurations,
-            query: this.query,
-            page: this.page,
-            pageSize: this.pageSize,
-            total: response.total,
-          });
           return response.configurations;
         },
         (error) => {
           UserNotification.error(`Fetching collector configurations failed with status: ${error}`,
             'Could not retrieve configurations');
         });
+
+    CollectorConfigurationsActions.all.promise(promise);
+  },
+
+  list({ query = '', page = 1, pageSize = 10 }) {
+    const promise = this._fetchConfigurations({ query: query, page: page, pageSize: pageSize })
+      .then(
+        (response) => {
+          this.query = response.query;
+          this.pagination = {
+            page: response.page,
+            pageSize: response.per_page,
+            total: response.total,
+          };
+          this.paginatedConfigurations = response.configurations;
+          this.propagateChanges();
+
+          return response.configurations;
+        },
+        (error) => {
+          UserNotification.error(`Fetching collector configurations failed with status: ${error}`,
+            'Could not retrieve configurations');
+        });
+
     CollectorConfigurationsActions.list.promise(promise);
   },
 

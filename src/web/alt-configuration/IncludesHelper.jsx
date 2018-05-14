@@ -19,7 +19,7 @@ const IncludesHelper = React.createClass({
   },
 
   _reloadConfiguration() {
-    CollectorConfigurationsActions.list({ pageSize: 0 })
+    CollectorConfigurationsActions.all()
       .then((configurations) => {
         this.setState({ configurations: configurations });
       });
