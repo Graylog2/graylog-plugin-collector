@@ -31,7 +31,13 @@ const CollectorListContainer = createReactClass({
   },
 
   handlePageChange(page, pageSize) {
-    CollectorsActions.list({ page: page, pageSize: pageSize });
+    const query = this.state.collectors.query;
+    CollectorsActions.list({ query: query, page: page, pageSize: pageSize });
+  },
+
+  handleQueryChange(query = '', callback = () => {}) {
+    const pageSize = this.state.collectors.pagination.pageSize;
+    CollectorsActions.list({ query: query, pageSize: pageSize }).finally(callback);
   },
 
   _validCollectorName(name) {
@@ -48,7 +54,9 @@ const CollectorListContainer = createReactClass({
     return (
       <CollectorList collectors={collectors.paginatedCollectors}
                      pagination={collectors.pagination}
+                     query={collectors.query}
                      onPageChange={this.handlePageChange}
+                     onQueryChange={this.handleQueryChange}
                      onClone={this.handleClone}
                      onDelete={this.handleDelete}
                      validateCollector={this._validCollectorName} />

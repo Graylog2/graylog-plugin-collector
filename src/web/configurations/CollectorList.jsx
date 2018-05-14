@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DataTable, PaginatedList } from 'components/common';
+import { DataTable, PaginatedList, SearchForm } from 'components/common';
 import Routes from 'routing/Routes';
 import CollectorRow from './CollectorRow';
 
@@ -14,9 +14,11 @@ const CollectorList = createReactClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
     pagination: PropTypes.object.isRequired,
+    query: PropTypes.string.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onPageChange: PropTypes.func.isRequired,
+    onQueryChange: PropTypes.func.isRequired,
     validateCollector: PropTypes.func.isRequired,
   },
 
@@ -34,7 +36,7 @@ const CollectorList = createReactClass({
   },
 
   render() {
-    const { collectors, pagination, onPageChange } = this.props;
+    const { collectors, pagination, query, onPageChange, onQueryChange } = this.props;
 
     const headers = ['Name', 'Operating System', 'Actions'];
 
@@ -54,14 +56,24 @@ const CollectorList = createReactClass({
           </Col>
         </Row>
 
-        <Row className={`row-sm ${style.configurationRow}`}>
+        <Row className={`row-sm ${style.collectorRow}`}>
           <Col md={12}>
+            <SearchForm query={query}
+                        onSearch={onQueryChange}
+                        onReset={onQueryChange}
+                        searchButtonLabel="Find"
+                        placeholder="Find collectors"
+                        wrapperClass={style.inline}
+                        queryWidth={300}
+                        topMargin={0}
+                        useLoadingState />
+
             <PaginatedList activePage={pagination.page}
                            pageSize={pagination.pageSize}
-                           pageSizes={[1, 10, 25]}
+                           pageSizes={[10, 25]}
                            totalItems={pagination.total}
                            onChange={onPageChange}>
-              <div className={style.configurationTable}>
+              <div className={style.collectorTable}>
                 <DataTable id="collector-list"
                            className="table-hover"
                            headers={headers}
