@@ -29,15 +29,16 @@ const SidecarList = React.createClass({
 
   _reloadSidecars({ query, page, pageSize, onlyActive, sortField, order }) {
     const effectiveQuery = query === undefined ? this.state.query : query;
-    const effectiveSortField = sortField || this.state.sortField;
-    const effectiveOrder = order || this.state.order;
 
     const options = {
       query: effectiveQuery,
       onlyActive: 'true',
-      sortField: effectiveSortField,
-      order: effectiveOrder,
     };
+
+    if (this.state.sort) {
+      options.sortField = sortField || this.state.sort.field;
+      options.order = order || this.state.sort.order;
+    }
 
     if (this.state.pagination) {
       options.pageSize = pageSize || this.state.pagination.pageSize;
@@ -56,7 +57,7 @@ const SidecarList = React.createClass({
   },
 
   _getTableHeaderClassName(field) {
-    return (this.state.sortField === field ? `sort-${this.state.order}` : 'sortable');
+    return (this.state.sort.field === field ? `sort-${this.state.sort.order}` : 'sortable');
   },
   _formatSidecarList(sidecars) {
     return (
@@ -101,7 +102,7 @@ const SidecarList = React.createClass({
     return () => {
       this._reloadSidecars({
         sortField: field,
-        order: (this.state.sortField === field ? (this.state.order === 'asc' ? 'desc' : 'asc') : 'asc'),
+        order: (this.state.sort.field === field ? (this.state.sort.order === 'asc' ? 'desc' : 'asc') : 'asc'),
       });
     };
   },

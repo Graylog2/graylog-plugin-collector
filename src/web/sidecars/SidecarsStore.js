@@ -10,26 +10,33 @@ const SidecarsStore = Reflux.createStore({
   listenables: [SidecarsActions],
   sourceUrl: '/plugins/org.graylog.plugins.collector/collectors',
   sidecars: undefined,
-
-  init() {
-    this.trigger({ sidecars: this.sidecars });
+  filters: undefined,
+  onlyActive: undefined,
+  pagination: {
+    count: undefined,
+    page: undefined,
+    pageSize: undefined,
+    total: undefined,
+  },
+  query: undefined,
+  sort: {
+    field: undefined,
+    order: undefined,
   },
 
-  list() {
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/all'));
-    promise
-      .then(
-        response => {
-          this.sidecars = response.collectors;
-          this.trigger({ sidecars: this.sidecars });
+  init() {
+    this.propagateChanges();
+  },
 
-          return this.sidecars;
-        },
-        error => {
-          UserNotification.error(`Fetching Sidecars failed with status: ${error}`,
-            'Could not retrieve Sidecars');
-        });
-    SidecarsActions.list.promise(promise);
+  propagateChanges() {
+    this.trigger({
+      sidecars: this.sidecars,
+      filters: this.filters,
+      query: this.query,
+      onlyActive: this.onlyActive,
+      sort: this.sort,
+      pagination: this.pagination,
+    });
   },
 
   listPaginated({ query = '', page = 1, pageSize = 50, onlyActive = false, sortField = 'node_name', order = 'asc' }) {
@@ -48,19 +55,20 @@ const SidecarsStore = Reflux.createStore({
 
     promise.then(
       (response) => {
-        this.trigger({
-          sidecars: response.collectors,
-          query: response.query,
-          onlyActive: response.only_active,
-          sortField: response.sort,
+        this.sidecars = response.collectors;
+        this.query = response.query;
+        this.onlyActive = response.only_active;
+        this.pagination = {
+          total: response.total,
+          count: response.count,
+          page: response.page,
+          pageSize: response.per_page,
+        };
+        this.sort = {
+          field: response.sort,
           order: response.order,
-          pagination: {
-            total: response.total,
-            count: response.count,
-            page: response.page,
-            pageSize: response.per_page,
-          },
-        });
+        };
+        this.propagateChanges();
 
         return response;
       },
@@ -84,17 +92,16 @@ const SidecarsStore = Reflux.createStore({
 
     promise.then(
       (response) => {
-        this.trigger({
-          sidecars: response.collectors,
-          query: response.query,
-          filters: response.filters,
-          pagination: {
-            total: response.total,
-            count: response.count,
-            page: response.page,
-            pageSize: response.per_page,
-          },
-        });
+        this.sidecars = response.collectors;
+        this.query = response.query;
+        this.filters = response.filters;
+        this.pagination = {
+          total: response.total,
+          count: response.count,
+          page: response.page,
+          pageSize: response.per_page,
+        };
+        this.propagateChanges();
 
         return response;
       },
