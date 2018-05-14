@@ -50,7 +50,7 @@ const CollectorForm = React.createClass({
   },
 
   componentDidMount() {
-    CollectorsActions.list();
+    CollectorsActions.all();
     CollectorConfigurationsActions.list({ pageSize: 0 });
   },
 

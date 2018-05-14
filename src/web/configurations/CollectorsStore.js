@@ -1,4 +1,6 @@
 import Reflux from 'reflux';
+import URI from 'urijs';
+
 import URLUtils from 'util/URLUtils';
 import fetch from 'logic/rest/FetchProvider';
 import UserNotification from 'util/UserNotification';
@@ -8,11 +10,27 @@ import CollectorsActions from './CollectorsActions';
 const CollectorsStore = Reflux.createStore({
   listenables: [CollectorsActions],
   collectors: undefined,
+  query: undefined,
+  pagination: {
+    page: undefined,
+    pageSize: undefined,
+    total: undefined,
+  },
+  paginatedCollectors: undefined,
 
   getInitialState() {
     return {
       collectors: this.collectors,
     };
+  },
+
+  propagateChanges() {
+    this.trigger({
+      collectors: this.collectors,
+      paginatedCollectors: this.paginatedCollectors,
+      query: this.query,
+      pagination: this.pagination,
+    });
   },
 
   getCollector(collectorId) {
@@ -26,19 +44,54 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.getCollector.promise(promise);
   },
 
-  list() {
-    const promise = fetch('GET', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'))
+  _fetchCollectors({ query, page, pageSize }) {
+    const search = {
+      query: query,
+      page: page,
+      per_page: pageSize,
+    };
+
+    const uri = URI('/plugins/org.graylog.plugins.collector/altconfiguration/backends/summary').search(search).toString();
+
+    return fetch('GET', URLUtils.qualifyUrl(uri));
+  },
+
+  all() {
+    const promise = this._fetchCollectors({ pageSize: 0 })
       .then(
         (response) => {
           this.collectors = response.backends;
-          this.trigger({ collectors: this.collectors });
-
-          return this.collectors;
+          this.propagateChanges();
+          return response.backends;
         },
         (error) => {
           UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
+
+    CollectorsActions.all.promise(promise);
+  },
+
+  list({ query = '', page = 1, pageSize = 10 }) {
+    const promise = this._fetchCollectors({ query: query, page: page, pageSize: pageSize })
+      .then(
+        (response) => {
+          this.query = response.query;
+          this.pagination = {
+            page: response.page,
+            pageSize: response.per_page,
+            total: response.total,
+          };
+          this.paginatedCollectors = response.backends;
+
+          this.propagateChanges();
+          return response.backends;
+        },
+        (error) => {
+          UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
+            'Could not retrieve collectors');
+        });
+
     CollectorsActions.list.promise(promise);
   },
 
@@ -48,7 +101,7 @@ const CollectorsStore = Reflux.createStore({
         (response) => {
           UserNotification.success('Collector successfully created');
           this.collectors = response.backends;
-          this.trigger({ collectors: this.collectors });
+          this.propagateChanges();
 
           return this.collectors;
         },
@@ -65,7 +118,7 @@ const CollectorsStore = Reflux.createStore({
         (response) => {
           UserNotification.success('Collector successfully updated');
           this.collectors = response.backends;
-          this.trigger({ collectors: this.collectors });
+          this.propagateChanges();
 
           return this.collectors;
         },
@@ -82,7 +135,6 @@ const CollectorsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success(`Collector "${collector.name}" successfully deleted`);
-        this.list();
         return response;
       }, (error) => {
         UserNotification.error(`Deleting Collector "${collector.name}" failed with status: ${error.message}`,
@@ -100,7 +152,6 @@ const CollectorsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success(`Collector "${collectorId}" successfully copied`);
-        this.list();
         return response;
       }, (error) => {
         UserNotification.error(`Saving collector "${name}" failed with status: ${error.message}`,

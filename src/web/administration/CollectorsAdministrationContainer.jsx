@@ -22,7 +22,7 @@ const CollectorsAdministrationContainer = createReactClass({
   },
 
   loadData() {
-    CollectorsActions.list();
+    CollectorsActions.all();
     SidecarsActions.listAdministration({});
     CollectorConfigurationsActions.list({ pageSize: 0 });
   },

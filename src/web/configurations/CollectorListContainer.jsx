@@ -9,14 +9,14 @@ import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 
 const CollectorListContainer = createReactClass({
-  mixins: [Reflux.connect(CollectorsStore)],
+  mixins: [Reflux.connect(CollectorsStore, 'collectors')],
 
   componentDidMount() {
     this.loadCollectors();
   },
 
   loadCollectors() {
-    CollectorsActions.list();
+    CollectorsActions.list({});
   },
 
   handleClone(collector, name, callback) {
@@ -30,18 +30,25 @@ const CollectorListContainer = createReactClass({
     CollectorsActions.delete(collector);
   },
 
+  handlePageChange(page, pageSize) {
+    CollectorsActions.list({ page: page, pageSize: pageSize });
+  },
+
   _validCollectorName(name) {
+    // TODO: handle this in backend
     return !this.state.collectors.some((collector) => collector.name === name);
   },
 
   render() {
     const { collectors } = this.state;
-    if (!collectors) {
+    if (!collectors || !collectors.paginatedCollectors) {
       return <Spinner />;
     }
 
     return (
-      <CollectorList collectors={collectors}
+      <CollectorList collectors={collectors.paginatedCollectors}
+                     pagination={collectors.pagination}
+                     onPageChange={this.handlePageChange}
                      onClone={this.handleClone}
                      onDelete={this.handleDelete}
                      validateCollector={this._validCollectorName} />

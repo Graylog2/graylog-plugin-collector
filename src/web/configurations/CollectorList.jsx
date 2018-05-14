@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DataTable } from 'components/common';
+import { DataTable, PaginatedList } from 'components/common';
 import Routes from 'routing/Routes';
 import CollectorRow from './CollectorRow';
 
@@ -13,8 +13,10 @@ import style from './CollectorList.css';
 const CollectorList = createReactClass({
   propTypes: {
     collectors: PropTypes.array.isRequired,
+    pagination: PropTypes.object.isRequired,
     onClone: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    onPageChange: PropTypes.func.isRequired,
     validateCollector: PropTypes.func.isRequired,
   },
 
@@ -32,10 +34,9 @@ const CollectorList = createReactClass({
   },
 
   render() {
-    const { collectors } = this.props;
+    const { collectors, pagination, onPageChange } = this.props;
 
     const headers = ['Name', 'Operating System', 'Actions'];
-    const filterKeys = ['name', 'id', 'node_operating_system'];
 
     return (
       <div>
@@ -52,19 +53,29 @@ const CollectorList = createReactClass({
             <p>Manage Log Collectors that you can configure and supervise through Graylog Sidecar and Graylog Web Interface.</p>
           </Col>
         </Row>
-        <DataTable id="collector-list"
-                   className="table-hover"
-                   headers={headers}
-                   headerCellFormatter={this.headerCellFormatter}
-                   sortByKey="name"
-                   rows={collectors}
-                   filterBy="tag"
-                   filterSuggestions={[]}
-                   dataRowFormatter={this.collectorFormatter}
-                   filterLabel="Filter Log Collectors"
-                   noDataText="There are no log collectors to display, why don't you create one?"
-                   filterKeys={filterKeys}
-                   useResponsiveTable={false} />
+
+        <Row className={`row-sm ${style.configurationRow}`}>
+          <Col md={12}>
+            <PaginatedList activePage={pagination.page}
+                           pageSize={pagination.pageSize}
+                           pageSizes={[1, 10, 25]}
+                           totalItems={pagination.total}
+                           onChange={onPageChange}>
+              <div className={style.configurationTable}>
+                <DataTable id="collector-list"
+                           className="table-hover"
+                           headers={headers}
+                           headerCellFormatter={this.headerCellFormatter}
+                           rows={collectors}
+                           dataRowFormatter={this.collectorFormatter}
+                           noDataText="There are no log collectors to display, why don't you create one?"
+                           filterLabel=""
+                           filterKeys={[]}
+                           useResponsiveTable={false} />
+              </div>
+            </PaginatedList>
+          </Col>
+        </Row>
       </div>
     );
   },

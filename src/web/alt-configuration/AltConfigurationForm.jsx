@@ -50,7 +50,7 @@ const AltConfigurationForm = React.createClass({
   },
 
   componentDidMount() {
-    CollectorsActions.list();
+    CollectorsActions.all();
   },
 
   hasErrors() {
