@@ -6,8 +6,8 @@ import { LinkContainer } from 'react-router-bootstrap';
 import DocsHelper from 'util/DocsHelper';
 
 import { DocumentTitle, PageHeader } from 'components/common';
-import SidecarList from './SidecarsList';
 import DocumentationLink from 'components/support/DocumentationLink';
+import SidecarListContainer from './SidecarListContainer';
 
 import Routes from 'routing/Routes';
 
@@ -41,7 +41,7 @@ const SidecarsPage = React.createClass({
 
           <Row className="content">
             <Col md={12}>
-              <SidecarList />
+              <SidecarListContainer />
             </Col>
           </Row>
         </span>
