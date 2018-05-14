@@ -95,6 +95,10 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.list.promise(promise);
   },
 
+  refreshList() {
+    this.list({ query: this.query, page: this.pagination.page, pageSize: this.pagination.pageSize });
+  },
+
   create(collector) {
     const promise = fetch('POST', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'), collector)
       .then(
@@ -135,6 +139,7 @@ const CollectorsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success(`Collector "${collector.name}" successfully deleted`);
+        this.refreshList();
         return response;
       }, (error) => {
         UserNotification.error(`Deleting Collector "${collector.name}" failed with status: ${error.message}`,
@@ -152,6 +157,7 @@ const CollectorsStore = Reflux.createStore({
     promise
       .then((response) => {
         UserNotification.success(`Collector "${collectorId}" successfully copied`);
+        this.refreshList();
         return response;
       }, (error) => {
         UserNotification.error(`Saving collector "${name}" failed with status: ${error.message}`,
