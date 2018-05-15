@@ -1,5 +1,6 @@
 package org.graylog.plugins.collector.altConfigurations;
 
+import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;

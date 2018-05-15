@@ -23,17 +23,15 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb;
 import com.lordofthejars.nosqlunit.mongodb.MongoFlexibleComparisonStrategy;
-import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
-import org.graylog.plugins.collector.altConfigurations.AltConfigurationService;
-import org.graylog.plugins.collector.altConfigurations.BackendService;
-import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
+import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.ConfigurationService;
+import org.graylog.plugins.collector.services.BackendService;
+import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.database.MongoConnectionRule;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.shared.bindings.ObjectMapperModule;
 import org.graylog2.shared.bindings.ValidatorModule;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.jukito.JukitoRunner;
 import org.jukito.UseModules;
 import org.junit.Before;
@@ -60,7 +58,7 @@ public class CollectorServiceImplTest {
     @Mock
     private BackendService backendService;
 
-    @Mock private AltConfigurationService configurationService;
+    @Mock private ConfigurationService configurationService;
 
     @ClassRule
     public static final InMemoryMongoDb IN_MEMORY_MONGO_DB = newInMemoryMongoDbRule().build();
@@ -68,12 +66,12 @@ public class CollectorServiceImplTest {
     @Rule
     public MongoConnectionRule mongoRule = MongoConnectionRule.build("test");
 
-    private AltCollectorService collectorService;
+    private CollectorService collectorService;
 
     @Before
     public void setUp(MongoJackObjectMapperProvider mapperProvider,
                       Validator validator) throws Exception {
-        this.collectorService = new AltCollectorService(backendService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
+        this.collectorService = new CollectorService(backendService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
     }
 
     @Test

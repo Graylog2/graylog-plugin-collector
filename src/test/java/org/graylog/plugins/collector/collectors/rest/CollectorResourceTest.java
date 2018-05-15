@@ -17,16 +17,16 @@
 package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
-import org.graylog.plugins.collector.altConfigurations.ActionService;
-import org.graylog.plugins.collector.altConfigurations.AltCollectorService;
-import org.graylog.plugins.collector.altConfigurations.CollectorStatusMapper;
-import org.graylog.plugins.collector.altConfigurations.filter.ActiveCollectorFilter;
-import org.graylog.plugins.collector.altConfigurations.rest.models.Collector;
-import org.graylog.plugins.collector.altConfigurations.rest.models.CollectorNodeDetails;
-import org.graylog.plugins.collector.altConfigurations.rest.requests.CollectorRegistrationRequest;
-import org.graylog.plugins.collector.altConfigurations.rest.resources.AltCollectorResource;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorListResponse;
-import org.graylog.plugins.collector.altConfigurations.rest.responses.CollectorSummary;
+import org.graylog.plugins.collector.services.ActionService;
+import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
+import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
+import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
+import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.rest.resources.CollectorResource;
+import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
+import org.graylog.plugins.collector.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
@@ -51,11 +51,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class CollectorResourceTest extends RestResourceBaseTest {
-    private AltCollectorResource resource;
+    private CollectorResource resource;
     private List<Collector> collectors;
 
     @Mock
-    private AltCollectorService collectorService;
+    private CollectorService collectorService;
 
     @Mock
     private ActionService actionService;
@@ -66,7 +66,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Before
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
-        this.resource = new AltCollectorResource(
+        this.resource = new CollectorResource(
                 collectorService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
