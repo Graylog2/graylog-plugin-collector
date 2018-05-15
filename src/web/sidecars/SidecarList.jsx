@@ -7,6 +7,8 @@ import { PaginatedList } from 'components/common';
 import SidecarRow from './SidecarRow';
 import SidecarSearchForm from '../common/SidecarSearchForm';
 
+import style from './SidecarList.css';
+
 const SidecarList = React.createClass({
   propTypes: {
     sidecars: PropTypes.array.isRequired,
@@ -20,15 +22,6 @@ const SidecarList = React.createClass({
     toggleShowInactive: PropTypes.func.isRequired,
   },
 
-  componentDidMount() {
-    this.style.use();
-  },
-  componentWillUnmount() {
-    this.style.unuse();
-  },
-
-  style: require('!style/useable!css!styles/SidecarStyles.css'),
-
   getTableHeaderClassName(field) {
     return (this.props.sort.field === field ? `sort-${this.props.sort.order}` : 'sortable');
   },
@@ -37,7 +30,7 @@ const SidecarList = React.createClass({
     const { onSortChange } = this.props;
 
     return (
-      <Table striped responsive className="sidecars-list">
+      <Table striped responsive className={style.sidecarList}>
         <thead>
           <tr>
             <th className={this.getTableHeaderClassName('node_name')}
@@ -62,7 +55,7 @@ const SidecarList = React.createClass({
                 onClick={onSortChange('collector_version')}>
               Sidecar Version
             </th>
-            <th className="actions">&nbsp;</th>
+            <th className={style.actions}>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
@@ -85,13 +78,13 @@ const SidecarList = React.createClass({
 
     return (
       <div>
-        <div className="sidecars-filter-form inline">
+        <div className={style.sidecarsFilter}>
           <SidecarSearchForm query={query}
                              onSearch={onQueryChange}
                              onReset={onQueryChange}>
             <Button bsStyle="primary"
                     onClick={toggleShowInactive}
-                    className="inactive-sidecars-button">
+                    className={style.inactiveSidecarsButton}>
               {showOrHideInactive} inactive sidecars
             </Button>
           </SidecarSearchForm>

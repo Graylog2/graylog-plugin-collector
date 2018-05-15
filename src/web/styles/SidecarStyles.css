@@ -3,66 +3,8 @@
     margin-left: 2px;
 }
 
-form.sidecars-filter-form {
-    margin-top: 5px;
-}
-
-.sidecars-filter-form.inline {
-    display: inline-block;
-}
-
-table.sidecars-list {
-    margin-top: 15px;
-    margin-bottom: 0px;
-}
-
-th.sortable, th.sort-asc, th.sort-desc {
-    cursor: pointer;
-}
-
-/* Dirty hack to avoid column widths to change */
-th.sortable:after {
-    content: ' ';
-    display: inline-block;
-    margin-left: 5px;
-    width: 12px;
-}
-
-th.sortable:hover:after {
-    content: "\f0dc";
-    font-family: FontAwesome;
-    line-height: 1;
-    margin-left: 5px;
-}
-
-th.sort-asc:after {
-    content: "\f160";
-    font-family: FontAwesome;
-    line-height: 1;
-    margin-left: 5px;
-}
-
-th.sort-desc:after {
-    content: "\f161";
-    font-family: FontAwesome;
-    line-height: 1;
-    margin-left: 5px;
-}
-
 .name {
     width: 300px;
-}
-
-#sidecar-outputs-list th.actions, td.actions {
-    width: 150px;
-}
-
-#sidecar-inputs-list th.actions, td.actions {
-    width: 150px;
-}
-
-#sidecar-snippets-list th.actions, td.actions {
-    width: 150px;
 }
 
 .deflist {
@@ -85,21 +27,4 @@ th.sort-desc:after {
 hr.separator {
     margin-top: 10px;
     margin-bottom: 5px;
-}
-
-.sidecar-name {
-    word-break: break-all;
-}
-
-.configuration-tag {
-    font-weight: normal;
-    margin-right: 2px;
-}
-
-.configuration-tag-sm {
-    font-size: 80%;
-}
-
-.inactive-sidecars-button {
-    margin-left: 5px;
 }

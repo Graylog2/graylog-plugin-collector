@@ -9,6 +9,8 @@ import { Timestamp } from 'components/common';
 import OperatingSystemIcon from './OperatingSystemIcon';
 import StatusIndicator from '../common/StatusIndicator';
 
+import style from './SidecarRow.css';
+
 const SidecarRow = React.createClass({
   propTypes: {
     sidecar: PropTypes.object.isRequired,
@@ -19,28 +21,17 @@ const SidecarRow = React.createClass({
     };
   },
 
-  componentDidMount() {
-    this.style.use();
-  },
-
-  componentWillUnmount() {
-    this.style.unuse();
-  },
-
-  style: require('!style/useable!css!styles/SidecarStyles.css'),
-
   render() {
     const sidecar = this.props.sidecar;
-    const sidecarClass = sidecar.active ? '' : 'greyed-out inactive';
-    const style = {};
+    const sidecarClass = sidecar.active ? '' : style.greyedOut;
     const annotation = sidecar.active ? '' : ' (inactive)';
     let sidecarStatus = null;
     if (sidecar.node_details.status) {
       sidecarStatus = sidecar.node_details.status.status;
     }
     return (
-      <tr className={sidecarClass} style={style}>
-        <td className="sidecar-name">
+      <tr className={sidecarClass}>
+        <td className={style.sidecarName}>
           {sidecar.active ?
             <Link to={Routes.pluginRoute('SYSTEM_SIDECARS_ID_STATUS')(sidecar.node_id)}>
               {sidecar.node_name}
