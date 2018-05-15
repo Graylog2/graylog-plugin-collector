@@ -1,5 +1,6 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import Reflux from 'reflux';
 import lodash from 'lodash';
 import { naturalSortIgnoreCase } from 'util/SortUtils';
@@ -15,15 +16,34 @@ import CollectorConfigurationsActions from '../configurations/CollectorConfigura
 import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
 
 const CollectorsAdministrationContainer = createReactClass({
-  mixins: [Reflux.connect(CollectorsStore, 'collectors'), Reflux.connect(AdministrationStore, 'sidecars'), Reflux.connect(CollectorConfigurationsStore, 'configurations')],
-
-  componentDidMount() {
-    this.loadData();
+  propTypes: {
+    nodeId: PropTypes.string,
   },
 
-  loadData() {
+  mixins: [Reflux.connect(CollectorsStore, 'collectors'), Reflux.connect(AdministrationStore, 'sidecars'), Reflux.connect(CollectorConfigurationsStore, 'configurations')],
+
+  getDefaultProps() {
+    return {
+      nodeId: undefined,
+    };
+  },
+
+  componentDidMount() {
+    this.loadData(this.props.nodeId);
+  },
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.nodeId !== this.props.nodeId) {
+      // This means the user changed the URL, so we don't need to keep the previous state.
+      this.loadData(this.props.nodeId);
+    }
+  },
+
+  loadData(nodeId) {
+    const query = nodeId ? `node_id:${nodeId}` : '';
+
     CollectorsActions.all();
-    AdministrationActions.list({});
+    AdministrationActions.list({ query: query });
     CollectorConfigurationsActions.all();
   },
 

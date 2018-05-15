@@ -1,5 +1,6 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -13,7 +14,13 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import CollectorsAdministrationContainer from './CollectorsAdministrationContainer';
 
 const AdministrationPage = createReactClass({
+  propTypes: {
+    location: PropTypes.object.isRequired,
+  },
+
   render() {
+    const nodeId = this.props.location.query.node_id;
+
     return (
       <DocumentTitle title="Collectors Administration">
         <span>
@@ -42,7 +49,7 @@ const AdministrationPage = createReactClass({
 
           <Row className="content">
             <Col md={12}>
-              <CollectorsAdministrationContainer />
+              <CollectorsAdministrationContainer nodeId={nodeId} />
             </Col>
           </Row>
         </span>

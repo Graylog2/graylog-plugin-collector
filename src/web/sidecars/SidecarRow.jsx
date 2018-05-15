@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -57,9 +57,14 @@ const SidecarRow = React.createClass({
           {sidecar.collector_version}
         </td>
         <td>
-          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${sidecar.node_id}`, 'relative', 604800)}>
-            <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
-          </LinkContainer>
+          <ButtonToolbar>
+            <LinkContainer to={`${Routes.pluginRoute('SYSTEM_SIDECARS_ADMINISTRATION')}?node_id=${sidecar.node_id}`}>
+              <Button bsSize="xsmall" bsStyle="info">Manage sidecar</Button>
+            </LinkContainer>
+            <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${sidecar.node_id}`, 'relative', 604800)}>
+              <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
+            </LinkContainer>
+          </ButtonToolbar>
         </td>
       </tr>
     );
