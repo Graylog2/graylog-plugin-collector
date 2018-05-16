@@ -1,11 +1,9 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-import lodash from 'lodash';
-import { Alert, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 
 import SidecarsStatusFileList from 'sidecars/SidecarsStatusFileList';
-import SidecarsRestartButton from 'sidecars/SidecarsRestartButton';
 
 const SidecarStatus = createReactClass({
   propTypes: {
@@ -61,55 +59,9 @@ const SidecarStatus = createReactClass({
     }
   },
 
-  formatStatus(sidecar, name, item) {
-    let restart = null;
-    if (name !== 'Status' && sidecar) {
-      restart = (<div className="pull-right">
-        <SidecarsRestartButton sidecar={sidecar} collector={name}/>
-      </div>);
-    }
-
-    if (item) {
-      switch (item.status) {
-        case 0:
-          return (
-            <Alert bsStyle="success" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
-              <i className="fa fa-check-circle"/> &nbsp;<i>{lodash.capitalize(name)}</i>: {item.message}
-              {restart}
-            </Alert>);
-        case 1:
-          return (
-            <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
-              <i className="fa fa-cog"/> &nbsp;<i>{lodash.capitalize(name)}</i>: {item.message}
-              {restart}
-            </Alert>);
-        case 2:
-          return (
-            <Alert bsStyle="danger" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
-              <i className="fa fa-wrench"/> &nbsp;<i>{lodash.capitalize(name)}</i>: {item.message}
-              {restart}
-            </Alert>);
-      }
-    } else {
-      return (
-        <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert`}>
-          <i className="fa fa-cog"/> &nbsp;<i>Sidecar</i>: no status information found
-        </Alert>);
-    }
-
-  },
-
   render() {
     const sidecar = this.props.sidecar;
 
-    let collectors = [];
-    if (sidecar.node_details.status) {
-      collectors = sidecar.node_details.status.backends;
-    }
-
-    const collectorStates = Object.keys(collectors).map((key) => {
-      return this.formatStatus(sidecar, key, collectors[key]);
-    });
     const logFileList = sidecar.node_details.log_file_list || [];
 
     return (
@@ -126,15 +78,7 @@ const SidecarStatus = createReactClass({
                   {this.formatSystemStats(sidecar.node_details.metrics)}
                 </Col>
               </Row>
-              <hr className="separator" />
             </div>
-            {this.formatStatus(sidecar, "Status", sidecar.node_details.status)}
-          </Col>
-        </Row>
-        <Row className="content" key="collector-status" hidden={collectorStates.length === 0}>
-          <Col md={12}>
-            <h2>Collectors</h2>
-            {collectorStates}
           </Col>
         </Row>
         <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
