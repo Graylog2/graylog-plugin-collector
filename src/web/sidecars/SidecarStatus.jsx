@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 import { Col, Row } from 'react-bootstrap';
 
 import SidecarsStatusFileList from 'sidecars/SidecarsStatusFileList';
@@ -20,43 +21,25 @@ const SidecarStatus = createReactClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
-  formatSystemStats(stats) {
-    if (stats && stats.disks_75 && stats.load_1 >= -1 && stats.cpu_idle >= -1) {
-      const volumes = stats.disks_75.map((volume) => <dd key={volume}>{volume}</dd>);
-      const statsFormatted = [];
-      statsFormatted.push(
-        <dt key="cpu-idle-title">CPU Idle:</dt>,
-        <dd key="cpu-idle-description">{stats.cpu_idle}%</dd>
-      );
-      if (stats.load_1 >= 0) {
-        statsFormatted.push(
-          <dt key="load-title">Load:</dt>,
-          <dd key="load-description">{stats.load_1}</dd>
-        );
-      }
-      statsFormatted.push(
-        <dt key="disk-title">Volumes > 75%:</dt>,
-        volumes
-      );
-
-      return (<div><dl className="deflist">{statsFormatted}</dl></div>)
+  formatNodeDetails(details) {
+    if (!details) {
+      return <p>Node details are currently unavailable. Please wait a moment and ensure the sidecar is correctly connected to the server.</p>;
     }
-  },
-
-  formatConfiguration(configuration) {
-    if (configuration && configuration.tags && configuration.ip) {
-      const tags = configuration.tags.join(", ");
-      return (
-        <div>
-          <dl className="deflist">
-            <dt>Tags:</dt>
-            <dd>{tags}</dd>
-            <dt>IP:</dt>
-            <dd>{configuration.ip}</dd>
-          </dl>
-        </div>
-      )
-    }
+    const collectors = Object.keys(details.status.backends);
+    return (
+      <dl className="deflist top-margin">
+        <dt>IP Address</dt>
+        <dd>{details.ip}</dd>
+        <dt>CPU Idle</dt>
+        <dd>{lodash.isNumber(details.metrics.cpu_idle) ? `${details.metrics.cpu_idle}%` : 'Not available' }</dd>
+        <dt>Load</dt>
+        <dd>{lodash.defaultTo(details.metrics.load_1, 'Not available')}</dd>
+        <dt>Volumes &gt; 75% full</dt>
+        <dd>{details.metrics.disks_75.length > 0 ? details.metrics.disks_75.join(', ') : 'None'}</dd>
+        <dt>Configured collectors</dt>
+        <dd>{collectors.length > 0 ? collectors : 'None'}</dd>
+      </dl>
+    );
   },
 
   render() {
@@ -68,17 +51,8 @@ const SidecarStatus = createReactClass({
       <div>
         <Row className="content" key="sidecar-status">
           <Col md={12}>
-            <h2>Sidecar</h2>
-            <div className="top-margin">
-              <Row>
-                <Col md={6}>
-                  {this.formatConfiguration(sidecar.node_details)}
-                </Col>
-                <Col md={6}>
-                  {this.formatSystemStats(sidecar.node_details.metrics)}
-                </Col>
-              </Row>
-            </div>
+            <h2>Node details</h2>
+            {this.formatNodeDetails(sidecar.node_details)}
           </Col>
         </Row>
         <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>

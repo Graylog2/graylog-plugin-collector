@@ -48,9 +48,9 @@ const SidecarsStatusPage = React.createClass({
     }
 
     return (
-      <DocumentTitle title={`Sidecar status ${sidecar.node_name}`}>
+      <DocumentTitle title={`Sidecar ${sidecar.node_name} status`}>
         <span>
-          <PageHeader title={<span>Sidecar Status <em>{sidecar.node_name}</em></span>}>
+          <PageHeader title={<span>Sidecar <em>{sidecar.node_name} status</em></span>}>
             <span>
               A status overview of the Graylog Sidecar.
             </span>
