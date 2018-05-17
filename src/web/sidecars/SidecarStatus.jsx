@@ -39,7 +39,7 @@ const SidecarStatus = createReactClass({
         <dt>Volumes &gt; 75% full</dt>
         <dd>{details.metrics.disks_75.length > 0 ? details.metrics.disks_75.join(', ') : 'None'}</dd>
         <dt>Configured collectors</dt>
-        <dd>{collectors.length > 0 ? collectors : 'None'}</dd>
+        <dd>{collectors.length > 0 ? collectors.join(', ') : 'None'}</dd>
       </dl>
     );
   },
