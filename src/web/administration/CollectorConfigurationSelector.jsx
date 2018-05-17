@@ -6,7 +6,7 @@ import { Button } from 'react-bootstrap';
 import { SelectPopover } from 'components/common';
 import { BootstrapModalConfirm } from 'components/bootstrap';
 import { naturalSortIgnoreCase } from 'util/SortUtils';
-import CollectorIndicator from '../sidecars/CollectorIndicator';
+import CollectorIndicator from '../common/CollectorIndicator';
 import ColorLabel from '../common/ColorLabel';
 
 class CollectorConfigurationSelector extends React.Component {

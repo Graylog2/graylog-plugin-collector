@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 
-import CollectorIndicator from '../sidecars/CollectorIndicator';
+import CollectorIndicator from '../common/CollectorIndicator';
 import ColorLabel from '../common/ColorLabel';
 import CopyConfigurationModal from './CopyConfigurationModal';
 

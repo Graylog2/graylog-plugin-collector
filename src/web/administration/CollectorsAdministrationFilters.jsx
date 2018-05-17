@@ -6,7 +6,7 @@ import { Button, ButtonToolbar } from 'react-bootstrap';
 
 import { naturalSortIgnoreCase } from 'util/SortUtils';
 import { SelectPopover } from 'components/common';
-import CollectorIndicator from '../sidecars/CollectorIndicator';
+import CollectorIndicator from '../common/CollectorIndicator';
 import ColorLabel from '../common/ColorLabel';
 
 const CollectorsAdministrationFilters = createReactClass({
