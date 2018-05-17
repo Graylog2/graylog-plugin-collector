@@ -183,7 +183,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   validateConfiguration(name) {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/validate/?name=${name}`));
+    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/configurations/validate/?name=${name}`));
     promise
       .then(
         response => response,
