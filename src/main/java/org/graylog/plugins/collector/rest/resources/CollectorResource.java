@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
@@ -28,6 +29,7 @@ import org.graylog.plugins.collector.rest.responses.CollectorRegistrationRespons
 import org.graylog.plugins.collector.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -216,6 +218,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @ApiOperation(value = "Assign configurations to collector backends")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_UPDATE)
+    @AuditEvent(type = CollectorAuditEventTypes.SIDECAR_UPDATE)
     public Response assignConfiguration(@ApiParam(name = "JSON body", required = true)
                                          @Valid @NotNull NodeConfigurationRequest request) throws NotFoundException {
         List<String> nodeIdList = request.nodes().stream()

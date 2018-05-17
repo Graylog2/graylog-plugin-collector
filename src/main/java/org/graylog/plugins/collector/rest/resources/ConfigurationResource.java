@@ -20,6 +20,7 @@ import org.graylog.plugins.collector.rest.responses.ValidationResponse;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
+import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.search.SearchQuery;
@@ -187,6 +188,8 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
+    @NoAuditEvent("this is not changing any data")
+
     public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "JSON body", required = true)
                                                                   @Valid @NotNull ConfigurationPreviewRequest request) {
         String preview = this.configurationService.renderPreview(request.template());
@@ -225,6 +228,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update collector configuration")
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_UPDATE)
     public CollectorConfiguration updateConfiguration(@ApiParam(name = "id", required = true)
                                                       @PathParam("id") String id,
                                                       @ApiParam(name = "JSON body", required = true)
@@ -240,6 +244,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Delets a collector configuration")
+    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_DELETE)
     public Response updateConfiguration(@ApiParam(name = "id", required = true)
                                                       @PathParam("id") String id) {
         int deleted = configurationService.delete(id);

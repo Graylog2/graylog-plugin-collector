@@ -152,6 +152,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector backend")
+    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_CREATE)
     public CollectorBackend createBackend(@ApiParam(name = "JSON body", required = true)
                                           @Valid @NotNull CollectorBackend request) {
         etagService.invalidateAll();
@@ -165,6 +166,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update a collector")
+    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_UPDATE)
     public CollectorBackend updateBackend(@ApiParam(name = "id", required = true)
                                           @PathParam("id") String id,
                                           @ApiParam(name = "JSON body", required = true)
@@ -179,7 +181,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @ApiOperation(value = "Create a collector copy")
-    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CLONE)
+    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_CLONE)
     public Response copyCollector(@ApiParam(name = "id", required = true)
                                   @PathParam("id") String id,
                                   @PathParam("name") String name) throws NotFoundException {
@@ -195,6 +197,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Delets a collector configuration")
+    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_DELETE)
     public Response deleteCollector(@ApiParam(name = "id", required = true)
                                     @PathParam("id") String id) {
         int deleted = backendService.delete(id);

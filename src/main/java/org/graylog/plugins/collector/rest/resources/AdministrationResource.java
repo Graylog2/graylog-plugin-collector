@@ -22,13 +22,12 @@ import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.search.SearchQuery;
 import org.graylog2.search.SearchQueryParser;
 import org.graylog2.shared.rest.resources.RestResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -76,6 +75,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
+    @NoAuditEvent("this is not changing any data")
     public CollectorListResponse administration(@ApiParam(name = "JSON body", required = true)
                                                 @Valid @NotNull CollectorAdministrationRequest request) {
         final String sort = Collector.FIELD_NODE_NAME;
