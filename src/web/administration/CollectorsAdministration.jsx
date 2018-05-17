@@ -9,8 +9,6 @@ import { Input } from 'components/bootstrap';
 import CollectorsAdministrationFilters from './CollectorsAdministrationFilters';
 import CollectorsAdministrationActions from './CollectorsAdministrationActions';
 
-import SidecarsActions from '../sidecars/SidecarsActions';
-
 import style from './CollectorsAdministration.css';
 import ColorLabel from '../common/ColorLabel';
 import OperatingSystemIcon from '../common/OperatingSystemIcon';
@@ -27,6 +25,7 @@ const CollectorsAdministration = createReactClass({
     onPageChange: PropTypes.func.isRequired,
     onFilter: PropTypes.func.isRequired,
     onQueryChange: PropTypes.func.isRequired,
+    onConfigurationChange: PropTypes.func.isRequired,
   },
 
   getInitialState() {
@@ -73,7 +72,7 @@ const CollectorsAdministration = createReactClass({
     const selectedSidecars = enabledCollectors
       .filter(({ sidecar, collector }) => selected.includes(this.sidecarCollectorId(sidecar, collector)));
 
-    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => doneCallback());
+    this.props.onConfigurationChange(selectedSidecars, selectedConfigurations, doneCallback);
   },
 
   formatHeader() {

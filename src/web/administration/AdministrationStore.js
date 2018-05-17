@@ -59,8 +59,6 @@ const AdministrationStore = Reflux.createStore({
 
     AdministrationActions.list.promise(promise);
   },
-
-
 });
 
 export default AdministrationStore;

@@ -140,7 +140,6 @@ const SidecarsStore = Reflux.createStore({
         (response) => {
           UserNotification.success('Collectors will change their configurations shortly.',
             `Configuration change for ${sidecars.length} collectors requested`);
-          this.list();
           return response;
         },
         (error) => {

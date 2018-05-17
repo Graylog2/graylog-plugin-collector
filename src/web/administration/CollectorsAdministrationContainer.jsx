@@ -14,6 +14,7 @@ import AdministrationActions from './AdministrationActions';
 import AdministrationStore from './AdministrationStore';
 import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
 import CollectorConfigurationsStore from '../configurations/CollectorConfigurationsStore';
+import SidecarsActions from '../sidecars/SidecarsActions';
 
 const CollectorsAdministrationContainer = createReactClass({
   propTypes: {
@@ -63,6 +64,14 @@ const CollectorsAdministrationContainer = createReactClass({
   handleQueryChange(query = '', callback = () => {}) {
     const { filters, pagination } = this.state.sidecars;
     AdministrationActions.list({ query: query, filters: filters, pageSize: pagination.pageSize }).finally(callback);
+  },
+
+  handleConfigurationChange(selectedSidecars, selectedConfigurations, doneCallback) {
+    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => {
+      doneCallback();
+      const { query, filters, pagination } = this.state.sidecars;
+      AdministrationActions.list({ query: query, filters: filters, pageSize: pagination.pageSize, page: pagination.page });
+    });
   },
 
   render() {
