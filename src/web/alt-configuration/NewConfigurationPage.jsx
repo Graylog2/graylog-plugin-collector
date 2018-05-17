@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
 
-import AltConfigurationForm from 'alt-configuration/AltConfigurationForm';
+import ConfigurationForm from 'alt-configuration/ConfigurationForm';
 import ConfigurationHelper from 'alt-configuration/ConfigurationHelper';
 
 const NewConfigurationPage = React.createClass({
@@ -47,7 +47,7 @@ const NewConfigurationPage = React.createClass({
 
           <Row className="content">
             <Col md={6}>
-              <AltConfigurationForm action="create" />
+              <ConfigurationForm action="create" />
             </Col>
             <Col md={6}>
               <ConfigurationHelper type="filebeat" />

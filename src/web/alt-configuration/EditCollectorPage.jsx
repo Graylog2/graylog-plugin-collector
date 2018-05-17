@@ -6,25 +6,23 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import Routes from 'routing/Routes';
 
-import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
+import CollectorsActions from 'configurations/CollectorsActions';
+import CollectorForm from 'alt-configuration/CollectorForm';
 
-import AltConfigurationForm from 'alt-configuration/AltConfigurationForm';
-import ConfigurationHelper from 'alt-configuration/ConfigurationHelper';
-
-const AltConfigurationPage = React.createClass({
+const EditCollectorPage = React.createClass({
   propTypes: {
     params: PropTypes.object.isRequired,
   },
 
   getInitialState() {
     return {
-      configuration: undefined,
+      collector: undefined,
     };
   },
 
   componentDidMount() {
     this.style.use();
-    this._reloadConfiguration();
+    this._reloadCollector();
   },
 
   componentWillUnmount() {
@@ -33,16 +31,16 @@ const AltConfigurationPage = React.createClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
-  _reloadConfiguration() {
-    CollectorConfigurationsActions.getConfiguration(this.props.params.id).then(this._setConfiguration);
+  _reloadCollector() {
+    CollectorsActions.getCollector(this.props.params.id).then(this._setCollector);
   },
 
-  _setConfiguration(configuration) {
-    this.setState({ configuration });
+  _setCollector(collector) {
+    this.setState({ collector });
   },
 
   _isLoading() {
-    return !(this.state.configuration);
+    return !(this.state.collector);
   },
 
   render() {
@@ -51,11 +49,11 @@ const AltConfigurationPage = React.createClass({
     }
 
     return (
-      <DocumentTitle title="Collector Configuration">
+      <DocumentTitle title="Log Collector">
         <span>
-          <PageHeader title="Collector Configuration">
+          <PageHeader title="Log Collector">
             <span>
-              Some words about collector configurations.
+              Some words about log collectors.
             </span>
 
             <span>
@@ -77,10 +75,7 @@ const AltConfigurationPage = React.createClass({
 
           <Row className="content">
             <Col md={6}>
-              <AltConfigurationForm configuration={this.state.configuration} />
-            </Col>
-            <Col md={6}>
-              <ConfigurationHelper type="filebeat" />
+              <CollectorForm action="edit" collector={this.state.collector} />
             </Col>
           </Row>
         </span>
@@ -89,4 +84,4 @@ const AltConfigurationPage = React.createClass({
   },
 });
 
-export default AltConfigurationPage;
+export default EditCollectorPage;

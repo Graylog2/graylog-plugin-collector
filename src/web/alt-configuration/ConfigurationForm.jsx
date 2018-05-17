@@ -16,7 +16,7 @@ import CollectorsActions from '../configurations/CollectorsActions';
 import CollectorsStore from '../configurations/CollectorsStore';
 import CollectorConfigurationsActions from '../configurations/CollectorConfigurationsActions';
 
-const AltConfigurationForm = React.createClass({
+const ConfigurationForm = React.createClass({
   mixins: [Reflux.connect(CollectorsStore)],
   propTypes: {
     action: PropTypes.oneOf(['create', 'edit']),
@@ -209,5 +209,5 @@ const AltConfigurationForm = React.createClass({
   },
 });
 
-export default AltConfigurationForm;
+export default ConfigurationForm;
 

@@ -6,23 +6,25 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import Routes from 'routing/Routes';
 
-import CollectorsActions from 'configurations/CollectorsActions';
-import CollectorForm from 'alt-configuration/CollectorForm';
+import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
-const CollectorPage = React.createClass({
+import ConfigurationForm from 'alt-configuration/ConfigurationForm';
+import ConfigurationHelper from 'alt-configuration/ConfigurationHelper';
+
+const EditConfigurationPage = React.createClass({
   propTypes: {
     params: PropTypes.object.isRequired,
   },
 
   getInitialState() {
     return {
-      collector: undefined,
+      configuration: undefined,
     };
   },
 
   componentDidMount() {
     this.style.use();
-    this._reloadCollector();
+    this._reloadConfiguration();
   },
 
   componentWillUnmount() {
@@ -31,16 +33,16 @@ const CollectorPage = React.createClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
-  _reloadCollector() {
-    CollectorsActions.getCollector(this.props.params.id).then(this._setCollector);
+  _reloadConfiguration() {
+    CollectorConfigurationsActions.getConfiguration(this.props.params.id).then(this._setConfiguration);
   },
 
-  _setCollector(collector) {
-    this.setState({ collector });
+  _setConfiguration(configuration) {
+    this.setState({ configuration });
   },
 
   _isLoading() {
-    return !(this.state.collector);
+    return !(this.state.configuration);
   },
 
   render() {
@@ -49,11 +51,11 @@ const CollectorPage = React.createClass({
     }
 
     return (
-      <DocumentTitle title="Log Collector">
+      <DocumentTitle title="Collector Configuration">
         <span>
-          <PageHeader title="Log Collector">
+          <PageHeader title="Collector Configuration">
             <span>
-              Some words about log collectors.
+              Some words about collector configurations.
             </span>
 
             <span>
@@ -75,7 +77,10 @@ const CollectorPage = React.createClass({
 
           <Row className="content">
             <Col md={6}>
-              <CollectorForm action="edit" collector={this.state.collector} />
+              <ConfigurationForm configuration={this.state.configuration} />
+            </Col>
+            <Col md={6}>
+              <ConfigurationHelper type="filebeat" />
             </Col>
           </Row>
         </span>
@@ -84,4 +89,4 @@ const CollectorPage = React.createClass({
   },
 });
 
-export default CollectorPage;
+export default EditConfigurationPage;

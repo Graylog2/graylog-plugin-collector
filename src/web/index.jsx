@@ -6,11 +6,11 @@ import SidecarsPage from 'sidecars/SidecarsPage';
 import SidecarsStatusPage from 'sidecars/SidecarsStatusPage';
 import ConfigurationPage from 'configurations/ConfigurationPage';
 import SidecarSystemConfiguration from 'system-configuration/SidecarSystemConfiguration';
-import AltConfigurationPage from 'alt-configuration/AltConfigurationPage';
+import EditConfigurationPage from 'alt-configuration/EditConfigurationPage';
 import NewConfigurationPage from 'alt-configuration/NewConfigurationPage';
 import AdministrationPage from 'administration/AdministrationPage';
 import NewCollectorPage from 'alt-configuration/NewCollectorPage';
-import CollectorPage from 'alt-configuration/CollectorPage';
+import EditCollectorPage from 'alt-configuration/EditCollectorPage';
 
 const manifest = new PluginManifest(packageJson, {
   routes: [
@@ -19,9 +19,9 @@ const manifest = new PluginManifest(packageJson, {
     { path: '/system/sidecars/administration', component: AdministrationPage },
     { path: '/system/sidecars/configuration', component: ConfigurationPage },
     { path: '/system/sidecars/configuration/new', component: NewConfigurationPage },
-    { path: '/system/sidecars/configuration/edit/:id', component: AltConfigurationPage },
+    { path: '/system/sidecars/configuration/edit/:id', component: EditConfigurationPage },
     { path: '/system/sidecars/collector/new', component: NewCollectorPage },
-    { path: '/system/sidecars/collector/edit/:id', component: CollectorPage },
+    { path: '/system/sidecars/collector/edit/:id', component: EditCollectorPage },
   ],
 
   systemnavigation: [
