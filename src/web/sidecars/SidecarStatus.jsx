@@ -25,7 +25,6 @@ const SidecarStatus = createReactClass({
     if (!details) {
       return <p>Node details are currently unavailable. Please wait a moment and ensure the sidecar is correctly connected to the server.</p>;
     }
-    const collectors = Object.keys(details.status.backends);
     return (
       <dl className="deflist top-margin">
         <dt>IP Address</dt>
@@ -38,8 +37,53 @@ const SidecarStatus = createReactClass({
         <dd>{lodash.defaultTo(details.metrics.load_1, 'Not available')}</dd>
         <dt>Volumes &gt; 75% full</dt>
         <dd>{details.metrics.disks_75.length > 0 ? details.metrics.disks_75.join(', ') : 'None'}</dd>
-        <dt>Configured collectors</dt>
-        <dd>{collectors.length > 0 ? collectors.join(', ') : 'None'}</dd>
+      </dl>
+    );
+  },
+
+  formatCollectorStatus(details) {
+    if (!details) {
+      return <p>Collector statuses are currently unavailable. Please wait a moment and ensure the sidecar is correctly connected to the server.</p>;
+    }
+
+    const collectors = Object.keys(details.status.backends);
+    if (collectors.length === 0) {
+      return <p>There are no collectors configured in this sidecar.</p>;
+    }
+
+    const statuses = [];
+    collectors.forEach((collector) => {
+      const status = details.status.backends[collector];
+
+      let statusMessage;
+      let statusBadge;
+      let statusClass;
+      switch (status.status) {
+        case 0:
+          statusMessage = 'Collector is running.';
+          statusClass = 'text-success';
+          statusBadge = <i className="fa fa-play fa-fw" />;
+          break;
+        case 2:
+          statusMessage = status.message;
+          statusClass = 'text-danger';
+          statusBadge = <i className="fa fa-warning fa-fw" />;
+          break;
+        default:
+          statusMessage = 'Collector status is currently unknown.';
+          statusClass = 'text-info';
+          statusBadge = <i className="fa fa-question-circle fa-fw" />;
+      }
+
+      statuses.push(
+        <dt key={`${collector}-key`} className={statusClass}>{collector}</dt>,
+        <dd key={`${collector}-description`} className={statusClass}>{statusBadge}&ensp;{statusMessage}</dd>,
+      );
+    });
+
+    return (
+      <dl className="deflist">
+        {statuses}
       </dl>
     );
   },
@@ -51,13 +95,21 @@ const SidecarStatus = createReactClass({
 
     return (
       <div>
-        <Row className="content" key="sidecar-status">
+        <Row className="content">
           <Col md={12}>
             <h2>Node details</h2>
             {this.formatNodeDetails(sidecar.node_details)}
           </Col>
         </Row>
-        <Row className="content" key="log-file-list" hidden={logFileList.length === 0}>
+        <Row className="content">
+          <Col md={12}>
+            <h2>Collector statuses</h2>
+            <div className="top-margin">
+              {this.formatCollectorStatus(sidecar.node_details)}
+            </div>
+          </Col>
+        </Row>
+        <Row className="content" hidden={logFileList.length === 0}>
           <Col md={12}>
             <h2>Log Files</h2>
             <p>Recently modified files will be highlighted in blue.</p>
