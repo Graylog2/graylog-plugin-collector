@@ -103,7 +103,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Path("/all")
     @ApiOperation(value = "Lists all existing collector registrations")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorListResponse all() {
         final List<Collector> collectors = collectorService.all();
         final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, activeCollectorFilter);
@@ -122,7 +122,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Timed
     @ApiOperation(value = "Lists existing collector registrations using pagination")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorListResponse collectors(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
                                             @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
                                             @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
@@ -151,7 +151,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
             @ApiResponse(code = 404, message = "No collector with the specified id exists")
     })
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorSummary get(@ApiParam(name = "collectorId", required = true)
                                 @PathParam("collectorId") @NotEmpty String collectorId) {
         final Collector collector = collectorService.findByNodeId(collectorId);
@@ -171,7 +171,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.SIDECARS_UPDATE)
     @NoAuditEvent("this is only a ping from collectors, and would overflow the audit log")
     public Response register(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
                              @PathParam("collectorId") @NotEmpty String collectorId,
@@ -215,7 +215,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Path("/configurations")
     @ApiOperation(value = "Assign configurations to collector backends")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.SIDECARS_UPDATE)
     public Response assignConfiguration(@ApiParam(name = "JSON body", required = true)
                                          @Valid @NotNull NodeConfigurationRequest request) throws NotFoundException {
         List<String> nodeIdList = request.nodes().stream()

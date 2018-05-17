@@ -192,7 +192,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @DELETE
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Delets a collector configuration")
     public Response deleteCollector(@ApiParam(name = "id", required = true)

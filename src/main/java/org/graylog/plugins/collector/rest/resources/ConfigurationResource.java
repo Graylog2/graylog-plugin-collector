@@ -77,7 +77,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
     @GET
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
     public CollectorConfigurationListResponse listConfigurations(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
@@ -102,7 +102,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @GET
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector configuration details")
     public CollectorConfiguration getConfigurations(@ApiParam(name = "id", required = true)
@@ -113,7 +113,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @GET
     @Path("/validate")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Validates configuration name")
     public ValidationResponse validateConfiguration(@ApiParam(name = "name", required = true) @QueryParam("name") String name) {
@@ -128,7 +128,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Path("/render/{collectorId}/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @ApiOperation(value = "Render collector configuration template")
     public Response renderConfiguration(@Context HttpHeaders httpHeaders,
                                         @ApiParam(name = "collectorId", required = true)
@@ -185,7 +185,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Path("/render/preview")
     @Produces(MediaType.APPLICATION_JSON)
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
     public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "JSON body", required = true)
                                                                   @Valid @NotNull ConfigurationPreviewRequest request) {
@@ -195,7 +195,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
     @POST
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector configuration")
     @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CREATE)
@@ -208,7 +208,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @POST
     @Path("/{id}/{name}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_CREATE)
     @ApiOperation(value = "Create a configuration copy")
     @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CLONE)
     public Response copyConfiguration(@ApiParam(name = "id", required = true)
@@ -222,7 +222,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @PUT
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update collector configuration")
     public CollectorConfiguration updateConfiguration(@ApiParam(name = "id", required = true)
@@ -237,7 +237,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @DELETE
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Delets a collector configuration")
     public Response updateConfiguration(@ApiParam(name = "id", required = true)

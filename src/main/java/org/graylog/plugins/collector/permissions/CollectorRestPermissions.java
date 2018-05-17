@@ -27,16 +27,36 @@ import java.util.stream.Collectors;
 import static org.graylog2.plugin.security.Permission.create;
 
 public class CollectorRestPermissions implements PluginPermissions {
+    public static final String SIDECARS_READ = "sidecars:read";
+    public static final String SIDECARS_CREATE = "sidecars:create";
+    public static final String SIDECARS_UPDATE = "sidecars:update";
+    public static final String SIDECARS_DELETE = "sidecar:delete";
+
     public static final String COLLECTORS_READ = "collectors:read";
     public static final String COLLECTORS_CREATE = "collectors:create";
     public static final String COLLECTORS_UPDATE = "collectors:update";
     public static final String COLLECTORS_DELETE = "collectors:delete";
 
+    public static final String CONFIGURATIONS_READ = "configurations:read";
+    public static final String CONFIGURATIONS_CREATE = "configurations:create";
+    public static final String CONFIGURATIONS_UPDATE = "configurations:update";
+    public static final String CONFIGURATIONS_DELETE = "configurations:delete";
+
     private final ImmutableSet<Permission> permissions = ImmutableSet.of(
+            create(SIDECARS_READ, "Read sidecars"),
+            create(SIDECARS_CREATE, "Create sidecars"),
+            create(SIDECARS_UPDATE, "Update sidecars"),
+            create(SIDECARS_DELETE, "Delete sidecars"),
+
             create(COLLECTORS_READ, "Read collectors"),
             create(COLLECTORS_CREATE, "Create collectors"),
             create(COLLECTORS_UPDATE, "Update collectors"),
-            create(COLLECTORS_DELETE, "Delete collectors")
+            create(COLLECTORS_DELETE, "Delete collectors"),
+
+            create(CONFIGURATIONS_READ, "Read configurations"),
+            create(CONFIGURATIONS_CREATE, "Create configurations"),
+            create(CONFIGURATIONS_UPDATE, "Update configurations"),
+            create(CONFIGURATIONS_DELETE, "Delete configurations")
     );
 
     @Override

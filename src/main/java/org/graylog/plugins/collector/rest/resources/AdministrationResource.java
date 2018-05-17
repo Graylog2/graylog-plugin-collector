@@ -50,8 +50,6 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AdministrationResource extends RestResource implements PluginRestResource {
-    private static final Logger LOG = LoggerFactory.getLogger(AdministrationResource.class);
-
     private final CollectorService collectorService;
     private final ConfigurationService configurationService;
     private final BackendService backendService;
@@ -77,7 +75,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     @Timed
     @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorListResponse administration(@ApiParam(name = "JSON body", required = true)
                                                 @Valid @NotNull CollectorAdministrationRequest request) {
         final String sort = Collector.FIELD_NODE_NAME;
