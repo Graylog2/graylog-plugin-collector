@@ -148,36 +148,6 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.updateConfiguration.promise(promise);
   },
 
-  saveSnippet(snippet, configurationId) {
-    const requestSnippet = {
-      backend: snippet.backend,
-      name: snippet.name,
-      snippet: snippet.snippet,
-    };
-
-    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/snippets`);
-    let method;
-    if (snippet.id === '') {
-      method = 'POST';
-    } else {
-      requestSnippet.snippet_id = snippet.id;
-      url += `/${snippet.id}`;
-      method = 'PUT';
-    }
-
-    const promise = fetch(method, url, requestSnippet);
-    promise
-      .then(() => {
-        const action = snippet.id === '' ? 'created' : 'updated';
-        UserNotification.success(`Configuration snippet "${snippet.name}" successfully ${action}`);
-      }, (error) => {
-        UserNotification.error(`Saving snippet "${snippet.name}" failed with status: ${error.message}`,
-          'Could not save Snippet');
-      });
-
-    CollectorConfigurationsActions.saveSnippet.promise(promise);
-  },
-
   copyConfiguration(configurationId, name) {
     const url = URLUtils.qualifyUrl(`${this.sourceUrl}/configurations/${configurationId}/${name}`);
     const method = 'POST';
