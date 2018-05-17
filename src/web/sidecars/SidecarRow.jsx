@@ -6,7 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
-import OperatingSystemIcon from './OperatingSystemIcon';
+import OperatingSystemIcon from '../common/OperatingSystemIcon';
 import StatusIndicator from '../common/StatusIndicator';
 
 import style from './SidecarRow.css';

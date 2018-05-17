@@ -3,7 +3,7 @@ import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
 
-import OperatingSystemIcon from './OperatingSystemIcon';
+import OperatingSystemIcon from '../common/OperatingSystemIcon';
 
 const CollectorIndicator = createReactClass({
   propTypes: {

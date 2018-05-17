@@ -6,7 +6,6 @@ import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, PaginatedList } from 'components/common';
 import { Input } from 'components/bootstrap';
-import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
 import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
 import CollectorAdministrationActions from './CollectorsAdministrationActions';
 
@@ -14,6 +13,7 @@ import SidecarsActions from '../sidecars/SidecarsActions';
 
 import style from './CollectorsAdministration.css';
 import ColorLabel from '../common/ColorLabel';
+import OperatingSystemIcon from '../common/OperatingSystemIcon';
 import SidecarSearchForm from '../common/SidecarSearchForm';
 import StatusIndicator from '../common/StatusIndicator';
 

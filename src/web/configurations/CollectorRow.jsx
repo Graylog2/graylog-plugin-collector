@@ -7,8 +7,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Routes from 'routing/Routes';
 
-import OperatingSystemIcon from 'sidecars/OperatingSystemIcon';
-
+import OperatingSystemIcon from '../common/OperatingSystemIcon';
 import CopyCollectorModal from './CopyCollectorModal';
 
 const CollectorRow = createReactClass({
