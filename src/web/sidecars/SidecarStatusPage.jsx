@@ -13,7 +13,7 @@ import SidecarsActions from 'sidecars/SidecarsActions';
 import Routes from 'routing/Routes';
 import SidecarStatus from './SidecarStatus';
 
-const SidecarsStatusPage = React.createClass({
+const SidecarStatusPage = React.createClass({
   propTypes: {
     params: PropTypes.object.isRequired,
   },
@@ -80,4 +80,4 @@ const SidecarsStatusPage = React.createClass({
   },
 });
 
-export default SidecarsStatusPage;
+export default SidecarStatusPage;

@@ -3,7 +3,7 @@ import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
 import SidecarsPage from 'sidecars/SidecarsPage';
-import SidecarsStatusPage from 'sidecars/SidecarsStatusPage';
+import SidecarStatusPage from 'sidecars/SidecarStatusPage';
 import ConfigurationPage from 'configurations/ConfigurationPage';
 import SidecarSystemConfiguration from 'system-configuration/SidecarSystemConfiguration';
 import EditConfigurationPage from 'configuration-forms/EditConfigurationPage';
@@ -15,7 +15,7 @@ import EditCollectorPage from 'configuration-forms/EditCollectorPage';
 const manifest = new PluginManifest(packageJson, {
   routes: [
     { path: '/system/sidecars', component: SidecarsPage },
-    { path: '/system/sidecars/:id/status', component: SidecarsStatusPage },
+    { path: '/system/sidecars/:id/status', component: SidecarStatusPage },
     { path: '/system/sidecars/administration', component: AdministrationPage },
     { path: '/system/sidecars/configuration', component: ConfigurationPage },
     { path: '/system/sidecars/configuration/new', component: NewConfigurationPage },

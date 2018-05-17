@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { Col, Row } from 'react-bootstrap';
 
-import SidecarsStatusFileList from 'sidecars/SidecarsStatusFileList';
+import SidecarStatusFileList from 'sidecars/SidecarStatusFileList';
 
 const SidecarStatus = createReactClass({
   propTypes: {
@@ -62,7 +62,7 @@ const SidecarStatus = createReactClass({
             <h2>Log Files</h2>
             <p>Recently modified files will be highlighted in blue.</p>
             <div className="top-margin">
-              <SidecarsStatusFileList files={logFileList} />
+              <SidecarStatusFileList files={logFileList} />
             </div>
           </Col>
         </Row>

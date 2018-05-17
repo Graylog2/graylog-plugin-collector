@@ -3,7 +3,7 @@ import React from 'react';
 
 import { DataTable, Spinner, Timestamp } from 'components/common';
 
-const SidecarsStatusFileList = React.createClass({
+const SidecarStatusFileList = React.createClass({
   propTypes: {
     files: PropTypes.array.isRequired,
   },
@@ -62,4 +62,4 @@ const SidecarsStatusFileList = React.createClass({
   }
 });
 
-export default SidecarsStatusFileList;
+export default SidecarStatusFileList;
