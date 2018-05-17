@@ -46,7 +46,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Api(value = "AltCollector", description = "Manage collector fleet")
-@Path("/altcollectors/administration")
+@Path("/sidecar/administration")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AdministrationResource extends RestResource implements PluginRestResource {

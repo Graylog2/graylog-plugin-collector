@@ -8,7 +8,7 @@ import SidecarsActions from './SidecarsActions';
 
 const SidecarsStore = Reflux.createStore({
   listenables: [SidecarsActions],
-  sourceUrl: '/plugins/org.graylog.plugins.collector/collectors',
+  sourceUrl: '/plugins/org.graylog.plugins.collector/sidecar/collectors',
   sidecars: undefined,
   onlyActive: undefined,
   pagination: {
@@ -38,7 +38,6 @@ const SidecarsStore = Reflux.createStore({
   },
 
   listPaginated({ query = '', page = 1, pageSize = 50, onlyActive = false, sortField = 'node_name', order = 'asc' }) {
-    const baseUrl = '/plugins/org.graylog.plugins.collector/altcollectors';
     const search = {
       query: query,
       page: page,
@@ -48,7 +47,7 @@ const SidecarsStore = Reflux.createStore({
       order: order,
     };
 
-    const uri = URI(baseUrl).search(search).toString();
+    const uri = URI(this.sourceUrl).search(search).toString();
     const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(uri));
 
     promise.then(
@@ -79,7 +78,7 @@ const SidecarsStore = Reflux.createStore({
   },
 
   getSidecar(sidecarId) {
-    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altcollectors/${sidecarId}`));
+    const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${sidecarId}`));
     promise
       .catch(
         error => {
@@ -136,7 +135,7 @@ const SidecarsStore = Reflux.createStore({
       return { node_id: sidecar.node_id, assignments: assignments };
     });
 
-    const promise = fetch('PUT', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/configurations'), { nodes: nodes })
+    const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/configurations`), { nodes: nodes })
       .then(
         (response) => {
           UserNotification.success('Collectors will change their configurations shortly.',

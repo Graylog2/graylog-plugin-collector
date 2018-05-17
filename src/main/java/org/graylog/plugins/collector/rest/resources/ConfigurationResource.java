@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(value = "AltConfiguration", description = "Render collector configurations")
-@Path("/altconfiguration")
+@Path("/sidecar/configurations")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigurationResource extends RestResource implements PluginRestResource {
@@ -76,7 +76,6 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @GET
-    @Path("/configurations")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,7 +100,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @GET
-    @Path("/configurations/{id}")
+    @Path("/{id}")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
@@ -195,7 +194,6 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @POST
-    @Path("/configurations")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
@@ -208,7 +206,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @POST
-    @Path("/configurations/{id}/{name}")
+    @Path("/{id}/{name}")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
     @ApiOperation(value = "Create a configuration copy")
@@ -222,7 +220,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @PUT
-    @Path("/configurations/{id}")
+    @Path("/{id}")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
@@ -237,7 +235,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @DELETE
-    @Path("/configurations/{id}")
+    @Path("/{id}")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)

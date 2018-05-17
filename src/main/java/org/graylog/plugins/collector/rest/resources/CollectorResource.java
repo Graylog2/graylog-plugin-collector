@@ -63,7 +63,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Api(value = "AltCollector", description = "Manage collector fleet")
-@Path("/altcollectors")
+@Path("/sidecar/collectors")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CollectorResource extends RestResource implements PluginRestResource {

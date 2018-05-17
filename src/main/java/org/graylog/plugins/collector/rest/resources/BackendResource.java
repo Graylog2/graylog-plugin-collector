@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Api(value = "Backends", description = "Manage collector backends")
-@Path("/altconfiguration/backends")
+@Path("/sidecar/backends")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class BackendResource extends RestResource implements PluginRestResource {

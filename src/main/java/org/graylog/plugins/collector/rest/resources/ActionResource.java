@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "AltCollector Actions", description = "Manage Collector Actions")
-@Path("/altcollectors/action")
+@Path("/sidecar/action")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ActionResource extends RestResource implements PluginRestResource {

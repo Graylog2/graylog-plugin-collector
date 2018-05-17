@@ -9,7 +9,7 @@ import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 
 const CollectorConfigurationsStore = Reflux.createStore({
   listenables: [CollectorConfigurationsActions],
-  sourceUrl: '/plugins/org.graylog.plugins.collector/altconfiguration',
+  sourceUrl: '/plugins/org.graylog.plugins.collector/sidecar',
   configurations: undefined,
   pagination: {
     page: undefined,

@@ -7,6 +7,7 @@ import AdministrationActions from './AdministrationActions';
 
 const AdministrationStore = Reflux.createStore({
   listenables: [AdministrationActions],
+  sourceUrl: '/plugins/org.graylog.plugins.collector/sidecar',
   sidecars: undefined,
   filters: undefined,
   pagination: {
@@ -34,7 +35,7 @@ const AdministrationStore = Reflux.createStore({
       filters: filters,
     };
 
-    const promise = fetchPeriodically('POST', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altcollectors/administration'), body);
+    const promise = fetchPeriodically('POST', URLUtils.qualifyUrl(`${this.sourceUrl}/administration`), body);
 
     promise.then(
       (response) => {

@@ -9,6 +9,7 @@ import CollectorsActions from './CollectorsActions';
 
 const CollectorsStore = Reflux.createStore({
   listenables: [CollectorsActions],
+  sourceUrl: '/plugins/org.graylog.plugins.collector/sidecar',
   collectors: undefined,
   query: undefined,
   pagination: {
@@ -34,7 +35,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   getCollector(collectorId) {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collectorId}`));
+    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collectorId}`));
     promise
       .catch(
         (error) => {
@@ -51,7 +52,7 @@ const CollectorsStore = Reflux.createStore({
       per_page: pageSize,
     };
 
-    const uri = URI('/plugins/org.graylog.plugins.collector/altconfiguration/backends/summary').search(search).toString();
+    const uri = URI(`${this.sourceUrl}/backends/summary`).search(search).toString();
 
     return fetch('GET', URLUtils.qualifyUrl(uri));
   },
@@ -100,7 +101,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   create(collector) {
-    const promise = fetch('POST', URLUtils.qualifyUrl('/plugins/org.graylog.plugins.collector/altconfiguration/backends'), collector)
+    const promise = fetch('POST', URLUtils.qualifyUrl(`${this.sourceUrl}/backends`), collector)
       .then(
         (response) => {
           UserNotification.success('Collector successfully created');
@@ -117,7 +118,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   update(collector) {
-    const promise = fetch('PUT', URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collector.id}`), collector)
+    const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collector.id}`), collector)
       .then(
         (response) => {
           UserNotification.success('Collector successfully updated');
@@ -134,7 +135,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   delete(collector) {
-    const url = URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collector.id}`);
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collector.id}`);
     const promise = fetch('DELETE', url);
     promise
       .then((response) => {
@@ -150,7 +151,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   copy(collectorId, name) {
-    const url = URLUtils.qualifyUrl(`/plugins/org.graylog.plugins.collector/altconfiguration/backends/${collectorId}/${name}`);
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collectorId}/${name}`);
     const method = 'POST';
 
     const promise = fetch(method, url);
