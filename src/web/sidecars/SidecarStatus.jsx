@@ -30,6 +30,8 @@ const SidecarStatus = createReactClass({
       <dl className="deflist top-margin">
         <dt>IP Address</dt>
         <dd>{details.ip}</dd>
+        <dt>Operating System</dt>
+        <dd>{details.operating_system}</dd>
         <dt>CPU Idle</dt>
         <dd>{lodash.isNumber(details.metrics.cpu_idle) ? `${details.metrics.cpu_idle}%` : 'Not available' }</dd>
         <dt>Load</dt>
