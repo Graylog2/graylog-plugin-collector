@@ -6,8 +6,8 @@ import { Col, Row } from 'react-bootstrap';
 
 import { ControlledTableList, PaginatedList } from 'components/common';
 import { Input } from 'components/bootstrap';
-import CollectorAdministrationFilters from './CollectorsAdministrationFilters';
-import CollectorAdministrationActions from './CollectorsAdministrationActions';
+import CollectorsAdministrationFilters from './CollectorsAdministrationFilters';
+import CollectorsAdministrationActions from './CollectorsAdministrationActions';
 
 import SidecarsActions from '../sidecars/SidecarsActions';
 
@@ -88,14 +88,14 @@ const CollectorsAdministration = createReactClass({
     let headerMenu;
     if (selectedItems === 0) {
       headerMenu = (
-        <CollectorAdministrationFilters collectors={collectors} configurations={configurations} filter={this.props.onFilter} />
+        <CollectorsAdministrationFilters collectors={collectors} configurations={configurations} filter={this.props.onFilter} />
       );
     } else {
       headerMenu = (
-        <CollectorAdministrationActions selectedSidecarCollectorPairs={selectedSidecarCollectorPairs}
-                                        collectors={collectors}
-                                        configurations={configurations}
-                                        onConfigurationSelectionChange={this.handleConfigurationChange} />
+        <CollectorsAdministrationActions selectedSidecarCollectorPairs={selectedSidecarCollectorPairs}
+                                         collectors={collectors}
+                                         configurations={configurations}
+                                         onConfigurationSelectionChange={this.handleConfigurationChange} />
       );
     }
 
