@@ -6,11 +6,11 @@ import SidecarsPage from 'sidecars/SidecarsPage';
 import SidecarsStatusPage from 'sidecars/SidecarsStatusPage';
 import ConfigurationPage from 'configurations/ConfigurationPage';
 import SidecarSystemConfiguration from 'system-configuration/SidecarSystemConfiguration';
-import EditConfigurationPage from 'alt-configuration/EditConfigurationPage';
-import NewConfigurationPage from 'alt-configuration/NewConfigurationPage';
+import EditConfigurationPage from 'configuration-forms/EditConfigurationPage';
+import NewConfigurationPage from 'configuration-forms/NewConfigurationPage';
 import AdministrationPage from 'administration/AdministrationPage';
-import NewCollectorPage from 'alt-configuration/NewCollectorPage';
-import EditCollectorPage from 'alt-configuration/EditCollectorPage';
+import NewCollectorPage from 'configuration-forms/NewCollectorPage';
+import EditCollectorPage from 'configuration-forms/EditCollectorPage';
 
 const manifest = new PluginManifest(packageJson, {
   routes: [

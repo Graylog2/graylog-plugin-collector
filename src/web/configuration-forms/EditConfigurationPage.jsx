@@ -1,16 +1,30 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DocumentTitle, PageHeader } from 'components/common';
+import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import Routes from 'routing/Routes';
 
-import ConfigurationForm from 'alt-configuration/ConfigurationForm';
-import ConfigurationHelper from 'alt-configuration/ConfigurationHelper';
+import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
-const NewConfigurationPage = React.createClass({
+import ConfigurationForm from 'configuration-forms/ConfigurationForm';
+import ConfigurationHelper from 'configuration-forms/ConfigurationHelper';
+
+const EditConfigurationPage = React.createClass({
+  propTypes: {
+    params: PropTypes.object.isRequired,
+  },
+
+  getInitialState() {
+    return {
+      configuration: undefined,
+    };
+  },
+
   componentDidMount() {
     this.style.use();
+    this._reloadConfiguration();
   },
 
   componentWillUnmount() {
@@ -19,11 +33,27 @@ const NewConfigurationPage = React.createClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
+  _reloadConfiguration() {
+    CollectorConfigurationsActions.getConfiguration(this.props.params.id).then(this._setConfiguration);
+  },
+
+  _setConfiguration(configuration) {
+    this.setState({ configuration });
+  },
+
+  _isLoading() {
+    return !(this.state.configuration);
+  },
+
   render() {
+    if (this._isLoading()) {
+      return <Spinner />;
+    }
+
     return (
-      <DocumentTitle title="New Collector Configuration">
+      <DocumentTitle title="Collector Configuration">
         <span>
-          <PageHeader title="New Collector Configuration">
+          <PageHeader title="Collector Configuration">
             <span>
               Some words about collector configurations.
             </span>
@@ -47,7 +77,7 @@ const NewConfigurationPage = React.createClass({
 
           <Row className="content">
             <Col md={6}>
-              <ConfigurationForm action="create" />
+              <ConfigurationForm configuration={this.state.configuration} />
             </Col>
             <Col md={6}>
               <ConfigurationHelper type="filebeat" />
@@ -59,4 +89,4 @@ const NewConfigurationPage = React.createClass({
   },
 });
 
-export default NewConfigurationPage;
+export default EditConfigurationPage;

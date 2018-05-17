@@ -1,15 +1,28 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import { DocumentTitle, PageHeader } from 'components/common';
+import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import Routes from 'routing/Routes';
 
-import CollectorForm from 'alt-configuration/CollectorForm';
+import CollectorsActions from 'configurations/CollectorsActions';
+import CollectorForm from 'configuration-forms/CollectorForm';
 
-const NewCollectorPage = React.createClass({
+const EditCollectorPage = React.createClass({
+  propTypes: {
+    params: PropTypes.object.isRequired,
+  },
+
+  getInitialState() {
+    return {
+      collector: undefined,
+    };
+  },
+
   componentDidMount() {
     this.style.use();
+    this._reloadCollector();
   },
 
   componentWillUnmount() {
@@ -18,11 +31,27 @@ const NewCollectorPage = React.createClass({
 
   style: require('!style/useable!css!styles/SidecarStyles.css'),
 
+  _reloadCollector() {
+    CollectorsActions.getCollector(this.props.params.id).then(this._setCollector);
+  },
+
+  _setCollector(collector) {
+    this.setState({ collector });
+  },
+
+  _isLoading() {
+    return !(this.state.collector);
+  },
+
   render() {
+    if (this._isLoading()) {
+      return <Spinner />;
+    }
+
     return (
-      <DocumentTitle title="New Log Collector">
+      <DocumentTitle title="Log Collector">
         <span>
-          <PageHeader title="New Log Collector">
+          <PageHeader title="Log Collector">
             <span>
               Some words about log collectors.
             </span>
@@ -46,7 +75,7 @@ const NewCollectorPage = React.createClass({
 
           <Row className="content">
             <Col md={6}>
-              <CollectorForm action="create" />
+              <CollectorForm action="edit" collector={this.state.collector} />
             </Col>
           </Row>
         </span>
@@ -55,4 +84,4 @@ const NewCollectorPage = React.createClass({
   },
 });
 
-export default NewCollectorPage;
+export default EditCollectorPage;
