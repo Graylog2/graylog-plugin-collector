@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-
+/* eslint-disable import/first */
 import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
