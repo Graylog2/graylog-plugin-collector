@@ -105,7 +105,8 @@ const CollectorsAdministrationContainer = createReactClass({
                                 query={sidecars.query}
                                 onPageChange={this.handlePageChange}
                                 onFilter={this.handleFilter}
-                                onQueryChange={this.handleQueryChange} />
+                                onQueryChange={this.handleQueryChange}
+                                onConfigurationChange={this.handleConfigurationChange} />
     );
   },
 });
