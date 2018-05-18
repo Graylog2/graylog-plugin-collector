@@ -23,6 +23,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
+import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
@@ -78,6 +79,7 @@ public class CollectorModule extends PluginModule {
         addRestResource(AdministrationResource.class);
         addRestResource(CollectorResource.class);
         addPermissions(CollectorRestPermissions.class);
+        addPeriodical(PurgeExpiredCollectorsThread.class);
 
         addAuditEventTypes(CollectorAuditEventTypes.class);
 
