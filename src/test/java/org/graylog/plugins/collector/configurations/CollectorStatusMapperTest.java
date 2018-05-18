@@ -1,4 +1,4 @@
-package org.graylog.plugins.collector.altConfigurations;
+package org.graylog.plugins.collector.configurations;
 
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.junit.Test;
