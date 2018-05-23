@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.filter.AdministrationFiltersFactory;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AdministrationResource extends RestResource implements PluginRestResource {
-    private final CollectorService collectorService;
+    private final SidecarService sidecarService;
     private final ConfigurationService configurationService;
     private final BackendService backendService;
     private final SearchQueryParser searchQueryParser;
@@ -57,12 +57,12 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     private final ActiveCollectorFilter activeCollectorFilter;
 
     @Inject
-    public AdministrationResource(CollectorService collectorService,
+    public AdministrationResource(SidecarService sidecarService,
                                   ConfigurationService configurationService,
                                   BackendService backendService,
                                   AdministrationFiltersFactory administrationFiltersFactory,
                                   Supplier<CollectorSystemConfiguration> configSupplier) {
-        this.collectorService = collectorService;
+        this.sidecarService = sidecarService;
         this.configurationService = configurationService;
         this.backendService = backendService;
         this.administrationFiltersFactory = administrationFiltersFactory;
@@ -85,8 +85,8 @@ public class AdministrationResource extends RestResource implements PluginRestRe
         final Optional<Predicate<Collector>> filters = administrationFiltersFactory.getFilters(request.filters());
 
         final List<CollectorBackend> backends = getCollectorBackends(request.filters());
-        final PaginatedList<Collector> collectors = collectorService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, activeCollectorFilter);
+        final PaginatedList<Collector> collectors = sidecarService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
+        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(collectors, activeCollectorFilter);
 
         final List<CollectorSummary> summariesWithBackends = collectorSummaries.stream()
                 .map(collector -> {

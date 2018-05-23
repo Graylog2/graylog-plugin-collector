@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.EtagService;
 import org.graylog.plugins.collector.rest.models.Collector;
@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigurationResource extends RestResource implements PluginRestResource {
     private final ConfigurationService configurationService;
-    private final CollectorService collectorService;
+    private final SidecarService sidecarService;
     private final EtagService etagService;
     private final SearchQueryParser searchQueryParser;
     private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
@@ -68,10 +68,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
     @Inject
     public ConfigurationResource(ConfigurationService configurationService,
-                                 CollectorService collectorService,
+                                 SidecarService sidecarService,
                                  EtagService etagService) {
         this.configurationService = configurationService;
-        this.collectorService = collectorService;
+        this.sidecarService = sidecarService;
         this.etagService = etagService;
         this.searchQueryParser = new SearchQueryParser(CollectorConfiguration.FIELD_NAME, SEARCH_FIELD_MAPPING);;
     }
@@ -152,7 +152,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
         // fetch configuration from database if client is outdated
         if (!etagCached) {
-            Collector collector = collectorService.findByNodeId(collectorId);
+            Collector collector = sidecarService.findByNodeId(collectorId);
             if (collector == null) {
                 throw new NotFoundException("Couldn't find collector by ID: " + collectorId);
             }

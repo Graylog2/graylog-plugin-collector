@@ -24,7 +24,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
 import org.graylog.plugins.collector.services.EtagService;
@@ -62,7 +62,7 @@ public class CollectorModule extends PluginModule {
     @Override
     protected void configure() {
         bind(ConfigurationService.class).asEagerSingleton();
-        bind(CollectorService.class).asEagerSingleton();
+        bind(SidecarService.class).asEagerSingleton();
         bind(BackendService.class).asEagerSingleton();
         bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
 

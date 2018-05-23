@@ -13,7 +13,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.services.ActionService;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.rest.models.Collector;
@@ -77,7 +77,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
             .put("status", SearchQueryField.create(Collector.FIELD_STATUS, SearchQueryField.Type.INT))
             .build();
 
-    private final CollectorService collectorService;
+    private final SidecarService sidecarService;
     private final ActionService actionService;
     private final ActiveCollectorFilter activeCollectorFilter;
     private final SearchQueryParser searchQueryParser;
@@ -85,11 +85,11 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     private final CollectorStatusMapper collectorStatusMapper;
 
     @Inject
-    public SidecarResource(CollectorService collectorService,
+    public SidecarResource(SidecarService sidecarService,
                            ActionService actionService,
                            Supplier<CollectorSystemConfiguration> configSupplier,
                            CollectorStatusMapper collectorStatusMapper) {
-        this.collectorService = collectorService;
+        this.sidecarService = sidecarService;
         this.actionService = actionService;
         this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
@@ -104,8 +104,8 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorListResponse all() {
-        final List<Collector> collectors = collectorService.all();
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, activeCollectorFilter);
+        final List<Collector> collectors = sidecarService.all();
+        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(collectors, activeCollectorFilter);
         return CollectorListResponse.create("",
                 PaginatedList.PaginationInfo.create(collectorSummaries.size(),
                         collectorSummaries.size(),
@@ -136,9 +136,9 @@ public class SidecarResource extends RestResource implements PluginRestResource 
         final String mappedQuery = collectorStatusMapper.replaceStringStatusSearchQuery(query);
         final SearchQuery searchQuery = searchQueryParser.parse(mappedQuery);
         final PaginatedList<Collector> collectors = onlyActive ?
-                collectorService.findPaginated(searchQuery, activeCollectorFilter, page, perPage, sort, order) :
-                collectorService.findPaginated(searchQuery, page, perPage, sort, order);
-        final List<CollectorSummary> collectorSummaries = collectorService.toSummaryList(collectors, activeCollectorFilter);
+                sidecarService.findPaginated(searchQuery, activeCollectorFilter, page, perPage, sort, order) :
+                sidecarService.findPaginated(searchQuery, page, perPage, sort, order);
+        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(collectors, activeCollectorFilter);
         return CollectorListResponse.create(query, collectors.pagination(), onlyActive, sort, order, collectorSummaries);
     }
 
@@ -153,7 +153,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorSummary get(@ApiParam(name = "sidecarId", required = true)
                                 @PathParam("sidecarId") @NotEmpty String sidecarId) {
-        final Collector sidecar = collectorService.findByNodeId(sidecarId);
+        final Collector sidecar = sidecarService.findByNodeId(sidecarId);
         if (sidecar != null) {
             return sidecar.toSummary(activeCollectorFilter);
         } else {
@@ -178,7 +178,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String sidecarVersion) {
         final Collector newSidecar;
-        final Collector oldSidecar = collectorService.findByNodeId(sidecarId);
+        final Collector oldSidecar = sidecarService.findByNodeId(sidecarId);
         List<ConfigurationAssignment> assignments = null;
         if (oldSidecar != null) {
             assignments = oldSidecar.assignments();
@@ -189,9 +189,9 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                     .lastSeen(DateTime.now(DateTimeZone.UTC))
                     .build();
         } else {
-            newSidecar = collectorService.fromRequest(sidecarId, request, sidecarVersion);
+            newSidecar = sidecarService.fromRequest(sidecarId, request, sidecarVersion);
         }
-        collectorService.save(newSidecar);
+        sidecarService.save(newSidecar);
 
         final CollectorActions collectorActions = actionService.findActionByCollector(sidecarId, true);
         List<CollectorAction> collectorAction = null;
@@ -229,8 +229,8 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                     .flatMap(a -> a.assignments().stream())
                     .collect(Collectors.toList());
             try {
-                Collector collector = collectorService.assignConfiguration(nodeId, nodeRelations);
-                collectorService.save(collector);
+                Collector collector = sidecarService.assignConfiguration(nodeId, nodeRelations);
+                sidecarService.save(collector);
             } catch (org.graylog2.database.NotFoundException e) {
                 throw new NotFoundException(e.getMessage());
             }

@@ -17,7 +17,7 @@
 package org.graylog.plugins.collector.periodical;
 
 import com.google.common.base.Supplier;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.plugin.periodical.Periodical;
 import org.slf4j.Logger;
@@ -28,13 +28,13 @@ import javax.inject.Inject;
 public class PurgeExpiredCollectorsThread extends Periodical {
     private static final Logger LOG = LoggerFactory.getLogger(PurgeExpiredCollectorsThread.class);
 
-    private final CollectorService collectorService;
+    private final SidecarService sidecarService;
     private final Supplier<CollectorSystemConfiguration> configSupplier;
 
     @Inject
-    public PurgeExpiredCollectorsThread(CollectorService collectorService,
+    public PurgeExpiredCollectorsThread(SidecarService sidecarService,
                                         Supplier<CollectorSystemConfiguration> configSupplier) {
-        this.collectorService = collectorService;
+        this.sidecarService = sidecarService;
         this.configSupplier = configSupplier;
     }
 
@@ -80,7 +80,7 @@ public class PurgeExpiredCollectorsThread extends Periodical {
 
     @Override
     public void doRun() {
-        final int purgedCollectors = collectorService.destroyExpired(configSupplier.get().collectorExpirationThreshold());
+        final int purgedCollectors = sidecarService.destroyExpired(configSupplier.get().collectorExpirationThreshold());
         LOG.debug("Purged {} inactive collectors.", purgedCollectors);
     }
 }

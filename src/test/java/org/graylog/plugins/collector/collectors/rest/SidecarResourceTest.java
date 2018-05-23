@@ -18,7 +18,7 @@ package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
 import org.graylog.plugins.collector.services.ActionService;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.rest.models.Collector;
@@ -55,7 +55,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     private List<Collector> collectors;
 
     @Mock
-    private CollectorService collectorService;
+    private SidecarService sidecarService;
 
     @Mock
     private ActionService actionService;
@@ -67,11 +67,11 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
         this.resource = new SidecarResource(
-                collectorService,
+                sidecarService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
                 statusMapper);
-        when(collectorService.all()).thenReturn(collectors);
+        when(sidecarService.all()).thenReturn(collectors);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     @Test
     public void testGet() throws Exception {
         final Collector collector = collectors.get(collectors.size() - 1);
-        when(collectorService.findByNodeId(collector.nodeId())).thenReturn(collector);
+        when(sidecarService.findByNodeId(collector.nodeId())).thenReturn(collector);
         final CollectorSummary collectorSummary = mock(CollectorSummary.class);
         when(collector.toSummary(any(ActiveCollectorFilter.class))).thenReturn(collectorSummary);
 

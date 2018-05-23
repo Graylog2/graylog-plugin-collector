@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CollectorService extends PaginatedDbService<Collector> {
+public class SidecarService extends PaginatedDbService<Collector> {
     private static final String COLLECTION_NAME = "collectors";
     private final BackendService backendService;
     private final ConfigurationService configurationService;
@@ -37,11 +37,11 @@ public class CollectorService extends PaginatedDbService<Collector> {
     private final Validator validator;
 
     @Inject
-    public CollectorService(BackendService backendService,
-                            ConfigurationService configurationService,
-                            MongoConnection mongoConnection,
-                            MongoJackObjectMapperProvider mapper,
-                            Validator validator) {
+    public SidecarService(BackendService backendService,
+                          ConfigurationService configurationService,
+                          MongoConnection mongoConnection,
+                          MongoJackObjectMapperProvider mapper,
+                          Validator validator) {
         super(mongoConnection, mapper, Collector.class, COLLECTION_NAME);
         this.backendService = backendService;
         this.configurationService = configurationService;

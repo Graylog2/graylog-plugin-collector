@@ -23,7 +23,7 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb;
 import com.lordofthejars.nosqlunit.mongodb.MongoFlexibleComparisonStrategy;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
 import org.graylog.plugins.collector.rest.models.Collector;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JukitoRunner.class)
 @UseModules({ObjectMapperModule.class, ValidatorModule.class})
 @CustomComparisonStrategy(comparisonStrategy = MongoFlexibleComparisonStrategy.class)
-public class CollectorServiceImplTest {
+public class SidecarServiceImplTest {
     @Mock
     private BackendService backendService;
 
@@ -66,18 +66,18 @@ public class CollectorServiceImplTest {
     @Rule
     public MongoConnectionRule mongoRule = MongoConnectionRule.build("test");
 
-    private CollectorService collectorService;
+    private SidecarService sidecarService;
 
     @Before
     public void setUp(MongoJackObjectMapperProvider mapperProvider,
                       Validator validator) throws Exception {
-        this.collectorService = new CollectorService(backendService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
+        this.sidecarService = new SidecarService(backendService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
     }
 
     @Test
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void testCountEmptyCollection() throws Exception {
-        final long result = this.collectorService.count();
+        final long result = this.sidecarService.count();
 
         assertEquals(0, result);
     }
@@ -85,7 +85,7 @@ public class CollectorServiceImplTest {
     @Test
     @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testCountNonEmptyCollection() throws Exception {
-        final long result = this.collectorService.count();
+        final long result = this.sidecarService.count();
 
         assertEquals(3, result);
     }
@@ -107,7 +107,7 @@ public class CollectorServiceImplTest {
                 "0.0.1"
                 );
 
-        final Collector result = this.collectorService.save(collector);
+        final Collector result = this.sidecarService.save(collector);
 
         assertNotNull(result);
     }
@@ -115,7 +115,7 @@ public class CollectorServiceImplTest {
     @Test
     @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testAll() throws Exception {
-        final List<Collector> collectors = this.collectorService.all();
+        final List<Collector> collectors = this.sidecarService.all();
 
         assertNotNull(collectors);
         assertEquals(3, collectors.size());
@@ -124,7 +124,7 @@ public class CollectorServiceImplTest {
     @Test
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void testAllEmptyCollection() throws Exception {
-        final List<Collector> collectors = this.collectorService.all();
+        final List<Collector> collectors = this.sidecarService.all();
 
         assertNotNull(collectors);
         assertEquals(0, collectors.size());
@@ -135,7 +135,7 @@ public class CollectorServiceImplTest {
     public void testFindById() throws Exception {
         final String collector1id = "collector1id";
 
-        final Collector collector = this.collectorService.findByNodeId(collector1id);
+        final Collector collector = this.sidecarService.findByNodeId(collector1id);
 
         assertNotNull(collector);
         assertEquals(collector1id, collector.nodeId());
@@ -146,7 +146,7 @@ public class CollectorServiceImplTest {
     public void testFindByIdNonexisting() throws Exception {
         final String collector1id = "nonexisting";
 
-        final Collector collector = this.collectorService.findByNodeId(collector1id);
+        final Collector collector = this.sidecarService.findByNodeId(collector1id);
 
         assertNull(collector);
     }
@@ -158,7 +158,7 @@ public class CollectorServiceImplTest {
         final Collector collector = mock(Collector.class);
         when(collector.nodeId()).thenReturn("collector2id");
 
-        final int result = this.collectorService.delete(collector.id());
+        final int result = this.sidecarService.delete(collector.id());
 
         assertEquals(1, result);
     }
