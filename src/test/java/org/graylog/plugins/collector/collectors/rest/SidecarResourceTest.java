@@ -24,7 +24,7 @@ import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
-import org.graylog.plugins.collector.rest.resources.CollectorResource;
+import org.graylog.plugins.collector.rest.resources.SidecarResource;
 import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
@@ -50,8 +50,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
-public class CollectorResourceTest extends RestResourceBaseTest {
-    private CollectorResource resource;
+public class SidecarResourceTest extends RestResourceBaseTest {
+    private SidecarResource resource;
     private List<Collector> collectors;
 
     @Mock
@@ -66,7 +66,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Before
     public void setUp() throws Exception {
         this.collectors = getDummyCollectorList();
-        this.resource = new CollectorResource(
+        this.resource = new SidecarResource(
                 collectorService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),

@@ -8,7 +8,7 @@ import SidecarsActions from './SidecarsActions';
 
 const SidecarsStore = Reflux.createStore({
   listenables: [SidecarsActions],
-  sourceUrl: '/plugins/org.graylog.plugins.collector/sidecar/collectors',
+  sourceUrl: '/plugins/org.graylog.plugins.collector/sidecars',
   sidecars: undefined,
   onlyActive: undefined,
   pagination: {

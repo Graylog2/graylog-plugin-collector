@@ -67,7 +67,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
         this.backendService = backendService;
         this.administrationFiltersFactory = administrationFiltersFactory;
         this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
-        this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, CollectorResource.SEARCH_FIELD_MAPPING);
+        this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, SidecarResource.SEARCH_FIELD_MAPPING);
     }
 
     @POST

@@ -37,7 +37,7 @@ import org.graylog.plugins.collector.migrations.V20180212165000_AddDefaultBacken
 import org.graylog.plugins.collector.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.rest.resources.ActionResource;
 import org.graylog.plugins.collector.rest.resources.AdministrationResource;
-import org.graylog.plugins.collector.rest.resources.CollectorResource;
+import org.graylog.plugins.collector.rest.resources.SidecarResource;
 import org.graylog.plugins.collector.rest.resources.ConfigurationResource;
 import org.graylog.plugins.collector.rest.resources.BackendResource;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
@@ -77,7 +77,7 @@ public class CollectorModule extends PluginModule {
         addRestResource(BackendResource.class);
         addRestResource(ActionResource.class);
         addRestResource(AdministrationResource.class);
-        addRestResource(CollectorResource.class);
+        addRestResource(SidecarResource.class);
         addPermissions(CollectorRestPermissions.class);
         addPeriodical(PurgeExpiredCollectorsThread.class);
 

@@ -40,8 +40,6 @@ import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -64,12 +62,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Api(value = "AltCollector", description = "Manage collector fleet")
-@Path("/sidecar/collectors")
+@Api(value = "Sidecar", description = "Manage Sidecar fleet")
+@Path("/sidecars")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class CollectorResource extends RestResource implements PluginRestResource {
-    private static final Logger LOG = LoggerFactory.getLogger(CollectorResource.class);
+public class SidecarResource extends RestResource implements PluginRestResource {
     protected static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
             .put("id", SearchQueryField.create(Collector.FIELD_ID))
             .put("node_id", SearchQueryField.create(Collector.FIELD_NODE_ID))
@@ -88,10 +85,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     private final CollectorStatusMapper collectorStatusMapper;
 
     @Inject
-    public CollectorResource(CollectorService collectorService,
-                             ActionService actionService,
-                             Supplier<CollectorSystemConfiguration> configSupplier,
-                             CollectorStatusMapper collectorStatusMapper) {
+    public SidecarResource(CollectorService collectorService,
+                           ActionService actionService,
+                           Supplier<CollectorSystemConfiguration> configSupplier,
+                           CollectorStatusMapper collectorStatusMapper) {
         this.collectorService = collectorService;
         this.actionService = actionService;
         this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
@@ -147,75 +144,75 @@ public class CollectorResource extends RestResource implements PluginRestResourc
 
     @GET
     @Timed
-    @Path("/{collectorId}")
-    @ApiOperation(value = "Returns at most one collector summary for the specified collector id")
+    @Path("/{sidecarId}")
+    @ApiOperation(value = "Returns at most one Sidecar summary for the specified id")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "No collector with the specified id exists")
+            @ApiResponse(code = 404, message = "No Sidecar with the specified id exists")
     })
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
-    public CollectorSummary get(@ApiParam(name = "collectorId", required = true)
-                                @PathParam("collectorId") @NotEmpty String collectorId) {
-        final Collector collector = collectorService.findByNodeId(collectorId);
-        if (collector != null) {
-            return collector.toSummary(activeCollectorFilter);
+    public CollectorSummary get(@ApiParam(name = "sidecarId", required = true)
+                                @PathParam("sidecarId") @NotEmpty String sidecarId) {
+        final Collector sidecar = collectorService.findByNodeId(sidecarId);
+        if (sidecar != null) {
+            return sidecar.toSummary(activeCollectorFilter);
         } else {
-            throw new NotFoundException("Collector <" + collectorId + "> not found!");
+            throw new NotFoundException("Collector <" + sidecarId + "> not found!");
         }
     }
 
     @PUT
     @Timed
-    @Path("/{collectorId}")
-    @ApiOperation(value = "Create/update a collector registration",
-            notes = "This is a stateless method which upserts a collector registration")
+    @Path("/{sidecarId}")
+    @ApiOperation(value = "Create/update a Sidecar registration",
+            notes = "This is a stateless method which upserts a Sidecar registration")
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "The supplied request is not valid.")
     })
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_UPDATE)
-    @NoAuditEvent("this is only a ping from collectors, and would overflow the audit log")
-    public Response register(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
-                             @PathParam("collectorId") @NotEmpty String collectorId,
+    @NoAuditEvent("this is only a ping from Sidecars, and would overflow the audit log")
+    public Response register(@ApiParam(name = "sidecarId", value = "The id this Sidecar is registering as.", required = true)
+                             @PathParam("sidecarId") @NotEmpty String sidecarId,
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
-                             @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector newCollector;
-        final Collector oldCollector = collectorService.findByNodeId(collectorId);
+                             @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String sidecarVersion) {
+        final Collector newSidecar;
+        final Collector oldSidecar = collectorService.findByNodeId(sidecarId);
         List<ConfigurationAssignment> assignments = null;
-        if (oldCollector != null) {
-            assignments = oldCollector.assignments();
-            newCollector = oldCollector.toBuilder()
+        if (oldSidecar != null) {
+            assignments = oldSidecar.assignments();
+            newSidecar = oldSidecar.toBuilder()
                     .nodeName(request.nodeName())
                     .nodeDetails(request.nodeDetails())
-                    .collectorVersion(collectorVersion)
+                    .collectorVersion(sidecarVersion)
                     .lastSeen(DateTime.now(DateTimeZone.UTC))
                     .build();
         } else {
-            newCollector = collectorService.fromRequest(collectorId, request, collectorVersion);
+            newSidecar = collectorService.fromRequest(sidecarId, request, sidecarVersion);
         }
-        collectorService.save(newCollector);
+        collectorService.save(newSidecar);
 
-        final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, true);
+        final CollectorActions collectorActions = actionService.findActionByCollector(sidecarId, true);
         List<CollectorAction> collectorAction = null;
         if (collectorActions != null) {
             collectorAction = collectorActions.action();
         }
-        final CollectorSystemConfiguration collectorSystemConfiguration = configSupplier.get();
-        CollectorRegistrationResponse collectorRegistrationResponse = CollectorRegistrationResponse.create(
+        final CollectorSystemConfiguration sidecarSystemConfiguration = configSupplier.get();
+        CollectorRegistrationResponse sidecarRegistrationResponse = CollectorRegistrationResponse.create(
                 CollectorRegistrationConfiguration.create(
-                        collectorSystemConfiguration.collectorUpdateInterval().toStandardDuration().getStandardSeconds(),
-                        collectorSystemConfiguration.collectorSendStatus()),
-                collectorSystemConfiguration.collectorConfigurationOverride(),
+                        sidecarSystemConfiguration.collectorUpdateInterval().toStandardDuration().getStandardSeconds(),
+                        sidecarSystemConfiguration.collectorSendStatus()),
+                sidecarSystemConfiguration.collectorConfigurationOverride(),
                 collectorAction,
                 assignments);
-        return Response.accepted(collectorRegistrationResponse).build();
+        return Response.accepted(sidecarRegistrationResponse).build();
     }
 
     @PUT
     @Timed
     @Path("/configurations")
-    @ApiOperation(value = "Assign configurations to collector backends")
+    @ApiOperation(value = "Assign configurations to Sidecar backends")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_UPDATE)
     @AuditEvent(type = CollectorAuditEventTypes.SIDECAR_UPDATE)
