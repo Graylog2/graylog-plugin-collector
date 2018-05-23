@@ -10,7 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.EtagService;
-import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.rest.requests.ConfigurationPreviewRequest;
 import org.graylog.plugins.collector.rest.responses.CollectorConfigurationListResponse;
@@ -152,8 +152,8 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
         // fetch configuration from database if client is outdated
         if (!etagCached) {
-            Collector collector = sidecarService.findByNodeId(collectorId);
-            if (collector == null) {
+            Sidecar sidecar = sidecarService.findByNodeId(collectorId);
+            if (sidecar == null) {
                 throw new NotFoundException("Couldn't find collector by ID: " + collectorId);
             }
             CollectorConfiguration configuration = configurationService.find(configurationId);
@@ -161,7 +161,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
                 throw new NotFoundException("Couldn't find configuration by ID: " + configurationId);
             }
 
-            CollectorConfiguration collectorConfiguration = this.configurationService.renderConfigurationForCollector(collector, configuration);
+            CollectorConfiguration collectorConfiguration = this.configurationService.renderConfigurationForCollector(sidecar, configuration);
 
             // add new etag to cache
             String etagString = configurationToEtag(collectorConfiguration);

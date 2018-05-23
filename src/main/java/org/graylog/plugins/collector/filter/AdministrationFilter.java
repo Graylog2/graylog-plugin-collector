@@ -1,11 +1,11 @@
 package org.graylog.plugins.collector.filter;
 
 import com.google.inject.name.Named;
-import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 
 import java.util.function.Predicate;
 
-public interface AdministrationFilter extends Predicate<Collector> {
+public interface AdministrationFilter extends Predicate<Sidecar> {
     enum Type {
         BACKEND, CONFIGURATION, OS, STATUS
     }

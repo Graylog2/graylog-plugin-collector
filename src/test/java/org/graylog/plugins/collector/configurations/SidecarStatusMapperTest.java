@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
-public class CollectorStatusMapperTest {
+public class SidecarStatusMapperTest {
 
     @Test
     public void replaceStringStatusSearchQuery() {

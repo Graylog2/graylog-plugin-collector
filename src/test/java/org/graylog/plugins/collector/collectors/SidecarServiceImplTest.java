@@ -23,10 +23,10 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb;
 import com.lordofthejars.nosqlunit.mongodb.MongoFlexibleComparisonStrategy;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
-import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.database.MongoConnectionRule;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
@@ -95,7 +95,7 @@ public class SidecarServiceImplTest {
     @ShouldMatchDataSet(location = "collectorsSingleDataset.json")
     @IgnorePropertyValue(properties = {"_id", "last_seen"})
     public void testSaveFirstRecord() throws Exception {
-        final Collector collector = Collector.create(
+        final Sidecar sidecar = Sidecar.create(
                 "nodeId",
                 "nodeName",
                 CollectorNodeDetails.create(
@@ -107,7 +107,7 @@ public class SidecarServiceImplTest {
                 "0.0.1"
                 );
 
-        final Collector result = this.sidecarService.save(collector);
+        final Sidecar result = this.sidecarService.save(sidecar);
 
         assertNotNull(result);
     }
@@ -115,19 +115,19 @@ public class SidecarServiceImplTest {
     @Test
     @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     public void testAll() throws Exception {
-        final List<Collector> collectors = this.sidecarService.all();
+        final List<Sidecar> sidecars = this.sidecarService.all();
 
-        assertNotNull(collectors);
-        assertEquals(3, collectors.size());
+        assertNotNull(sidecars);
+        assertEquals(3, sidecars.size());
     }
 
     @Test
     @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void testAllEmptyCollection() throws Exception {
-        final List<Collector> collectors = this.sidecarService.all();
+        final List<Sidecar> sidecars = this.sidecarService.all();
 
-        assertNotNull(collectors);
-        assertEquals(0, collectors.size());
+        assertNotNull(sidecars);
+        assertEquals(0, sidecars.size());
     }
 
     @Test
@@ -135,10 +135,10 @@ public class SidecarServiceImplTest {
     public void testFindById() throws Exception {
         final String collector1id = "collector1id";
 
-        final Collector collector = this.sidecarService.findByNodeId(collector1id);
+        final Sidecar sidecar = this.sidecarService.findByNodeId(collector1id);
 
-        assertNotNull(collector);
-        assertEquals(collector1id, collector.nodeId());
+        assertNotNull(sidecar);
+        assertEquals(collector1id, sidecar.nodeId());
     }
 
     @Test
@@ -146,19 +146,19 @@ public class SidecarServiceImplTest {
     public void testFindByIdNonexisting() throws Exception {
         final String collector1id = "nonexisting";
 
-        final Collector collector = this.sidecarService.findByNodeId(collector1id);
+        final Sidecar sidecar = this.sidecarService.findByNodeId(collector1id);
 
-        assertNull(collector);
+        assertNull(sidecar);
     }
 
     @Test
     @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @ShouldMatchDataSet
     public void testDestroy() throws Exception {
-        final Collector collector = mock(Collector.class);
-        when(collector.nodeId()).thenReturn("collector2id");
+        final Sidecar sidecar = mock(Sidecar.class);
+        when(sidecar.nodeId()).thenReturn("collector2id");
 
-        final int result = this.sidecarService.delete(collector.id());
+        final int result = this.sidecarService.delete(sidecar.id());
 
         assertEquals(1, result);
     }

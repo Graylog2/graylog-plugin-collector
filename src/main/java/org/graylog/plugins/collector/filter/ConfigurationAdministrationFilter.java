@@ -1,7 +1,7 @@
 package org.graylog.plugins.collector.filter;
 
 import com.google.inject.assistedinject.Assisted;
-import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.rest.requests.ConfigurationAssignment;
 
 import javax.inject.Inject;
@@ -16,8 +16,8 @@ public class ConfigurationAdministrationFilter implements AdministrationFilter {
     }
 
     @Override
-    public boolean test(Collector collector) {
-        final List<ConfigurationAssignment> assignments = collector.assignments();
+    public boolean test(Sidecar sidecar) {
+        final List<ConfigurationAssignment> assignments = sidecar.assignments();
         if (assignments == null) {
             return false;
         }

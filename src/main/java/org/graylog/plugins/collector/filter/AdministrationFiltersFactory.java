@@ -1,7 +1,6 @@
 package org.graylog.plugins.collector.filter;
 
-import org.graylog.plugins.collector.filter.AdministrationFilter;
-import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -18,9 +17,9 @@ public class AdministrationFiltersFactory {
         this.administrationFilterFactory = administrationFilterFactory;
     }
 
-    public Optional<Predicate<Collector>> getFilters(Map<String, String> filters) {
+    public Optional<Predicate<Sidecar>> getFilters(Map<String, String> filters) {
         return filters.entrySet().stream()
-                .map((Function<Map.Entry<String, String>, Predicate<Collector>>) entry -> {
+                .map((Function<Map.Entry<String, String>, Predicate<Sidecar>>) entry -> {
                     final String name = entry.getKey();
                     final String value = entry.getValue();
 

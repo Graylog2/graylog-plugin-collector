@@ -17,11 +17,11 @@
 package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
-import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.rest.resources.SidecarResource;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 @RunWith(value = MockitoJUnitRunner.class)
 public class SidecarResourceTest extends RestResourceBaseTest {
     private SidecarResource resource;
-    private List<Collector> collectors;
+    private List<Sidecar> sidecars;
 
     @Mock
     private SidecarService sidecarService;
@@ -65,13 +65,13 @@ public class SidecarResourceTest extends RestResourceBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        this.collectors = getDummyCollectorList();
+        this.sidecars = getDummyCollectorList();
         this.resource = new SidecarResource(
                 sidecarService,
                 actionService,
                 new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
                 statusMapper);
-        when(sidecarService.all()).thenReturn(collectors);
+        when(sidecarService.all()).thenReturn(sidecars);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
 
         assertNotNull(response);
         assertNotNull(response.collectors());
-        assertEquals("Collector list should be of same size as dummy list", collectors.size(), response.collectors().size());
+        assertEquals("Collector list should be of same size as dummy list", sidecars.size(), response.collectors().size());
     }
 
     @Test(expected = NotFoundException.class)
@@ -92,30 +92,30 @@ public class SidecarResourceTest extends RestResourceBaseTest {
 
     @Test
     public void testGet() throws Exception {
-        final Collector collector = collectors.get(collectors.size() - 1);
-        when(sidecarService.findByNodeId(collector.nodeId())).thenReturn(collector);
+        final Sidecar sidecar = sidecars.get(sidecars.size() - 1);
+        when(sidecarService.findByNodeId(sidecar.nodeId())).thenReturn(sidecar);
         final CollectorSummary collectorSummary = mock(CollectorSummary.class);
-        when(collector.toSummary(any(ActiveCollectorFilter.class))).thenReturn(collectorSummary);
+        when(sidecar.toSummary(any(ActiveCollectorFilter.class))).thenReturn(collectorSummary);
 
-        final CollectorSummary response = this.resource.get(collector.nodeId());
+        final CollectorSummary response = this.resource.get(sidecar.nodeId());
 
         assertNotNull(response);
         assertEquals(collectorSummary, response);
     }
 
-    private Collector getDummyCollector(String id) {
-        final Collector collector = mock(Collector.class);
-        when(collector.nodeId()).thenReturn(id);
+    private Sidecar getDummyCollector(String id) {
+        final Sidecar sidecar = mock(Sidecar.class);
+        when(sidecar.nodeId()).thenReturn(id);
 
-        return collector;
+        return sidecar;
     }
 
-    private List<Collector> getDummyCollectorList() {
-        final Collector collector1 = getDummyCollector("collector1id");
-        final Collector collector2 = getDummyCollector("collector2id");
-        final Collector collector3 = getDummyCollector("collector3id");
+    private List<Sidecar> getDummyCollectorList() {
+        final Sidecar sidecar1 = getDummyCollector("collector1id");
+        final Sidecar sidecar2 = getDummyCollector("collector2id");
+        final Sidecar sidecar3 = getDummyCollector("collector3id");
 
-        return Lists.newArrayList(collector1, collector2, collector3);
+        return Lists.newArrayList(sidecar1, sidecar2, sidecar3);
     }
 
     @Test

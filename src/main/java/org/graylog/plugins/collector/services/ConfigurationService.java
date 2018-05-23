@@ -7,9 +7,9 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.template.directives.IndentTemplateDirective;
 import org.graylog.plugins.collector.template.loader.MongoDbTemplateLoader;
-import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
@@ -101,19 +101,19 @@ public class ConfigurationService extends PaginatedDbService<CollectorConfigurat
                 request.template());
     }
 
-    public CollectorConfiguration renderConfigurationForCollector(Collector collector, CollectorConfiguration configuration) {
+    public CollectorConfiguration renderConfigurationForCollector(Sidecar sidecar, CollectorConfiguration configuration) {
         Map<String, Object> context = new HashMap<>();
 
-        context.put("nodeId", collector.nodeId());
-        context.put("nodeName", collector.nodeName());
-        context.put("collectorVersion", collector.collectorVersion());
-        context.put("operatingSystem", collector.nodeDetails().operatingSystem());
-        context.put("ip", collector.nodeDetails().ip());
-        if (collector.nodeDetails().metrics().cpuIdle() != null) {
-            context.put("cpuIdle", collector.nodeDetails().metrics().cpuIdle());
+        context.put("nodeId", sidecar.nodeId());
+        context.put("nodeName", sidecar.nodeName());
+        context.put("collectorVersion", sidecar.collectorVersion());
+        context.put("operatingSystem", sidecar.nodeDetails().operatingSystem());
+        context.put("ip", sidecar.nodeDetails().ip());
+        if (sidecar.nodeDetails().metrics().cpuIdle() != null) {
+            context.put("cpuIdle", sidecar.nodeDetails().metrics().cpuIdle());
         }
-        if (collector.nodeDetails().metrics().load1() != null) {
-            context.put("load1", collector.nodeDetails().metrics().load1());
+        if (sidecar.nodeDetails().metrics().load1() != null) {
+            context.put("load1", sidecar.nodeDetails().metrics().load1());
         }
 
         return CollectorConfiguration.create(

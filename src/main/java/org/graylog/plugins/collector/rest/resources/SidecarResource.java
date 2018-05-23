@@ -12,11 +12,11 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
-import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.CollectorAction;
 import org.graylog.plugins.collector.rest.models.CollectorActions;
 import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
@@ -68,13 +68,13 @@ import java.util.stream.Collectors;
 @Produces(MediaType.APPLICATION_JSON)
 public class SidecarResource extends RestResource implements PluginRestResource {
     protected static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
-            .put("id", SearchQueryField.create(Collector.FIELD_ID))
-            .put("node_id", SearchQueryField.create(Collector.FIELD_NODE_ID))
-            .put("name", SearchQueryField.create(Collector.FIELD_NODE_NAME))
-            .put("collector_version", SearchQueryField.create(Collector.FIELD_COLLECTOR_VERSION))
-            .put("last_seen", SearchQueryField.create(Collector.FIELD_LAST_SEEN, SearchQueryField.Type.DATE))
-            .put("operating_system", SearchQueryField.create(Collector.FIELD_OPERATING_SYSTEM))
-            .put("status", SearchQueryField.create(Collector.FIELD_STATUS, SearchQueryField.Type.INT))
+            .put("id", SearchQueryField.create(Sidecar.FIELD_ID))
+            .put("node_id", SearchQueryField.create(Sidecar.FIELD_NODE_ID))
+            .put("name", SearchQueryField.create(Sidecar.FIELD_NODE_NAME))
+            .put("collector_version", SearchQueryField.create(Sidecar.FIELD_COLLECTOR_VERSION))
+            .put("last_seen", SearchQueryField.create(Sidecar.FIELD_LAST_SEEN, SearchQueryField.Type.DATE))
+            .put("operating_system", SearchQueryField.create(Sidecar.FIELD_OPERATING_SYSTEM))
+            .put("status", SearchQueryField.create(Sidecar.FIELD_STATUS, SearchQueryField.Type.INT))
             .build();
 
     private final SidecarService sidecarService;
@@ -94,7 +94,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
         this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
         this.configSupplier = configSupplier;
         this.collectorStatusMapper = collectorStatusMapper;
-        this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
+        this.searchQueryParser = new SearchQueryParser(Sidecar.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
     }
 
     @GET
@@ -104,8 +104,8 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorListResponse all() {
-        final List<Collector> collectors = sidecarService.all();
-        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(collectors, activeCollectorFilter);
+        final List<Sidecar> sidecars = sidecarService.all();
+        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
         return CollectorListResponse.create("",
                 PaginatedList.PaginationInfo.create(collectorSummaries.size(),
                         collectorSummaries.size(),
@@ -129,17 +129,17 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                                                     value = "The field to sort the result on",
                                                     required = true,
                                                     allowableValues = "title,description,name,id")
-                                            @DefaultValue(Collector.FIELD_NODE_NAME) @QueryParam("sort") String sort,
+                                            @DefaultValue(Sidecar.FIELD_NODE_NAME) @QueryParam("sort") String sort,
                                             @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
                                             @DefaultValue("asc") @QueryParam("order") String order,
                                             @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
         final String mappedQuery = collectorStatusMapper.replaceStringStatusSearchQuery(query);
         final SearchQuery searchQuery = searchQueryParser.parse(mappedQuery);
-        final PaginatedList<Collector> collectors = onlyActive ?
+        final PaginatedList<Sidecar> sidecars = onlyActive ?
                 sidecarService.findPaginated(searchQuery, activeCollectorFilter, page, perPage, sort, order) :
                 sidecarService.findPaginated(searchQuery, page, perPage, sort, order);
-        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(collectors, activeCollectorFilter);
-        return CollectorListResponse.create(query, collectors.pagination(), onlyActive, sort, order, collectorSummaries);
+        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
+        return CollectorListResponse.create(query, sidecars.pagination(), onlyActive, sort, order, collectorSummaries);
     }
 
     @GET
@@ -153,7 +153,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     public CollectorSummary get(@ApiParam(name = "sidecarId", required = true)
                                 @PathParam("sidecarId") @NotEmpty String sidecarId) {
-        final Collector sidecar = sidecarService.findByNodeId(sidecarId);
+        final Sidecar sidecar = sidecarService.findByNodeId(sidecarId);
         if (sidecar != null) {
             return sidecar.toSummary(activeCollectorFilter);
         } else {
@@ -177,8 +177,8 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String sidecarVersion) {
-        final Collector newSidecar;
-        final Collector oldSidecar = sidecarService.findByNodeId(sidecarId);
+        final Sidecar newSidecar;
+        final Sidecar oldSidecar = sidecarService.findByNodeId(sidecarId);
         List<ConfigurationAssignment> assignments = null;
         if (oldSidecar != null) {
             assignments = oldSidecar.assignments();
@@ -229,8 +229,8 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                     .flatMap(a -> a.assignments().stream())
                     .collect(Collectors.toList());
             try {
-                Collector collector = sidecarService.assignConfiguration(nodeId, nodeRelations);
-                sidecarService.save(collector);
+                Sidecar sidecar = sidecarService.assignConfiguration(nodeId, nodeRelations);
+                sidecarService.save(sidecar);
             } catch (org.graylog2.database.NotFoundException e) {
                 throw new NotFoundException(e.getMessage());
             }

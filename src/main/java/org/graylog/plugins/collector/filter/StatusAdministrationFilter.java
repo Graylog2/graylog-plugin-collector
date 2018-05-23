@@ -1,7 +1,7 @@
 package org.graylog.plugins.collector.filter;
 
 import com.google.inject.assistedinject.Assisted;
-import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.rest.models.CollectorStatusList;
 
 import javax.inject.Inject;
@@ -15,8 +15,8 @@ public class StatusAdministrationFilter implements AdministrationFilter {
     }
 
     @Override
-    public boolean test(Collector collector) {
-        final CollectorStatusList collectorStatusList = collector.nodeDetails().statusList();
+    public boolean test(Sidecar sidecar) {
+        final CollectorStatusList collectorStatusList = sidecar.nodeDetails().statusList();
         if (collectorStatusList == null) {
             return false;
         }

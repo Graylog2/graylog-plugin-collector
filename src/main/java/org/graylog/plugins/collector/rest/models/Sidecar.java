@@ -19,7 +19,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class Collector {
+public abstract class Sidecar {
 
     public static final String FIELD_ID = "id";
     public static final String FIELD_NODE_ID = "node_id";
@@ -58,7 +58,7 @@ public abstract class Collector {
     public abstract DateTime lastSeen();
 
     public static Builder builder() {
-        return new AutoValue_Collector.Builder();
+        return new AutoValue_Sidecar.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -72,17 +72,17 @@ public abstract class Collector {
         public abstract Builder assignments(List<ConfigurationAssignment> assignments);
         public abstract Builder collectorVersion(String collectorVersion);
         public abstract Builder lastSeen(DateTime lastSeen);
-        public abstract Collector build();
+        public abstract Sidecar build();
     }
 
     @JsonCreator
-    public static Collector create(@JsonProperty(FIELD_ID) @Id @ObjectId String id,
-                                   @JsonProperty(FIELD_NODE_ID) String nodeId,
-                                   @JsonProperty(FIELD_NODE_NAME) String nodeName,
-                                   @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
-                                   @JsonProperty(FIELD_ASSIGNMENTS) @Nullable List<ConfigurationAssignment> assignments,
-                                   @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion,
-                                   @JsonProperty(FIELD_LAST_SEEN) DateTime lastSeen) {
+    public static Sidecar create(@JsonProperty(FIELD_ID) @Id @ObjectId String id,
+                                 @JsonProperty(FIELD_NODE_ID) String nodeId,
+                                 @JsonProperty(FIELD_NODE_NAME) String nodeName,
+                                 @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
+                                 @JsonProperty(FIELD_ASSIGNMENTS) @Nullable List<ConfigurationAssignment> assignments,
+                                 @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion,
+                                 @JsonProperty(FIELD_LAST_SEEN) DateTime lastSeen) {
 
         return builder()
                 .id(id)
@@ -95,10 +95,10 @@ public abstract class Collector {
                 .build();
     }
 
-    public static Collector create(@JsonProperty(FIELD_NODE_ID) String nodeId,
-                                   @JsonProperty(FIELD_NODE_NAME) String nodeName,
-                                   @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
-                                   @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion) {
+    public static Sidecar create(@JsonProperty(FIELD_NODE_ID) String nodeId,
+                                 @JsonProperty(FIELD_NODE_NAME) String nodeName,
+                                 @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
+                                 @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion) {
 
         return builder()
                 .id(new org.bson.types.ObjectId().toHexString())
@@ -110,7 +110,7 @@ public abstract class Collector {
                 .build();
     }
 
-    public CollectorSummary toSummary(Predicate<Collector> isActiveFunction) {
+    public CollectorSummary toSummary(Predicate<Sidecar> isActiveFunction) {
         return CollectorSummary.builder()
                 .nodeId(nodeId())
                 .nodeName(nodeName())

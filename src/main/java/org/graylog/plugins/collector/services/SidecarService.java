@@ -1,7 +1,7 @@
 package org.graylog.plugins.collector.services;
 
 import com.mongodb.BasicDBObject;
-import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.rest.models.CollectorBackend;
 import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SidecarService extends PaginatedDbService<Collector> {
+public class SidecarService extends PaginatedDbService<Sidecar> {
     private static final String COLLECTION_NAME = "collectors";
     private final BackendService backendService;
     private final ConfigurationService configurationService;
@@ -42,12 +42,12 @@ public class SidecarService extends PaginatedDbService<Collector> {
                           MongoConnection mongoConnection,
                           MongoJackObjectMapperProvider mapper,
                           Validator validator) {
-        super(mongoConnection, mapper, Collector.class, COLLECTION_NAME);
+        super(mongoConnection, mapper, Sidecar.class, COLLECTION_NAME);
         this.backendService = backendService;
         this.configurationService = configurationService;
         this.validator = validator;
 
-        db.createIndex(new BasicDBObject(Collector.FIELD_NODE_ID, 1), new BasicDBObject("unique", true));
+        db.createIndex(new BasicDBObject(Sidecar.FIELD_NODE_ID, 1), new BasicDBObject("unique", true));
     }
 
     public long count() {
@@ -55,42 +55,42 @@ public class SidecarService extends PaginatedDbService<Collector> {
     }
 
     @Override
-    public Collector save(Collector collector) {
-        if (collector != null) {
-            final Set<ConstraintViolation<Collector>> violations = validator.validate(collector);
+    public Sidecar save(Sidecar sidecar) {
+        if (sidecar != null) {
+            final Set<ConstraintViolation<Sidecar>> violations = validator.validate(sidecar);
             if (violations.isEmpty()) {
                 return db.findAndModify(
-                        DBQuery.is(Collector.FIELD_NODE_ID, collector.nodeId()),
+                        DBQuery.is(Sidecar.FIELD_NODE_ID, sidecar.nodeId()),
                         new BasicDBObject(),
                         new BasicDBObject(),
                         false,
-                        collector,
+                        sidecar,
                         true,
                         true);
             } else {
                 throw new IllegalArgumentException("Specified object failed validation: " + violations);
             }
         } else
-            throw new IllegalArgumentException("Specified object is not of correct implementation type (" + collector.getClass() + ")!");
+            throw new IllegalArgumentException("Specified object is not of correct implementation type (" + sidecar.getClass() + ")!");
     }
 
-    public List<Collector> all() {
-        try (final Stream<Collector> collectorStream = streamAll()) {
+    public List<Sidecar> all() {
+        try (final Stream<Sidecar> collectorStream = streamAll()) {
             return collectorStream.collect(Collectors.toList());
         }
     }
 
-    public Collector findByNodeId(String id) {
-        return db.findOne(DBQuery.is(Collector.FIELD_NODE_ID, id));
+    public Sidecar findByNodeId(String id) {
+        return db.findOne(DBQuery.is(Sidecar.FIELD_NODE_ID, id));
     }
 
-    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
+    public PaginatedList<Sidecar> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
         final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
         return findPaginatedWithQueryAndSort(dbQuery, sortBuilder, page, perPage);
     }
 
-    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, Predicate<Collector> filter, int page, int perPage, String sortField, String order) {
+    public PaginatedList<Sidecar> findPaginated(SearchQuery searchQuery, Predicate<Sidecar> filter, int page, int perPage, String sortField, String order) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
         final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
         if (filter == null) {
@@ -103,7 +103,7 @@ public class SidecarService extends PaginatedDbService<Collector> {
         final DateTime threshold = DateTime.now(DateTimeZone.UTC).minus(period);
         int count;
 
-        try (final Stream<Collector> collectorStream = streamAll()) {
+        try (final Stream<Sidecar> collectorStream = streamAll()) {
             count = collectorStream
                     .mapToInt(collector -> {
                         if (collector.lastSeen().isBefore(threshold)) {
@@ -117,8 +117,8 @@ public class SidecarService extends PaginatedDbService<Collector> {
         return count;
     }
 
-    public Collector fromRequest(String nodeId, CollectorRegistrationRequest request, String collectorVersion) {
-        return Collector.create(
+    public Sidecar fromRequest(String nodeId, CollectorRegistrationRequest request, String collectorVersion) {
+        return Sidecar.create(
                 nodeId,
                 request.nodeName(),
                 CollectorNodeDetails.create(
@@ -130,9 +130,9 @@ public class SidecarService extends PaginatedDbService<Collector> {
                 collectorVersion);
     }
 
-    public Collector assignConfiguration(String collectorNodeId, List<ConfigurationAssignment> assignments) throws NotFoundException{
-        Collector collector = findByNodeId(collectorNodeId);
-        if (collector == null) {
+    public Sidecar assignConfiguration(String collectorNodeId, List<ConfigurationAssignment> assignments) throws NotFoundException{
+        Sidecar sidecar = findByNodeId(collectorNodeId);
+        if (sidecar == null) {
             throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
         }
         for (ConfigurationAssignment assignment : assignments) {
@@ -149,14 +149,14 @@ public class SidecarService extends PaginatedDbService<Collector> {
             }
         }
 
-        Collector toSave = collector.toBuilder()
+        Sidecar toSave = sidecar.toBuilder()
                 .assignments(assignments)
                 .build();
         return save(toSave);
     }
 
-    public List<CollectorSummary> toSummaryList(List<Collector> collectors, Predicate<Collector> isActiveFunction) {
-        return collectors.stream()
+    public List<CollectorSummary> toSummaryList(List<Sidecar> sidecars, Predicate<Sidecar> isActiveFunction) {
+        return sidecars.stream()
                 .map(collector -> collector.toSummary(isActiveFunction))
                 .collect(Collectors.toList());
     }
