@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 @Singleton
 public class CollectorService extends PaginatedDbService<Collector> {
-    private static final String COLLECTION_NAME = "collector_backends";
+    private static final String COLLECTION_NAME = "sidecar_collectors";
 
     @Inject
     public CollectorService(MongoConnection mongoConnection,

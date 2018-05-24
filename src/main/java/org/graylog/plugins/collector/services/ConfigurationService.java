@@ -39,7 +39,7 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
             new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_27);
     private static final StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
-    private static final String COLLECTION_NAME = "collector_configurations";
+    private static final String COLLECTION_NAME = "sidecar_configurations";
 
     @Inject
     public ConfigurationService(MongoConnection mongoConnection,

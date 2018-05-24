@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActionService {
-    private static final String COLLECTION_NAME = "collector_actions";
+    private static final String COLLECTION_NAME = "sidecar_collector_actions";
     private final JacksonDBCollection<CollectorActions, ObjectId> dbCollection;
 
     @Inject
