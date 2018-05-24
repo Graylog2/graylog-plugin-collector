@@ -24,12 +24,12 @@ import org.graylog.plugins.collector.rest.requests.RegistrationRequest;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
-import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
+import org.graylog.plugins.collector.filter.ActiveSidecarFilter;
 import org.graylog.plugins.collector.rest.resources.SidecarResource;
 import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
-import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
-import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
+import org.graylog.plugins.collector.system.SidecarSystemConfiguration;
+import org.graylog.plugins.collector.system.SidecarSystemConfigurationSupplier;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
         this.resource = new SidecarResource(
                 sidecarService,
                 actionService,
-                new CollectorSystemConfigurationSupplier(CollectorSystemConfiguration.defaultConfiguration()),
+                new SidecarSystemConfigurationSupplier(SidecarSystemConfiguration.defaultConfiguration()),
                 statusMapper);
         when(sidecarService.all()).thenReturn(sidecars);
     }
@@ -95,7 +95,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
         final Sidecar sidecar = sidecars.get(sidecars.size() - 1);
         when(sidecarService.findByNodeId(sidecar.nodeId())).thenReturn(sidecar);
         final SidecarSummary sidecarSummary = mock(SidecarSummary.class);
-        when(sidecar.toSummary(any(ActiveCollectorFilter.class))).thenReturn(sidecarSummary);
+        when(sidecar.toSummary(any(ActiveSidecarFilter.class))).thenReturn(sidecarSummary);
 
         final SidecarSummary response = this.resource.get(sidecar.nodeId());
 

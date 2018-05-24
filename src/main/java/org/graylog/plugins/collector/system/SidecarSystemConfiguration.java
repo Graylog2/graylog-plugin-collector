@@ -28,7 +28,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 
 @JsonAutoDetect
 @AutoValue
-public abstract class CollectorSystemConfiguration {
+public abstract class SidecarSystemConfiguration {
 
     private static final Period DEFAULT_EXPIRATION_PERIOD = Period.days(14);
     private static final Period DEFAULT_INACTIVE_THRESHOLD = Period.minutes(1);
@@ -52,11 +52,11 @@ public abstract class CollectorSystemConfiguration {
     public abstract boolean collectorConfigurationOverride();
 
     @JsonCreator
-    public static CollectorSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
-                                                      @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
-                                                      @JsonProperty("collector_update_interval") @Nullable Period updateInterval,
-                                                      @JsonProperty("collector_send_status") @Nullable Boolean sendStatus,
-                                                      @JsonProperty("collector_configuration_override") @Nullable Boolean configurationOverride) {
+    public static SidecarSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
+                                                    @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
+                                                    @JsonProperty("collector_update_interval") @Nullable Period updateInterval,
+                                                    @JsonProperty("collector_send_status") @Nullable Boolean sendStatus,
+                                                    @JsonProperty("collector_configuration_override") @Nullable Boolean configurationOverride) {
         return builder()
                 .collectorExpirationThreshold(expirationThreshold)
                 .collectorInactiveThreshold(inactiveThreshold)
@@ -66,7 +66,7 @@ public abstract class CollectorSystemConfiguration {
                 .build();
     }
 
-    public static CollectorSystemConfiguration defaultConfiguration() {
+    public static SidecarSystemConfiguration defaultConfiguration() {
         return builder()
                 .collectorExpirationThreshold(DEFAULT_EXPIRATION_PERIOD)
                 .collectorInactiveThreshold(DEFAULT_INACTIVE_THRESHOLD)
@@ -77,7 +77,7 @@ public abstract class CollectorSystemConfiguration {
     }
 
     public static Builder builder() {
-        return new AutoValue_CollectorSystemConfiguration.Builder();
+        return new AutoValue_SidecarSystemConfiguration.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -94,6 +94,6 @@ public abstract class CollectorSystemConfiguration {
 
         public abstract Builder collectorConfigurationOverride(boolean configurationOverride);
 
-        public abstract CollectorSystemConfiguration build();
+        public abstract SidecarSystemConfiguration build();
     }
 }

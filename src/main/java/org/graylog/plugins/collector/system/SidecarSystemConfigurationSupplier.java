@@ -22,28 +22,28 @@ import org.graylog2.plugin.cluster.ClusterConfigService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-public class CollectorSystemConfigurationSupplier implements Supplier<CollectorSystemConfiguration> {
+public class SidecarSystemConfigurationSupplier implements Supplier<SidecarSystemConfiguration> {
     private final ClusterConfigService clusterConfigService;
-    private final CollectorSystemConfiguration config;
+    private final SidecarSystemConfiguration config;
 
     @Inject
-    public CollectorSystemConfigurationSupplier(ClusterConfigService clusterConfigService) {
+    public SidecarSystemConfigurationSupplier(ClusterConfigService clusterConfigService) {
         this.clusterConfigService = clusterConfigService;
         this.config = null;
     }
 
-    public CollectorSystemConfigurationSupplier(@Nonnull CollectorSystemConfiguration config) {
+    public SidecarSystemConfigurationSupplier(@Nonnull SidecarSystemConfiguration config) {
         this.clusterConfigService = null;
         this.config = config;
     }
 
     @Override
-    public CollectorSystemConfiguration get() {
+    public SidecarSystemConfiguration get() {
         if (config != null) {
             return config;
         } else if (clusterConfigService != null) {
-            return clusterConfigService.getOrDefault(CollectorSystemConfiguration.class,
-                    CollectorSystemConfiguration.defaultConfiguration());
+            return clusterConfigService.getOrDefault(SidecarSystemConfiguration.class,
+                    SidecarSystemConfiguration.defaultConfiguration());
         } else {
             throw new IllegalStateException("Neither config nor clusterConfigService are set. This should not happen!");
         }

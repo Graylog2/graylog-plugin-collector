@@ -18,22 +18,22 @@ package org.graylog.plugins.collector.periodical;
 
 import com.google.common.base.Supplier;
 import org.graylog.plugins.collector.services.SidecarService;
-import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog.plugins.collector.system.SidecarSystemConfiguration;
 import org.graylog2.plugin.periodical.Periodical;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-public class PurgeExpiredCollectorsThread extends Periodical {
-    private static final Logger LOG = LoggerFactory.getLogger(PurgeExpiredCollectorsThread.class);
+public class PurgeExpiredSidecarsThread extends Periodical {
+    private static final Logger LOG = LoggerFactory.getLogger(PurgeExpiredSidecarsThread.class);
 
     private final SidecarService sidecarService;
-    private final Supplier<CollectorSystemConfiguration> configSupplier;
+    private final Supplier<SidecarSystemConfiguration> configSupplier;
 
     @Inject
-    public PurgeExpiredCollectorsThread(SidecarService sidecarService,
-                                        Supplier<CollectorSystemConfiguration> configSupplier) {
+    public PurgeExpiredSidecarsThread(SidecarService sidecarService,
+                                      Supplier<SidecarSystemConfiguration> configSupplier) {
         this.sidecarService = sidecarService;
         this.configSupplier = configSupplier;
     }

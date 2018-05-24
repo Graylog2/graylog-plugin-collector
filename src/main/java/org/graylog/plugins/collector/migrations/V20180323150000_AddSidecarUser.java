@@ -3,8 +3,8 @@ package org.graylog.plugins.collector.migrations;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.mongodb.DuplicateKeyException;
-import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog.plugins.collector.common.SidecarPluginConfiguration;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
 import org.graylog2.database.NotFoundException;
 import org.graylog2.migrations.Migration;
 import org.graylog2.plugin.database.ValidationException;
@@ -31,17 +31,17 @@ public class V20180323150000_AddSidecarUser extends Migration {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final CollectorRestPermissions collectorRestPermissions;
+    private final SidecarRestPermissions sidecarRestPermissions;
     private final String sidecarUser;
 
     @Inject
-    public V20180323150000_AddSidecarUser(CollectorPluginConfiguration pluginConfiguration,
+    public V20180323150000_AddSidecarUser(SidecarPluginConfiguration pluginConfiguration,
                                          UserService userService,
                                          RoleService roleService,
-                                         CollectorRestPermissions collectorRestPermissions) {
+                                         SidecarRestPermissions sidecarRestPermissions) {
         this.userService = userService;
         this.roleService = roleService;
-        this.collectorRestPermissions = collectorRestPermissions;
+        this.sidecarRestPermissions = sidecarRestPermissions;
         this.sidecarUser = pluginConfiguration.getUser();
     }
 
@@ -56,9 +56,9 @@ public class V20180323150000_AddSidecarUser extends Migration {
                 "Sidecar Node",
                 "Grants access to register and pull configurations for a Sidecar node (built-in)",
                 ImmutableSet.of(
-                        CollectorRestPermissions.COLLECTORS_READ,
-                        CollectorRestPermissions.CONFIGURATIONS_READ,
-                        CollectorRestPermissions.SIDECARS_UPDATE,
+                        SidecarRestPermissions.COLLECTORS_READ,
+                        SidecarRestPermissions.CONFIGURATIONS_READ,
+                        SidecarRestPermissions.SIDECARS_UPDATE,
                         RestPermissions.USERS_LIST));
 
         ensureUser(

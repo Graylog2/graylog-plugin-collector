@@ -37,7 +37,7 @@ import org.graylog2.audit.PluginAuditEventTypes;
 
 import java.util.Set;
 
-public class CollectorAuditEventTypes implements PluginAuditEventTypes {
+public class SidecarAuditEventTypes implements PluginAuditEventTypes {
     private static final String NAMESPACE = "collector:";
 
     public static final String ACTION_UPDATE = NAMESPACE + "action:update";

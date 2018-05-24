@@ -7,12 +7,12 @@ import org.graylog.plugins.collector.rest.models.Sidecar;
 
 import javax.inject.Inject;
 
-public class BackendAdministrationFilter implements AdministrationFilter {
+public class CollectorAdministrationFilter implements AdministrationFilter {
     private final Collector collector;
 
     @Inject
-    public BackendAdministrationFilter(CollectorService collectorService,
-                                       @Assisted String backendId) {
+    public CollectorAdministrationFilter(CollectorService collectorService,
+                                         @Assisted String backendId) {
         this.collector = collectorService.find(backendId);
     }
 

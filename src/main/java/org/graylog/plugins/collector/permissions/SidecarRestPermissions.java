@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import static org.graylog2.plugin.security.Permission.create;
 
-public class CollectorRestPermissions implements PluginPermissions {
+public class SidecarRestPermissions implements PluginPermissions {
     public static final String SIDECARS_READ = "sidecars:read";
     public static final String SIDECARS_CREATE = "sidecars:create";
     public static final String SIDECARS_UPDATE = "sidecars:update";

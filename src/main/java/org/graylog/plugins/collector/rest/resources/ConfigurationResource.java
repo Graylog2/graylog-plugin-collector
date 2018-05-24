@@ -17,8 +17,8 @@ import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.rest.requests.ConfigurationPreviewRequest;
 import org.graylog.plugins.collector.rest.responses.ConfigurationPreviewRenderResponse;
 import org.graylog.plugins.collector.rest.responses.ValidationResponse;
-import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.database.PaginatedList;
@@ -78,7 +78,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
     @GET
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
     public ConfigurationListResponse listConfigurations(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
@@ -103,7 +103,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @GET
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector configuration details")
     public Configuration getConfigurations(@ApiParam(name = "id", required = true)
@@ -114,7 +114,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @GET
     @Path("/validate")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Validates configuration name")
     public ValidationResponse validateConfiguration(@ApiParam(name = "name", required = true) @QueryParam("name") String name) {
@@ -129,7 +129,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Path("/render/{collectorId}/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @ApiOperation(value = "Render collector configuration template")
     public Response renderConfiguration(@Context HttpHeaders httpHeaders,
                                         @ApiParam(name = "collectorId", required = true)
@@ -186,7 +186,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Path("/render/preview")
     @Produces(MediaType.APPLICATION_JSON)
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
     @NoAuditEvent("this is not changing any data")
 
@@ -198,10 +198,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
     @POST
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_CREATE)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector configuration")
-    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CREATE)
+    @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_CREATE)
     public Configuration createConfiguration(@ApiParam(name = "JSON body", required = true)
                                                       @Valid @NotNull Configuration request) {
         Configuration configuration = configurationService.fromRequest(request);
@@ -211,9 +211,9 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @POST
     @Path("/{id}/{name}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_CREATE)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_CREATE)
     @ApiOperation(value = "Create a configuration copy")
-    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CLONE)
+    @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_CLONE)
     public Response copyConfiguration(@ApiParam(name = "id", required = true)
                                       @PathParam("id") String id,
                                       @PathParam("name") String name) throws NotFoundException {
@@ -225,10 +225,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @PUT
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_UPDATE)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update collector configuration")
-    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_UPDATE)
+    @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_UPDATE)
     public Configuration updateConfiguration(@ApiParam(name = "id", required = true)
                                                       @PathParam("id") String id,
                                              @ApiParam(name = "JSON body", required = true)
@@ -241,10 +241,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @DELETE
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_UPDATE)
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Delets a collector configuration")
-    @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_DELETE)
+    @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_DELETE)
     public Response updateConfiguration(@ApiParam(name = "id", required = true)
                                                       @PathParam("id") String id) {
         int deleted = configurationService.delete(id);

@@ -7,7 +7,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractIdleService;
-import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
+import org.graylog.plugins.collector.common.SidecarPluginConfiguration;
 import org.graylog2.events.ClusterEventBus;
 import org.graylog2.metrics.CacheStatsSet;
 import org.graylog2.shared.metrics.MetricUtils;
@@ -29,7 +29,7 @@ public class EtagService extends AbstractIdleService {
     private ClusterEventBus clusterEventBus;
 
     @Inject
-    public EtagService(CollectorPluginConfiguration pluginConfiguration,
+    public EtagService(SidecarPluginConfiguration pluginConfiguration,
                        MetricRegistry metricRegistry,
                        EventBus eventBus,
                        ClusterEventBus clusterEventBus) {

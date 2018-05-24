@@ -16,12 +16,12 @@ import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.CollectorService;
-import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
+import org.graylog.plugins.collector.filter.ActiveSidecarFilter;
 import org.graylog.plugins.collector.filter.AdministrationFilter;
 import org.graylog.plugins.collector.rest.models.Configuration;
 import org.graylog.plugins.collector.rest.models.SidecarSummary;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
-import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
+import org.graylog.plugins.collector.system.SidecarSystemConfiguration;
 import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -54,19 +54,19 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     private final CollectorService collectorService;
     private final SearchQueryParser searchQueryParser;
     private final AdministrationFiltersFactory administrationFiltersFactory;
-    private final ActiveCollectorFilter activeCollectorFilter;
+    private final ActiveSidecarFilter activeSidecarFilter;
 
     @Inject
     public AdministrationResource(SidecarService sidecarService,
                                   ConfigurationService configurationService,
                                   CollectorService collectorService,
                                   AdministrationFiltersFactory administrationFiltersFactory,
-                                  Supplier<CollectorSystemConfiguration> configSupplier) {
+                                  Supplier<SidecarSystemConfiguration> configSupplier) {
         this.sidecarService = sidecarService;
         this.configurationService = configurationService;
         this.collectorService = collectorService;
         this.administrationFiltersFactory = administrationFiltersFactory;
-        this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
+        this.activeSidecarFilter = new ActiveSidecarFilter(configSupplier.get().collectorInactiveThreshold());
         this.searchQueryParser = new SearchQueryParser(Sidecar.FIELD_NODE_NAME, SidecarResource.SEARCH_FIELD_MAPPING);
     }
 
@@ -74,7 +74,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     @Timed
     @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
+    @RequiresPermissions(SidecarRestPermissions.SIDECARS_READ)
     @NoAuditEvent("this is not changing any data")
     public SidecarListResponse administration(@ApiParam(name = "JSON body", required = true)
                                                 @Valid @NotNull AdministrationRequest request) {
@@ -86,7 +86,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
         final List<Collector> collectors = getCollectorBackends(request.filters());
         final PaginatedList<Sidecar> sidecars = sidecarService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
-        final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
+        final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeSidecarFilter);
 
         final List<SidecarSummary> summariesWithBackends = collectorSummaries.stream()
                 .map(collector -> {

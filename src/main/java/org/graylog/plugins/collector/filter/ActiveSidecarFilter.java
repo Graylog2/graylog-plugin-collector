@@ -6,10 +6,10 @@ import org.joda.time.Period;
 
 import java.util.function.Predicate;
 
-public class ActiveCollectorFilter implements Predicate<Sidecar> {
+public class ActiveSidecarFilter implements Predicate<Sidecar> {
     private final Period timeoutPeriod;
 
-    public ActiveCollectorFilter(Period timeoutPeriod) {
+    public ActiveSidecarFilter(Period timeoutPeriod) {
         this.timeoutPeriod = timeoutPeriod;
     }
 

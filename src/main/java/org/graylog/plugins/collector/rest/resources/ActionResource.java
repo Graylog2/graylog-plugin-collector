@@ -10,9 +10,9 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.rest.models.CollectorAction;
-import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
+import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
 import org.graylog.plugins.collector.rest.models.CollectorActions;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
@@ -52,7 +52,7 @@ public class ActionResource extends RestResource implements PluginRestResource {
             @ApiResponse(code = 404, message = "No actions found for specified id")
     })
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     public List<CollectorAction> getAction(@ApiParam(name = "collectorId", required = true)
                                            @PathParam("collectorId") @NotEmpty String collectorId) {
         final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, false);
@@ -66,10 +66,10 @@ public class ActionResource extends RestResource implements PluginRestResource {
     @Timed
     @Path("/{collectorId}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_UPDATE)
     @ApiOperation(value = "Set a collector action")
     @ApiResponses(value = {@ApiResponse(code = 400, message = "The supplied action is not valid.")})
-    @AuditEvent(type = CollectorAuditEventTypes.ACTION_UPDATE)
+    @AuditEvent(type = SidecarAuditEventTypes.ACTION_UPDATE)
     public Response setAction(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
                               @PathParam("collectorId") @NotEmpty String collectorId,
                               @ApiParam(name = "JSON body", required = true)

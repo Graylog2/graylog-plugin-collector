@@ -13,8 +13,8 @@ import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.rest.responses.CollectorSummaryResponse;
 import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.services.EtagService;
-import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
+import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -71,7 +71,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @GET
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector details")
     public Collector getBackend(@ApiParam(name = "id", required = true)
@@ -81,7 +81,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
 
     @GET
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector backends")
     public Response listBackends(@Context HttpHeaders httpHeaders) {
@@ -125,7 +125,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @GET
     @Path("/summary")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List a summary of all collector backends")
     public CollectorSummaryResponse listSummary(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
@@ -149,10 +149,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
 
     @POST
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector backend")
-    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_CREATE)
+    @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_CREATE)
     public Collector createBackend(@ApiParam(name = "JSON body", required = true)
                                           @Valid @NotNull Collector request) {
         etagService.invalidateAll();
@@ -163,10 +163,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @PUT
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update a collector")
-    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_UPDATE)
+    @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_UPDATE)
     public Collector updateBackend(@ApiParam(name = "id", required = true)
                                           @PathParam("id") String id,
                                    @ApiParam(name = "JSON body", required = true)
@@ -179,9 +179,9 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @POST
     @Path("/{id}/{name}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_CREATE)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_CREATE)
     @ApiOperation(value = "Create a collector copy")
-    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_CLONE)
+    @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_CLONE)
     public Response copyCollector(@ApiParam(name = "id", required = true)
                                   @PathParam("id") String id,
                                   @PathParam("name") String name) throws NotFoundException {
@@ -194,10 +194,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @DELETE
     @Path("/{id}")
     @RequiresAuthentication
-    @RequiresPermissions(CollectorRestPermissions.COLLECTORS_DELETE)
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_DELETE)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Delets a collector configuration")
-    @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_DELETE)
+    @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_DELETE)
     public Response deleteCollector(@ApiParam(name = "id", required = true)
                                     @PathParam("id") String id) {
         int deleted = collectorService.delete(id);

@@ -23,28 +23,28 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
-import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
+import org.graylog.plugins.collector.periodical.PurgeExpiredSidecarsThread;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.services.EtagService;
 import org.graylog.plugins.collector.filter.AdministrationFilter;
-import org.graylog.plugins.collector.filter.BackendAdministrationFilter;
+import org.graylog.plugins.collector.filter.CollectorAdministrationFilter;
 import org.graylog.plugins.collector.filter.ConfigurationAdministrationFilter;
 import org.graylog.plugins.collector.filter.OsAdministrationFilter;
 import org.graylog.plugins.collector.filter.StatusAdministrationFilter;
-import org.graylog.plugins.collector.migrations.V20180212165000_AddDefaultBackends;
+import org.graylog.plugins.collector.migrations.V20180212165000_AddDefaultCollectors;
 import org.graylog.plugins.collector.migrations.V20180323150000_AddSidecarUser;
 import org.graylog.plugins.collector.rest.resources.ActionResource;
 import org.graylog.plugins.collector.rest.resources.AdministrationResource;
 import org.graylog.plugins.collector.rest.resources.SidecarResource;
 import org.graylog.plugins.collector.rest.resources.ConfigurationResource;
 import org.graylog.plugins.collector.rest.resources.CollectorResource;
-import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
-import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
-import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
-import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
-import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
+import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
+import org.graylog.plugins.collector.common.SidecarPluginConfiguration;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
+import org.graylog.plugins.collector.system.SidecarSystemConfiguration;
+import org.graylog.plugins.collector.system.SidecarSystemConfigurationSupplier;
 import org.graylog2.migrations.Migration;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
@@ -55,7 +55,7 @@ public class CollectorModule extends PluginModule {
     @Override
     public Set<? extends PluginConfigBean> getConfigBeans() {
         return ImmutableSet.of(
-                new CollectorPluginConfiguration()
+                new SidecarPluginConfiguration()
         );
     }
 
@@ -64,10 +64,10 @@ public class CollectorModule extends PluginModule {
         bind(ConfigurationService.class).asEagerSingleton();
         bind(SidecarService.class).asEagerSingleton();
         bind(CollectorService.class).asEagerSingleton();
-        bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
+        bind(new TypeLiteral<Supplier<SidecarSystemConfiguration>>(){}).to(SidecarSystemConfigurationSupplier.class);
 
         install(new FactoryModuleBuilder()
-                .implement(AdministrationFilter.class, Names.named("backend"), BackendAdministrationFilter.class)
+                .implement(AdministrationFilter.class, Names.named("backend"), CollectorAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("configuration"), ConfigurationAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("os"), OsAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("status"), StatusAdministrationFilter.class)
@@ -78,13 +78,13 @@ public class CollectorModule extends PluginModule {
         addRestResource(ActionResource.class);
         addRestResource(AdministrationResource.class);
         addRestResource(SidecarResource.class);
-        addPermissions(CollectorRestPermissions.class);
-        addPeriodical(PurgeExpiredCollectorsThread.class);
+        addPermissions(SidecarRestPermissions.class);
+        addPeriodical(PurgeExpiredSidecarsThread.class);
 
-        addAuditEventTypes(CollectorAuditEventTypes.class);
+        addAuditEventTypes(SidecarAuditEventTypes.class);
 
         final Multibinder<Migration> binder = Multibinder.newSetBinder(binder(), Migration.class);
-        binder.addBinding().to(V20180212165000_AddDefaultBackends.class);
+        binder.addBinding().to(V20180212165000_AddDefaultCollectors.class);
         binder.addBinding().to(V20180323150000_AddSidecarUser.class);
 
         serviceBinder().addBinding().to(EtagService.class).in(Scopes.SINGLETON);

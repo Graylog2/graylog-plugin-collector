@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class V20180212165000_AddDefaultBackends extends Migration {
-    private static final Logger LOG = LoggerFactory.getLogger(V20180212165000_AddDefaultBackends.class);
+public class V20180212165000_AddDefaultCollectors extends Migration {
+    private static final Logger LOG = LoggerFactory.getLogger(V20180212165000_AddDefaultCollectors.class);
 
     private final CollectorService collectorService;
 
     @Inject
-    public V20180212165000_AddDefaultBackends(CollectorService collectorService) {
+    public V20180212165000_AddDefaultCollectors(CollectorService collectorService) {
         this.collectorService = collectorService;
     }
 
