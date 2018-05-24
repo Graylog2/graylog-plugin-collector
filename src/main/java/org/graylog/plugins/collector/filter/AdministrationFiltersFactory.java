@@ -25,8 +25,8 @@ public class AdministrationFiltersFactory {
 
                     final AdministrationFilter.Type filter = AdministrationFilter.Type.valueOf(name.toUpperCase());
                     switch (filter) {
-                        case BACKEND:
-                            return administrationFilterFactory.createBackendFilter(value);
+                        case COLLECTOR:
+                            return administrationFilterFactory.createCollectorFilter(value);
                         case CONFIGURATION:
                             return administrationFilterFactory.createConfigurationFilter(value);
                         case OS:

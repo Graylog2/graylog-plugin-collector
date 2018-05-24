@@ -12,8 +12,8 @@ public class CollectorAdministrationFilter implements AdministrationFilter {
 
     @Inject
     public CollectorAdministrationFilter(CollectorService collectorService,
-                                         @Assisted String backendId) {
-        this.collector = collectorService.find(backendId);
+                                         @Assisted String collectorId) {
+        this.collector = collectorService.find(collectorId);
     }
 
     @Override
