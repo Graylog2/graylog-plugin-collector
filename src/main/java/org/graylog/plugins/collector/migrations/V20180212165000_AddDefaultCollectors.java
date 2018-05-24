@@ -30,7 +30,7 @@ public class V20180212165000_AddDefaultCollectors extends Migration {
 
     @Override
     public void upgrade() {
-        ensureBackend(
+        ensureCollector(
                 "filebeat",
                 "exec",
                 "linux",
@@ -40,7 +40,7 @@ public class V20180212165000_AddDefaultCollectors extends Migration {
                 new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s")),
                 ""
         );
-        ensureBackend(
+        ensureCollector(
                 "winlogbeat",
                 "svc",
                 "windows",
@@ -50,7 +50,7 @@ public class V20180212165000_AddDefaultCollectors extends Migration {
                 new ArrayList<String>(Arrays.asList("test", "config", "-c", "%s")),
                 ""
         );
-        ensureBackend(
+        ensureCollector(
                 "nxlog",
                 "exec",
                 "linux",
@@ -63,28 +63,28 @@ public class V20180212165000_AddDefaultCollectors extends Migration {
     }
 
     @Nullable
-    private String ensureBackend(String backendName,
-                                 String serviceType,
-                                 String nodeOperatingSystem,
-                                 String executablePath,
-                                 String configurationPath,
-                                 List<String> executeParameters,
-                                 List<String> validationCommand,
-                                 String defaultTemplate) {
+    private String ensureCollector(String collectorName,
+                                   String serviceType,
+                                   String nodeOperatingSystem,
+                                   String executablePath,
+                                   String configurationPath,
+                                   List<String> executeParameters,
+                                   List<String> validationCommand,
+                                   String defaultTemplate) {
         Collector collector = null;
         try {
-            collector = collectorService.findByName(backendName);
+            collector = collectorService.findByName(collectorName);
             if (collector == null) {
-                final String msg = "Couldn't find collector '" + backendName + "' fixing it.";
+                final String msg = "Couldn't find collector '" + collectorName + "' fixing it.";
                 LOG.error(msg);
                 throw new IllegalArgumentException(msg);
             }
         } catch (IllegalArgumentException ignored) {
-            LOG.info("{} collector is missing, adding it.", backendName);
+            LOG.info("{} collector is missing, adding it.", collectorName);
             final Collector newCollector;
             newCollector = Collector.create(
                     null,
-                    backendName,
+                    collectorName,
                     serviceType,
                     nodeOperatingSystem,
                     executablePath,
@@ -96,12 +96,12 @@ public class V20180212165000_AddDefaultCollectors extends Migration {
             try {
                 return collectorService.save(newCollector).id();
             } catch (Exception e) {
-                LOG.error("Can't save collector " + backendName + ", please restart Graylog to fix this.", e);
+                LOG.error("Can't save collector " + collectorName + ", please restart Graylog to fix this.", e);
             }
         }
 
         if (collector == null) {
-            LOG.error("Unable to access fixed " + backendName + " collector, please restart Graylog to fix this.");
+            LOG.error("Unable to access fixed " + collectorName + " collector, please restart Graylog to fix this.");
             return null;
         }
 

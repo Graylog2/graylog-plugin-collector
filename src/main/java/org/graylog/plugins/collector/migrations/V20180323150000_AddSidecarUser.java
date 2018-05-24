@@ -36,9 +36,9 @@ public class V20180323150000_AddSidecarUser extends Migration {
 
     @Inject
     public V20180323150000_AddSidecarUser(SidecarPluginConfiguration pluginConfiguration,
-                                         UserService userService,
-                                         RoleService roleService,
-                                         SidecarRestPermissions sidecarRestPermissions) {
+                                          UserService userService,
+                                          RoleService roleService,
+                                          SidecarRestPermissions sidecarRestPermissions) {
         this.userService = userService;
         this.roleService = roleService;
         this.sidecarRestPermissions = sidecarRestPermissions;
