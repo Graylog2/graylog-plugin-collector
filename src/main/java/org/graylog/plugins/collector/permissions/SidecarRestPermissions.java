@@ -22,7 +22,6 @@ import org.graylog2.plugin.security.PluginPermissions;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.graylog2.plugin.security.Permission.create;
 
