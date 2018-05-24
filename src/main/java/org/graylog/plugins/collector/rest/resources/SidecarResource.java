@@ -91,7 +91,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
                            CollectorStatusMapper collectorStatusMapper) {
         this.sidecarService = sidecarService;
         this.actionService = actionService;
-        this.activeSidecarFilter = new ActiveSidecarFilter(configSupplier.get().collectorInactiveThreshold());
+        this.activeSidecarFilter = new ActiveSidecarFilter(configSupplier.get().sidecarInactiveThreshold());
         this.configSupplier = configSupplier;
         this.collectorStatusMapper = collectorStatusMapper;
         this.searchQueryParser = new SearchQueryParser(Sidecar.FIELD_NODE_NAME, SEARCH_FIELD_MAPPING);
@@ -201,9 +201,9 @@ public class SidecarResource extends RestResource implements PluginRestResource 
         final SidecarSystemConfiguration sidecarSystemConfiguration = configSupplier.get();
         RegistrationResponse sidecarRegistrationResponse = RegistrationResponse.create(
                 SidecarRegistrationConfiguration.create(
-                        sidecarSystemConfiguration.collectorUpdateInterval().toStandardDuration().getStandardSeconds(),
-                        sidecarSystemConfiguration.collectorSendStatus()),
-                sidecarSystemConfiguration.collectorConfigurationOverride(),
+                        sidecarSystemConfiguration.sidecarUpdateInterval().toStandardDuration().getStandardSeconds(),
+                        sidecarSystemConfiguration.sidecarSendStatus()),
+                sidecarSystemConfiguration.sidecarConfigurationOverride(),
                 collectorAction,
                 assignments);
         return Response.accepted(sidecarRegistrationResponse).build();

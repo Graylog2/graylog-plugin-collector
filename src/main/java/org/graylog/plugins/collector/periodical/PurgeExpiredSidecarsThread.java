@@ -80,7 +80,7 @@ public class PurgeExpiredSidecarsThread extends Periodical {
 
     @Override
     public void doRun() {
-        final int purgedSidecars = sidecarService.destroyExpired(configSupplier.get().collectorExpirationThreshold());
+        final int purgedSidecars = sidecarService.destroyExpired(configSupplier.get().sidecarExpirationThreshold());
         LOG.debug("Purged {} inactive sidecars.", purgedSidecars);
     }
 }

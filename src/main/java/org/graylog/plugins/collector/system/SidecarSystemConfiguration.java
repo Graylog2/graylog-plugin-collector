@@ -36,43 +36,43 @@ public abstract class SidecarSystemConfiguration {
     private static final boolean DEFAULT_SEND_STATUS = true;
     private static final boolean DEFAULT_CONFIG_OVERRIDE = false;
 
-    @JsonProperty("collector_expiration_threshold")
-    public abstract Period collectorExpirationThreshold();
+    @JsonProperty("sidecar_expiration_threshold")
+    public abstract Period sidecarExpirationThreshold();
 
-    @JsonProperty("collector_inactive_threshold")
-    public abstract Period collectorInactiveThreshold();
+    @JsonProperty("sidecar_inactive_threshold")
+    public abstract Period sidecarInactiveThreshold();
 
-    @JsonProperty("collector_update_interval")
-    public abstract Period collectorUpdateInterval();
+    @JsonProperty("sidecar_update_interval")
+    public abstract Period sidecarUpdateInterval();
 
-    @JsonProperty("collector_send_status")
-    public abstract boolean collectorSendStatus();
+    @JsonProperty("sidecar_send_status")
+    public abstract boolean sidecarSendStatus();
 
-    @JsonProperty("collector_configuration_override")
-    public abstract boolean collectorConfigurationOverride();
+    @JsonProperty("sidecar_configuration_override")
+    public abstract boolean sidecarConfigurationOverride();
 
     @JsonCreator
-    public static SidecarSystemConfiguration create(@JsonProperty("collector_expiration_threshold") Period expirationThreshold,
-                                                    @JsonProperty("collector_inactive_threshold") Period inactiveThreshold,
-                                                    @JsonProperty("collector_update_interval") @Nullable Period updateInterval,
-                                                    @JsonProperty("collector_send_status") @Nullable Boolean sendStatus,
-                                                    @JsonProperty("collector_configuration_override") @Nullable Boolean configurationOverride) {
+    public static SidecarSystemConfiguration create(@JsonProperty("sidecar_expiration_threshold") Period expirationThreshold,
+                                                    @JsonProperty("sidecar_inactive_threshold") Period inactiveThreshold,
+                                                    @JsonProperty("sidecar_update_interval") @Nullable Period updateInterval,
+                                                    @JsonProperty("sidecar_send_status") @Nullable Boolean sendStatus,
+                                                    @JsonProperty("sidecar_configuration_override") @Nullable Boolean configurationOverride) {
         return builder()
-                .collectorExpirationThreshold(expirationThreshold)
-                .collectorInactiveThreshold(inactiveThreshold)
-                .collectorUpdateInterval(firstNonNull(updateInterval, DEFAULT_UPDATE_INTERVAL))
-                .collectorSendStatus(firstNonNull(sendStatus, DEFAULT_SEND_STATUS))
-                .collectorConfigurationOverride(firstNonNull(configurationOverride, DEFAULT_CONFIG_OVERRIDE))
+                .sidecarExpirationThreshold(expirationThreshold)
+                .sidecarInactiveThreshold(inactiveThreshold)
+                .sidecarUpdateInterval(firstNonNull(updateInterval, DEFAULT_UPDATE_INTERVAL))
+                .sidecarSendStatus(firstNonNull(sendStatus, DEFAULT_SEND_STATUS))
+                .sidecarConfigurationOverride(firstNonNull(configurationOverride, DEFAULT_CONFIG_OVERRIDE))
                 .build();
     }
 
     public static SidecarSystemConfiguration defaultConfiguration() {
         return builder()
-                .collectorExpirationThreshold(DEFAULT_EXPIRATION_PERIOD)
-                .collectorInactiveThreshold(DEFAULT_INACTIVE_THRESHOLD)
-                .collectorUpdateInterval(DEFAULT_UPDATE_INTERVAL)
-                .collectorSendStatus(DEFAULT_SEND_STATUS)
-                .collectorConfigurationOverride(DEFAULT_CONFIG_OVERRIDE)
+                .sidecarExpirationThreshold(DEFAULT_EXPIRATION_PERIOD)
+                .sidecarInactiveThreshold(DEFAULT_INACTIVE_THRESHOLD)
+                .sidecarUpdateInterval(DEFAULT_UPDATE_INTERVAL)
+                .sidecarSendStatus(DEFAULT_SEND_STATUS)
+                .sidecarConfigurationOverride(DEFAULT_CONFIG_OVERRIDE)
                 .build();
     }
 
@@ -84,15 +84,15 @@ public abstract class SidecarSystemConfiguration {
 
     @AutoValue.Builder
     public static abstract class Builder {
-        public abstract Builder collectorExpirationThreshold(Period expirationThreshold);
+        public abstract Builder sidecarExpirationThreshold(Period expirationThreshold);
 
-        public abstract Builder collectorInactiveThreshold(Period inactiveThreshold);
+        public abstract Builder sidecarInactiveThreshold(Period inactiveThreshold);
 
-        public abstract Builder collectorUpdateInterval(Period updateInterval);
+        public abstract Builder sidecarUpdateInterval(Period updateInterval);
 
-        public abstract Builder collectorSendStatus(boolean sendStatus);
+        public abstract Builder sidecarSendStatus(boolean sendStatus);
 
-        public abstract Builder collectorConfigurationOverride(boolean configurationOverride);
+        public abstract Builder sidecarConfigurationOverride(boolean configurationOverride);
 
         public abstract SidecarSystemConfiguration build();
     }
