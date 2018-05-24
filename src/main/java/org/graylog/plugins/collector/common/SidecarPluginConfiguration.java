@@ -24,7 +24,7 @@ import com.github.joschi.jadconfig.validators.StringNotEmptyValidator;
 import org.graylog2.plugin.PluginConfigBean;
 
 public class SidecarPluginConfiguration implements PluginConfigBean {
-    private static final String PREFIX = "collector_sidecar_";
+    private static final String PREFIX = "sidecar_";
 
     @Parameter(value = PREFIX + "user", validator = StringNotEmptyValidator.class)
     private String user = "graylog-sidecar";
