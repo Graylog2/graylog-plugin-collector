@@ -67,7 +67,7 @@ public class CollectorModule extends PluginModule {
         bind(new TypeLiteral<Supplier<SidecarSystemConfiguration>>(){}).to(SidecarSystemConfigurationSupplier.class);
 
         install(new FactoryModuleBuilder()
-                .implement(AdministrationFilter.class, Names.named("backend"), CollectorAdministrationFilter.class)
+                .implement(AdministrationFilter.class, Names.named("collector"), CollectorAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("configuration"), ConfigurationAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("os"), OsAdministrationFilter.class)
                 .implement(AdministrationFilter.class, Names.named("status"), StatusAdministrationFilter.class)

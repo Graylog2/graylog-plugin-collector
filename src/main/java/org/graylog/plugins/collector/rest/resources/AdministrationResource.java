@@ -105,7 +105,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     }
 
     private List<Collector> getCollectorBackends(Map<String, String> filters) {
-        final String backendKey = AdministrationFilter.Type.BACKEND.toString().toLowerCase();
+        final String backendKey = AdministrationFilter.Type.COLLECTOR.toString().toLowerCase();
         final String configurationKey = AdministrationFilter.Type.CONFIGURATION.toString().toLowerCase();
 
         final List<String> backendIds = new ArrayList<>();
