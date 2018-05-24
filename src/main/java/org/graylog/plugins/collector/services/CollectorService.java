@@ -35,8 +35,8 @@ public class CollectorService extends PaginatedDbService<Collector> {
     }
 
     public List<Collector> allFilter(Predicate<Collector> filter) {
-        try (final Stream<Collector> backendsStream = streamAll()) {
-            final Stream<Collector> filteredStream = filter == null ? backendsStream : backendsStream.filter(filter);
+        try (final Stream<Collector> collectorsStream = streamAll()) {
+            final Stream<Collector> filteredStream = filter == null ? collectorsStream : collectorsStream.filter(filter);
             return filteredStream.collect(Collectors.toList());
         }
     }

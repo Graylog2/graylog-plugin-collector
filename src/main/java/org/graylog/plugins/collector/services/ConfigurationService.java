@@ -35,7 +35,8 @@ import java.util.stream.Stream;
 @Singleton
 public class ConfigurationService extends PaginatedDbService<Configuration> {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationService.class);
-    private static final freemarker.template.Configuration templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_27);
+    private static final freemarker.template.Configuration templateConfiguration =
+            new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_27);
     private static final StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
     private static final String COLLECTION_NAME = "collector_configurations";
@@ -126,8 +127,8 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
 
     public String renderPreview(String template) {
         Map<String, Object> context = new HashMap<>();
-        context.put("collectorId", "<collector id>");
         context.put("nodeId", "<node id>");
+        context.put("nodeName", "<node name>");
         context.put("collectorVersion", "<version>");
         context.put("operatingSystem", "<operating system>");
         context.put("ip", "<ip>");
