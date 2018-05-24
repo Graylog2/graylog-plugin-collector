@@ -7,7 +7,7 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorBackendSummary {
+public abstract class BackendSummary {
     @JsonProperty("id")
     public abstract String id();
 
@@ -21,14 +21,14 @@ public abstract class CollectorBackendSummary {
     public abstract String nodeOperatingSystem();
 
     @JsonCreator
-    public static CollectorBackendSummary create(@JsonProperty("id") String id,
-                                                 @JsonProperty("name") String name,
-                                                 @JsonProperty("service_type") String serviceType,
-                                                 @JsonProperty("node_operating_system") String nodeOperatingSystem) {
-        return new AutoValue_CollectorBackendSummary(id, name, serviceType, nodeOperatingSystem);
+    public static BackendSummary create(@JsonProperty("id") String id,
+                                        @JsonProperty("name") String name,
+                                        @JsonProperty("service_type") String serviceType,
+                                        @JsonProperty("node_operating_system") String nodeOperatingSystem) {
+        return new AutoValue_BackendSummary(id, name, serviceType, nodeOperatingSystem);
     }
 
-    public static CollectorBackendSummary create(CollectorBackend backend) {
+    public static BackendSummary create(Backend backend) {
         return create(
                 backend.id(),
                 backend.name(),

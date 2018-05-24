@@ -7,14 +7,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.graylog.plugins.collector.rest.models.Configuration;
+import org.graylog.plugins.collector.rest.models.ConfigurationSummary;
+import org.graylog.plugins.collector.rest.responses.ConfigurationListResponse;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.EtagService;
 import org.graylog.plugins.collector.rest.models.Sidecar;
-import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
 import org.graylog.plugins.collector.rest.requests.ConfigurationPreviewRequest;
-import org.graylog.plugins.collector.rest.responses.CollectorConfigurationListResponse;
-import org.graylog.plugins.collector.rest.models.CollectorConfigurationSummary;
 import org.graylog.plugins.collector.rest.responses.ConfigurationPreviewRenderResponse;
 import org.graylog.plugins.collector.rest.responses.ValidationResponse;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
@@ -61,9 +61,9 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     private final EtagService etagService;
     private final SearchQueryParser searchQueryParser;
     private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
-            .put("id", SearchQueryField.create(CollectorConfiguration.FIELD_ID))
-            .put("backend_id", SearchQueryField.create(CollectorConfiguration.FIELD_BACKEND_ID))
-            .put("name", SearchQueryField.create(CollectorConfiguration.FIELD_NAME))
+            .put("id", SearchQueryField.create(Configuration.FIELD_ID))
+            .put("backend_id", SearchQueryField.create(Configuration.FIELD_BACKEND_ID))
+            .put("name", SearchQueryField.create(Configuration.FIELD_NAME))
             .build();
 
     @Inject
@@ -73,7 +73,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
         this.configurationService = configurationService;
         this.sidecarService = sidecarService;
         this.etagService = etagService;
-        this.searchQueryParser = new SearchQueryParser(CollectorConfiguration.FIELD_NAME, SEARCH_FIELD_MAPPING);;
+        this.searchQueryParser = new SearchQueryParser(Configuration.FIELD_NAME, SEARCH_FIELD_MAPPING);;
     }
 
     @GET
@@ -81,23 +81,23 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List all collector configurations")
-    public CollectorConfigurationListResponse listConfigurations(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
-                                                                 @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
-                                                                 @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
-                                                                 @ApiParam(name = "sort",
+    public ConfigurationListResponse listConfigurations(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
+                                                        @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
+                                                        @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
+                                                        @ApiParam(name = "sort",
                                                                          value = "The field to sort the result on",
                                                                          required = true,
                                                                          allowableValues = "name,id,backend_id")
-                                                                     @DefaultValue(CollectorConfiguration.FIELD_NAME) @QueryParam("sort") String sort,
-                                                                 @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
+                                                                     @DefaultValue(Configuration.FIELD_NAME) @QueryParam("sort") String sort,
+                                                        @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
                                                                      @DefaultValue("asc") @QueryParam("order") String order) {
         final SearchQuery searchQuery = searchQueryParser.parse(query);
-        final PaginatedList<CollectorConfiguration> configurations = this.configurationService.findPaginated(searchQuery, page, perPage, sort, order);
-        final List<CollectorConfigurationSummary> result = configurations.stream()
-                .map(CollectorConfigurationSummary::create)
+        final PaginatedList<Configuration> configurations = this.configurationService.findPaginated(searchQuery, page, perPage, sort, order);
+        final List<ConfigurationSummary> result = configurations.stream()
+                .map(ConfigurationSummary::create)
                 .collect(Collectors.toList());
 
-        return CollectorConfigurationListResponse.create(query, configurations.pagination(), sort, order, result);
+        return ConfigurationListResponse.create(query, configurations.pagination(), sort, order, result);
     }
 
     @GET
@@ -106,7 +106,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresPermissions(CollectorRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector configuration details")
-    public CollectorConfiguration getConfigurations(@ApiParam(name = "id", required = true)
+    public Configuration getConfigurations(@ApiParam(name = "id", required = true)
                                                     @PathParam("id") String id) {
         return this.configurationService.find(id);
     }
@@ -118,7 +118,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Validates configuration name")
     public ValidationResponse validateConfiguration(@ApiParam(name = "name", required = true) @QueryParam("name") String name) {
-        final CollectorConfiguration configuration = this.configurationService.findByName(name);
+        final Configuration configuration = this.configurationService.findByName(name);
         if (configuration == null) {
             return ValidationResponse.create(false, null);
         }
@@ -156,12 +156,12 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
             if (sidecar == null) {
                 throw new NotFoundException("Couldn't find collector by ID: " + collectorId);
             }
-            CollectorConfiguration configuration = configurationService.find(configurationId);
+            Configuration configuration = configurationService.find(configurationId);
             if (configuration == null) {
                 throw new NotFoundException("Couldn't find configuration by ID: " + configurationId);
             }
 
-            CollectorConfiguration collectorConfiguration = this.configurationService.renderConfigurationForCollector(sidecar, configuration);
+            Configuration collectorConfiguration = this.configurationService.renderConfigurationForCollector(sidecar, configuration);
 
             // add new etag to cache
             String etagString = configurationToEtag(collectorConfiguration);
@@ -202,10 +202,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector configuration")
     @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_CREATE)
-    public CollectorConfiguration createConfiguration(@ApiParam(name = "JSON body", required = true)
-                                                      @Valid @NotNull CollectorConfiguration request) {
-        CollectorConfiguration collectorConfiguration = configurationService.fromRequest(request);
-        return configurationService.save(collectorConfiguration);
+    public Configuration createConfiguration(@ApiParam(name = "JSON body", required = true)
+                                                      @Valid @NotNull Configuration request) {
+        Configuration configuration = configurationService.fromRequest(request);
+        return configurationService.save(configuration);
     }
 
     @POST
@@ -217,8 +217,8 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     public Response copyConfiguration(@ApiParam(name = "id", required = true)
                                       @PathParam("id") String id,
                                       @PathParam("name") String name) throws NotFoundException {
-        final CollectorConfiguration collectorConfiguration = configurationService.copyConfiguration(id, name);
-        configurationService.save(collectorConfiguration);
+        final Configuration configuration = configurationService.copyConfiguration(id, name);
+        configurationService.save(configuration);
         return Response.accepted().build();
     }
 
@@ -229,13 +229,13 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update collector configuration")
     @AuditEvent(type = CollectorAuditEventTypes.CONFIGURATION_UPDATE)
-    public CollectorConfiguration updateConfiguration(@ApiParam(name = "id", required = true)
+    public Configuration updateConfiguration(@ApiParam(name = "id", required = true)
                                                       @PathParam("id") String id,
-                                                      @ApiParam(name = "JSON body", required = true)
-                                                      @Valid @NotNull CollectorConfiguration request) {
+                                             @ApiParam(name = "JSON body", required = true)
+                                                      @Valid @NotNull Configuration request) {
         etagService.invalidateAll();
-        CollectorConfiguration collectorConfiguration = configurationService.fromRequest(id, request);
-        return configurationService.save(collectorConfiguration);
+        Configuration configuration = configurationService.fromRequest(id, request);
+        return configurationService.save(configuration);
     }
 
     @DELETE
@@ -255,9 +255,9 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
         return Response.accepted().build();
     }
 
-    private String configurationToEtag(CollectorConfiguration collectorConfiguration) {
+    private String configurationToEtag(Configuration configuration) {
         return Hashing.md5()
-                .hashInt(collectorConfiguration.hashCode())  // avoid negative values
+                .hashInt(configuration.hashCode())  // avoid negative values
                 .toString();
     }
 }

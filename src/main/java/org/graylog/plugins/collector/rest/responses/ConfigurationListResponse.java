@@ -20,14 +20,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.rest.models.CollectorConfigurationSummary;
+import org.graylog.plugins.collector.rest.models.ConfigurationSummary;
 import org.graylog2.database.PaginatedList;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 
 @AutoValue
-public abstract class CollectorConfigurationListResponse {
+public abstract class ConfigurationListResponse {
     @Nullable
     @JsonProperty
     public abstract String query();
@@ -44,14 +44,14 @@ public abstract class CollectorConfigurationListResponse {
     public abstract String order();
 
     @JsonProperty
-    public abstract Collection<CollectorConfigurationSummary> configurations();
+    public abstract Collection<ConfigurationSummary> configurations();
 
     @JsonCreator
-    public static CollectorConfigurationListResponse create(@JsonProperty("query") String query,
-                                                            @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
-                                                            @JsonProperty("sort") String sort,
-                                                            @JsonProperty("order") String order,
-                                                            @JsonProperty("configurations") Collection<CollectorConfigurationSummary> configurations) {
-        return new AutoValue_CollectorConfigurationListResponse(query, paginationInfo, sort, order, configurations);
+    public static ConfigurationListResponse create(@JsonProperty("query") String query,
+                                                   @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
+                                                   @JsonProperty("sort") String sort,
+                                                   @JsonProperty("order") String order,
+                                                   @JsonProperty("configurations") Collection<ConfigurationSummary> configurations) {
+        return new AutoValue_ConfigurationListResponse(query, paginationInfo, sort, order, configurations);
     }
 }

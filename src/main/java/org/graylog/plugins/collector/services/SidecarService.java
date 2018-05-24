@@ -2,12 +2,12 @@ package org.graylog.plugins.collector.services;
 
 import com.mongodb.BasicDBObject;
 import org.graylog.plugins.collector.rest.models.Sidecar;
-import org.graylog.plugins.collector.rest.models.CollectorBackend;
-import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
-import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.rest.models.Backend;
+import org.graylog.plugins.collector.rest.models.Configuration;
+import org.graylog.plugins.collector.rest.models.NodeDetails;
+import org.graylog.plugins.collector.rest.requests.RegistrationRequest;
 import org.graylog.plugins.collector.rest.requests.ConfigurationAssignment;
-import org.graylog.plugins.collector.rest.models.CollectorSummary;
+import org.graylog.plugins.collector.rest.models.SidecarSummary;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.NotFoundException;
@@ -117,11 +117,11 @@ public class SidecarService extends PaginatedDbService<Sidecar> {
         return count;
     }
 
-    public Sidecar fromRequest(String nodeId, CollectorRegistrationRequest request, String collectorVersion) {
+    public Sidecar fromRequest(String nodeId, RegistrationRequest request, String collectorVersion) {
         return Sidecar.create(
                 nodeId,
                 request.nodeName(),
-                CollectorNodeDetails.create(
+                NodeDetails.create(
                         request.nodeDetails().operatingSystem(),
                         request.nodeDetails().ip(),
                         request.nodeDetails().metrics(),
@@ -136,11 +136,11 @@ public class SidecarService extends PaginatedDbService<Sidecar> {
             throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
         }
         for (ConfigurationAssignment assignment : assignments) {
-            CollectorBackend backend = backendService.find(assignment.backendId());
+            Backend backend = backendService.find(assignment.backendId());
             if (backend == null) {
                 throw new NotFoundException("Couldn't find backend with ID " + assignment.backendId());
             }
-            CollectorConfiguration configuration = configurationService.find(assignment.configurationId());
+            Configuration configuration = configurationService.find(assignment.configurationId());
             if (configuration == null) {
                 throw new NotFoundException("Couldn't find configuration with ID " + assignment.configurationId());
             }
@@ -155,7 +155,7 @@ public class SidecarService extends PaginatedDbService<Sidecar> {
         return save(toSave);
     }
 
-    public List<CollectorSummary> toSummaryList(List<Sidecar> sidecars, Predicate<Sidecar> isActiveFunction) {
+    public List<SidecarSummary> toSummaryList(List<Sidecar> sidecars, Predicate<Sidecar> isActiveFunction) {
         return sidecars.stream()
                 .map(collector -> collector.toSummary(isActiveFunction))
                 .collect(Collectors.toList());

@@ -1,7 +1,7 @@
 package org.graylog.plugins.collector.migrations;
 
+import org.graylog.plugins.collector.rest.models.Backend;
 import org.graylog.plugins.collector.services.BackendService;
-import org.graylog.plugins.collector.rest.models.CollectorBackend;
 import org.graylog2.migrations.Migration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                                  List<String> executeParameters,
                                  List<String> validationCommand,
                                  String defaultTemplate) {
-        CollectorBackend backend = null;
+        Backend backend = null;
         try {
             backend = backendService.findByName(backendName);
             if (backend == null) {
@@ -81,8 +81,8 @@ public class V20180212165000_AddDefaultBackends extends Migration {
             }
         } catch (IllegalArgumentException ignored) {
             LOG.info("{} backend is missing, adding it.", backendName);
-            final CollectorBackend collectorBackend;
-            collectorBackend = CollectorBackend.create(
+            final Backend collectorBackend;
+            collectorBackend = Backend.create(
                     null,
                     backendName,
                     serviceType,

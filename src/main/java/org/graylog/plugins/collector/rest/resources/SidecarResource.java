@@ -13,20 +13,20 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.rest.models.Sidecar;
+import org.graylog.plugins.collector.rest.models.SidecarRegistrationConfiguration;
+import org.graylog.plugins.collector.rest.models.SidecarSummary;
+import org.graylog.plugins.collector.rest.requests.RegistrationRequest;
+import org.graylog.plugins.collector.rest.responses.RegistrationResponse;
+import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.rest.models.CollectorAction;
 import org.graylog.plugins.collector.rest.models.CollectorActions;
-import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.rest.requests.ConfigurationAssignment;
 import org.graylog.plugins.collector.rest.models.NodeConfiguration;
 import org.graylog.plugins.collector.rest.requests.NodeConfigurationRequest;
-import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
-import org.graylog.plugins.collector.rest.models.CollectorRegistrationConfiguration;
-import org.graylog.plugins.collector.rest.responses.CollectorRegistrationResponse;
-import org.graylog.plugins.collector.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.audit.jersey.AuditEvent;
@@ -103,10 +103,10 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @ApiOperation(value = "Lists all existing collector registrations")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
-    public CollectorListResponse all() {
+    public SidecarListResponse all() {
         final List<Sidecar> sidecars = sidecarService.all();
-        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
-        return CollectorListResponse.create("",
+        final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
+        return SidecarListResponse.create("",
                 PaginatedList.PaginationInfo.create(collectorSummaries.size(),
                         collectorSummaries.size(),
                         1,
@@ -122,24 +122,24 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @ApiOperation(value = "Lists existing collector registrations using pagination")
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
-    public CollectorListResponse collectors(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
-                                            @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
-                                            @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
-                                            @ApiParam(name = "sort",
+    public SidecarListResponse collectors(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
+                                          @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
+                                          @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
+                                          @ApiParam(name = "sort",
                                                     value = "The field to sort the result on",
                                                     required = true,
                                                     allowableValues = "title,description,name,id")
                                             @DefaultValue(Sidecar.FIELD_NODE_NAME) @QueryParam("sort") String sort,
-                                            @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
+                                          @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
                                             @DefaultValue("asc") @QueryParam("order") String order,
-                                            @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
+                                          @ApiParam(name = "only_active") @QueryParam("only_active") @DefaultValue("false") boolean onlyActive) {
         final String mappedQuery = collectorStatusMapper.replaceStringStatusSearchQuery(query);
         final SearchQuery searchQuery = searchQueryParser.parse(mappedQuery);
         final PaginatedList<Sidecar> sidecars = onlyActive ?
                 sidecarService.findPaginated(searchQuery, activeCollectorFilter, page, perPage, sort, order) :
                 sidecarService.findPaginated(searchQuery, page, perPage, sort, order);
-        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
-        return CollectorListResponse.create(query, sidecars.pagination(), onlyActive, sort, order, collectorSummaries);
+        final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
+        return SidecarListResponse.create(query, sidecars.pagination(), onlyActive, sort, order, collectorSummaries);
     }
 
     @GET
@@ -151,7 +151,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     })
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
-    public CollectorSummary get(@ApiParam(name = "sidecarId", required = true)
+    public SidecarSummary get(@ApiParam(name = "sidecarId", required = true)
                                 @PathParam("sidecarId") @NotEmpty String sidecarId) {
         final Sidecar sidecar = sidecarService.findByNodeId(sidecarId);
         if (sidecar != null) {
@@ -175,7 +175,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     public Response register(@ApiParam(name = "sidecarId", value = "The id this Sidecar is registering as.", required = true)
                              @PathParam("sidecarId") @NotEmpty String sidecarId,
                              @ApiParam(name = "JSON body", required = true)
-                             @Valid @NotNull CollectorRegistrationRequest request,
+                             @Valid @NotNull RegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String sidecarVersion) {
         final Sidecar newSidecar;
         final Sidecar oldSidecar = sidecarService.findByNodeId(sidecarId);
@@ -199,8 +199,8 @@ public class SidecarResource extends RestResource implements PluginRestResource 
             collectorAction = collectorActions.action();
         }
         final CollectorSystemConfiguration sidecarSystemConfiguration = configSupplier.get();
-        CollectorRegistrationResponse sidecarRegistrationResponse = CollectorRegistrationResponse.create(
-                CollectorRegistrationConfiguration.create(
+        RegistrationResponse sidecarRegistrationResponse = RegistrationResponse.create(
+                SidecarRegistrationConfiguration.create(
                         sidecarSystemConfiguration.collectorUpdateInterval().toStandardDuration().getStandardSeconds(),
                         sidecarSystemConfiguration.collectorSendStatus()),
                 sidecarSystemConfiguration.collectorConfigurationOverride(),

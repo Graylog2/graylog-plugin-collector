@@ -4,13 +4,12 @@ import com.mongodb.BasicDBObject;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.cache.TemplateLoader;
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.graylog.plugins.collector.rest.models.Configuration;
 import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.template.directives.IndentTemplateDirective;
 import org.graylog.plugins.collector.template.loader.MongoDbTemplateLoader;
-import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.PaginatedDbService;
@@ -34,9 +33,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Singleton
-public class ConfigurationService extends PaginatedDbService<CollectorConfiguration> {
+public class ConfigurationService extends PaginatedDbService<Configuration> {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationService.class);
-    private static final Configuration templateConfiguration = new Configuration(Configuration.VERSION_2_3_27);
+    private static final freemarker.template.Configuration templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_27);
     private static final StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
     private static final String COLLECTION_NAME = "collector_configurations";
@@ -44,7 +43,7 @@ public class ConfigurationService extends PaginatedDbService<CollectorConfigurat
     @Inject
     public ConfigurationService(MongoConnection mongoConnection,
                                 MongoJackObjectMapperProvider mapper) {
-        super(mongoConnection, mapper, CollectorConfiguration.class, COLLECTION_NAME);
+        super(mongoConnection, mapper, Configuration.class, COLLECTION_NAME);
         MongoDbTemplateLoader mongoDbTemplateLoader = new MongoDbTemplateLoader(db);
         MultiTemplateLoader multiTemplateLoader = new MultiTemplateLoader(new TemplateLoader[] {
                 mongoDbTemplateLoader,
@@ -53,47 +52,47 @@ public class ConfigurationService extends PaginatedDbService<CollectorConfigurat
         templateConfiguration.setSharedVariable("indent", new IndentTemplateDirective());
     }
 
-    public CollectorConfiguration find(String id) {
+    public Configuration find(String id) {
         return db.findOne(DBQuery.is("_id", id));
     }
 
-    public CollectorConfiguration findByName(String name) {
-        return db.findOne(DBQuery.is(CollectorConfiguration.FIELD_NAME, name));
+    public Configuration findByName(String name) {
+        return db.findOne(DBQuery.is(Configuration.FIELD_NAME, name));
     }
 
-    public List<CollectorConfiguration> all() {
-        try (final Stream<CollectorConfiguration> collectorConfigurationStream = streamAll()) {
+    public List<Configuration> all() {
+        try (final Stream<Configuration> collectorConfigurationStream = streamAll()) {
             return collectorConfigurationStream.collect(Collectors.toList());
         }
     }
 
-    public PaginatedList<CollectorConfiguration> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
+    public PaginatedList<Configuration> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
         final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
         return findPaginatedWithQueryAndSort(dbQuery, sortBuilder, page, perPage);
     }
 
     @Override
-    public CollectorConfiguration save(CollectorConfiguration configuration) {
+    public Configuration save(Configuration configuration) {
         return db.findAndModify(DBQuery.is("_id", configuration.id()), new BasicDBObject(),
                 new BasicDBObject(), false, configuration, true, true);
     }
 
-    public CollectorConfiguration copyConfiguration(String id, String name) {
-        CollectorConfiguration collectorConfiguration = find(id);
-        return CollectorConfiguration.create(collectorConfiguration.backendId(), name, collectorConfiguration.color(), collectorConfiguration.template());
+    public Configuration copyConfiguration(String id, String name) {
+        Configuration configuration = find(id);
+        return Configuration.create(configuration.backendId(), name, configuration.color(), configuration.template());
     }
 
-    public CollectorConfiguration fromRequest(CollectorConfiguration request) {
-        return CollectorConfiguration.create(
+    public Configuration fromRequest(Configuration request) {
+        return Configuration.create(
                 request.backendId(),
                 request.name(),
                 request.color(),
                 request.template());
     }
 
-    public CollectorConfiguration fromRequest(String id, CollectorConfiguration request) {
-        return CollectorConfiguration.create(
+    public Configuration fromRequest(String id, Configuration request) {
+        return Configuration.create(
                 id,
                 request.backendId(),
                 request.name(),
@@ -101,7 +100,7 @@ public class ConfigurationService extends PaginatedDbService<CollectorConfigurat
                 request.template());
     }
 
-    public CollectorConfiguration renderConfigurationForCollector(Sidecar sidecar, CollectorConfiguration configuration) {
+    public Configuration renderConfigurationForCollector(Sidecar sidecar, Configuration configuration) {
         Map<String, Object> context = new HashMap<>();
 
         context.put("nodeId", sidecar.nodeId());
@@ -116,7 +115,7 @@ public class ConfigurationService extends PaginatedDbService<CollectorConfigurat
             context.put("load1", sidecar.nodeDetails().metrics().load1());
         }
 
-        return CollectorConfiguration.create(
+        return Configuration.create(
                 configuration.id(),
                 configuration.backendId(),
                 configuration.name(),

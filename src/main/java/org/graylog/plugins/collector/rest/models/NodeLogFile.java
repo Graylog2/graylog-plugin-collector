@@ -20,29 +20,28 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-
-import javax.annotation.Nullable;
-import java.util.List;
+import org.joda.time.DateTime;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorMetrics {
-    @JsonProperty("disks_75")
-    @Nullable
-    public abstract List<String> disks75();
+public abstract class NodeLogFile {
+    @JsonProperty("path")
+    public abstract String path();
 
-    @JsonProperty("cpu_idle")
-    @Nullable
-    public abstract Float cpuIdle();
+    @JsonProperty("mod_time")
+    public abstract DateTime modTime();
 
-    @JsonProperty("load_1")
-    @Nullable
-    public abstract Float load1();
+    @JsonProperty("size")
+    public abstract long size();
+
+    @JsonProperty("is_dir")
+    public abstract boolean isDir();
 
     @JsonCreator
-    public static CollectorMetrics create(@JsonProperty("disks_75") @Nullable List<String> disks75,
-                                          @JsonProperty("cpu_idle") @Nullable Float cpuIdle,
-                                          @JsonProperty("load_1") @Nullable Float load1) {
-        return new AutoValue_CollectorMetrics(disks75, cpuIdle, load1);
+    public static NodeLogFile create(@JsonProperty("path") String path,
+                                     @JsonProperty("mod_time") DateTime modTime,
+                                     @JsonProperty("size") long size,
+                                     @JsonProperty("is_dir") boolean isDir) {
+        return new AutoValue_NodeLogFile(path, modTime, size, isDir);
     }
 }

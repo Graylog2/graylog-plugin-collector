@@ -2,7 +2,7 @@ package org.graylog.plugins.collector.template.loader;
 
 import freemarker.cache.TemplateLoader;
 import org.bson.types.ObjectId;
-import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
+import org.graylog.plugins.collector.rest.models.Configuration;
 import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
 
@@ -11,25 +11,25 @@ import java.io.Reader;
 import java.io.StringReader;
 
 public class MongoDbTemplateLoader implements TemplateLoader {
-    private final JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection;
+    private final JacksonDBCollection<Configuration, ObjectId> dbCollection;
 
-    public MongoDbTemplateLoader(JacksonDBCollection<CollectorConfiguration, ObjectId> dbCollection) {
+    public MongoDbTemplateLoader(JacksonDBCollection<Configuration, ObjectId> dbCollection) {
         this.dbCollection = dbCollection;
     }
 
     @Override
     public Object findTemplateSource(String id) throws IOException {
-        CollectorConfiguration collectorConfiguration;
+        Configuration configuration;
         try {
-            collectorConfiguration = dbCollection.findOne(DBQuery.is("_id", unlocalize(id)));
+            configuration = dbCollection.findOne(DBQuery.is("_id", unlocalize(id)));
         } catch (IllegalArgumentException e) {
             // no ObjectID so skip MongoDB loader and try with next one
             return null;
         }
-        if (collectorConfiguration == null) {
+        if (configuration == null) {
             throw new IOException("Can't find template: " + unlocalize(id));
         }
-        return collectorConfiguration.template();
+        return configuration.template();
     }
 
     @Override

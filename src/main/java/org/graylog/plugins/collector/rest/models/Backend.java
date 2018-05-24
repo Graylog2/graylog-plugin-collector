@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorBackend {
+public abstract class Backend {
     public static final String FIELD_ID = "id";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_SERVICE_TYPE = "service_type";
@@ -58,7 +58,7 @@ public abstract class CollectorBackend {
     public abstract String defaultTemplate();
 
     public static Builder builder() {
-        return new AutoValue_CollectorBackend.Builder();
+        return new AutoValue_Backend.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -74,19 +74,19 @@ public abstract class CollectorBackend {
         public abstract Builder executeParameters(List<String> executeParameters);
         public abstract Builder validationCommand(List<String> validationCommand);
         public abstract Builder defaultTemplate(String defaultTemplate);
-        public abstract CollectorBackend build();
+        public abstract Backend build();
     }
 
     @JsonCreator
-    public static CollectorBackend create(@JsonProperty(FIELD_ID) @Nullable String id,
-                                          @JsonProperty(FIELD_NAME) String name,
-                                          @JsonProperty(FIELD_SERVICE_TYPE) String serviceType,
-                                          @JsonProperty(FIELD_NODE_OPERATING_SYSTEM) String nodeOperatingSystem,
-                                          @JsonProperty(FIELD_EXECUTABLE_PATH) String executablePath,
-                                          @JsonProperty(FIELD_CONFIGURATION_PATH) String configurationPath,
-                                          @JsonProperty(FIELD_EXECUTE_PARAMETERS) @Nullable List<String> executeParameters,
-                                          @JsonProperty(FIELD_VALIDATION_PARAMETERS) @Nullable List<String> validationCommand,
-                                          @JsonProperty(FIELD_DEFAULT_TEMPLATE) String defaultTemplate) {
+    public static Backend create(@JsonProperty(FIELD_ID) @Nullable String id,
+                                 @JsonProperty(FIELD_NAME) String name,
+                                 @JsonProperty(FIELD_SERVICE_TYPE) String serviceType,
+                                 @JsonProperty(FIELD_NODE_OPERATING_SYSTEM) String nodeOperatingSystem,
+                                 @JsonProperty(FIELD_EXECUTABLE_PATH) String executablePath,
+                                 @JsonProperty(FIELD_CONFIGURATION_PATH) String configurationPath,
+                                 @JsonProperty(FIELD_EXECUTE_PARAMETERS) @Nullable List<String> executeParameters,
+                                 @JsonProperty(FIELD_VALIDATION_PARAMETERS) @Nullable List<String> validationCommand,
+                                 @JsonProperty(FIELD_DEFAULT_TEMPLATE) String defaultTemplate) {
         return builder()
                 .id(id)
                 .name(name)

@@ -45,7 +45,7 @@ public abstract class Sidecar {
     public abstract String nodeName();
 
     @JsonProperty
-    public abstract CollectorNodeDetails nodeDetails();
+    public abstract NodeDetails nodeDetails();
 
     @JsonProperty
     @Nullable
@@ -68,7 +68,7 @@ public abstract class Sidecar {
         public abstract Builder id(String id);
         public abstract Builder nodeId(String title);
         public abstract Builder nodeName(String title);
-        public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
+        public abstract Builder nodeDetails(NodeDetails nodeDetails);
         public abstract Builder assignments(List<ConfigurationAssignment> assignments);
         public abstract Builder collectorVersion(String collectorVersion);
         public abstract Builder lastSeen(DateTime lastSeen);
@@ -79,7 +79,7 @@ public abstract class Sidecar {
     public static Sidecar create(@JsonProperty(FIELD_ID) @Id @ObjectId String id,
                                  @JsonProperty(FIELD_NODE_ID) String nodeId,
                                  @JsonProperty(FIELD_NODE_NAME) String nodeName,
-                                 @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
+                                 @JsonProperty(FIELD_NODE_DETAILS) NodeDetails nodeDetails,
                                  @JsonProperty(FIELD_ASSIGNMENTS) @Nullable List<ConfigurationAssignment> assignments,
                                  @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion,
                                  @JsonProperty(FIELD_LAST_SEEN) DateTime lastSeen) {
@@ -97,7 +97,7 @@ public abstract class Sidecar {
 
     public static Sidecar create(@JsonProperty(FIELD_NODE_ID) String nodeId,
                                  @JsonProperty(FIELD_NODE_NAME) String nodeName,
-                                 @JsonProperty(FIELD_NODE_DETAILS) CollectorNodeDetails nodeDetails,
+                                 @JsonProperty(FIELD_NODE_DETAILS) NodeDetails nodeDetails,
                                  @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion) {
 
         return builder()
@@ -110,8 +110,8 @@ public abstract class Sidecar {
                 .build();
     }
 
-    public CollectorSummary toSummary(Predicate<Sidecar> isActiveFunction) {
-        return CollectorSummary.builder()
+    public SidecarSummary toSummary(Predicate<Sidecar> isActiveFunction) {
+        return SidecarSummary.builder()
                 .nodeId(nodeId())
                 .nodeName(nodeName())
                 .nodeDetails(nodeDetails())

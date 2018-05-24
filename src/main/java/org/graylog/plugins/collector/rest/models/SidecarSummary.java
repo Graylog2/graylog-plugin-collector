@@ -12,7 +12,7 @@ import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorSummary {
+public abstract class SidecarSummary {
     @JsonProperty("node_id")
     public abstract String nodeId();
 
@@ -20,7 +20,7 @@ public abstract class CollectorSummary {
     public abstract String nodeName();
 
     @JsonProperty("node_details")
-    public abstract CollectorNodeDetails nodeDetails();
+    public abstract NodeDetails nodeDetails();
 
     @JsonProperty("assignments")
     public abstract List<ConfigurationAssignment> assignments();
@@ -39,7 +39,7 @@ public abstract class CollectorSummary {
     public abstract boolean active();
 
     public static Builder builder() {
-        return new AutoValue_CollectorSummary.Builder();
+        return new AutoValue_SidecarSummary.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -48,24 +48,24 @@ public abstract class CollectorSummary {
     public abstract static class Builder {
         public abstract Builder nodeId(String nodeId);
         public abstract Builder nodeName(String nodeName);
-        public abstract Builder nodeDetails(CollectorNodeDetails nodeDetails);
+        public abstract Builder nodeDetails(NodeDetails nodeDetails);
         public abstract Builder assignments(List<ConfigurationAssignment> assignments);
         public abstract Builder lastSeen(DateTime lastSeen);
         public abstract Builder collectorVersion(String collectorVersion);
         public abstract Builder active(boolean active);
         public abstract Builder backends(List<String> backends);
-        public abstract CollectorSummary build();
+        public abstract SidecarSummary build();
     }
 
     @JsonCreator
-    public static CollectorSummary create(@JsonProperty("node_id") String nodeId,
-                                          @JsonProperty("node_name") String nodeName,
-                                          @JsonProperty("node_details") CollectorNodeDetails nodeDetails,
-                                          @JsonProperty("assignments") List<ConfigurationAssignment> assignments,
-                                          @JsonProperty("last_seen") DateTime lastSeen,
-                                          @JsonProperty("collector_version") String collectorVersion,
-                                          @JsonProperty("active") boolean active,
-                                          @JsonProperty("backends") @Nullable List<String> backends) {
+    public static SidecarSummary create(@JsonProperty("node_id") String nodeId,
+                                        @JsonProperty("node_name") String nodeName,
+                                        @JsonProperty("node_details") NodeDetails nodeDetails,
+                                        @JsonProperty("assignments") List<ConfigurationAssignment> assignments,
+                                        @JsonProperty("last_seen") DateTime lastSeen,
+                                        @JsonProperty("collector_version") String collectorVersion,
+                                        @JsonProperty("active") boolean active,
+                                        @JsonProperty("backends") @Nullable List<String> backends) {
         return builder()
                 .nodeId(nodeId)
                 .nodeName(nodeName)

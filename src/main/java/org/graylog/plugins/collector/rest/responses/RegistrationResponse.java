@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.graylog.plugins.collector.rest.models.CollectorAction;
-import org.graylog.plugins.collector.rest.models.CollectorRegistrationConfiguration;
+import org.graylog.plugins.collector.rest.models.SidecarRegistrationConfiguration;
 import org.graylog.plugins.collector.rest.requests.ConfigurationAssignment;
 
 import javax.annotation.Nullable;
@@ -30,9 +30,9 @@ import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorRegistrationResponse {
+public abstract class RegistrationResponse {
     @JsonProperty
-    public abstract CollectorRegistrationConfiguration collectorRegistrationConfiguration();
+    public abstract SidecarRegistrationConfiguration collectorRegistrationConfiguration();
 
     @JsonProperty
     public abstract boolean configurationOverride();
@@ -46,13 +46,13 @@ public abstract class CollectorRegistrationResponse {
     public abstract List<ConfigurationAssignment> assignments();
 
     @JsonCreator
-    public static CollectorRegistrationResponse create(
-            @JsonProperty("configuration") CollectorRegistrationConfiguration collectorRegistrationConfiguration,
+    public static RegistrationResponse create(
+            @JsonProperty("configuration") SidecarRegistrationConfiguration sidecarRegistrationConfiguration,
             @JsonProperty("configuration_override") boolean configurationOverride,
             @JsonProperty("actions") @Nullable List<CollectorAction> actions,
             @JsonProperty("assignments") @Nullable List<ConfigurationAssignment> assignments) {
-        return new AutoValue_CollectorRegistrationResponse(
-                collectorRegistrationConfiguration,
+        return new AutoValue_RegistrationResponse(
+                sidecarRegistrationConfiguration,
                 configurationOverride,
                 actions,
                 assignments);

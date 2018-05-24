@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
+import org.graylog.plugins.collector.rest.models.NodeDetails;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -28,18 +28,18 @@ import javax.validation.constraints.Size;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorRegistrationRequest {
+public abstract class RegistrationRequest {
     @JsonProperty("node_name")
     @NotNull
     @Size(min = 1)
     public abstract String nodeName();
 
     @JsonProperty("node_details")
-    public abstract CollectorNodeDetails nodeDetails();
+    public abstract NodeDetails nodeDetails();
 
     @JsonCreator
-    public static CollectorRegistrationRequest create(@JsonProperty("node_name") String nodeName,
-                                                      @JsonProperty("node_details") @Valid CollectorNodeDetails nodeDetails) {
-        return new AutoValue_CollectorRegistrationRequest(nodeName, nodeDetails);
+    public static RegistrationRequest create(@JsonProperty("node_name") String nodeName,
+                                             @JsonProperty("node_details") @Valid NodeDetails nodeDetails) {
+        return new AutoValue_RegistrationRequest(nodeName, nodeDetails);
     }
 }

@@ -17,16 +17,16 @@
 package org.graylog.plugins.collector.collectors.rest;
 
 import com.google.common.collect.Lists;
+import org.graylog.plugins.collector.rest.models.NodeDetails;
 import org.graylog.plugins.collector.rest.models.Sidecar;
+import org.graylog.plugins.collector.rest.models.SidecarSummary;
+import org.graylog.plugins.collector.rest.requests.RegistrationRequest;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
-import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
-import org.graylog.plugins.collector.rest.requests.CollectorRegistrationRequest;
 import org.graylog.plugins.collector.rest.resources.SidecarResource;
-import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
-import org.graylog.plugins.collector.rest.models.CollectorSummary;
+import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
 import org.graylog.plugins.collector.collectors.rest.resources.RestResourceBaseTest;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog.plugins.collector.system.CollectorSystemConfigurationSupplier;
@@ -76,7 +76,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
 
     @Test
     public void testList() throws Exception {
-        final CollectorListResponse response = this.resource.all();
+        final SidecarListResponse response = this.resource.all();
 
         assertNotNull(response);
         assertNotNull(response.collectors());
@@ -85,7 +85,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
 
     @Test(expected = NotFoundException.class)
     public void testGetNotExisting() throws Exception {
-        final CollectorSummary response = this.resource.get("Nonexisting");
+        final SidecarSummary response = this.resource.get("Nonexisting");
 
         assertNull(response);
     }
@@ -94,13 +94,13 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     public void testGet() throws Exception {
         final Sidecar sidecar = sidecars.get(sidecars.size() - 1);
         when(sidecarService.findByNodeId(sidecar.nodeId())).thenReturn(sidecar);
-        final CollectorSummary collectorSummary = mock(CollectorSummary.class);
-        when(sidecar.toSummary(any(ActiveCollectorFilter.class))).thenReturn(collectorSummary);
+        final SidecarSummary sidecarSummary = mock(SidecarSummary.class);
+        when(sidecar.toSummary(any(ActiveCollectorFilter.class))).thenReturn(sidecarSummary);
 
-        final CollectorSummary response = this.resource.get(sidecar.nodeId());
+        final SidecarSummary response = this.resource.get(sidecar.nodeId());
 
         assertNotNull(response);
-        assertEquals(collectorSummary, response);
+        assertEquals(sidecarSummary, response);
     }
 
     private Sidecar getDummyCollector(String id) {
@@ -120,9 +120,9 @@ public class SidecarResourceTest extends RestResourceBaseTest {
 
     @Test
     public void testRegister() throws Exception {
-        final CollectorRegistrationRequest input = CollectorRegistrationRequest.create(
+        final RegistrationRequest input = RegistrationRequest.create(
                 "nodeName",
-                CollectorNodeDetails.create(
+                NodeDetails.create(
                         "DummyOS 1.0",
                         null,
                         null,
@@ -139,9 +139,9 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterInvalidCollectorId() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+        final RegistrationRequest invalid = RegistrationRequest.create(
                 "nodeName",
-                CollectorNodeDetails.create(
+                NodeDetails.create(
                         "DummyOS 1.0",
                         null,
                         null,
@@ -159,9 +159,9 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterInvalidNodeId() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+        final RegistrationRequest invalid = RegistrationRequest.create(
                 "",
-                CollectorNodeDetails.create(
+                NodeDetails.create(
                         "DummyOS 1.0",
                         null,
                         null,
@@ -179,7 +179,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterMissingNodeDetails() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+        final RegistrationRequest invalid = RegistrationRequest.create(
                 "nodeName",
                 null
         );
@@ -193,9 +193,9 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterMissingOperatingSystem() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create(
+        final RegistrationRequest invalid = RegistrationRequest.create(
                 "nodeName",
-                CollectorNodeDetails.create(
+                NodeDetails.create(
                         "",
                         null,
                         null,

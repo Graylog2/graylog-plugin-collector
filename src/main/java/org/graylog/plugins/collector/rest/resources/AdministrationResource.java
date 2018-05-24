@@ -9,17 +9,17 @@ import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.filter.AdministrationFiltersFactory;
+import org.graylog.plugins.collector.rest.models.Backend;
 import org.graylog.plugins.collector.rest.models.Sidecar;
+import org.graylog.plugins.collector.rest.requests.AdministrationRequest;
+import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.filter.AdministrationFilter;
-import org.graylog.plugins.collector.rest.models.CollectorBackend;
-import org.graylog.plugins.collector.rest.models.CollectorConfiguration;
-import org.graylog.plugins.collector.rest.requests.CollectorAdministrationRequest;
-import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
-import org.graylog.plugins.collector.rest.models.CollectorSummary;
+import org.graylog.plugins.collector.rest.models.Configuration;
+import org.graylog.plugins.collector.rest.models.SidecarSummary;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
 import org.graylog.plugins.collector.system.CollectorSystemConfiguration;
 import org.graylog2.audit.jersey.NoAuditEvent;
@@ -76,23 +76,23 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     @RequiresAuthentication
     @RequiresPermissions(CollectorRestPermissions.SIDECARS_READ)
     @NoAuditEvent("this is not changing any data")
-    public CollectorListResponse administration(@ApiParam(name = "JSON body", required = true)
-                                                @Valid @NotNull CollectorAdministrationRequest request) {
+    public SidecarListResponse administration(@ApiParam(name = "JSON body", required = true)
+                                                @Valid @NotNull AdministrationRequest request) {
         final String sort = Sidecar.FIELD_NODE_NAME;
         final String order = "asc";
         final SearchQuery searchQuery = searchQueryParser.parse(request.query());
 
         final Optional<Predicate<Sidecar>> filters = administrationFiltersFactory.getFilters(request.filters());
 
-        final List<CollectorBackend> backends = getCollectorBackends(request.filters());
+        final List<Backend> backends = getCollectorBackends(request.filters());
         final PaginatedList<Sidecar> sidecars = sidecarService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
-        final List<CollectorSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
+        final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
 
-        final List<CollectorSummary> summariesWithBackends = collectorSummaries.stream()
+        final List<SidecarSummary> summariesWithBackends = collectorSummaries.stream()
                 .map(collector -> {
                     final List<String> compatibleBackends = backends.stream()
                             .filter(backend -> backend.nodeOperatingSystem().equalsIgnoreCase(collector.nodeDetails().operatingSystem()))
-                            .map(CollectorBackend::id)
+                            .map(Backend::id)
                             .collect(Collectors.toList());
                     return collector.toBuilder()
                             .backends(compatibleBackends)
@@ -101,10 +101,10 @@ public class AdministrationResource extends RestResource implements PluginRestRe
                 .filter(collectorSummary -> !filters.isPresent() || collectorSummary.backends().size() > 0)
                 .collect(Collectors.toList());
 
-        return CollectorListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithBackends, request.filters());
+        return SidecarListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithBackends, request.filters());
     }
 
-    private List<CollectorBackend> getCollectorBackends(Map<String, String> filters) {
+    private List<Backend> getCollectorBackends(Map<String, String> filters) {
         final String backendKey = AdministrationFilter.Type.BACKEND.toString().toLowerCase();
         final String configurationKey = AdministrationFilter.Type.CONFIGURATION.toString().toLowerCase();
 
@@ -114,7 +114,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
             backendIds.add(filters.get(backendKey));
         }
         if (filters.containsKey(configurationKey)) {
-            final CollectorConfiguration configuration = configurationService.find(filters.get(configurationKey));
+            final Configuration configuration = configurationService.find(filters.get(configurationKey));
             if (!backendIds.contains(configuration.backendId())) {
                 backendIds.add(configuration.backendId());
             }

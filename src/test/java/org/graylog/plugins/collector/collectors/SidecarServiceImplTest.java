@@ -23,11 +23,11 @@ import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb;
 import com.lordofthejars.nosqlunit.mongodb.MongoFlexibleComparisonStrategy;
+import org.graylog.plugins.collector.rest.models.NodeDetails;
 import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
 import org.graylog.plugins.collector.services.BackendService;
-import org.graylog.plugins.collector.rest.models.CollectorNodeDetails;
 import org.graylog.plugins.collector.database.MongoConnectionRule;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.shared.bindings.ObjectMapperModule;
@@ -98,7 +98,7 @@ public class SidecarServiceImplTest {
         final Sidecar sidecar = Sidecar.create(
                 "nodeId",
                 "nodeName",
-                CollectorNodeDetails.create(
+                NodeDetails.create(
                         "DummyOS 1.0",
                         null,
                         null,

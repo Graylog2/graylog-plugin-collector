@@ -28,7 +28,7 @@ import java.util.List;
 
 @AutoValue
 @JsonAutoDetect
-public abstract class CollectorNodeDetails {
+public abstract class NodeDetails {
     @JsonProperty("operating_system")
     @NotNull
     @Size(min = 1)
@@ -40,22 +40,22 @@ public abstract class CollectorNodeDetails {
 
     @JsonProperty("metrics")
     @Nullable
-    public abstract CollectorMetrics metrics();
+    public abstract NodeMetrics metrics();
 
     @JsonProperty("log_file_list")
     @Nullable
-    public abstract List<CollectorLogFile> logFileList();
+    public abstract List<NodeLogFile> logFileList();
 
     @JsonProperty("status")
     @Nullable
     public abstract CollectorStatusList statusList();
 
     @JsonCreator
-    public static CollectorNodeDetails create(@JsonProperty("operating_system") String operatingSystem,
-                                              @JsonProperty("ip") @Nullable String ip,
-                                              @JsonProperty("metrics") @Nullable CollectorMetrics metrics,
-                                              @JsonProperty("log_file_list") @Nullable List<CollectorLogFile> logFileList,
-                                              @JsonProperty("status") @Nullable CollectorStatusList statusList) {
-        return new AutoValue_CollectorNodeDetails(operatingSystem, ip, metrics, logFileList, statusList);
+    public static NodeDetails create(@JsonProperty("operating_system") String operatingSystem,
+                                     @JsonProperty("ip") @Nullable String ip,
+                                     @JsonProperty("metrics") @Nullable NodeMetrics metrics,
+                                     @JsonProperty("log_file_list") @Nullable List<NodeLogFile> logFileList,
+                                     @JsonProperty("status") @Nullable CollectorStatusList statusList) {
+        return new AutoValue_NodeDetails(operatingSystem, ip, metrics, logFileList, statusList);
     }
 }

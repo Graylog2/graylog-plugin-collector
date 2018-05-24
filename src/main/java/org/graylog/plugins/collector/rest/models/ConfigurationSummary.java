@@ -23,7 +23,7 @@ import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 @AutoValue
-public abstract class CollectorConfigurationSummary {
+public abstract class ConfigurationSummary {
     @JsonProperty("id")
     @Id
     @ObjectId
@@ -39,14 +39,14 @@ public abstract class CollectorConfigurationSummary {
     public abstract String color();
 
     @JsonCreator
-    public static CollectorConfigurationSummary create(@JsonProperty("id") @Id @ObjectId String id,
-                                                       @JsonProperty("name") String name,
-                                                       @JsonProperty("backend_id") String backendId,
-                                                       @JsonProperty("color") String color) {
-        return new AutoValue_CollectorConfigurationSummary(id, name, backendId, color);
+    public static ConfigurationSummary create(@JsonProperty("id") @Id @ObjectId String id,
+                                              @JsonProperty("name") String name,
+                                              @JsonProperty("backend_id") String backendId,
+                                              @JsonProperty("color") String color) {
+        return new AutoValue_ConfigurationSummary(id, name, backendId, color);
     }
 
-    public static CollectorConfigurationSummary create(CollectorConfiguration configuration) {
+    public static ConfigurationSummary create(Configuration configuration) {
         return create(configuration.id(), configuration.name(), configuration.backendId(), configuration.color());
     }
 
