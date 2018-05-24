@@ -51,7 +51,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(value = "AltConfiguration", description = "Render collector configurations")
+@Api(value = "Configurations", description = "Manage/Render collector configurations")
 @Path("/sidecar/configurations")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -80,7 +80,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all collector configurations")
+    @ApiOperation(value = "List all configurations")
     public ConfigurationListResponse listConfigurations(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
                                                         @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
                                                         @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
@@ -105,7 +105,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Show collector configuration details")
+    @ApiOperation(value = "Show configuration details")
     public Configuration getConfigurations(@ApiParam(name = "id", required = true)
                                                     @PathParam("id") String id) {
         return this.configurationService.find(id);
@@ -126,14 +126,14 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     }
 
     @GET
-    @Path("/render/{collectorId}/{configurationId}")
+    @Path("/render/{sidecarId}/{configurationId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
-    @ApiOperation(value = "Render collector configuration template")
+    @ApiOperation(value = "Render configuration template")
     public Response renderConfiguration(@Context HttpHeaders httpHeaders,
-                                        @ApiParam(name = "collectorId", required = true)
-                                        @PathParam("collectorId") String collectorId,
+                                        @ApiParam(name = "sidecarId", required = true)
+                                        @PathParam("sidecarId") String sidecarId,
                                         @ApiParam(name = "configurationId", required = true)
                                         @PathParam("configurationId") String configurationId) {
         String ifNoneMatch = httpHeaders.getHeaderString("If-None-Match");
@@ -152,9 +152,9 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
 
         // fetch configuration from database if client is outdated
         if (!etagCached) {
-            Sidecar sidecar = sidecarService.findByNodeId(collectorId);
+            Sidecar sidecar = sidecarService.findByNodeId(sidecarId);
             if (sidecar == null) {
-                throw new NotFoundException("Couldn't find collector by ID: " + collectorId);
+                throw new NotFoundException("Couldn't find Sidecar by ID: " + sidecarId);
             }
             Configuration configuration = configurationService.find(configurationId);
             if (configuration == null) {
@@ -189,7 +189,6 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
     @ApiOperation(value = "Render preview of a configuration template")
     @NoAuditEvent("this is not changing any data")
-
     public ConfigurationPreviewRenderResponse renderConfiguration(@ApiParam(name = "JSON body", required = true)
                                                                   @Valid @NotNull ConfigurationPreviewRequest request) {
         String preview = this.configurationService.renderPreview(request.template());
@@ -200,10 +199,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Create new collector configuration")
+    @ApiOperation(value = "Create new configuration")
     @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_CREATE)
     public Configuration createConfiguration(@ApiParam(name = "JSON body", required = true)
-                                                      @Valid @NotNull Configuration request) {
+                                             @Valid @NotNull Configuration request) {
         Configuration configuration = configurationService.fromRequest(request);
         return configurationService.save(configuration);
     }
@@ -212,7 +211,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @Path("/{id}/{name}")
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_CREATE)
-    @ApiOperation(value = "Create a configuration copy")
+    @ApiOperation(value = "Copy a configuration")
     @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_CLONE)
     public Response copyConfiguration(@ApiParam(name = "id", required = true)
                                       @PathParam("id") String id,
@@ -227,12 +226,12 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Update collector configuration")
+    @ApiOperation(value = "Update a configuration")
     @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_UPDATE)
     public Configuration updateConfiguration(@ApiParam(name = "id", required = true)
-                                                      @PathParam("id") String id,
+                                             @PathParam("id") String id,
                                              @ApiParam(name = "JSON body", required = true)
-                                                      @Valid @NotNull Configuration request) {
+                                             @Valid @NotNull Configuration request) {
         etagService.invalidateAll();
         Configuration configuration = configurationService.fromRequest(id, request);
         return configurationService.save(configuration);
@@ -243,10 +242,10 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_UPDATE)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Delets a collector configuration")
+    @ApiOperation(value = "Delete a configuration")
     @AuditEvent(type = SidecarAuditEventTypes.CONFIGURATION_DELETE)
-    public Response updateConfiguration(@ApiParam(name = "id", required = true)
-                                                      @PathParam("id") String id) {
+    public Response deleteConfiguration(@ApiParam(name = "id", required = true)
+                                        @PathParam("id") String id) {
         int deleted = configurationService.delete(id);
         if (deleted == 0) {
             return Response.notModified().build();

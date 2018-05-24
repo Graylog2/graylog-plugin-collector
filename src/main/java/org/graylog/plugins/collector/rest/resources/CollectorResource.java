@@ -46,8 +46,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(value = "Backends", description = "Manage collector backends")
-@Path("/sidecar/backends")
+@Api(value = "Collectors", description = "Manage collectors")
+@Path("/sidecar/collectors")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CollectorResource extends RestResource implements PluginRestResource {
@@ -74,8 +74,8 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector details")
-    public Collector getBackend(@ApiParam(name = "id", required = true)
-                                         @PathParam("id") String id) {
+    public Collector getCollector(@ApiParam(name = "id", required = true)
+                                  @PathParam("id") String id) {
         return this.collectorService.find(id);
     }
 
@@ -83,8 +83,8 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all collector backends")
-    public Response listBackends(@Context HttpHeaders httpHeaders) {
+    @ApiOperation(value = "List all collectors")
+    public Response listCollectors(@Context HttpHeaders httpHeaders) {
         String ifNoneMatch = httpHeaders.getHeaderString("If-None-Match");
         Boolean etagCached = false;
         Response.ResponseBuilder builder = Response.noContent();
@@ -99,18 +99,18 @@ public class CollectorResource extends RestResource implements PluginRestResourc
             }
         }
 
-        // fetch backend list from database if client is outdated
+        // fetch collector list from database if client is outdated
         if (!etagCached) {
             final List<Collector> result = this.collectorService.all();
             CollectorListResponse collectorListResponse = CollectorListResponse.create(result.size(), result);
 
             // add new etag to cache
-            String etagString = backendsToEtag(collectorListResponse);
+            String etagString = collectorsToEtag(collectorListResponse);
 
-            EntityTag collectorBackendsEtag = new EntityTag(etagString);
+            EntityTag collectorsEtag = new EntityTag(etagString);
             builder = Response.ok(collectorListResponse);
-            builder.tag(collectorBackendsEtag);
-            etagService.put(collectorBackendsEtag.toString());
+            builder.tag(collectorsEtag);
+            etagService.put(collectorsEtag.toString());
         }
 
         // set cache control
@@ -127,14 +127,14 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List a summary of all collector backends")
+    @ApiOperation(value = "List a summary of all collectors")
     public CollectorSummaryResponse listSummary(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
                                                 @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
                                                 @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
                                                 @ApiParam(name = "sort",
                                                                value = "The field to sort the result on",
                                                                required = true,
-                                                               allowableValues = "name,id,backend_id")
+                                                               allowableValues = "name,id,collector_id")
                                                            @DefaultValue(Collector.FIELD_NAME) @QueryParam("sort") String sort,
                                                 @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
                                                            @DefaultValue("asc") @QueryParam("order") String order) {
@@ -151,10 +151,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_CREATE)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Create new collector backend")
+    @ApiOperation(value = "Create a new collector")
     @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_CREATE)
-    public Collector createBackend(@ApiParam(name = "JSON body", required = true)
-                                          @Valid @NotNull Collector request) {
+    public Collector createCollector(@ApiParam(name = "JSON body", required = true)
+                                     @Valid @NotNull Collector request) {
         etagService.invalidateAll();
         Collector collector = collectorService.fromRequest(request);
         return collectorService.save(collector);
@@ -167,10 +167,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update a collector")
     @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_UPDATE)
-    public Collector updateBackend(@ApiParam(name = "id", required = true)
-                                          @PathParam("id") String id,
-                                   @ApiParam(name = "JSON body", required = true)
-                                          @Valid @NotNull Collector request) {
+    public Collector updateCollector(@ApiParam(name = "id", required = true)
+                                     @PathParam("id") String id,
+                                     @ApiParam(name = "JSON body", required = true)
+                                     @Valid @NotNull Collector request) {
         etagService.invalidateAll();
         Collector collector = collectorService.fromRequest(id, request);
         return collectorService.save(collector);
@@ -180,7 +180,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @Path("/{id}/{name}")
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_CREATE)
-    @ApiOperation(value = "Create a collector copy")
+    @ApiOperation(value = "Copy a collector")
     @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_CLONE)
     public Response copyCollector(@ApiParam(name = "id", required = true)
                                   @PathParam("id") String id,
@@ -196,7 +196,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_DELETE)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Delets a collector configuration")
+    @ApiOperation(value = "Delets a collector")
     @AuditEvent(type = SidecarAuditEventTypes.COLLECTOR_DELETE)
     public Response deleteCollector(@ApiParam(name = "id", required = true)
                                     @PathParam("id") String id) {
@@ -208,9 +208,9 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         return Response.accepted().build();
     }
 
-    private String backendsToEtag(CollectorListResponse collectorBackends) {
+    private String collectorsToEtag(CollectorListResponse collectors) {
         return Hashing.md5()
-                .hashInt(collectorBackends.hashCode())  // avoid negative values
+                .hashInt(collectors.hashCode())  // avoid negative values
                 .toString();
     }
 }

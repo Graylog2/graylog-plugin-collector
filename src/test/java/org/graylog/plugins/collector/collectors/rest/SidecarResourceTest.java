@@ -23,7 +23,7 @@ import org.graylog.plugins.collector.rest.models.SidecarSummary;
 import org.graylog.plugins.collector.rest.requests.RegistrationRequest;
 import org.graylog.plugins.collector.services.ActionService;
 import org.graylog.plugins.collector.services.SidecarService;
-import org.graylog.plugins.collector.mapper.CollectorStatusMapper;
+import org.graylog.plugins.collector.mapper.SidecarStatusMapper;
 import org.graylog.plugins.collector.filter.ActiveSidecarFilter;
 import org.graylog.plugins.collector.rest.resources.SidecarResource;
 import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
@@ -61,7 +61,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
     private ActionService actionService;
 
     @Mock
-    private CollectorStatusMapper statusMapper;
+    private SidecarStatusMapper statusMapper;
 
     @Before
     public void setUp() throws Exception {

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
-public class CollectorStatusMapper {
+public class SidecarStatusMapper {
     private static final Pattern searchQueryStatusRegex = Pattern.compile("\\bstatus:(running|failing|unknown)\\b", CASE_INSENSITIVE);
     public enum Status {
         RUNNING(0), UNKNOWN(1), FAILING(2);

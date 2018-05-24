@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Api(value = "AltCollector", description = "Manage collector fleet")
+@Api(value = "Sidecar Administration", description = "Administrate collectors")
 @Path("/sidecar/administration")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -72,7 +72,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
     @POST
     @Timed
-    @ApiOperation(value = "Lists existing collector registrations including compatible backends using pagination")
+    @ApiOperation(value = "Lists existing Sidecar registrations including compatible collectors using pagination")
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.SIDECARS_READ)
     @NoAuditEvent("this is not changing any data")
@@ -84,47 +84,47 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
         final Optional<Predicate<Sidecar>> filters = administrationFiltersFactory.getFilters(request.filters());
 
-        final List<Collector> collectors = getCollectorBackends(request.filters());
+        final List<Collector> collectors = getCollectors(request.filters());
         final PaginatedList<Sidecar> sidecars = sidecarService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
-        final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeSidecarFilter);
+        final List<SidecarSummary> sidecarSummaries = sidecarService.toSummaryList(sidecars, activeSidecarFilter);
 
-        final List<SidecarSummary> summariesWithBackends = collectorSummaries.stream()
+        final List<SidecarSummary> summariesWithCollectors = sidecarSummaries.stream()
                 .map(collector -> {
-                    final List<String> compatibleBackends = collectors.stream()
-                            .filter(backend -> backend.nodeOperatingSystem().equalsIgnoreCase(collector.nodeDetails().operatingSystem()))
+                    final List<String> compatibleCollectors = collectors.stream()
+                            .filter(c -> c.nodeOperatingSystem().equalsIgnoreCase(collector.nodeDetails().operatingSystem()))
                             .map(Collector::id)
                             .collect(Collectors.toList());
                     return collector.toBuilder()
-                            .backends(compatibleBackends)
+                            .backends(compatibleCollectors)
                             .build();
                 })
                 .filter(collectorSummary -> !filters.isPresent() || collectorSummary.backends().size() > 0)
                 .collect(Collectors.toList());
 
-        return SidecarListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithBackends, request.filters());
+        return SidecarListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithCollectors, request.filters());
     }
 
-    private List<Collector> getCollectorBackends(Map<String, String> filters) {
-        final String backendKey = AdministrationFilter.Type.COLLECTOR.toString().toLowerCase();
+    private List<Collector> getCollectors(Map<String, String> filters) {
+        final String collectorKey = AdministrationFilter.Type.COLLECTOR.toString().toLowerCase();
         final String configurationKey = AdministrationFilter.Type.CONFIGURATION.toString().toLowerCase();
 
-        final List<String> backendIds = new ArrayList<>();
+        final List<String> collectorIds = new ArrayList<>();
 
-        if (filters.containsKey(backendKey)) {
-            backendIds.add(filters.get(backendKey));
+        if (filters.containsKey(collectorKey)) {
+            collectorIds.add(filters.get(collectorKey));
         }
         if (filters.containsKey(configurationKey)) {
             final Configuration configuration = configurationService.find(filters.get(configurationKey));
-            if (!backendIds.contains(configuration.backendId())) {
-                backendIds.add(configuration.backendId());
+            if (!collectorIds.contains(configuration.backendId())) {
+                collectorIds.add(configuration.backendId());
             }
         }
 
-        switch (backendIds.size()) {
+        switch (collectorIds.size()) {
             case 0:
                 return collectorService.all();
             case 1:
-                return ImmutableList.of(collectorService.find(backendIds.get(0)));
+                return ImmutableList.of(collectorService.find(collectorIds.get(0)));
             default:
                 return new ArrayList<>();
         }

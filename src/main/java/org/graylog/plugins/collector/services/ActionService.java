@@ -30,7 +30,7 @@ public class ActionService {
     }
 
     public CollectorActions fromRequest(String collectorId, List<CollectorAction> actions) {
-        CollectorActions collectorActions = findActionByCollector(collectorId, false);
+        CollectorActions collectorActions = findActionBySidecar(collectorId, false);
         if (collectorActions == null) {
             return CollectorActions.create(
                     collectorId,
@@ -64,11 +64,11 @@ public class ActionService {
                 true);
     }
 
-    public CollectorActions findActionByCollector(String collectorId, boolean remove) {
+    public CollectorActions findActionBySidecar(String sidecarId, boolean remove) {
         if (remove) {
-            return dbCollection.findAndRemove(DBQuery.is("collector_id", collectorId));
+            return dbCollection.findAndRemove(DBQuery.is("collector_id", sidecarId));
         } else {
-            return dbCollection.findOne(DBQuery.is("collector_id", collectorId));
+            return dbCollection.findOne(DBQuery.is("collector_id", sidecarId));
         }
     }
 }

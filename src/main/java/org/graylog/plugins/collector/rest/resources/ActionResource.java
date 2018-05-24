@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-@Api(value = "AltCollector Actions", description = "Manage Collector Actions")
+@Api(value = "Sidecar Collector Actions", description = "Manage Collector Actions")
 @Path("/sidecar/action")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -55,7 +55,7 @@ public class ActionResource extends RestResource implements PluginRestResource {
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     public List<CollectorAction> getAction(@ApiParam(name = "collectorId", required = true)
                                            @PathParam("collectorId") @NotEmpty String collectorId) {
-        final CollectorActions collectorActions = actionService.findActionByCollector(collectorId, false);
+        final CollectorActions collectorActions = actionService.findActionBySidecar(collectorId, false);
         if (collectorActions != null) {
             return collectorActions.action();
         }
