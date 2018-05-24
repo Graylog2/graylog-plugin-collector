@@ -34,7 +34,7 @@ public class CollectorMetaData implements PluginMetaData {
 
     @Override
     public String getName() {
-        return "Collector";
+        return "Sidecar";
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CollectorMetaData implements PluginMetaData {
 
     @Override
     public String getDescription() {
-        return "Collectors plugin";
+        return "Sidecar plugin";
     }
 
     @Override
