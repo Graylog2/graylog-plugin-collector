@@ -9,13 +9,13 @@ import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.graylog.plugins.collector.filter.AdministrationFiltersFactory;
-import org.graylog.plugins.collector.rest.models.Backend;
+import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.rest.requests.AdministrationRequest;
 import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
-import org.graylog.plugins.collector.services.BackendService;
+import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.filter.ActiveCollectorFilter;
 import org.graylog.plugins.collector.filter.AdministrationFilter;
 import org.graylog.plugins.collector.rest.models.Configuration;
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class AdministrationResource extends RestResource implements PluginRestResource {
     private final SidecarService sidecarService;
     private final ConfigurationService configurationService;
-    private final BackendService backendService;
+    private final CollectorService collectorService;
     private final SearchQueryParser searchQueryParser;
     private final AdministrationFiltersFactory administrationFiltersFactory;
     private final ActiveCollectorFilter activeCollectorFilter;
@@ -59,12 +59,12 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     @Inject
     public AdministrationResource(SidecarService sidecarService,
                                   ConfigurationService configurationService,
-                                  BackendService backendService,
+                                  CollectorService collectorService,
                                   AdministrationFiltersFactory administrationFiltersFactory,
                                   Supplier<CollectorSystemConfiguration> configSupplier) {
         this.sidecarService = sidecarService;
         this.configurationService = configurationService;
-        this.backendService = backendService;
+        this.collectorService = collectorService;
         this.administrationFiltersFactory = administrationFiltersFactory;
         this.activeCollectorFilter = new ActiveCollectorFilter(configSupplier.get().collectorInactiveThreshold());
         this.searchQueryParser = new SearchQueryParser(Sidecar.FIELD_NODE_NAME, SidecarResource.SEARCH_FIELD_MAPPING);
@@ -84,15 +84,15 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
         final Optional<Predicate<Sidecar>> filters = administrationFiltersFactory.getFilters(request.filters());
 
-        final List<Backend> backends = getCollectorBackends(request.filters());
+        final List<Collector> collectors = getCollectorBackends(request.filters());
         final PaginatedList<Sidecar> sidecars = sidecarService.findPaginated(searchQuery, filters.orElse(null), request.page(), request.perPage(), sort, order);
         final List<SidecarSummary> collectorSummaries = sidecarService.toSummaryList(sidecars, activeCollectorFilter);
 
         final List<SidecarSummary> summariesWithBackends = collectorSummaries.stream()
                 .map(collector -> {
-                    final List<String> compatibleBackends = backends.stream()
+                    final List<String> compatibleBackends = collectors.stream()
                             .filter(backend -> backend.nodeOperatingSystem().equalsIgnoreCase(collector.nodeDetails().operatingSystem()))
-                            .map(Backend::id)
+                            .map(Collector::id)
                             .collect(Collectors.toList());
                     return collector.toBuilder()
                             .backends(compatibleBackends)
@@ -104,7 +104,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
         return SidecarListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithBackends, request.filters());
     }
 
-    private List<Backend> getCollectorBackends(Map<String, String> filters) {
+    private List<Collector> getCollectorBackends(Map<String, String> filters) {
         final String backendKey = AdministrationFilter.Type.BACKEND.toString().toLowerCase();
         final String configurationKey = AdministrationFilter.Type.CONFIGURATION.toString().toLowerCase();
 
@@ -122,9 +122,9 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
         switch (backendIds.size()) {
             case 0:
-                return backendService.all();
+                return collectorService.all();
             case 1:
-                return ImmutableList.of(backendService.find(backendIds.get(0)));
+                return ImmutableList.of(collectorService.find(backendIds.get(0)));
             default:
                 return new ArrayList<>();
         }

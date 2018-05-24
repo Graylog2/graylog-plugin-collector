@@ -1,7 +1,7 @@
 package org.graylog.plugins.collector.migrations;
 
-import org.graylog.plugins.collector.rest.models.Backend;
-import org.graylog.plugins.collector.services.BackendService;
+import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog2.migrations.Migration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,11 @@ import java.util.List;
 public class V20180212165000_AddDefaultBackends extends Migration {
     private static final Logger LOG = LoggerFactory.getLogger(V20180212165000_AddDefaultBackends.class);
 
-    private final BackendService backendService;
+    private final CollectorService collectorService;
 
     @Inject
-    public V20180212165000_AddDefaultBackends(BackendService backendService) {
-        this.backendService = backendService;
+    public V20180212165000_AddDefaultBackends(CollectorService collectorService) {
+        this.collectorService = collectorService;
     }
 
     @Override
@@ -71,18 +71,18 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                                  List<String> executeParameters,
                                  List<String> validationCommand,
                                  String defaultTemplate) {
-        Backend backend = null;
+        Collector collector = null;
         try {
-            backend = backendService.findByName(backendName);
-            if (backend == null) {
-                final String msg = "Couldn't find backend '" + backendName + "' fixing it.";
+            collector = collectorService.findByName(backendName);
+            if (collector == null) {
+                final String msg = "Couldn't find collector '" + backendName + "' fixing it.";
                 LOG.error(msg);
                 throw new IllegalArgumentException(msg);
             }
         } catch (IllegalArgumentException ignored) {
-            LOG.info("{} backend is missing, adding it.", backendName);
-            final Backend collectorBackend;
-            collectorBackend = Backend.create(
+            LOG.info("{} collector is missing, adding it.", backendName);
+            final Collector newCollector;
+            newCollector = Collector.create(
                     null,
                     backendName,
                     serviceType,
@@ -94,18 +94,18 @@ public class V20180212165000_AddDefaultBackends extends Migration {
                     defaultTemplate
             );
             try {
-                return backendService.save(collectorBackend).id();
+                return collectorService.save(newCollector).id();
             } catch (Exception e) {
-                LOG.error("Can't save backend " + backendName + ", please restart Graylog to fix this.", e);
+                LOG.error("Can't save collector " + backendName + ", please restart Graylog to fix this.", e);
             }
         }
 
-        if (backend == null) {
-            LOG.error("Unable to access fixed " + backendName + " backend, please restart Graylog to fix this.");
+        if (collector == null) {
+            LOG.error("Unable to access fixed " + backendName + " collector, please restart Graylog to fix this.");
             return null;
         }
 
-        return backend.id();
+        return collector.id();
     }
 
 }

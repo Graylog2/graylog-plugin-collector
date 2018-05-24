@@ -7,11 +7,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.graylog.plugins.collector.rest.models.Backend;
-import org.graylog.plugins.collector.rest.models.BackendSummary;
-import org.graylog.plugins.collector.rest.responses.BackendListResponse;
-import org.graylog.plugins.collector.rest.responses.BackendSummaryResponse;
-import org.graylog.plugins.collector.services.BackendService;
+import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.CollectorSummary;
+import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
+import org.graylog.plugins.collector.rest.responses.CollectorSummaryResponse;
+import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.services.EtagService;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
@@ -50,22 +50,22 @@ import java.util.stream.Collectors;
 @Path("/sidecar/backends")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class BackendResource extends RestResource implements PluginRestResource {
-    private final BackendService backendService;
+public class CollectorResource extends RestResource implements PluginRestResource {
+    private final CollectorService collectorService;
     private final EtagService etagService;
     private final SearchQueryParser searchQueryParser;
     private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
-            .put("id", SearchQueryField.create(Backend.FIELD_ID))
-            .put("name", SearchQueryField.create(Backend.FIELD_NAME))
-            .put("operating_system", SearchQueryField.create(Backend.FIELD_NODE_OPERATING_SYSTEM))
+            .put("id", SearchQueryField.create(Collector.FIELD_ID))
+            .put("name", SearchQueryField.create(Collector.FIELD_NAME))
+            .put("operating_system", SearchQueryField.create(Collector.FIELD_NODE_OPERATING_SYSTEM))
             .build();
 
     @Inject
-    public BackendResource(BackendService backendService,
-                           EtagService etagService) {
-        this.backendService = backendService;
+    public CollectorResource(CollectorService collectorService,
+                             EtagService etagService) {
+        this.collectorService = collectorService;
         this.etagService = etagService;
-        this.searchQueryParser = new SearchQueryParser(Backend.FIELD_NAME, SEARCH_FIELD_MAPPING);
+        this.searchQueryParser = new SearchQueryParser(Collector.FIELD_NAME, SEARCH_FIELD_MAPPING);
     }
 
     @GET
@@ -74,9 +74,9 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Show collector details")
-    public Backend getBackend(@ApiParam(name = "id", required = true)
+    public Collector getBackend(@ApiParam(name = "id", required = true)
                                          @PathParam("id") String id) {
-        return this.backendService.find(id);
+        return this.collectorService.find(id);
     }
 
     @GET
@@ -101,14 +101,14 @@ public class BackendResource extends RestResource implements PluginRestResource 
 
         // fetch backend list from database if client is outdated
         if (!etagCached) {
-            final List<Backend> result = this.backendService.all();
-            BackendListResponse backendListResponse = BackendListResponse.create(result.size(), result);
+            final List<Collector> result = this.collectorService.all();
+            CollectorListResponse collectorListResponse = CollectorListResponse.create(result.size(), result);
 
             // add new etag to cache
-            String etagString = backendsToEtag(backendListResponse);
+            String etagString = backendsToEtag(collectorListResponse);
 
             EntityTag collectorBackendsEtag = new EntityTag(etagString);
-            builder = Response.ok(backendListResponse);
+            builder = Response.ok(collectorListResponse);
             builder.tag(collectorBackendsEtag);
             etagService.put(collectorBackendsEtag.toString());
         }
@@ -128,23 +128,23 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @RequiresPermissions(CollectorRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "List a summary of all collector backends")
-    public BackendSummaryResponse listSummary(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
-                                              @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
-                                              @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
-                                              @ApiParam(name = "sort",
+    public CollectorSummaryResponse listSummary(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
+                                                @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
+                                                @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,
+                                                @ApiParam(name = "sort",
                                                                value = "The field to sort the result on",
                                                                required = true,
                                                                allowableValues = "name,id,backend_id")
-                                                           @DefaultValue(Backend.FIELD_NAME) @QueryParam("sort") String sort,
-                                              @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
+                                                           @DefaultValue(Collector.FIELD_NAME) @QueryParam("sort") String sort,
+                                                @ApiParam(name = "order", value = "The sort direction", allowableValues = "asc, desc")
                                                            @DefaultValue("asc") @QueryParam("order") String order) {
         final SearchQuery searchQuery = searchQueryParser.parse(query);
-        final PaginatedList<Backend> backends = this.backendService.findPaginated(searchQuery, page, perPage, sort, order);
-        final List<BackendSummary> summaries = backends.stream()
-                .map(BackendSummary::create)
+        final PaginatedList<Collector> collectors = this.collectorService.findPaginated(searchQuery, page, perPage, sort, order);
+        final List<CollectorSummary> summaries = collectors.stream()
+                .map(CollectorSummary::create)
                 .collect(Collectors.toList());
 
-        return BackendSummaryResponse.create(query, backends.pagination(), sort, order, summaries);
+        return CollectorSummaryResponse.create(query, collectors.pagination(), sort, order, summaries);
     }
 
     @POST
@@ -153,11 +153,11 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Create new collector backend")
     @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_CREATE)
-    public Backend createBackend(@ApiParam(name = "JSON body", required = true)
-                                          @Valid @NotNull Backend request) {
+    public Collector createBackend(@ApiParam(name = "JSON body", required = true)
+                                          @Valid @NotNull Collector request) {
         etagService.invalidateAll();
-        Backend backend = backendService.fromRequest(request);
-        return backendService.save(backend);
+        Collector collector = collectorService.fromRequest(request);
+        return collectorService.save(collector);
     }
 
     @PUT
@@ -167,13 +167,13 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Update a collector")
     @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_UPDATE)
-    public Backend updateBackend(@ApiParam(name = "id", required = true)
+    public Collector updateBackend(@ApiParam(name = "id", required = true)
                                           @PathParam("id") String id,
-                                 @ApiParam(name = "JSON body", required = true)
-                                          @Valid @NotNull Backend request) {
+                                   @ApiParam(name = "JSON body", required = true)
+                                          @Valid @NotNull Collector request) {
         etagService.invalidateAll();
-        Backend backend = backendService.fromRequest(id, request);
-        return backendService.save(backend);
+        Collector collector = collectorService.fromRequest(id, request);
+        return collectorService.save(collector);
     }
 
     @POST
@@ -186,8 +186,8 @@ public class BackendResource extends RestResource implements PluginRestResource 
                                   @PathParam("id") String id,
                                   @PathParam("name") String name) throws NotFoundException {
         etagService.invalidateAll();
-        final Backend backend = backendService.copy(id, name);
-        backendService.save(backend);
+        final Collector collector = collectorService.copy(id, name);
+        collectorService.save(collector);
         return Response.accepted().build();
     }
 
@@ -200,7 +200,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
     @AuditEvent(type = CollectorAuditEventTypes.COLLECTOR_DELETE)
     public Response deleteCollector(@ApiParam(name = "id", required = true)
                                     @PathParam("id") String id) {
-        int deleted = backendService.delete(id);
+        int deleted = collectorService.delete(id);
         if (deleted == 0) {
             return Response.notModified().build();
         }
@@ -208,7 +208,7 @@ public class BackendResource extends RestResource implements PluginRestResource 
         return Response.accepted().build();
     }
 
-    private String backendsToEtag(BackendListResponse collectorBackends) {
+    private String backendsToEtag(CollectorListResponse collectorBackends) {
         return Hashing.md5()
                 .hashInt(collectorBackends.hashCode())  // avoid negative values
                 .toString();

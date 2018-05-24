@@ -1,8 +1,8 @@
 package org.graylog.plugins.collector.services;
 
 import com.mongodb.BasicDBObject;
+import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.Sidecar;
-import org.graylog.plugins.collector.rest.models.Backend;
 import org.graylog.plugins.collector.rest.models.Configuration;
 import org.graylog.plugins.collector.rest.models.NodeDetails;
 import org.graylog.plugins.collector.rest.requests.RegistrationRequest;
@@ -31,19 +31,19 @@ import java.util.stream.Stream;
 
 public class SidecarService extends PaginatedDbService<Sidecar> {
     private static final String COLLECTION_NAME = "collectors";
-    private final BackendService backendService;
+    private final CollectorService collectorService;
     private final ConfigurationService configurationService;
 
     private final Validator validator;
 
     @Inject
-    public SidecarService(BackendService backendService,
+    public SidecarService(CollectorService collectorService,
                           ConfigurationService configurationService,
                           MongoConnection mongoConnection,
                           MongoJackObjectMapperProvider mapper,
                           Validator validator) {
         super(mongoConnection, mapper, Sidecar.class, COLLECTION_NAME);
-        this.backendService = backendService;
+        this.collectorService = collectorService;
         this.configurationService = configurationService;
         this.validator = validator;
 
@@ -136,16 +136,16 @@ public class SidecarService extends PaginatedDbService<Sidecar> {
             throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
         }
         for (ConfigurationAssignment assignment : assignments) {
-            Backend backend = backendService.find(assignment.backendId());
-            if (backend == null) {
-                throw new NotFoundException("Couldn't find backend with ID " + assignment.backendId());
+            Collector collector = collectorService.find(assignment.backendId());
+            if (collector == null) {
+                throw new NotFoundException("Couldn't find collector with ID " + assignment.backendId());
             }
             Configuration configuration = configurationService.find(assignment.configurationId());
             if (configuration == null) {
                 throw new NotFoundException("Couldn't find configuration with ID " + assignment.configurationId());
             }
-            if (!configuration.backendId().equals(backend.id())) {
-                throw new NotFoundException("Configuration doesn't match backend ID " + assignment.backendId());
+            if (!configuration.backendId().equals(collector.id())) {
+                throw new NotFoundException("Configuration doesn't match collector ID " + assignment.backendId());
             }
         }
 

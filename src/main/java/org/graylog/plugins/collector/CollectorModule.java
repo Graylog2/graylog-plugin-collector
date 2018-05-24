@@ -26,7 +26,7 @@ import com.google.inject.name.Names;
 import org.graylog.plugins.collector.periodical.PurgeExpiredCollectorsThread;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
-import org.graylog.plugins.collector.services.BackendService;
+import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.services.EtagService;
 import org.graylog.plugins.collector.filter.AdministrationFilter;
 import org.graylog.plugins.collector.filter.BackendAdministrationFilter;
@@ -39,7 +39,7 @@ import org.graylog.plugins.collector.rest.resources.ActionResource;
 import org.graylog.plugins.collector.rest.resources.AdministrationResource;
 import org.graylog.plugins.collector.rest.resources.SidecarResource;
 import org.graylog.plugins.collector.rest.resources.ConfigurationResource;
-import org.graylog.plugins.collector.rest.resources.BackendResource;
+import org.graylog.plugins.collector.rest.resources.CollectorResource;
 import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.common.CollectorPluginConfiguration;
 import org.graylog.plugins.collector.permissions.CollectorRestPermissions;
@@ -63,7 +63,7 @@ public class CollectorModule extends PluginModule {
     protected void configure() {
         bind(ConfigurationService.class).asEagerSingleton();
         bind(SidecarService.class).asEagerSingleton();
-        bind(BackendService.class).asEagerSingleton();
+        bind(CollectorService.class).asEagerSingleton();
         bind(new TypeLiteral<Supplier<CollectorSystemConfiguration>>(){}).to(CollectorSystemConfigurationSupplier.class);
 
         install(new FactoryModuleBuilder()
@@ -74,7 +74,7 @@ public class CollectorModule extends PluginModule {
                 .build(AdministrationFilter.Factory.class));
 
         addRestResource(ConfigurationResource.class);
-        addRestResource(BackendResource.class);
+        addRestResource(CollectorResource.class);
         addRestResource(ActionResource.class);
         addRestResource(AdministrationResource.class);
         addRestResource(SidecarResource.class);

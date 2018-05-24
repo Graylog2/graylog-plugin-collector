@@ -27,7 +27,7 @@ import org.graylog.plugins.collector.rest.models.NodeDetails;
 import org.graylog.plugins.collector.rest.models.Sidecar;
 import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.services.ConfigurationService;
-import org.graylog.plugins.collector.services.BackendService;
+import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.database.MongoConnectionRule;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.shared.bindings.ObjectMapperModule;
@@ -56,7 +56,7 @@ import static org.mockito.Mockito.when;
 @CustomComparisonStrategy(comparisonStrategy = MongoFlexibleComparisonStrategy.class)
 public class SidecarServiceImplTest {
     @Mock
-    private BackendService backendService;
+    private CollectorService collectorService;
 
     @Mock private ConfigurationService configurationService;
 
@@ -71,7 +71,7 @@ public class SidecarServiceImplTest {
     @Before
     public void setUp(MongoJackObjectMapperProvider mapperProvider,
                       Validator validator) throws Exception {
-        this.sidecarService = new SidecarService(backendService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
+        this.sidecarService = new SidecarService(collectorService, configurationService,  mongoRule.getMongoConnection(), mapperProvider, validator);
     }
 
     @Test

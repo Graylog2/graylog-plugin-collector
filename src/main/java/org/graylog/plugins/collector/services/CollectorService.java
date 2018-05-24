@@ -1,6 +1,6 @@
 package org.graylog.plugins.collector.services;
 
-import org.graylog.plugins.collector.rest.models.Backend;
+import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.MongoConnection;
 import org.graylog2.database.PaginatedDbService;
@@ -17,42 +17,42 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Singleton
-public class BackendService extends PaginatedDbService<Backend> {
+public class CollectorService extends PaginatedDbService<Collector> {
     private static final String COLLECTION_NAME = "collector_backends";
 
     @Inject
-    public BackendService(MongoConnection mongoConnection,
-                          MongoJackObjectMapperProvider mapper) {
-        super(mongoConnection, mapper, Backend.class, COLLECTION_NAME);
+    public CollectorService(MongoConnection mongoConnection,
+                            MongoJackObjectMapperProvider mapper) {
+        super(mongoConnection, mapper, Collector.class, COLLECTION_NAME);
     }
 
-    public Backend find(String id) {
+    public Collector find(String id) {
         return db.findOne(DBQuery.is("_id", id));
     }
 
-    public Backend findByName(String name) {
+    public Collector findByName(String name) {
         return db.findOne(DBQuery.is("name", name));
     }
 
-    public List<Backend> allFilter(Predicate<Backend> filter) {
-        try (final Stream<Backend> backendsStream = streamAll()) {
-            final Stream<Backend> filteredStream = filter == null ? backendsStream : backendsStream.filter(filter);
+    public List<Collector> allFilter(Predicate<Collector> filter) {
+        try (final Stream<Collector> backendsStream = streamAll()) {
+            final Stream<Collector> filteredStream = filter == null ? backendsStream : backendsStream.filter(filter);
             return filteredStream.collect(Collectors.toList());
         }
     }
 
-    public List<Backend> all() {
+    public List<Collector> all() {
         return allFilter(null);
     }
 
-    public PaginatedList<Backend> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
+    public PaginatedList<Collector> findPaginated(SearchQuery searchQuery, int page, int perPage, String sortField, String order) {
         final DBQuery.Query dbQuery = searchQuery.toDBQuery();
         final DBSort.SortBuilder sortBuilder = getSortBuilder(order, sortField);
         return findPaginatedWithQueryAndSort(dbQuery, sortBuilder, page, perPage);
     }
 
-    public Backend fromRequest(Backend request) {
-        return Backend.create(
+    public Collector fromRequest(Collector request) {
+        return Collector.create(
                 null,
                 request.name(),
                 request.serviceType(),
@@ -64,16 +64,16 @@ public class BackendService extends PaginatedDbService<Backend> {
                 request.defaultTemplate());
     }
 
-    public Backend fromRequest(String id, Backend request) {
-        final Backend backend = fromRequest(request);
-        return backend.toBuilder()
+    public Collector fromRequest(String id, Collector request) {
+        final Collector collector = fromRequest(request);
+        return collector.toBuilder()
                 .id(id)
                 .build();
     }
 
-    public Backend copy(String id, String name) {
-        Backend backend = find(id);
-        return backend.toBuilder()
+    public Collector copy(String id, String name) {
+        Collector collector = find(id);
+        return collector.toBuilder()
                 .id(null)
                 .name(name)
                 .build();
