@@ -13,11 +13,11 @@ public abstract class CollectorListResponse {
     public abstract long total();
 
     @JsonProperty
-    public abstract Collection<Collector> backends();
+    public abstract Collection<Collector> collectors();
 
     @JsonCreator
     public static CollectorListResponse create(@JsonProperty("total") long total,
-                                               @JsonProperty("collectors") Collection<Collector> collectors) {
+                                               @JsonProperty("sidecars") Collection<Collector> collectors) {
         return new AutoValue_CollectorListResponse(total, collectors);
     }
 }

@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Api(value = "Sidecar Administration", description = "Administrate collectors")
+@Api(value = "Sidecar Administration", description = "Administrate sidecars")
 @Path("/sidecar/administration")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -72,7 +72,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
     @POST
     @Timed
-    @ApiOperation(value = "Lists existing Sidecar registrations including compatible collectors using pagination")
+    @ApiOperation(value = "Lists existing Sidecar registrations including compatible sidecars using pagination")
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.SIDECARS_READ)
     @NoAuditEvent("this is not changing any data")
@@ -95,10 +95,10 @@ public class AdministrationResource extends RestResource implements PluginRestRe
                             .map(Collector::id)
                             .collect(Collectors.toList());
                     return collector.toBuilder()
-                            .backends(compatibleCollectors)
+                            .collectors(compatibleCollectors)
                             .build();
                 })
-                .filter(collectorSummary -> !filters.isPresent() || collectorSummary.backends().size() > 0)
+                .filter(collectorSummary -> !filters.isPresent() || collectorSummary.collectors().size() > 0)
                 .collect(Collectors.toList());
 
         return SidecarListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithCollectors, request.filters());
@@ -115,8 +115,8 @@ public class AdministrationResource extends RestResource implements PluginRestRe
         }
         if (filters.containsKey(configurationKey)) {
             final Configuration configuration = configurationService.find(filters.get(configurationKey));
-            if (!collectorIds.contains(configuration.backendId())) {
-                collectorIds.add(configuration.backendId());
+            if (!collectorIds.contains(configuration.collectorId())) {
+                collectorIds.add(configuration.collectorId());
             }
         }
 

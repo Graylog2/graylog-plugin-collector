@@ -28,12 +28,12 @@ public abstract class SidecarSummary {
     @JsonProperty("last_seen")
     public abstract DateTime lastSeen();
 
-    @JsonProperty("collector_version")
-    public abstract String collectorVersion();
+    @JsonProperty("sidecar_version")
+    public abstract String sidecarVersion();
 
     @Nullable
-    @JsonProperty("backends")
-    public abstract List<String> backends();
+    @JsonProperty("collectors")
+    public abstract List<String> collectors();
 
     @JsonProperty
     public abstract boolean active();
@@ -51,9 +51,9 @@ public abstract class SidecarSummary {
         public abstract Builder nodeDetails(NodeDetails nodeDetails);
         public abstract Builder assignments(List<ConfigurationAssignment> assignments);
         public abstract Builder lastSeen(DateTime lastSeen);
-        public abstract Builder collectorVersion(String collectorVersion);
+        public abstract Builder sidecarVersion(String sidecarVersion);
         public abstract Builder active(boolean active);
-        public abstract Builder backends(List<String> backends);
+        public abstract Builder collectors(List<String> collectors);
         public abstract SidecarSummary build();
     }
 
@@ -63,18 +63,18 @@ public abstract class SidecarSummary {
                                         @JsonProperty("node_details") NodeDetails nodeDetails,
                                         @JsonProperty("assignments") List<ConfigurationAssignment> assignments,
                                         @JsonProperty("last_seen") DateTime lastSeen,
-                                        @JsonProperty("collector_version") String collectorVersion,
+                                        @JsonProperty("sidecar_version") String sidecarVersion,
                                         @JsonProperty("active") boolean active,
-                                        @JsonProperty("backends") @Nullable List<String> backends) {
+                                        @JsonProperty("collectors") @Nullable List<String> collectors) {
         return builder()
                 .nodeId(nodeId)
                 .nodeName(nodeName)
                 .nodeDetails(nodeDetails)
                 .assignments(assignments)
                 .lastSeen(lastSeen)
-                .collectorVersion(collectorVersion)
+                .sidecarVersion(sidecarVersion)
                 .active(active)
-                .backends(backends)
+                .collectors(collectors)
                 .build();
 
     }

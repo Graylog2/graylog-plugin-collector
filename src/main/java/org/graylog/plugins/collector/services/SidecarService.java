@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SidecarService extends PaginatedDbService<Sidecar> {
-    private static final String COLLECTION_NAME = "collectors";
+    private static final String COLLECTION_NAME = "sidecars";
     private final CollectorService collectorService;
     private final ConfigurationService configurationService;
 
@@ -136,16 +136,16 @@ public class SidecarService extends PaginatedDbService<Sidecar> {
             throw new NotFoundException("Couldn't find collector with ID " + collectorNodeId);
         }
         for (ConfigurationAssignment assignment : assignments) {
-            Collector collector = collectorService.find(assignment.backendId());
+            Collector collector = collectorService.find(assignment.collectorId());
             if (collector == null) {
-                throw new NotFoundException("Couldn't find collector with ID " + assignment.backendId());
+                throw new NotFoundException("Couldn't find collector with ID " + assignment.collectorId());
             }
             Configuration configuration = configurationService.find(assignment.configurationId());
             if (configuration == null) {
                 throw new NotFoundException("Couldn't find configuration with ID " + assignment.configurationId());
             }
-            if (!configuration.backendId().equals(collector.id())) {
-                throw new NotFoundException("Configuration doesn't match collector ID " + assignment.backendId());
+            if (!configuration.collectorId().equals(collector.id())) {
+                throw new NotFoundException("Configuration doesn't match collector ID " + assignment.collectorId());
             }
         }
 

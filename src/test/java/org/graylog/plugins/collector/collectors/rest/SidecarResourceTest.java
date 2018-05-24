@@ -79,8 +79,8 @@ public class SidecarResourceTest extends RestResourceBaseTest {
         final SidecarListResponse response = this.resource.all();
 
         assertNotNull(response);
-        assertNotNull(response.collectors());
-        assertEquals("Collector list should be of same size as dummy list", sidecars.size(), response.collectors().size());
+        assertNotNull(response.sidecars());
+        assertEquals("Collector list should be of same size as dummy list", sidecars.size(), response.sidecars().size());
     }
 
     @Test(expected = NotFoundException.class)
@@ -131,7 +131,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
                 )
         );
 
-        final Response response = this.resource.register("collectorId", input, "0.0.1");
+        final Response response = this.resource.register("sidecarId", input, "0.0.1");
 
         assertThat(response).isSuccess();
     }
@@ -170,7 +170,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
                 )
         );
 
-        final Response response = this.resource.register("collectorId", invalid, "0.0.1");
+        final Response response = this.resource.register("sidecarId", invalid, "0.0.1");
 
         assertThat(response).isError();
         assertThat(response).isStatus(Response.Status.BAD_REQUEST);
@@ -184,7 +184,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
                 null
         );
 
-        final Response response = this.resource.register("collectorId", invalid, "0.0.1");
+        final Response response = this.resource.register("sidecarId", invalid, "0.0.1");
 
         assertThat(response).isError();
         assertThat(response).isStatus(Response.Status.BAD_REQUEST);
@@ -204,7 +204,7 @@ public class SidecarResourceTest extends RestResourceBaseTest {
                 )
         );
 
-        final Response response = this.resource.register("collectorId", invalid, "0.0.1");
+        final Response response = this.resource.register("sidecarId", invalid, "0.0.1");
 
         assertThat(response).isError();
         assertThat(response).isStatus(Response.Status.BAD_REQUEST);

@@ -71,7 +71,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
             .put("id", SearchQueryField.create(Sidecar.FIELD_ID))
             .put("node_id", SearchQueryField.create(Sidecar.FIELD_NODE_ID))
             .put("name", SearchQueryField.create(Sidecar.FIELD_NODE_NAME))
-            .put("collector_version", SearchQueryField.create(Sidecar.FIELD_COLLECTOR_VERSION))
+            .put("collector_version", SearchQueryField.create(Sidecar.FIELD_SIDECAR_VERSION))
             .put("last_seen", SearchQueryField.create(Sidecar.FIELD_LAST_SEEN, SearchQueryField.Type.DATE))
             .put("operating_system", SearchQueryField.create(Sidecar.FIELD_OPERATING_SYSTEM))
             .put("status", SearchQueryField.create(Sidecar.FIELD_STATUS, SearchQueryField.Type.INT))
@@ -185,7 +185,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
             newSidecar = oldSidecar.toBuilder()
                     .nodeName(request.nodeName())
                     .nodeDetails(request.nodeDetails())
-                    .collectorVersion(sidecarVersion)
+                    .sidecarVersion(sidecarVersion)
                     .lastSeen(DateTime.now(DateTimeZone.UTC))
                     .build();
         } else {
@@ -212,7 +212,7 @@ public class SidecarResource extends RestResource implements PluginRestResource 
     @PUT
     @Timed
     @Path("/configurations")
-    @ApiOperation(value = "Assign configurations to collectors")
+    @ApiOperation(value = "Assign configurations to sidecars")
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.SIDECARS_UPDATE)
     @AuditEvent(type = SidecarAuditEventTypes.SIDECAR_UPDATE)

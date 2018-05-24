@@ -20,6 +20,6 @@ public class StatusAdministrationFilter implements AdministrationFilter {
         if (collectorStatusList == null) {
             return false;
         }
-        return collectorStatusList.backends().entrySet().stream().anyMatch(entry -> entry.getValue().status() == status);
+        return collectorStatusList.collectors().entrySet().stream().anyMatch(entry -> entry.getValue().status() == status);
     }
 }

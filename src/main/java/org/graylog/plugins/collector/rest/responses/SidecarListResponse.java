@@ -32,7 +32,7 @@ public abstract class SidecarListResponse {
     public abstract String order();
 
     @JsonProperty
-    public abstract Collection<SidecarSummary> collectors();
+    public abstract Collection<SidecarSummary> sidecars();
 
     @Nullable
     @JsonProperty
@@ -44,9 +44,9 @@ public abstract class SidecarListResponse {
                                              @JsonProperty("only_active") Boolean onlyActive,
                                              @JsonProperty("sort") @Nullable String sort,
                                              @JsonProperty("order") @Nullable String order,
-                                             @JsonProperty("collectors") Collection<SidecarSummary> collectors,
+                                             @JsonProperty("sidecars") Collection<SidecarSummary> sidecars,
                                              @JsonProperty("filters") @Nullable Map<String, String> filters) {
-        return new AutoValue_SidecarListResponse(query, paginationInfo, onlyActive, sort, order, collectors, filters);
+        return new AutoValue_SidecarListResponse(query, paginationInfo, onlyActive, sort, order, sidecars, filters);
     }
 
     public static SidecarListResponse create(@JsonProperty("query") @Nullable String query,
@@ -54,7 +54,7 @@ public abstract class SidecarListResponse {
                                              @JsonProperty("only_active") Boolean onlyActive,
                                              @JsonProperty("sort") @Nullable String sort,
                                              @JsonProperty("order") @Nullable String order,
-                                             @JsonProperty("collectors") Collection<SidecarSummary> collectors) {
-        return create(query, paginationInfo, onlyActive, sort, order, collectors, null);
+                                             @JsonProperty("sidecars") Collection<SidecarSummary> sidecars) {
+        return create(query, paginationInfo, onlyActive, sort, order, sidecars, null);
     }
 }

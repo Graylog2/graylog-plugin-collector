@@ -40,7 +40,7 @@ public class ActionService {
         List<CollectorAction> updatedActions = new ArrayList<>();
         for (final CollectorAction action : actions) {
             for (final CollectorAction existingsAction : collectorActions.action()) {
-                if (!existingsAction.backend().equals(action.backend())) {
+                if (!existingsAction.collector().equals(action.collector())) {
                     updatedActions.add(existingsAction);
                 }
             }
@@ -55,7 +55,7 @@ public class ActionService {
 
     public CollectorActions saveAction(CollectorActions collectorActions) {
         return dbCollection.findAndModify(
-                DBQuery.is("collector_id", collectorActions.collectorId()),
+                DBQuery.is("sidecar_id", collectorActions.sidecarId()),
                 new BasicDBObject(),
                 new BasicDBObject(),
                 false,
@@ -66,9 +66,9 @@ public class ActionService {
 
     public CollectorActions findActionBySidecar(String sidecarId, boolean remove) {
         if (remove) {
-            return dbCollection.findAndRemove(DBQuery.is("collector_id", sidecarId));
+            return dbCollection.findAndRemove(DBQuery.is("sidecar_id", sidecarId));
         } else {
-            return dbCollection.findOne(DBQuery.is("collector_id", sidecarId));
+            return dbCollection.findOne(DBQuery.is("sidecar_id", sidecarId));
         }
     }
 }

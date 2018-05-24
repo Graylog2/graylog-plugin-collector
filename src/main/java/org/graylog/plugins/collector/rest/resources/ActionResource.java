@@ -53,7 +53,7 @@ public class ActionResource extends RestResource implements PluginRestResource {
     })
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
-    public List<CollectorAction> getAction(@ApiParam(name = "collectorId", required = true)
+    public List<CollectorAction> getAction(@ApiParam(name = "sidecarId", required = true)
                                            @PathParam("collectorId") @NotEmpty String collectorId) {
         final CollectorActions collectorActions = actionService.findActionBySidecar(collectorId, false);
         if (collectorActions != null) {
@@ -70,7 +70,7 @@ public class ActionResource extends RestResource implements PluginRestResource {
     @ApiOperation(value = "Set a collector action")
     @ApiResponses(value = {@ApiResponse(code = 400, message = "The supplied action is not valid.")})
     @AuditEvent(type = SidecarAuditEventTypes.ACTION_UPDATE)
-    public Response setAction(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
+    public Response setAction(@ApiParam(name = "sidecarId", value = "The collector id this collector is registering as.", required = true)
                               @PathParam("collectorId") @NotEmpty String collectorId,
                               @ApiParam(name = "JSON body", required = true)
                               @Valid @NotNull List<CollectorAction> request) {

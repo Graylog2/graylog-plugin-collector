@@ -32,8 +32,8 @@ public abstract class ConfigurationSummary {
     @JsonProperty("name")
     public abstract String name();
 
-    @JsonProperty("backend_id")
-    public abstract String backendId();
+    @JsonProperty("collector_id")
+    public abstract String collectorId();
 
     @JsonProperty("color")
     public abstract String color();
@@ -41,13 +41,17 @@ public abstract class ConfigurationSummary {
     @JsonCreator
     public static ConfigurationSummary create(@JsonProperty("id") @Id @ObjectId String id,
                                               @JsonProperty("name") String name,
-                                              @JsonProperty("backend_id") String backendId,
+                                              @JsonProperty("collector_id") String collectorId,
                                               @JsonProperty("color") String color) {
-        return new AutoValue_ConfigurationSummary(id, name, backendId, color);
+        return new AutoValue_ConfigurationSummary(id, name, collectorId, color);
     }
 
     public static ConfigurationSummary create(Configuration configuration) {
-        return create(configuration.id(), configuration.name(), configuration.backendId(), configuration.color());
+        return create(
+                configuration.id(),
+                configuration.name(),
+                configuration.collectorId(),
+                configuration.color());
     }
 
 }

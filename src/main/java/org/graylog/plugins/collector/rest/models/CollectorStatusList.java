@@ -32,12 +32,12 @@ public abstract class CollectorStatusList {
     @JsonProperty("message")
     public abstract String message();
 
-    @JsonProperty("backends")
-    public abstract HashMap<String, CollectorStatus> backends();
+    @JsonProperty("collectors")
+    public abstract HashMap<String, CollectorStatus> collectors();
 
     @JsonCreator
     public static CollectorStatusList create(@JsonProperty("status") int status,
                                              @JsonProperty("message") String message,
-                                             @JsonProperty("backends") HashMap<String, CollectorStatus> backends) {
-        return new AutoValue_CollectorStatusList(status, message, backends);
+                                             @JsonProperty("collectors") HashMap<String, CollectorStatus> collectors) {
+        return new AutoValue_CollectorStatusList(status, message, collectors);
     }}

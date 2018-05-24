@@ -26,7 +26,7 @@ public abstract class Sidecar {
     public static final String FIELD_NODE_NAME = "node_name";
     public static final String FIELD_NODE_DETAILS = "node_details";
     public static final String FIELD_ASSIGNMENTS = "assignments";
-    public static final String FIELD_COLLECTOR_VERSION = "collector_version";
+    public static final String FIELD_SIDECAR_VERSION = "sidecar_version";
     public static final String FIELD_LAST_SEEN = "last_seen";
 
     public static final String FIELD_OPERATING_SYSTEM = FIELD_NODE_DETAILS + ".operating_system";
@@ -52,7 +52,7 @@ public abstract class Sidecar {
     public abstract List<ConfigurationAssignment> assignments();
 
     @JsonProperty
-    public abstract String collectorVersion();
+    public abstract String sidecarVersion();
 
     @JsonProperty
     public abstract DateTime lastSeen();
@@ -70,7 +70,7 @@ public abstract class Sidecar {
         public abstract Builder nodeName(String title);
         public abstract Builder nodeDetails(NodeDetails nodeDetails);
         public abstract Builder assignments(List<ConfigurationAssignment> assignments);
-        public abstract Builder collectorVersion(String collectorVersion);
+        public abstract Builder sidecarVersion(String sidecarVersion);
         public abstract Builder lastSeen(DateTime lastSeen);
         public abstract Sidecar build();
     }
@@ -81,7 +81,7 @@ public abstract class Sidecar {
                                  @JsonProperty(FIELD_NODE_NAME) String nodeName,
                                  @JsonProperty(FIELD_NODE_DETAILS) NodeDetails nodeDetails,
                                  @JsonProperty(FIELD_ASSIGNMENTS) @Nullable List<ConfigurationAssignment> assignments,
-                                 @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion,
+                                 @JsonProperty(FIELD_SIDECAR_VERSION) String sidecarVersion,
                                  @JsonProperty(FIELD_LAST_SEEN) DateTime lastSeen) {
 
         return builder()
@@ -90,7 +90,7 @@ public abstract class Sidecar {
                 .nodeName(nodeName)
                 .nodeDetails(nodeDetails)
                 .assignments(assignments)
-                .collectorVersion(collectorVersion)
+                .sidecarVersion(sidecarVersion)
                 .lastSeen(lastSeen)
                 .build();
     }
@@ -98,14 +98,14 @@ public abstract class Sidecar {
     public static Sidecar create(@JsonProperty(FIELD_NODE_ID) String nodeId,
                                  @JsonProperty(FIELD_NODE_NAME) String nodeName,
                                  @JsonProperty(FIELD_NODE_DETAILS) NodeDetails nodeDetails,
-                                 @JsonProperty(FIELD_COLLECTOR_VERSION) String collectorVersion) {
+                                 @JsonProperty(FIELD_SIDECAR_VERSION) String sidecarVersion) {
 
         return builder()
                 .id(new org.bson.types.ObjectId().toHexString())
                 .nodeId(nodeId)
                 .nodeName(nodeName)
                 .nodeDetails(nodeDetails)
-                .collectorVersion(collectorVersion)
+                .sidecarVersion(sidecarVersion)
                 .lastSeen(DateTime.now(DateTimeZone.UTC))
                 .build();
     }
@@ -117,7 +117,7 @@ public abstract class Sidecar {
                 .nodeDetails(nodeDetails())
                 .assignments(firstNonNull(assignments(), new ArrayList<>()))
                 .lastSeen(lastSeen())
-                .collectorVersion(collectorVersion())
+                .sidecarVersion(sidecarVersion())
                 .active(isActiveFunction != null && isActiveFunction.test(this))
                 .build();
     }

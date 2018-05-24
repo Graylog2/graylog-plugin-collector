@@ -38,8 +38,8 @@ public abstract class CollectorActions {
     @ObjectId
     public abstract String id();
 
-    @JsonProperty("collector_id")
-    public abstract String collectorId();
+    @JsonProperty("sidecar_id")
+    public abstract String sidecarId();
 
     @JsonProperty("created")
     public abstract DateTime created();
@@ -49,18 +49,18 @@ public abstract class CollectorActions {
 
     @JsonCreator
     public static CollectorActions create(@JsonProperty("id") @Id @ObjectId String id,
-                                          @JsonProperty("collector_id") String collectorId,
+                                          @JsonProperty("sidecar_id") String sidecarId,
                                           @JsonProperty("created") DateTime created,
                                           @JsonProperty("action") List<CollectorAction> action) {
-        return new AutoValue_CollectorActions(id, collectorId, created, action);
+        return new AutoValue_CollectorActions(id, sidecarId, created, action);
     }
 
-    public static CollectorActions create(String collector_id,
+    public static CollectorActions create(String sidecar_id,
                                           DateTime created,
                                           List<CollectorAction> action) {
         return create(
                 new org.bson.types.ObjectId().toHexString(),
-                collector_id,
+                sidecar_id,
                 created,
                 action);
     }

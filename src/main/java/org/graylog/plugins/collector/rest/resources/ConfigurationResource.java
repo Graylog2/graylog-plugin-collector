@@ -62,7 +62,7 @@ public class ConfigurationResource extends RestResource implements PluginRestRes
     private final SearchQueryParser searchQueryParser;
     private static final ImmutableMap<String, SearchQueryField> SEARCH_FIELD_MAPPING = ImmutableMap.<String, SearchQueryField>builder()
             .put("id", SearchQueryField.create(Configuration.FIELD_ID))
-            .put("backend_id", SearchQueryField.create(Configuration.FIELD_BACKEND_ID))
+            .put("backend_id", SearchQueryField.create(Configuration.FIELD_COLLECTOR_ID))
             .put("name", SearchQueryField.create(Configuration.FIELD_NAME))
             .build();
 

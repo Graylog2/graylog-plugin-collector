@@ -9,14 +9,14 @@ import com.google.auto.value.AutoValue;
 @JsonAutoDetect
 public abstract class ConfigurationAssignment {
     @JsonProperty
-    public abstract String backendId();
+    public abstract String collectorId();
 
     @JsonProperty
     public abstract String configurationId();
 
     @JsonCreator
-    public static ConfigurationAssignment create(@JsonProperty("backend_id") String backendId,
+    public static ConfigurationAssignment create(@JsonProperty("collector_id") String collectorId,
                                                  @JsonProperty("configuration_id") String configurationId) {
-        return new AutoValue_ConfigurationAssignment(backendId, configurationId);
+        return new AutoValue_ConfigurationAssignment(collectorId, configurationId);
     }
 }

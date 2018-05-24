@@ -81,12 +81,12 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
 
     public Configuration copyConfiguration(String id, String name) {
         Configuration configuration = find(id);
-        return Configuration.create(configuration.backendId(), name, configuration.color(), configuration.template());
+        return Configuration.create(configuration.collectorId(), name, configuration.color(), configuration.template());
     }
 
     public Configuration fromRequest(Configuration request) {
         return Configuration.create(
-                request.backendId(),
+                request.collectorId(),
                 request.name(),
                 request.color(),
                 request.template());
@@ -95,7 +95,7 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
     public Configuration fromRequest(String id, Configuration request) {
         return Configuration.create(
                 id,
-                request.backendId(),
+                request.collectorId(),
                 request.name(),
                 request.color(),
                 request.template());
@@ -106,7 +106,7 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
 
         context.put("nodeId", sidecar.nodeId());
         context.put("nodeName", sidecar.nodeName());
-        context.put("collectorVersion", sidecar.collectorVersion());
+        context.put("sidecarVersion", sidecar.sidecarVersion());
         context.put("operatingSystem", sidecar.nodeDetails().operatingSystem());
         context.put("ip", sidecar.nodeDetails().ip());
         if (sidecar.nodeDetails().metrics().cpuIdle() != null) {
@@ -118,7 +118,7 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
 
         return Configuration.create(
                 configuration.id(),
-                configuration.backendId(),
+                configuration.collectorId(),
                 configuration.name(),
                 configuration.color(),
                 renderTemplate(configuration.id(), context)
@@ -129,7 +129,7 @@ public class ConfigurationService extends PaginatedDbService<Configuration> {
         Map<String, Object> context = new HashMap<>();
         context.put("nodeId", "<node id>");
         context.put("nodeName", "<node name>");
-        context.put("collectorVersion", "<version>");
+        context.put("sidecarVersion", "<version>");
         context.put("operatingSystem", "<operating system>");
         context.put("ip", "<ip>");
         context.put("cpuIdle", "<cpu idle>");

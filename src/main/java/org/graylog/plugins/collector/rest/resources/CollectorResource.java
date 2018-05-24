@@ -46,8 +46,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(value = "Collectors", description = "Manage collectors")
-@Path("/sidecar/collectors")
+@Api(value = "Collectors", description = "Manage sidecars")
+@Path("/sidecar/sidecars")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class CollectorResource extends RestResource implements PluginRestResource {
@@ -83,7 +83,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List all collectors")
+    @ApiOperation(value = "List all sidecars")
     public Response listCollectors(@Context HttpHeaders httpHeaders) {
         String ifNoneMatch = httpHeaders.getHeaderString("If-None-Match");
         Boolean etagCached = false;
@@ -127,7 +127,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     @RequiresAuthentication
     @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "List a summary of all collectors")
+    @ApiOperation(value = "List a summary of all sidecars")
     public CollectorSummaryResponse listSummary(@ApiParam(name = "page") @QueryParam("page") @DefaultValue("1") int page,
                                                 @ApiParam(name = "per_page") @QueryParam("per_page") @DefaultValue("50") int perPage,
                                                 @ApiParam(name = "query") @QueryParam("query") @DefaultValue("") String query,

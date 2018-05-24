@@ -35,7 +35,7 @@ public abstract class CollectorSummaryResponse {
                                                   @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
                                                   @JsonProperty("sort") String sort,
                                                   @JsonProperty("order") String order,
-                                                  @JsonProperty("backends") Collection<CollectorSummary> backends) {
+                                                  @JsonProperty("sidecars") Collection<CollectorSummary> backends) {
         return new AutoValue_CollectorSummaryResponse(query, paginationInfo, sort, order, backends);
     }
 }
