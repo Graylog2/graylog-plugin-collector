@@ -46,14 +46,14 @@ const SidecarStatus = createReactClass({
       return <p>Collector statuses are currently unavailable. Please wait a moment and ensure the sidecar is correctly connected to the server.</p>;
     }
 
-    const collectors = Object.keys(details.status.backends);
+    const collectors = Object.keys(details.status.collectors);
     if (collectors.length === 0) {
       return <p>There are no collectors configured in this sidecar.</p>;
     }
 
     const statuses = [];
     collectors.forEach((collector) => {
-      const status = details.status.backends[collector];
+      const status = details.status.collectors[collector];
 
       let statusMessage;
       let statusBadge;

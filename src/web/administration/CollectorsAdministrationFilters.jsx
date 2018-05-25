@@ -35,7 +35,7 @@ const CollectorsAdministrationFilters = createReactClass({
 
     const filter = ([collectorId], callback) => {
       const [id] = collectorId ? collectorId.split(';') : [];
-      this.onFilterChange('backend', id, callback);
+      this.onFilterChange('collector', id, callback);
     };
 
     return (

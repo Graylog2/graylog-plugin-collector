@@ -30,7 +30,7 @@ const ConfigurationList = React.createClass({
 
   _collectorConfigurationFormatter(configuration) {
     const { collectors, onClone, onDelete, validateConfiguration } = this.props;
-    const configurationCollector = collectors.find(collector => collector.id === configuration.backend_id);
+    const configurationCollector = collectors.find(collector => collector.id === configuration.collector_id);
     return (
       <ConfigurationRow key={configuration.id}
                         configuration={configuration}

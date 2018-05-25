@@ -160,9 +160,9 @@ const CollectorsAdministration = createReactClass({
 
   formatCollector(sidecar, collector, configurations) {
     const sidecarCollectorId = this.sidecarCollectorId(sidecar, collector);
-    const configAssignment = sidecar.assignments.find(assignment => assignment.backend_id === collector.id) || {};
+    const configAssignment = sidecar.assignments.find(assignment => assignment.collector_id === collector.id) || {};
     const configuration = configurations.find(config => config.id === configAssignment.configuration_id);
-    const backendStatus = (sidecar.node_details.status.backends[collector.name] || {}).status;
+    const collectorStatus = (sidecar.node_details.status.collectors[collector.name] || {}).status;
 
     return (
       <Row key={sidecarCollectorId}>
@@ -175,7 +175,7 @@ const CollectorsAdministration = createReactClass({
         </Col>
         <Col lg={1} md={2} xs={3}>
           <span className={style.additionalContent}>
-            {configuration && <StatusIndicator status={backendStatus} />}
+            {configuration && <StatusIndicator status={collectorStatus} />}
           </span>
         </Col>
         <Col lg={1} md={2} xs={3}>

@@ -35,7 +35,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   getCollector(collectorId) {
-    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collectorId}`));
+    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/collectors/${collectorId}`));
     promise
       .catch(
         (error) => {
@@ -52,7 +52,7 @@ const CollectorsStore = Reflux.createStore({
       per_page: pageSize,
     };
 
-    const uri = URI(`${this.sourceUrl}/backends/summary`).search(search).toString();
+    const uri = URI(`${this.sourceUrl}/collectors/summary`).search(search).toString();
 
     return fetch('GET', URLUtils.qualifyUrl(uri));
   },
@@ -61,12 +61,12 @@ const CollectorsStore = Reflux.createStore({
     const promise = this._fetchCollectors({ pageSize: 0 })
       .then(
         (response) => {
-          this.collectors = response.backends;
+          this.collectors = response.collectors;
           this.propagateChanges();
-          return response.backends;
+          return response.collectors;
         },
         (error) => {
-          UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
+          UserNotification.error(`Fetching collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
 
@@ -83,13 +83,13 @@ const CollectorsStore = Reflux.createStore({
             pageSize: response.per_page,
             total: response.total,
           };
-          this.paginatedCollectors = response.backends;
+          this.paginatedCollectors = response.collectors;
 
           this.propagateChanges();
-          return response.backends;
+          return response.collectors;
         },
         (error) => {
-          UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
+          UserNotification.error(`Fetching collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
 
@@ -101,41 +101,41 @@ const CollectorsStore = Reflux.createStore({
   },
 
   create(collector) {
-    const promise = fetch('POST', URLUtils.qualifyUrl(`${this.sourceUrl}/backends`), collector)
+    const promise = fetch('POST', URLUtils.qualifyUrl(`${this.sourceUrl}/collectors`), collector)
       .then(
         (response) => {
           UserNotification.success('Collector successfully created');
-          this.collectors = response.backends;
+          this.collectors = response.collectors;
           this.propagateChanges();
 
           return this.collectors;
         },
         (error) => {
-          UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
+          UserNotification.error(`Fetching collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
     CollectorsActions.create.promise(promise);
   },
 
   update(collector) {
-    const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collector.id}`), collector)
+    const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/collectors/${collector.id}`), collector)
       .then(
         (response) => {
           UserNotification.success('Collector successfully updated');
-          this.collectors = response.backends;
+          this.collectors = response.collectors;
           this.propagateChanges();
 
           return this.collectors;
         },
         (error) => {
-          UserNotification.error(`Fetching sidecar collectors failed with status: ${error}`,
+          UserNotification.error(`Fetching collectors failed with status: ${error}`,
             'Could not retrieve collectors');
         });
     CollectorsActions.update.promise(promise);
   },
 
   delete(collector) {
-    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collector.id}`);
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/collectors/${collector.id}`);
     const promise = fetch('DELETE', url);
     promise
       .then((response) => {
@@ -151,7 +151,7 @@ const CollectorsStore = Reflux.createStore({
   },
 
   copy(collectorId, name) {
-    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/backends/${collectorId}/${name}`);
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/collectors/${collectorId}/${name}`);
     const method = 'POST';
 
     const promise = fetch(method, url);

@@ -39,7 +39,7 @@ const AdministrationStore = Reflux.createStore({
 
     promise.then(
       (response) => {
-        this.sidecars = response.collectors;
+        this.sidecars = response.sidecars;
         this.query = response.query;
         this.filters = response.filters;
         this.pagination = {

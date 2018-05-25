@@ -43,7 +43,7 @@ const ConfigurationForm = React.createClass({
         id: this.props.configuration.id,
         name: this.props.configuration.name,
         color: this.props.configuration.color,
-        backend_id: this.props.configuration.backend_id,
+        collector_id: this.props.configuration.collector_id,
         template: String(this.props.configuration.template),
       },
     };
@@ -86,7 +86,7 @@ const ConfigurationForm = React.createClass({
 
   _onCollectorChange(nextId) {
     const nextFormData = lodash.cloneDeep(this.state.formData);
-    nextFormData.backend_id = nextId;
+    nextFormData.collector_id = nextId;
     nextFormData.template = this._collectorDefaultTemplate(nextId);
     this.setState({ formData: nextFormData });
   },
@@ -158,11 +158,11 @@ const ConfigurationForm = React.createClass({
               <HelpBlock>Choose a color to use for this configuration.</HelpBlock>
             </FormGroup>
 
-            <FormGroup controlId="backend_id">
+            <FormGroup controlId="collector_id">
               <ControlLabel>Collector</ControlLabel>
-              <Select inputProps={{ id: 'backend_id' }}
+              <Select inputProps={{ id: 'collector_id' }}
                       options={this._formatCollectorOptions()}
-                      value={this.state.formData.backend_id}
+                      value={this.state.formData.collector_id}
                       onChange={this._onCollectorChange}
                       placeholder="Collector"
                       required />

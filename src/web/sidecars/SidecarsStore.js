@@ -52,7 +52,7 @@ const SidecarsStore = Reflux.createStore({
 
     promise.then(
       (response) => {
-        this.sidecars = response.collectors;
+        this.sidecars = response.sidecars;
         this.query = response.query;
         this.onlyActive = response.only_active;
         this.pagination = {
@@ -90,7 +90,7 @@ const SidecarsStore = Reflux.createStore({
 
   restartCollector(sidecarId, collector) {
     const action = {};
-    action.backend = collector;
+    action.collector = collector;
     action.properties = {};
     action.properties.restart = true;
     const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/${sidecarId}/action`), [action]);
@@ -114,10 +114,10 @@ const SidecarsStore = Reflux.createStore({
     SidecarsActions.getSidecarActions.promise(promise);
   },
 
-  toConfigurationAssignmentDto(nodeId, backendId, configurationId) {
+  toConfigurationAssignmentDto(nodeId, collectorId, configurationId) {
     return {
       node_id: nodeId,
-      backend_id: backendId,
+      collector_id: collectorId,
       configuration_id: configurationId,
     };
   },
@@ -125,11 +125,11 @@ const SidecarsStore = Reflux.createStore({
   assignConfigurations(sidecars, configurations) {
     const nodes = sidecars.map(({ sidecar, collector }) => {
       // Add all previous assignments, but the one that was changed
-      const assignments = sidecar.assignments.filter(assignment => assignment.backend_id !== collector.id);
+      const assignments = sidecar.assignments.filter(assignment => assignment.collector_id !== collector.id);
 
       // Add new assignments
       configurations.forEach((configuration) => {
-        assignments.push({ backend_id: collector.id, configuration_id: configuration.id });
+        assignments.push({ collector_id: collector.id, configuration_id: configuration.id });
       });
 
       return { node_id: sidecar.node_id, assignments: assignments };

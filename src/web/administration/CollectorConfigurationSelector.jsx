@@ -46,7 +46,7 @@ class CollectorConfigurationSelector extends React.Component {
   configurationFormatter = (configurationId) => {
     const { configurations, collectors } = this.props;
     const configuration = configurations.find(c => c.id === configurationId);
-    const collector = collectors.find(b => b.id === configuration.backend_id);
+    const collector = collectors.find(b => b.id === configuration.collector_id);
     return (
       <span>
         <ColorLabel color={configuration.color} size="xsmall" /> {configuration.name}&emsp;
@@ -111,7 +111,7 @@ class CollectorConfigurationSelector extends React.Component {
     }
 
     const configurationIds = configurations
-      .filter(configuration => selectedLogCollectors[0].id === configuration.backend_id)
+      .filter(configuration => selectedLogCollectors[0].id === configuration.collector_id)
       .sort((c1, c2) => naturalSortIgnoreCase(c1.name, c2.name))
       .map(c => c.id);
 
@@ -127,7 +127,7 @@ class CollectorConfigurationSelector extends React.Component {
     }
 
     const assignedConfigurations = this.getAssignedConfigurations(selectedSidecarCollectorPairs, configurations)
-      .filter(configuration => selectedLogCollectors[0].id === configuration.backend_id);
+      .filter(configuration => selectedLogCollectors[0].id === configuration.collector_id);
 
     return (
       <span>

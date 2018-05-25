@@ -28,14 +28,14 @@ public abstract class CollectorSummaryResponse {
     public abstract String order();
 
     @JsonProperty
-    public abstract Collection<CollectorSummary> backends();
+    public abstract Collection<CollectorSummary> collectors();
 
     @JsonCreator
     public static CollectorSummaryResponse create(@JsonProperty("query") @Nullable String query,
                                                   @JsonProperty("pagination_info") PaginatedList.PaginationInfo paginationInfo,
                                                   @JsonProperty("sort") String sort,
                                                   @JsonProperty("order") String order,
-                                                  @JsonProperty("sidecars") Collection<CollectorSummary> backends) {
-        return new AutoValue_CollectorSummaryResponse(query, paginationInfo, sort, order, backends);
+                                                  @JsonProperty("collectors") Collection<CollectorSummary> collectors) {
+        return new AutoValue_CollectorSummaryResponse(query, paginationInfo, sort, order, collectors);
     }
 }
