@@ -10,7 +10,7 @@ const CopyCollectorModal = React.createClass({
   propTypes: {
     id: PropTypes.string,
     copyCollector: PropTypes.func.isRequired,
-    validCollectorName: PropTypes.func.isRequired,
+    validateCollector: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
@@ -55,7 +55,11 @@ const CopyCollectorModal = React.createClass({
   },
 
   _changeName(event) {
-    this.setState({ name: event.target.value });
+    const nextName = event.target.value;
+    this.setState({ name: nextName });
+    this.props.validateCollector(nextName).then(validation => (
+      this.setState({ error: validation.error, error_message: validation.error_message })
+    ));
   },
 
   render() {
@@ -65,7 +69,8 @@ const CopyCollectorModal = React.createClass({
         <BootstrapModalForm ref="modal"
                             title="Clone"
                             onSubmitForm={this._save}
-                            submitButtonText="Create">
+                            submitButtonDisabled={this.state.error}
+                            submitButtonText="Done">
           <fieldset>
             <Input type="text"
                    id={this._getId('collector-name')}

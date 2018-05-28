@@ -7,14 +7,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
+import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
 import org.graylog.plugins.collector.rest.models.Collector;
 import org.graylog.plugins.collector.rest.models.CollectorSummary;
 import org.graylog.plugins.collector.rest.responses.CollectorListResponse;
 import org.graylog.plugins.collector.rest.responses.CollectorSummaryResponse;
+import org.graylog.plugins.collector.rest.responses.ValidationResponse;
 import org.graylog.plugins.collector.services.CollectorService;
 import org.graylog.plugins.collector.services.EtagService;
-import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
-import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
 import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -206,6 +207,20 @@ public class CollectorResource extends RestResource implements PluginRestResourc
         }
         etagService.invalidateAll();
         return Response.accepted().build();
+    }
+
+    @GET
+    @Path("/validate")
+    @RequiresAuthentication
+    @RequiresPermissions(SidecarRestPermissions.CONFIGURATIONS_READ)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Validates collector name")
+    public ValidationResponse validateCollector(@ApiParam(name = "name", required = true) @QueryParam("name") String name) {
+        final Collector collector = collectorService.findByName(name);
+        if (collector == null) {
+            return ValidationResponse.create(false, null);
+        }
+        return ValidationResponse.create(true, "Collector with name \"" + name + "\" already exists");
     }
 
     private String collectorsToEtag(CollectorListResponse collectors) {

@@ -40,9 +40,8 @@ const CollectorListContainer = createReactClass({
     CollectorsActions.list({ query: query, pageSize: pageSize }).finally(callback);
   },
 
-  _validCollectorName(name) {
-    // TODO: handle this in backend
-    return !this.state.collectors.some((collector) => collector.name === name);
+  validateCollector(name) {
+    return CollectorsActions.validate(name);
   },
 
   render() {
@@ -59,7 +58,7 @@ const CollectorListContainer = createReactClass({
                      onQueryChange={this.handleQueryChange}
                      onClone={this.handleClone}
                      onDelete={this.handleDelete}
-                     validateCollector={this._validCollectorName} />
+                     validateCollector={this.validateCollector} />
     );
   },
 });

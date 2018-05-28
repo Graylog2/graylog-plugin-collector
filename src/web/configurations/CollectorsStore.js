@@ -168,6 +168,18 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.copy.promise(promise);
   },
 
+  validate(name) {
+    const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/collectors/validate/?name=${name}`));
+    promise
+      .then(
+        response => response,
+        error => (
+          UserNotification.error(`Validating collector with name "${name}" failed with status: ${error.message}`,
+            'Could not validate collector')
+        ));
+
+    CollectorsActions.validate.promise(promise);
+  },
 });
 
 export default CollectorsStore;

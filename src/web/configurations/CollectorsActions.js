@@ -8,6 +8,7 @@ const CollectorsActions = Reflux.createActions({
   update: { asyncResult: true },
   delete: { asyncResult: true },
   copy: { asyncResult: true },
+  validate: { asyncResult: true },
 });
 
 export default CollectorsActions;
