@@ -6,22 +6,31 @@ import com.google.common.collect.ImmutableList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.graylog.plugins.collector.filter.AdministrationFiltersFactory;
-import org.graylog.plugins.collector.rest.models.Collector;
-import org.graylog.plugins.collector.rest.models.Sidecar;
-import org.graylog.plugins.collector.rest.requests.AdministrationRequest;
-import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
-import org.graylog.plugins.collector.services.SidecarService;
-import org.graylog.plugins.collector.services.ConfigurationService;
-import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.audit.SidecarAuditEventTypes;
 import org.graylog.plugins.collector.filter.ActiveSidecarFilter;
 import org.graylog.plugins.collector.filter.AdministrationFilter;
-import org.graylog.plugins.collector.rest.models.Configuration;
-import org.graylog.plugins.collector.rest.models.SidecarSummary;
+import org.graylog.plugins.collector.filter.AdministrationFiltersFactory;
 import org.graylog.plugins.collector.permissions.SidecarRestPermissions;
+import org.graylog.plugins.collector.rest.models.Collector;
+import org.graylog.plugins.collector.rest.models.CollectorAction;
+import org.graylog.plugins.collector.rest.models.CollectorActions;
+import org.graylog.plugins.collector.rest.models.Configuration;
+import org.graylog.plugins.collector.rest.models.Sidecar;
+import org.graylog.plugins.collector.rest.models.SidecarSummary;
+import org.graylog.plugins.collector.rest.requests.AdministrationRequest;
+import org.graylog.plugins.collector.rest.requests.BulkActionRequest;
+import org.graylog.plugins.collector.rest.requests.BulkActionsRequest;
+import org.graylog.plugins.collector.rest.responses.SidecarListResponse;
+import org.graylog.plugins.collector.services.ActionService;
+import org.graylog.plugins.collector.services.CollectorService;
+import org.graylog.plugins.collector.services.ConfigurationService;
+import org.graylog.plugins.collector.services.SidecarService;
 import org.graylog.plugins.collector.system.SidecarSystemConfiguration;
+import org.graylog2.audit.jersey.AuditEvent;
 import org.graylog2.audit.jersey.NoAuditEvent;
 import org.graylog2.database.PaginatedList;
 import org.graylog2.plugin.rest.PluginRestResource;
@@ -34,9 +43,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +63,7 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     private final SidecarService sidecarService;
     private final ConfigurationService configurationService;
     private final CollectorService collectorService;
+    private final ActionService actionService;
     private final SearchQueryParser searchQueryParser;
     private final AdministrationFiltersFactory administrationFiltersFactory;
     private final ActiveSidecarFilter activeSidecarFilter;
@@ -60,11 +72,13 @@ public class AdministrationResource extends RestResource implements PluginRestRe
     public AdministrationResource(SidecarService sidecarService,
                                   ConfigurationService configurationService,
                                   CollectorService collectorService,
+                                  ActionService actionService,
                                   AdministrationFiltersFactory administrationFiltersFactory,
                                   Supplier<SidecarSystemConfiguration> configSupplier) {
         this.sidecarService = sidecarService;
         this.configurationService = configurationService;
         this.collectorService = collectorService;
+        this.actionService = actionService;
         this.administrationFiltersFactory = administrationFiltersFactory;
         this.activeSidecarFilter = new ActiveSidecarFilter(configSupplier.get().sidecarInactiveThreshold());
         this.searchQueryParser = new SearchQueryParser(Sidecar.FIELD_NODE_NAME, SidecarResource.SEARCH_FIELD_MAPPING);
@@ -103,6 +117,28 @@ public class AdministrationResource extends RestResource implements PluginRestRe
 
         return SidecarListResponse.create(request.query(), sidecars.pagination(), false, sort, order, summariesWithCollectors, request.filters());
     }
+
+    @PUT
+    @Timed
+    @Path("/action")
+    @RequiresAuthentication
+    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_UPDATE)
+    @ApiOperation(value = "Set collector actions in bulk")
+    @ApiResponses(value = {@ApiResponse(code = 400, message = "The supplied action is not valid.")})
+    @AuditEvent(type = SidecarAuditEventTypes.ACTION_UPDATE)
+    public Response setAction(@ApiParam(name = "JSON body", required = true)
+                              @Valid @NotNull BulkActionsRequest request) {
+        for (BulkActionRequest bulkActionRequest : request.collectors()) {
+            final List<CollectorAction> actions = bulkActionRequest.collectorIds().stream()
+                    .map(collectorId -> CollectorAction.create(collectorId, request.action()))
+                    .collect(Collectors.toList());
+            final CollectorActions collectorActions = actionService.fromRequest(bulkActionRequest.sidecarId(), actions);
+            actionService.saveAction(collectorActions);
+        }
+
+        return Response.accepted().build();
+    }
+
 
     private List<Collector> getCollectors(Map<String, String> filters) {
         final String collectorKey = AdministrationFilter.Type.COLLECTOR.toString().toLowerCase();

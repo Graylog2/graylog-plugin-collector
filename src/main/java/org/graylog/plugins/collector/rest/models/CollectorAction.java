@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
@@ -37,5 +38,9 @@ public abstract class CollectorAction {
     public static CollectorAction create(@JsonProperty("collectorId") String collectorId,
                                          @JsonProperty("properties") Map<String, Object> properties) {
         return new AutoValue_CollectorAction(collectorId, properties);
+    }
+
+    public static CollectorAction create(String collectorId, String action) {
+        return create(collectorId, ImmutableMap.of(action, true));
     }
 }
