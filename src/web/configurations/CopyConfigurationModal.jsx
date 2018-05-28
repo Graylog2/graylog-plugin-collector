@@ -70,7 +70,7 @@ const CopyConfigurationModal = React.createClass({
                             title="Clone"
                             onSubmitForm={this._save}
                             submitButtonDisabled={this.state.error}
-                            submitButtonText="Create">
+                            submitButtonText="Done">
           <fieldset>
             <Input type="text"
                    id={this._getId('configuration-name')}

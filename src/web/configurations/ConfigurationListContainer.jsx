@@ -24,7 +24,7 @@ const ConfigurationListContainer = createReactClass({
   },
 
   validateConfiguration(name) {
-    return CollectorConfigurationsActions.validateConfiguration(name);
+    return CollectorConfigurationsActions.validate(name);
   },
 
   handlePageChange(page, pageSize) {
@@ -39,8 +39,9 @@ const ConfigurationListContainer = createReactClass({
 
   handleClone(configuration, name, callback) {
     CollectorConfigurationsActions.copyConfiguration(configuration, name)
-      .then(() => {
+      .then((response) => {
         callback();
+        return response;
       });
   },
 

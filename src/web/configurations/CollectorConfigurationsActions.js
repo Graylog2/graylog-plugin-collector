@@ -9,7 +9,7 @@ const CollectorConfigurationsActions = Reflux.createActions({
   renderPreview: { asyncResult: true },
   copyConfiguration: { asyncResult: true },
   delete: { asyncResult: true },
-  validateConfiguration: { asyncResult: true },
+  validate: { asyncResult: true },
 });
 
 export default CollectorConfigurationsActions;

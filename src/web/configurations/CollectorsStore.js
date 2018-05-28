@@ -6,6 +6,7 @@ import fetch from 'logic/rest/FetchProvider';
 import UserNotification from 'util/UserNotification';
 
 import CollectorsActions from './CollectorsActions';
+import CollectorConfigurationsActions from './CollectorConfigurationsActions';
 
 const CollectorsStore = Reflux.createStore({
   listenables: [CollectorsActions],
@@ -157,7 +158,7 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetch(method, url);
     promise
       .then((response) => {
-        UserNotification.success('', `Collector "${collectorId}" successfully copied`);
+        UserNotification.success('', `Collector "${name}" successfully copied`);
         this.refreshList();
         return response;
       }, (error) => {

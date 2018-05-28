@@ -155,7 +155,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch(method, url);
     promise
       .then((response) => {
-        UserNotification.success('', `Configuration "${configurationId}" successfully copied`);
+        UserNotification.success('', `Configuration "${name}" successfully copied`);
         this.refreshList();
         return response;
       }, (error) => {
@@ -182,7 +182,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     CollectorConfigurationsActions.delete.promise(promise);
   },
 
-  validateConfiguration(name) {
+  validate(name) {
     const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/configurations/validate/?name=${name}`));
     promise
       .then(
@@ -192,7 +192,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
             'Could not validate configuration')
         ));
 
-    CollectorConfigurationsActions.validateConfiguration.promise(promise);
+    CollectorConfigurationsActions.validate.promise(promise);
   },
 
 });

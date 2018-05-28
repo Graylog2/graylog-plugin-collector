@@ -79,7 +79,7 @@ const ConfigurationForm = React.createClass({
   _onNameChange(event) {
     const nextName = event.target.value;
     this._formDataUpdate('name')(nextName);
-    CollectorConfigurationsActions.validateConfiguration(nextName).then(validation => (
+    CollectorConfigurationsActions.validate(nextName).then(validation => (
       this.setState({ error: validation.error, error_message: validation.error_message })
     ));
   },
