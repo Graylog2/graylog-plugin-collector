@@ -109,7 +109,7 @@ const ConfigurationForm = React.createClass({
 
     if (this.state.collectors) {
       this.state.collectors.forEach((collector) => {
-        options.push({ value: collector.id, label: collector.name });
+        options.push({ value: collector.id, label: `${collector.name} on ${lodash.upperFirst(collector.node_operating_system)}` });
       });
     } else {
       options.push({ value: 'none', label: 'Loading collector list...', disable: true });
