@@ -121,7 +121,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch(method, url, configuration);
     promise
       .then((response) => {
-        UserNotification.success('Configuration successfully created');
+        UserNotification.success('', 'Configuration successfully created');
         return response;
       }, (error) => {
         UserNotification.error(`Creating configuration failed with status: ${error.message}`,
@@ -137,7 +137,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch('PUT', url, configuration);
     promise
       .then((response) => {
-        UserNotification.success('Configuration successfully updated');
+        UserNotification.success('', 'Configuration successfully updated');
         this.refreshList();
         return response;
       }, (error) => {
@@ -155,7 +155,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch(method, url);
     promise
       .then((response) => {
-        UserNotification.success(`Configuration "${configurationId}" successfully copied`);
+        UserNotification.success('', `Configuration "${configurationId}" successfully copied`);
         this.refreshList();
         return response;
       }, (error) => {
@@ -171,7 +171,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch('DELETE', url);
     promise
       .then((response) => {
-        UserNotification.success(`Configuration "${configuration.name}" successfully deleted`);
+        UserNotification.success('', `Configuration "${configuration.name}" successfully deleted`);
         this.refreshList();
         return response;
       }, (error) => {

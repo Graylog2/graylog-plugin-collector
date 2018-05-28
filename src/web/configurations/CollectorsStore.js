@@ -104,7 +104,7 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetch('POST', URLUtils.qualifyUrl(`${this.sourceUrl}/collectors`), collector)
       .then(
         (response) => {
-          UserNotification.success('Collector successfully created');
+          UserNotification.success('', 'Collector successfully created');
           this.collectors = response.collectors;
           this.propagateChanges();
 
@@ -121,7 +121,7 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/collectors/${collector.id}`), collector)
       .then(
         (response) => {
-          UserNotification.success('Collector successfully updated');
+          UserNotification.success('', 'Collector successfully updated');
           this.collectors = response.collectors;
           this.propagateChanges();
 
@@ -139,7 +139,7 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetch('DELETE', url);
     promise
       .then((response) => {
-        UserNotification.success(`Collector "${collector.name}" successfully deleted`);
+        UserNotification.success('', `Collector "${collector.name}" successfully deleted`);
         this.refreshList();
         return response;
       }, (error) => {
@@ -157,7 +157,7 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetch(method, url);
     promise
       .then((response) => {
-        UserNotification.success(`Collector "${collectorId}" successfully copied`);
+        UserNotification.success('', `Collector "${collectorId}" successfully copied`);
         this.refreshList();
         return response;
       }, (error) => {

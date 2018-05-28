@@ -138,8 +138,7 @@ const SidecarsStore = Reflux.createStore({
     const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/configurations`), { nodes: nodes })
       .then(
         (response) => {
-          UserNotification.success('Collectors will change their configurations shortly.',
-            `Configuration change for ${sidecars.length} collectors requested`);
+          UserNotification.success('', `Configuration change for ${sidecars.length} collectors requested`);
           return response;
         },
         (error) => {
