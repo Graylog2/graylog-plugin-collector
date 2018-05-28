@@ -131,7 +131,7 @@ class CollectorConfigurationSelector extends React.Component {
 
     return (
       <span>
-        <SelectPopover id="status-filter"
+        <SelectPopover id="apply-configuration-action"
                        title="Apply configuration"
                        triggerNode={<Button bsSize="small" bsStyle="link">Configure <span className="caret" /></Button>}
                        items={configurationIds}
