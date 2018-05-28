@@ -58,14 +58,6 @@ const CollectorForm = React.createClass({
     return this.state.error;
   },
 
-  _validCollectorName(name) {
-    // Check if configurations already contain a configuration with the given name.
-    const currentCollector = this.props.collector;
-    return !this.state.collectors
-      .filter(collector => collector.id !== currentCollector.id)
-      .some(collector => collector.name === name);
-  },
-
   _save() {
     if (!this.hasErrors()) {
       if (this.props.action === 'create') {
@@ -88,11 +80,9 @@ const CollectorForm = React.createClass({
   _onNameChange(event) {
     const nextName = event.target.value;
     this._formDataUpdate('name')(nextName);
-    if (this._validCollectorName(nextName)) {
-      this.setState({ error: false, error_message: '' });
-    } else {
-      this.setState({ error: true, error_message: 'Collector with that name already exists!' });
-    }
+    CollectorsActions.validate(nextName).then(validation => (
+      this.setState({ error: validation.error, error_message: validation.error_message })
+    ));
   },
 
   _onInputChange(key) {
