@@ -67,10 +67,18 @@ const CollectorsAdministrationContainer = createReactClass({
   },
 
   handleConfigurationChange(selectedSidecars, selectedConfigurations, doneCallback) {
-    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then(() => {
+    SidecarsActions.assignConfigurations(selectedSidecars, selectedConfigurations).then((response) => {
       doneCallback();
       const { query, filters, pagination } = this.state.sidecars;
       AdministrationActions.list({ query: query, filters: filters, pageSize: pagination.pageSize, page: pagination.page });
+      return response;
+    });
+  },
+
+  handleProcessAction(action, selectedCollectors, doneCallback) {
+    AdministrationActions.setAction(action, selectedCollectors).then((response) => {
+      doneCallback();
+      return response;
     });
   },
 
@@ -106,7 +114,8 @@ const CollectorsAdministrationContainer = createReactClass({
                                 onPageChange={this.handlePageChange}
                                 onFilter={this.handleFilter}
                                 onQueryChange={this.handleQueryChange}
-                                onConfigurationChange={this.handleConfigurationChange} />
+                                onConfigurationChange={this.handleConfigurationChange}
+                                onProcessAction={this.handleProcessAction} />
     );
   },
 });

@@ -26,6 +26,7 @@ const CollectorsAdministration = createReactClass({
     onFilter: PropTypes.func.isRequired,
     onQueryChange: PropTypes.func.isRequired,
     onConfigurationChange: PropTypes.func.isRequired,
+    onProcessAction: PropTypes.func.isRequired,
   },
 
   getInitialState() {
@@ -75,6 +76,18 @@ const CollectorsAdministration = createReactClass({
     this.props.onConfigurationChange(selectedSidecars, selectedConfigurations, doneCallback);
   },
 
+  handleProcessAction(action, selectedSidecarCollectorPairs, doneCallback) {
+    const selectedCollectors = {};
+    selectedSidecarCollectorPairs.forEach(({ sidecar, collector }) => {
+      if (selectedCollectors[sidecar.node_id]) {
+        selectedCollectors[sidecar.node_id].push(collector.id);
+      } else {
+        selectedCollectors[sidecar.node_id] = [collector.id];
+      }
+    });
+    this.props.onProcessAction(action, selectedCollectors, doneCallback);
+  },
+
   formatHeader() {
     const { collectors, configurations, sidecarCollectorPairs } = this.props;
     const { selected, enabledCollectors } = this.state;
@@ -94,7 +107,8 @@ const CollectorsAdministration = createReactClass({
         <CollectorsAdministrationActions selectedSidecarCollectorPairs={selectedSidecarCollectorPairs}
                                          collectors={collectors}
                                          configurations={configurations}
-                                         onConfigurationSelectionChange={this.handleConfigurationChange} />
+                                         onConfigurationSelectionChange={this.handleConfigurationChange}
+                                         onProcessAction={this.handleProcessAction} />
       );
     }
 

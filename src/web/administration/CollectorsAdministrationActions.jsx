@@ -1,9 +1,10 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-import { Button, ButtonToolbar } from 'react-bootstrap';
+import { ButtonToolbar } from 'react-bootstrap';
 
 import CollectorConfigurationSelector from './CollectorConfigurationSelector';
+import CollectorProcessControl from './CollectorProcessControl';
 
 const CollectorsAdministrationActions = createReactClass({
   propTypes: {
@@ -11,13 +12,14 @@ const CollectorsAdministrationActions = createReactClass({
     configurations: PropTypes.array.isRequired,
     selectedSidecarCollectorPairs: PropTypes.array.isRequired,
     onConfigurationSelectionChange: PropTypes.func.isRequired,
+    onProcessAction: PropTypes.func.isRequired,
   },
 
   render() {
-    const { collectors, configurations, selectedSidecarCollectorPairs, onConfigurationSelectionChange } = this.props;
+    const { collectors, configurations, selectedSidecarCollectorPairs, onConfigurationSelectionChange, onProcessAction } = this.props;
     return (
       <ButtonToolbar>
-        <Button bsSize="small" bsStyle="link">Process <span className="caret" /></Button>
+        <CollectorProcessControl selectedSidecarCollectorPairs={selectedSidecarCollectorPairs} onProcessAction={onProcessAction} />
         <CollectorConfigurationSelector collectors={collectors}
                                         configurations={configurations}
                                         selectedSidecarCollectorPairs={selectedSidecarCollectorPairs}

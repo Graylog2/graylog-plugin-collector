@@ -1,4 +1,5 @@
 import Reflux from 'reflux';
+import lodash from 'lodash';
 import URLUtils from 'util/URLUtils';
 import UserNotification from 'util/UserNotification';
 import { fetchPeriodically } from 'logic/rest/FetchProvider';
@@ -58,6 +59,32 @@ const AdministrationStore = Reflux.createStore({
       });
 
     AdministrationActions.list.promise(promise);
+  },
+
+  setAction(action, collectors) {
+    const sidecarIds = Object.keys(collectors);
+    const formattedCollectors = sidecarIds.map(sidecarId => ({
+      sidecar_id: sidecarId,
+      collector_ids: collectors[sidecarId],
+    }));
+    const body = {
+      action: action,
+      collectors: formattedCollectors,
+    };
+
+    const promise = fetchPeriodically('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/administration/action`), body);
+
+    promise.then(
+      (response) => {
+        UserNotification.success('', `${lodash.upperFirst(action)} for ${formattedCollectors.length} collectors requested`);
+        return response;
+      },
+      (error) => {
+        UserNotification.error(`Requesting ${action} failed with status: ${error}`,
+          `Could not ${action} collectors`);
+      });
+
+    AdministrationActions.setAction.promise(promise);
   },
 });
 
