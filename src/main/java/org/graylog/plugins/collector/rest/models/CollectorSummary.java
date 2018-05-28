@@ -20,12 +20,16 @@ public abstract class CollectorSummary {
     @JsonProperty("node_operating_system")
     public abstract String nodeOperatingSystem();
 
+    @JsonProperty("default_template")
+    public abstract String defaultTemplate();
+
     @JsonCreator
     public static CollectorSummary create(@JsonProperty("id") String id,
                                           @JsonProperty("name") String name,
                                           @JsonProperty("service_type") String serviceType,
-                                          @JsonProperty("node_operating_system") String nodeOperatingSystem) {
-        return new AutoValue_CollectorSummary(id, name, serviceType, nodeOperatingSystem);
+                                          @JsonProperty("node_operating_system") String nodeOperatingSystem,
+                                          @JsonProperty("default_template") String defaultTemplate) {
+        return new AutoValue_CollectorSummary(id, name, serviceType, nodeOperatingSystem, defaultTemplate);
     }
 
     public static CollectorSummary create(Collector collector) {
@@ -33,6 +37,7 @@ public abstract class CollectorSummary {
                 collector.id(),
                 collector.name(),
                 collector.serviceType(),
-                collector.nodeOperatingSystem());
+                collector.nodeOperatingSystem(),
+                collector.defaultTemplate());
     }
 }
