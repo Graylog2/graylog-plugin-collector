@@ -46,16 +46,16 @@ public class ActionResource extends RestResource implements PluginRestResource {
 
     @GET
     @Timed
-    @Path("/{collectorId}")
-    @ApiOperation(value = "Returns queued actions for the specified collector id")
+    @Path("/{sidecarId}")
+    @ApiOperation(value = "Returns queued actions for the specified Sidecar id")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "No actions found for specified id")
     })
     @RequiresAuthentication
-    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_READ)
+    @RequiresPermissions(SidecarRestPermissions.SIDECARS_READ)
     public List<CollectorAction> getAction(@ApiParam(name = "sidecarId", required = true)
-                                           @PathParam("collectorId") @NotEmpty String collectorId) {
-        final CollectorActions collectorActions = actionService.findActionBySidecar(collectorId, false);
+                                           @PathParam("sidecarId") @NotEmpty String sidecarId) {
+        final CollectorActions collectorActions = actionService.findActionBySidecar(sidecarId, false);
         if (collectorActions != null) {
             return collectorActions.action();
         }
@@ -64,17 +64,17 @@ public class ActionResource extends RestResource implements PluginRestResource {
 
     @PUT
     @Timed
-    @Path("/{collectorId}")
+    @Path("/{sidecarId}")
     @RequiresAuthentication
-    @RequiresPermissions(SidecarRestPermissions.COLLECTORS_UPDATE)
+    @RequiresPermissions(SidecarRestPermissions.SIDECARS_UPDATE)
     @ApiOperation(value = "Set a collector action")
     @ApiResponses(value = {@ApiResponse(code = 400, message = "The supplied action is not valid.")})
     @AuditEvent(type = SidecarAuditEventTypes.ACTION_UPDATE)
-    public Response setAction(@ApiParam(name = "sidecarId", value = "The collector id this collector is registering as.", required = true)
-                              @PathParam("collectorId") @NotEmpty String collectorId,
+    public Response setAction(@ApiParam(name = "sidecarId", value = "The id this Sideacr is registering as.", required = true)
+                              @PathParam("sidecarId") @NotEmpty String sidecarId,
                               @ApiParam(name = "JSON body", required = true)
                               @Valid @NotNull List<CollectorAction> request) {
-        final CollectorActions collectorActions = actionService.fromRequest(collectorId, request);
+        final CollectorActions collectorActions = actionService.fromRequest(sidecarId, request);
         actionService.saveAction(collectorActions);
 
         return Response.accepted().build();

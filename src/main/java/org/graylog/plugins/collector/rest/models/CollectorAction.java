@@ -27,15 +27,15 @@ import java.util.Map;
 @JsonAutoDetect
 public abstract class CollectorAction {
 
-    @JsonProperty("collector")
-    public abstract String collector();
+    @JsonProperty("collectorId")
+    public abstract String collectorId();
 
     @JsonProperty("properties")
     public abstract Map<String, Object> properties();
 
     @JsonCreator
-    public static CollectorAction create(@JsonProperty("collector") String collector,
+    public static CollectorAction create(@JsonProperty("collectorId") String collectorId,
                                          @JsonProperty("properties") Map<String, Object> properties) {
-        return new AutoValue_CollectorAction(collector, properties);
+        return new AutoValue_CollectorAction(collectorId, properties);
     }
 }

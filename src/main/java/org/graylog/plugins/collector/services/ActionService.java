@@ -29,18 +29,18 @@ public class ActionService {
                 mapper.get());
     }
 
-    public CollectorActions fromRequest(String collectorId, List<CollectorAction> actions) {
-        CollectorActions collectorActions = findActionBySidecar(collectorId, false);
+    public CollectorActions fromRequest(String sidecarId, List<CollectorAction> actions) {
+        CollectorActions collectorActions = findActionBySidecar(sidecarId, false);
         if (collectorActions == null) {
             return CollectorActions.create(
-                    collectorId,
+                    sidecarId,
                     DateTime.now(DateTimeZone.UTC),
                     actions);
         }
         List<CollectorAction> updatedActions = new ArrayList<>();
         for (final CollectorAction action : actions) {
             for (final CollectorAction existingsAction : collectorActions.action()) {
-                if (!existingsAction.collector().equals(action.collector())) {
+                if (!existingsAction.collectorId().equals(action.collectorId())) {
                     updatedActions.add(existingsAction);
                 }
             }
@@ -48,7 +48,7 @@ public class ActionService {
         }
         return CollectorActions.create(
                 collectorActions.id(),
-                collectorId,
+                sidecarId,
                 DateTime.now(DateTimeZone.UTC),
                 updatedActions);
     }
