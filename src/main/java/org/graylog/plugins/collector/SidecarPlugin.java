@@ -26,14 +26,14 @@ import java.util.Collections;
 /**
  * Implement the Plugin interface here.
  */
-public class CollectorPlugin implements Plugin {
+public class SidecarPlugin implements Plugin {
     @Override
     public PluginMetaData metadata() {
-        return new CollectorMetaData();
+        return new SidecarMetaData();
     }
 
     @Override
     public Collection<PluginModule> modules() {
-        return Collections.<PluginModule>singleton(new CollectorModule());
+        return Collections.<PluginModule>singleton(new SidecarModule());
     }
 }

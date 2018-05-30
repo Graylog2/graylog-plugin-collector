@@ -24,12 +24,12 @@ import java.net.URI;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class CollectorMetaData implements PluginMetaData {
+public class SidecarMetaData implements PluginMetaData {
     private static final String PLUGIN_PROPERTIES = "org.graylog.plugins.graylog-plugin-collector/graylog-plugin.properties";
 
     @Override
     public String getUniqueId() {
-        return "org.graylog.plugins.collector.CollectorPlugin";
+        return "org.graylog.plugins.collector.SidecarPlugin";
     }
 
     @Override

@@ -31,7 +31,7 @@ const manifest = new PluginManifest(packageJson, {
   systemConfigurations: [
     {
       component: SidecarSystemConfiguration,
-      configType: 'org.graylog.plugins.collector.system.CollectorSystemConfiguration',
+      configType: 'org.graylog.plugins.collector.system.SidecarSystemConfiguration',
     },
   ],
 });

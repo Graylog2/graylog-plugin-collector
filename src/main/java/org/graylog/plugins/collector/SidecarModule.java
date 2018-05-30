@@ -51,7 +51,7 @@ import org.graylog2.plugin.PluginModule;
 
 import java.util.Set;
 
-public class CollectorModule extends PluginModule {
+public class SidecarModule extends PluginModule {
     @Override
     public Set<? extends PluginConfigBean> getConfigBeans() {
         return ImmutableSet.of(
