@@ -21,7 +21,7 @@ const manifest = new PluginManifest(packageJson, {
   // Adding an element to the top navigation pointing to /sample named "Sample":
 
   systemnavigation: [
-    { path: '/system/collectors', description: 'Collectors', permissions: 'collectors:read' },
+    { path: '/system/collectors', description: 'Collectors (deprecated)', permissions: 'collectors:read' },
   ],
 
   systemConfigurations: [
