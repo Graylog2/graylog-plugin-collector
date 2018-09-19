@@ -13,10 +13,16 @@ import Routes from 'routing/Routes';
 
 class ConfigurationsPage extends React.Component {
   render() {
+    const lifecycleMessage = (
+      <span>The Graylog Collector plugin is discontinued and has been superseded by the new Sidecars.</span>
+    );
+
     return (
       <DocumentTitle title="Collector sidecar configurations">
         <span>
-          <PageHeader title="Collector Sidecar Configurations">
+          <PageHeader title="Collector Sidecar Configurations"
+                      lifecycle="legacy"
+                      lifecycleMessage={lifecycleMessage}>
             <span>
               The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
               manage the Sidecar configurations.

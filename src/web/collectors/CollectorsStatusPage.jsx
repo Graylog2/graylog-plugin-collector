@@ -148,10 +148,16 @@ const CollectorsStatusPage = createReactClass({
     });
     const logFileList = this.state.collector.node_details.log_file_list || [];
 
+    const lifecycleMessage = (
+      <span>The Graylog Collector plugin is discontinued and has been superseded by the new Sidecars.</span>
+    );
+
     return (
       <DocumentTitle title={`Collector status ${this.state.collector.node_id}`}>
         <span>
-          <PageHeader title={<span>Collector Status <em>{this.state.collector.node_id}</em></span>}>
+          <PageHeader title={<span>Collector Status <em>{this.state.collector.node_id}</em></span>}
+                      lifecycle="legacy"
+                      lifecycleMessage={lifecycleMessage}>
             <span>
               A status overview of all running collector backends on this host.
             </span>
