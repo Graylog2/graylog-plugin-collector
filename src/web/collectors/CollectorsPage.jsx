@@ -1,22 +1,27 @@
 import React from 'react';
-
 import { Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
 
 import { DocumentTitle, PageHeader } from 'components/common';
-import CollectorList from './CollectorsList';
 import DocumentationLink from 'components/support/DocumentationLink';
-
 import Routes from 'routing/Routes';
+
+import CollectorList from './CollectorsList';
 
 class CollectorsPage extends React.Component {
   render() {
+    const lifecycleMessage = (
+      <span>The Graylog Collector plugin is discontinued and has been superseded by the new Sidecars.</span>
+    );
+
     return (
       <DocumentTitle title="Collectors">
         <span>
-          <PageHeader title="Collectors in Cluster">
+          <PageHeader title="Collectors in Cluster"
+                      lifecycle="legacy"
+                      lifecycleMessage={lifecycleMessage}>
             <span>
               The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
             </span>

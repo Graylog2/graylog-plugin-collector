@@ -64,10 +64,16 @@ const CollectorConfigurationPage = createReactClass({
       return <Spinner />;
     }
 
+    const lifecycleMessage = (
+      <span>The Graylog Collector plugin is discontinued and has been superseded by the new Sidecars.</span>
+    );
+
     return (
       <DocumentTitle title={`Collector ${this.state.configuration.name} configuration`}>
         <div>
-          <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}>
+          <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}
+                      lifecycle="legacy"
+                      lifecycleMessage={lifecycleMessage}>
             <span>
               Use this page to review and manage the configuration for this collector.
             </span>
