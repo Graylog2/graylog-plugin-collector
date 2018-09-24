@@ -125,7 +125,7 @@ const CollectorRow = createReactClass({
           {collector.collector_version}
         </td>
         <td>
-          <LinkContainer to={Routes.search_with_query(`gl2_source_collector:${collector.id}`, 'relative', 604800)}>
+          <LinkContainer to={Routes.search_with_query(`fields_gl2_source_collector:${collector.id}`, 'relative', 604800)}>
             <Button bsSize="xsmall" bsStyle="info">Show messages</Button>
           </LinkContainer>
         </td>
