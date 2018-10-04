@@ -43,7 +43,7 @@ class CollectorsPage extends React.Component {
             </p>
             <h4>Manage your Sidecars from within the Graylog Web Interface</h4>
             <p>
-              Use the Web Interface to get an overview your Sidecar fleet from your browser. The new administration
+              Use the Web Interface to get an overview of your Sidecar fleet from your browser. The new administration
               page also lets you manage any Sidecars or Collectors registered into that Graylog instance.
             </p>
             <h4>Use any configuration option</h4>
