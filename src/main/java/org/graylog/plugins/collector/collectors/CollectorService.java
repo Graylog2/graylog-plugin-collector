@@ -17,6 +17,7 @@
 package org.graylog.plugins.collector.collectors;
 
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
+import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.joda.time.Period;
 
@@ -41,7 +42,9 @@ public interface CollectorService {
 
     int destroyExpired(Period period);
 
-    Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion);
+    Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion, List<CollectorConfiguration> activeConfigurations);
 
     CollectorActions actionFromRequest(String collectorId, List<CollectorAction> request);
+
+    Collector updateConfiguration(Collector collector, List<CollectorConfiguration> configurations);
 }

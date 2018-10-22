@@ -33,7 +33,9 @@ import org.graylog.plugins.collector.collectors.CollectorActions;
 import org.graylog.plugins.collector.collectors.CollectorService;
 import org.graylog.plugins.collector.collectors.Collectors;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
+import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
+import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorStoreConfigurationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationResponse;
@@ -142,7 +144,12 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector collector = collectorService.fromRequest(collectorId, request, collectorVersion);
+        final Collector oldCollector = collectorService.findById(collectorId);
+        List<CollectorConfiguration> activeConfigurations = new ArrayList<>();
+        if (oldCollector != null) {
+            activeConfigurations = oldCollector.getNodeDetails().activeConfigurations();
+        }
+        final Collector collector = collectorService.fromRequest(collectorId,request, collectorVersion, activeConfigurations);
         collectorService.save(collector);
 
         final CollectorActions collectorActions = collectorService.findActionByCollector(collectorId, true);
@@ -158,6 +165,27 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                 collectorSystemConfiguration.collectorConfigurationOverride(),
                 collectorAction);
         return Response.accepted(collectorRegistrationResponse).build();
+    }
+
+    @PUT
+    @Timed
+    @Path("/{collectorId}/configuration")
+    @ApiOperation(value = "Pass back rendered collector configuratin",
+            notes = "This method uploads a collector configuration")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+    })
+    @NoAuditEvent("Sidecar back channel for configuration uploads")
+    public Response upload(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
+                           @PathParam("collectorId") @NotEmpty String collectorId,
+                           @ApiParam(name = "JSON body", required = true)
+                           @Valid @NotNull CollectorStoreConfigurationRequest request,
+                           @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
+        final Collector collector = collectorService.findById(collectorId);
+        final Collector updatedCollector = collectorService.updateConfiguration(collector, request.activeConfigurations());
+        collectorService.save(updatedCollector);
+
+        return Response.accepted().build();
     }
 
     @PUT

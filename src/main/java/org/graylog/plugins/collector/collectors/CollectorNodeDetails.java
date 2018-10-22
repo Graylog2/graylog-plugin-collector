@@ -24,11 +24,13 @@ import org.graylog.plugins.collector.collectors.rest.models.CollectorLogFile;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorMetrics;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorNodeDetailsSummary;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorStatusList;
+import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Map;
 
 @AutoValue
 @JsonAutoDetect
@@ -58,17 +60,22 @@ public abstract class CollectorNodeDetails {
     @Nullable
     public abstract CollectorStatusList statusList();
 
+    @JsonProperty("active_configurations")
+    @Nullable
+    public abstract List<CollectorConfiguration> activeConfigurations();
+
     @JsonCreator
     public static CollectorNodeDetails create(@JsonProperty("operating_system") String operatingSystem,
                                               @JsonProperty("tags") @Nullable List<String> tags,
                                               @JsonProperty("ip") @Nullable String ip,
                                               @JsonProperty("metrics") @Nullable CollectorMetrics metrics,
                                               @JsonProperty("log_file_list") @Nullable List<CollectorLogFile> logFileList,
-                                              @JsonProperty("status") @Nullable CollectorStatusList statusList) {
-        return new AutoValue_CollectorNodeDetails(operatingSystem, tags, ip, metrics, logFileList, statusList);
+                                              @JsonProperty("status") @Nullable CollectorStatusList statusList,
+                                              @JsonProperty("active_configurations") @Nullable List<CollectorConfiguration> activeConfigurations) {
+        return new AutoValue_CollectorNodeDetails(operatingSystem, tags, ip, metrics, logFileList, statusList, activeConfigurations);
     }
 
     public CollectorNodeDetailsSummary toSummary() {
-        return CollectorNodeDetailsSummary.create(operatingSystem(), tags(), ip(), metrics(), logFileList(), statusList());
+        return CollectorNodeDetailsSummary.create(operatingSystem(), tags(), ip(), metrics(), logFileList(), statusList(), activeConfigurations());
     }
 }

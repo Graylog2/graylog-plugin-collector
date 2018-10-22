@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
+import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.CollectionName;
@@ -36,6 +37,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CollectorServiceImpl implements CollectorService {
@@ -111,14 +113,15 @@ public class CollectorServiceImpl implements CollectorService {
     }
 
     @Override
-    public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion) {
+    public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion, List<CollectorConfiguration> activeConfigurations) {
         return CollectorImpl.create(collectorId, request.nodeId(), collectorVersion, CollectorNodeDetails.create(
                 request.nodeDetails().operatingSystem(),
                 request.nodeDetails().tags(),
                 request.nodeDetails().ip(),
                 request.nodeDetails().metrics(),
                 request.nodeDetails().logFileList(),
-                request.nodeDetails().statusList()),
+                request.nodeDetails().statusList(),
+                activeConfigurations),
                 DateTime.now(DateTimeZone.UTC));
     }
 
@@ -152,6 +155,19 @@ public class CollectorServiceImpl implements CollectorService {
         } else {
             return collActions.findOne(DBQuery.is("collector_id", collectorId));
         }
+    }
+
+    @Override
+    public Collector updateConfiguration(Collector collector, List<CollectorConfiguration> configurations) {
+        return CollectorImpl.create(collector.getId(), collector.getNodeId(), collector.getCollectorVersion(), CollectorNodeDetails.create(
+                collector.getNodeDetails().operatingSystem(),
+                collector.getNodeDetails().tags(),
+                collector.getNodeDetails().ip(),
+                collector.getNodeDetails().metrics(),
+                collector.getNodeDetails().logFileList(),
+                collector.getNodeDetails().statusList(),
+                configurations),
+                DateTime.now(DateTimeZone.UTC));
     }
 
     private List<Collector> toAbstractListType(DBCursor<CollectorImpl> collectors) {
