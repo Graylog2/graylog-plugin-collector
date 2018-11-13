@@ -31,11 +31,10 @@ import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.Collector;
 import org.graylog.plugins.collector.collectors.CollectorActions;
 import org.graylog.plugins.collector.collectors.CollectorService;
+import org.graylog.plugins.collector.collectors.CollectorUpload;
 import org.graylog.plugins.collector.collectors.Collectors;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
-import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
-import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorStoreConfigurationRequest;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorList;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorRegistrationResponse;
@@ -48,6 +47,7 @@ import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 
 import javax.inject.Inject;
@@ -145,11 +145,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
         final Collector oldCollector = collectorService.findById(collectorId);
-        List<CollectorConfiguration> activeConfigurations = new ArrayList<>();
-        if (oldCollector != null) {
-            activeConfigurations = oldCollector.getNodeDetails().activeConfigurations();
-        }
-        final Collector collector = collectorService.fromRequest(collectorId,request, collectorVersion, activeConfigurations);
+        final Collector collector = collectorService.fromRequest(collectorId,request, collectorVersion);
         collectorService.save(collector);
 
         final CollectorActions collectorActions = collectorService.findActionByCollector(collectorId, true);
@@ -179,11 +175,10 @@ public class CollectorResource extends RestResource implements PluginRestResourc
     public Response upload(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
                            @PathParam("collectorId") @NotEmpty String collectorId,
                            @ApiParam(name = "JSON body", required = true)
-                           @Valid @NotNull CollectorStoreConfigurationRequest request,
+                           @Valid @NotNull CollectorUpload request,
                            @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector collector = collectorService.findById(collectorId);
-        final Collector updatedCollector = collectorService.updateConfiguration(collector, request.activeConfigurations());
-        collectorService.save(updatedCollector);
+        CollectorUpload upload = request.toBuilder().created(DateTime.now(DateTimeZone.UTC)).build();
+        collectorService.saveUpload(upload);
 
         return Response.accepted().build();
     }

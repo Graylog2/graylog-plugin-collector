@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
-import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
 import org.graylog2.database.CollectionName;
@@ -37,13 +36,13 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class CollectorServiceImpl implements CollectorService {
-
     private final JacksonDBCollection<CollectorImpl, String> coll;
     private final JacksonDBCollection<CollectorActions, String> collActions;
+    private final JacksonDBCollection<CollectorUpload, String> collUpload;
+
     private final Validator validator;
 
     @Inject
@@ -60,6 +59,9 @@ public class CollectorServiceImpl implements CollectorService {
         final DBCollection actionDbCollection = mongoConnection.getDatabase().getCollection(actionCollectionName);
         this.collActions = JacksonDBCollection.wrap(actionDbCollection, CollectorActions.class, String.class, mapperProvider.get());
 
+        final String uploadCollectionName = CollectorUpload.class.getAnnotation(CollectionName.class).value();
+        final DBCollection uploadDbCollection = mongoConnection.getDatabase().getCollection(uploadCollectionName);
+        this.collUpload = JacksonDBCollection.wrap(uploadDbCollection, CollectorUpload.class, String.class, mapperProvider.get());
     }
 
     @Override
@@ -113,15 +115,14 @@ public class CollectorServiceImpl implements CollectorService {
     }
 
     @Override
-    public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion, List<CollectorConfiguration> activeConfigurations) {
+    public Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion) {
         return CollectorImpl.create(collectorId, request.nodeId(), collectorVersion, CollectorNodeDetails.create(
                 request.nodeDetails().operatingSystem(),
                 request.nodeDetails().tags(),
                 request.nodeDetails().ip(),
                 request.nodeDetails().metrics(),
                 request.nodeDetails().logFileList(),
-                request.nodeDetails().statusList(),
-                activeConfigurations),
+                request.nodeDetails().statusList()),
                 DateTime.now(DateTimeZone.UTC));
     }
 
@@ -158,16 +159,18 @@ public class CollectorServiceImpl implements CollectorService {
     }
 
     @Override
-    public Collector updateConfiguration(Collector collector, List<CollectorConfiguration> configurations) {
-        return CollectorImpl.create(collector.getId(), collector.getNodeId(), collector.getCollectorVersion(), CollectorNodeDetails.create(
-                collector.getNodeDetails().operatingSystem(),
-                collector.getNodeDetails().tags(),
-                collector.getNodeDetails().ip(),
-                collector.getNodeDetails().metrics(),
-                collector.getNodeDetails().logFileList(),
-                collector.getNodeDetails().statusList(),
-                configurations),
-                DateTime.now(DateTimeZone.UTC));
+    public CollectorUpload saveUpload(CollectorUpload collectorUpload) {
+        return collUpload.findAndModify(
+                DBQuery.and(
+                DBQuery.is("collector_id", collectorUpload.collectorId()),
+                DBQuery.is("collector_name", collectorUpload.collectorName())
+                ),
+                new BasicDBObject(),
+                new BasicDBObject(),
+                false,
+                collectorUpload,
+                true,
+                true);
     }
 
     private List<Collector> toAbstractListType(DBCursor<CollectorImpl> collectors) {

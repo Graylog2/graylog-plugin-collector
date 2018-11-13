@@ -86,7 +86,7 @@ public class CollectorServiceImplTest {
     @ShouldMatchDataSet(location = "collectorsSingleDataset.json")
     @IgnorePropertyValue(properties = {"_id", "last_seen"})
     public void testSaveFirstRecord() throws Exception {
-        final Collector collector = CollectorImpl.create("collectorId", "nodeId", "0.0.1", CollectorNodeDetails.create("DummyOS 1.0", null, null, null, null, null, null), DateTime.now(DateTimeZone.UTC));
+        final Collector collector = CollectorImpl.create("collectorId", "nodeId", "0.0.1", CollectorNodeDetails.create("DummyOS 1.0", null, null, null, null, null), DateTime.now(DateTimeZone.UTC));
 
         final Collector result = this.collectorService.save(collector);
 

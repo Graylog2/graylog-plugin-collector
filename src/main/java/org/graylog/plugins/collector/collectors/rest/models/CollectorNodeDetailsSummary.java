@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorConfiguration;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -57,18 +56,13 @@ public abstract class CollectorNodeDetailsSummary {
     @Nullable
     public abstract CollectorStatusList statusList();
 
-    @JsonProperty("active_configurations")
-    @Nullable
-    public abstract List<CollectorConfiguration> activeConfigurations();
-
     @JsonCreator
     public static CollectorNodeDetailsSummary create(@JsonProperty("operating_system") String operatingSystem,
                                                      @JsonProperty("tags") @Nullable List<String> tags,
                                                      @JsonProperty("ip") @Nullable String ip,
                                                      @JsonProperty("metrics") @Nullable CollectorMetrics metrics,
                                                      @JsonProperty("log_file_list") @Nullable List<CollectorLogFile> logFileList,
-                                                     @JsonProperty("status") @Nullable CollectorStatusList statusList,
-                                                     @JsonProperty("active_configuration") @Nullable List<CollectorConfiguration> activeConfigurations) {
-        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, tags, ip, metrics, logFileList, statusList, activeConfigurations);
+                                                     @JsonProperty("status") @Nullable CollectorStatusList statusList) {
+        return new AutoValue_CollectorNodeDetailsSummary(operatingSystem, tags, ip, metrics, logFileList, statusList);
     }
 }

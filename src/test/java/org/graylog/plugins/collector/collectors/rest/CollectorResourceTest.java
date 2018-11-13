@@ -105,7 +105,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
 
     @Test
     public void testRegister() throws Exception {
-        final CollectorRegistrationRequest input = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null, null));
+        final CollectorRegistrationRequest input = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null));
 
         final Response response = this.resource.register("collectorId", input, "0.0.1");
 
@@ -115,7 +115,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterInvalidCollectorId() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null, null));
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null));
 
         final Response response = this.resource.register("", invalid, "0.0.1");
 
@@ -126,7 +126,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterInvalidNodeId() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null, null));
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("", CollectorNodeDetailsSummary.create("DummyOS 1.0", null, null, null, null, null));
 
         final Response response = this.resource.register("collectorId", invalid, "0.0.1");
 
@@ -148,7 +148,7 @@ public class CollectorResourceTest extends RestResourceBaseTest {
     @Test
     @Ignore
     public void testRegisterMissingOperatingSystem() throws Exception {
-        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("", null, null, null, null, null, null));
+        final CollectorRegistrationRequest invalid = CollectorRegistrationRequest.create("nodeId", CollectorNodeDetailsSummary.create("", null, null, null, null, null));
 
         final Response response = this.resource.register("collectorId", invalid, "0.0.1");
 
