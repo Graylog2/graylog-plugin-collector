@@ -5,6 +5,7 @@ const CollectorsActions = Reflux.createActions({
   getCollector: { asyncResult: true },
   getCollectorActions: { asyncResult: true },
   restartCollectorBackend: { asyncResult: true },
+  importCollectorConfiguration: { asyncResult: true },
 });
 
 export default CollectorsActions;
