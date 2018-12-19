@@ -6,8 +6,6 @@ import { Button } from 'react-bootstrap';
 import CollectorsActions from 'collectors/CollectorsActions';
 
 const CollectorsImportButton = createReactClass({
-  displayName: 'CollectorsImportButton',
-
   propTypes: {
     collector: PropTypes.object.isRequired,
     backend: PropTypes.string.isRequired,
@@ -16,6 +14,7 @@ const CollectorsImportButton = createReactClass({
   getInitialState() {
     return {
       disabled: false,
+      text: this.BUTTON_DEFAULT_TEXT,
     };
   },
 
@@ -29,14 +28,16 @@ const CollectorsImportButton = createReactClass({
     }
   },
 
+  BUTTON_DEFAULT_TEXT: 'Import Configuration',
   BUTTON_REFRESH: 2 * 1000,
 
   _handleImport() {
-    CollectorsActions.importCollectorConfiguration.triggerPromise(this.props.collector.id, this.props.backend).then(this._disableButton);
+    CollectorsActions.importCollectorConfiguration(this.props.collector.id, this.props.backend).then(this._disableButton);
   },
 
   _disableButton() {
     this.setState({ disabled: true });
+    this.setState({ text: 'Importing...' });
   },
 
   _resetButton(actions) {
@@ -50,19 +51,20 @@ const CollectorsImportButton = createReactClass({
     }
     if (reset) {
       this.setState({ disabled: false });
+      this.setState({ text: this.BUTTON_DEFAULT_TEXT });
     }
   },
 
   _refreshButtonState() {
     if (this.state.disabled) {
-      CollectorsActions.getCollectorActions.triggerPromise(this.props.collector.id).then(this._resetButton);
+      CollectorsActions.getCollectorActions(this.props.collector.id).then(this._resetButton);
     }
   },
 
   render() {
     return (
       <Button bsStyle="info" bsSize="xsmall" disabled={this.state.disabled} onClick={this._handleImport}>
-        Import Configuration
+        {this.state.text}
       </Button>
     );
   },
