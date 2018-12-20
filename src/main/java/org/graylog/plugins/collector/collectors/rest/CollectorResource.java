@@ -144,7 +144,6 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector oldCollector = collectorService.findById(collectorId);
         final Collector collector = collectorService.fromRequest(collectorId,request, collectorVersion);
         collectorService.save(collector);
 
