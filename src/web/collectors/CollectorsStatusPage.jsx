@@ -5,6 +5,7 @@ import createReactClass from 'create-react-class';
 
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import Semver from 'semver';
 
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import StringUtils from 'util/StringUtils';
@@ -105,11 +106,17 @@ const CollectorsStatusPage = createReactClass({
   _formatStatus(name, item) {
     let buttons = null;
     if (name !== 'Status' && this.state.collector) {
-      buttons = (<div className="pull-right">
-        <CollectorsImportButton collector={this.state.collector} backend={name} onFinish={this._importFinished} />
-        &nbsp;
-        <CollectorsRestartButton collector={this.state.collector} backend={name} />
-      </div>);
+      if (Semver.gte(this.state.collector.collector_version, '0.1.8')) {
+        buttons = (<div className="pull-right">
+          <CollectorsImportButton collector={this.state.collector} backend={name} onFinish={this._importFinished}/>
+          &nbsp;
+          <CollectorsRestartButton collector={this.state.collector} backend={name}/>
+        </div>);
+      } else {
+        buttons = (<div className="pull-right">
+          <CollectorsRestartButton collector={this.state.collector} backend={name}/>
+        </div>);
+      }
     }
 
     if (item) {
