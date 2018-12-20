@@ -15,6 +15,7 @@ import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
 import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
 import CollectorsImportButton from 'collectors/CollectorsImportButton';
+import ImportsHelperModal from 'collectors/ImportsHelperModal';
 
 import Routes from 'routing/Routes';
 
@@ -97,11 +98,15 @@ const CollectorsStatusPage = createReactClass({
     }
   },
 
+  _importFinished() {
+    this.importsHelperModal.open();
+  },
+
   _formatStatus(name, item) {
     let buttons = null;
     if (name !== 'Status' && this.state.collector) {
       buttons = (<div className="pull-right">
-        <CollectorsImportButton collector={this.state.collector} backend={name} />
+        <CollectorsImportButton collector={this.state.collector} backend={name} onFinish={this._importFinished} />
         &nbsp;
         <CollectorsRestartButton collector={this.state.collector} backend={name} />
       </div>);
@@ -214,6 +219,7 @@ const CollectorsStatusPage = createReactClass({
             </Col>
           </Row>
         </span>
+        <ImportsHelperModal ref={(c) => { this.importsHelperModal = c; }} />
       </DocumentTitle>
     );
   },

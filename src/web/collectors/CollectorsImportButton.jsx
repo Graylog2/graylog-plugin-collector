@@ -9,6 +9,13 @@ const CollectorsImportButton = createReactClass({
   propTypes: {
     collector: PropTypes.object.isRequired,
     backend: PropTypes.string.isRequired,
+    onFinish: PropTypes.func,
+  },
+
+  getDefaultProps() {
+    return {
+      onFinish: () => null,
+    };
   },
 
   getInitialState() {
@@ -52,6 +59,7 @@ const CollectorsImportButton = createReactClass({
     if (reset) {
       this.setState({ disabled: false });
       this.setState({ text: this.BUTTON_DEFAULT_TEXT });
+      this.props.onFinish();
     }
   },
 
