@@ -43,8 +43,7 @@ const CollectorsImportButton = createReactClass({
   },
 
   _disableButton() {
-    this.setState({ disabled: true });
-    this.setState({ text: 'Importing...' });
+    this.setState({ disabled: true, text: 'Importing...' });
   },
 
   _resetButton(actions) {
@@ -57,8 +56,7 @@ const CollectorsImportButton = createReactClass({
       });
     }
     if (reset) {
-      this.setState({ disabled: false });
-      this.setState({ text: this.BUTTON_DEFAULT_TEXT });
+      this.setState({ disabled: false, text: this.BUTTON_DEFAULT_TEXT });
       this.props.onFinish();
     }
   },
