@@ -31,6 +31,7 @@ import org.graylog.plugins.collector.audit.CollectorAuditEventTypes;
 import org.graylog.plugins.collector.collectors.Collector;
 import org.graylog.plugins.collector.collectors.CollectorActions;
 import org.graylog.plugins.collector.collectors.CollectorService;
+import org.graylog.plugins.collector.collectors.CollectorUpload;
 import org.graylog.plugins.collector.collectors.Collectors;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
@@ -46,6 +47,7 @@ import org.graylog2.plugin.rest.PluginRestResource;
 import org.graylog2.shared.rest.resources.RestResource;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 
 import javax.inject.Inject;
@@ -142,7 +144,7 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                              @ApiParam(name = "JSON body", required = true)
                              @Valid @NotNull CollectorRegistrationRequest request,
                              @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
-        final Collector collector = collectorService.fromRequest(collectorId, request, collectorVersion);
+        final Collector collector = collectorService.fromRequest(collectorId,request, collectorVersion);
         collectorService.save(collector);
 
         final CollectorActions collectorActions = collectorService.findActionByCollector(collectorId, true);
@@ -158,6 +160,26 @@ public class CollectorResource extends RestResource implements PluginRestResourc
                 collectorSystemConfiguration.collectorConfigurationOverride(),
                 collectorAction);
         return Response.accepted(collectorRegistrationResponse).build();
+    }
+
+    @PUT
+    @Timed
+    @Path("/{collectorId}/configuration")
+    @ApiOperation(value = "Pass back rendered collector configuratin",
+            notes = "This method uploads a collector configuration")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "The supplied request is not valid.")
+    })
+    @NoAuditEvent("Sidecar back channel for configuration uploads")
+    public Response upload(@ApiParam(name = "collectorId", value = "The collector id this collector is registering as.", required = true)
+                           @PathParam("collectorId") @NotEmpty String collectorId,
+                           @ApiParam(name = "JSON body", required = true)
+                           @Valid @NotNull CollectorUpload request,
+                           @HeaderParam(value = "X-Graylog-Collector-Version") @NotEmpty String collectorVersion) {
+        CollectorUpload upload = request.toBuilder().created(DateTime.now(DateTimeZone.UTC)).build();
+        collectorService.saveUpload(upload);
+
+        return Response.accepted().build();
     }
 
     @PUT

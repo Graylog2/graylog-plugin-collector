@@ -39,9 +39,10 @@ import java.util.List;
 import java.util.Set;
 
 public class CollectorServiceImpl implements CollectorService {
-
     private final JacksonDBCollection<CollectorImpl, String> coll;
     private final JacksonDBCollection<CollectorActions, String> collActions;
+    private final JacksonDBCollection<CollectorUpload, String> collUpload;
+
     private final Validator validator;
 
     @Inject
@@ -58,6 +59,9 @@ public class CollectorServiceImpl implements CollectorService {
         final DBCollection actionDbCollection = mongoConnection.getDatabase().getCollection(actionCollectionName);
         this.collActions = JacksonDBCollection.wrap(actionDbCollection, CollectorActions.class, String.class, mapperProvider.get());
 
+        final String uploadCollectionName = CollectorUpload.class.getAnnotation(CollectionName.class).value();
+        final DBCollection uploadDbCollection = mongoConnection.getDatabase().getCollection(uploadCollectionName);
+        this.collUpload = JacksonDBCollection.wrap(uploadDbCollection, CollectorUpload.class, String.class, mapperProvider.get());
     }
 
     @Override
@@ -152,6 +156,21 @@ public class CollectorServiceImpl implements CollectorService {
         } else {
             return collActions.findOne(DBQuery.is("collector_id", collectorId));
         }
+    }
+
+    @Override
+    public CollectorUpload saveUpload(CollectorUpload collectorUpload) {
+        return collUpload.findAndModify(
+                DBQuery.and(
+                DBQuery.is("collector_id", collectorUpload.collectorId()),
+                DBQuery.is("collector_name", collectorUpload.collectorName())
+                ),
+                new BasicDBObject(),
+                new BasicDBObject(),
+                false,
+                collectorUpload,
+                true,
+                true);
     }
 
     private List<Collector> toAbstractListType(DBCursor<CollectorImpl> collectors) {

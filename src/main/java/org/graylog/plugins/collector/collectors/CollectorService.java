@@ -44,4 +44,6 @@ public interface CollectorService {
     Collector fromRequest(String collectorId, CollectorRegistrationRequest request, String collectorVersion);
 
     CollectorActions actionFromRequest(String collectorId, List<CollectorAction> request);
+
+    CollectorUpload saveUpload(CollectorUpload collectorUpload);
 }

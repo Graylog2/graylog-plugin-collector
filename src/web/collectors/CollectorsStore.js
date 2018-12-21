@@ -57,6 +57,21 @@ const CollectorsStore = Reflux.createStore({
     CollectorsActions.restartCollectorBackend.promise(promise);
   },
 
+  importCollectorConfiguration(collectorId, backend) {
+    const action = {};
+    action.backend = backend;
+    action.properties = {};
+    action.properties.import = true;
+    const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}/action`), [action]);
+    promise
+      .catch(
+        (error) => {
+          UserNotification.error(`Import collector configuration failed with status: ${error}`,
+            'Could not import Configuration');
+        });
+    CollectorsActions.importCollectorConfiguration.promise(promise);
+  },
+
   getCollectorActions(collectorId) {
     const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}/action`));
     promise

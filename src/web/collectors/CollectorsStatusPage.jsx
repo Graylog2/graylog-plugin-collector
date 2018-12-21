@@ -5,6 +5,7 @@ import createReactClass from 'create-react-class';
 
 import { Alert, Row, Col, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import Semver from 'semver';
 
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import StringUtils from 'util/StringUtils';
@@ -14,6 +15,8 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
 import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
+import CollectorsImportButton from 'collectors/CollectorsImportButton';
+import ImportsHelperModal from 'collectors/ImportsHelperModal';
 
 import Routes from 'routing/Routes';
 
@@ -96,12 +99,24 @@ const CollectorsStatusPage = createReactClass({
     }
   },
 
+  _importFinished() {
+    this.importsHelperModal.open();
+  },
+
   _formatStatus(name, item) {
-    let restart = null;
+    let buttons = null;
     if (name !== 'Status' && this.state.collector) {
-      restart = (<div className="pull-right">
-        <CollectorsRestartButton collector={this.state.collector} backend={name}/>
-      </div>);
+      if (Semver.gte(this.state.collector.collector_version, '0.1.8')) {
+        buttons = (<div className="pull-right">
+          <CollectorsImportButton collector={this.state.collector} backend={name} onFinish={this._importFinished}/>
+          &nbsp;
+          <CollectorsRestartButton collector={this.state.collector} backend={name}/>
+        </div>);
+      } else {
+        buttons = (<div className="pull-right">
+          <CollectorsRestartButton collector={this.state.collector} backend={name}/>
+        </div>);
+      }
     }
 
     if (item) {
@@ -110,19 +125,19 @@ const CollectorsStatusPage = createReactClass({
           return (
             <Alert bsStyle="success" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
               <i className="fa fa-check-circle"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
-              {restart}
+              {buttons}
             </Alert>);
         case 1:
           return (
             <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
               <i className="fa fa-cog"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
-              {restart}
+              {buttons}
             </Alert>);
         case 2:
           return (
             <Alert bsStyle="danger" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
               <i className="fa fa-wrench"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
-              {restart}
+              {buttons}
             </Alert>);
       }
     } else {
@@ -211,6 +226,7 @@ const CollectorsStatusPage = createReactClass({
             </Col>
           </Row>
         </span>
+        <ImportsHelperModal ref={(c) => { this.importsHelperModal = c; }} />
       </DocumentTitle>
     );
   },
