@@ -97,7 +97,7 @@ const CollectorSystemConfiguration = createReactClass({
   render() {
     return (
       <div>
-        <h3>Collectors System</h3>
+        <h3>Collectors (legacy) System</h3>
 
         <dl className="deflist">
           <dt>Inactive threshold:</dt>
