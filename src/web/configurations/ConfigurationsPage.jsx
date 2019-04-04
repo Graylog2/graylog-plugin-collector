@@ -7,9 +7,9 @@ import DocsHelper from 'util/DocsHelper';
 import DocumentationLink from 'components/support/DocumentationLink';
 
 import { DocumentTitle, PageHeader } from 'components/common';
+import Routes from 'routing/Routes';
 import ConfigurationsList from './ConfigurationsList';
 
-import Routes from 'routing/Routes';
 
 class ConfigurationsPage extends React.Component {
   render() {

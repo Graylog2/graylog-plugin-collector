@@ -62,30 +62,30 @@ const CollectorsStatusPage = createReactClass({
 
   _formatSystemStats(stats) {
     if (stats && stats.disks_75 && stats.load_1 >= -1 && stats.cpu_idle >= -1) {
-      const volumes = stats.disks_75.map((volume) => <dd key={volume}>{volume}</dd>);
+      const volumes = stats.disks_75.map(volume => <dd key={volume}>{volume}</dd>);
       const statsFormatted = [];
       statsFormatted.push(
         <dt key="cpu-idle-title">CPU Idle:</dt>,
-        <dd key="cpu-idle-description">{stats.cpu_idle}%</dd>
+        <dd key="cpu-idle-description">{stats.cpu_idle}%</dd>,
       );
       if (stats.load_1 >= 0) {
         statsFormatted.push(
           <dt key="load-title">Load:</dt>,
-          <dd key="load-description">{stats.load_1}</dd>
+          <dd key="load-description">{stats.load_1}</dd>,
         );
       }
       statsFormatted.push(
         <dt key="disk-title">Volumes > 75%:</dt>,
-        volumes
+        volumes,
       );
 
-      return (<div><dl className="deflist">{statsFormatted}</dl></div>)
+      return (<div><dl className="deflist">{statsFormatted}</dl></div>);
     }
   },
 
   _formatConfiguration(configuration) {
     if (configuration && configuration.tags && configuration.ip) {
-      const tags = configuration.tags.join(", ");
+      const tags = configuration.tags.join(', ');
       return (
         <div>
           <dl className="deflist">
@@ -95,7 +95,7 @@ const CollectorsStatusPage = createReactClass({
             <dd>{configuration.ip}</dd>
           </dl>
         </div>
-      )
+      );
     }
   },
 
@@ -107,15 +107,19 @@ const CollectorsStatusPage = createReactClass({
     let buttons = null;
     if (name !== 'Status' && this.state.collector) {
       if (Semver.gte(this.state.collector.collector_version, '0.1.8')) {
-        buttons = (<div className="pull-right">
-          <CollectorsImportButton collector={this.state.collector} backend={name} onFinish={this._importFinished}/>
+        buttons = (
+          <div className="pull-right">
+            <CollectorsImportButton collector={this.state.collector} backend={name} onFinish={this._importFinished} />
           &nbsp;
-          <CollectorsRestartButton collector={this.state.collector} backend={name}/>
-        </div>);
+            <CollectorsRestartButton collector={this.state.collector} backend={name} />
+          </div>
+        );
       } else {
-        buttons = (<div className="pull-right">
-          <CollectorsRestartButton collector={this.state.collector} backend={name}/>
-        </div>);
+        buttons = (
+          <div className="pull-right">
+            <CollectorsRestartButton collector={this.state.collector} backend={name} />
+          </div>
+        );
       }
     }
 
@@ -124,29 +128,32 @@ const CollectorsStatusPage = createReactClass({
         case 0:
           return (
             <Alert bsStyle="success" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
-              <i className="fa fa-check-circle"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
+              <i className="fa fa-check-circle" /> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
               {buttons}
-            </Alert>);
+            </Alert>
+          );
         case 1:
           return (
             <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
-              <i className="fa fa-cog"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
+              <i className="fa fa-cog" /> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
               {buttons}
-            </Alert>);
+            </Alert>
+          );
         case 2:
           return (
             <Alert bsStyle="danger" style={{ marginTop: '10' }} key={`status-alert-${name}`}>
-              <i className="fa fa-wrench"/> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
+              <i className="fa fa-wrench" /> &nbsp;<i>{StringUtils.capitalizeFirstLetter(name)}</i>: {item.message}
               {buttons}
-            </Alert>);
+            </Alert>
+          );
       }
     } else {
       return (
-        <Alert bsStyle="warning" style={{ marginTop: '10' }} key={`status-alert`}>
-          <i className="fa fa-cog"/> &nbsp;<i>Collector</i>: no status information found
-        </Alert>);
+        <Alert bsStyle="warning" style={{ marginTop: '10' }} key="status-alert">
+          <i className="fa fa-cog" /> &nbsp;<i>Collector</i>: no status information found
+        </Alert>
+      );
     }
-
   },
 
   render() {
@@ -154,7 +161,7 @@ const CollectorsStatusPage = createReactClass({
       return <DocumentTitle title="Collector status"><Spinner /></DocumentTitle>;
     }
 
-    var backends = [];
+    let backends = [];
     if (this.state.collector.node_details.status) {
       backends = this.state.collector.node_details.status.backends;
     }
@@ -179,7 +186,7 @@ const CollectorsStatusPage = createReactClass({
 
             <span>
               Read more about collectors and how to set them up in the
-              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation"/>.
+              {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation" />.
             </span>
 
             <span>
@@ -196,18 +203,18 @@ const CollectorsStatusPage = createReactClass({
           <Row className="content" key="sidecar-status">
             <Col md={12}>
               <h2>Sidecar</h2>
-                <div className="top-margin">
-                  <Row>
-                    <Col md={6}>
-                      {this._formatConfiguration(this.state.collector.node_details)}
-                    </Col>
-                    <Col md={6}>
-                      {this._formatSystemStats(this.state.collector.node_details.metrics)}
-                    </Col>
-                  </Row>
-                  <hr className="separator"/>
-                </div>
-              {this._formatStatus("Status", this.state.collector.node_details.status)}
+              <div className="top-margin">
+                <Row>
+                  <Col md={6}>
+                    {this._formatConfiguration(this.state.collector.node_details)}
+                  </Col>
+                  <Col md={6}>
+                    {this._formatSystemStats(this.state.collector.node_details.metrics)}
+                  </Col>
+                </Row>
+                <hr className="separator" />
+              </div>
+              {this._formatStatus('Status', this.state.collector.node_details.status)}
             </Col>
           </Row>
           <Row className="content" key="backend-status" hidden={backendStates.length === 0}>
@@ -221,7 +228,7 @@ const CollectorsStatusPage = createReactClass({
               <h2>Log Files</h2>
               <p>Recently modified files will be highlighted in blue.</p>
               <div className="top-margin">
-                <CollectorsStatusFileList files={logFileList}/>
+                <CollectorsStatusFileList files={logFileList} />
               </div>
             </Col>
           </Row>

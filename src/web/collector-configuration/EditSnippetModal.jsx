@@ -111,8 +111,7 @@ class EditSnippetModal extends React.Component {
                       options={backends.filter(backend => backend.group === this.props.selectedGroup)}
                       value={this.state.backend}
                       onChange={this._changeBackend}
-                      placeholder="Backend collector type"
-              />
+                      placeholder="Backend collector type" />
             </Input>
             <Input type="textarea"
                    id={this._getId('snippet-content')}

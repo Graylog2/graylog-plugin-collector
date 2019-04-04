@@ -69,7 +69,7 @@ class EditInputModal extends React.Component {
   };
 
   _changeErrorState = (error, message, id) => {
-    var errorFields = this.state.errorFields.slice();
+    const errorFields = this.state.errorFields.slice();
     const index = errorFields.indexOf(id);
     if (error && index == -1) {
       errorFields.push(id);
@@ -77,7 +77,7 @@ class EditInputModal extends React.Component {
     if (!error && index > -1) {
       errorFields.splice(index, 1);
     }
-    this.setState({error: error, errorMessage: message, errorFields: errorFields});
+    this.setState({ error: error, errorMessage: message, errorFields: errorFields });
   };
 
   _changeName = (event) => {
@@ -98,7 +98,7 @@ class EditInputModal extends React.Component {
   };
 
   _injectProperties = (key, value) => {
-    const properties = this.state.properties;
+    const { properties } = this.state;
     if (properties) {
       properties[key] = value;
     }
@@ -115,7 +115,7 @@ class EditInputModal extends React.Component {
     if (this.props.outputs) {
       const outputCount = this.props.outputs.length;
       for (let i = 0; i < outputCount; i++) {
-        options.push({ value: this.props.outputs[i].output_id, label: this.props.outputs[i].name + ' [' + this.props.outputs[i].backend + ']'});
+        options.push({ value: this.props.outputs[i].output_id, label: `${this.props.outputs[i].name} [${this.props.outputs[i].backend}]` });
       }
     } else {
       options.push({ value: 'none', label: 'No outputs available', disable: true });
@@ -136,7 +136,7 @@ class EditInputModal extends React.Component {
       { group: 'nxlog', value: 'nxlog:windows-event-log', label: '[NXLog] Windows event log' },
       { group: 'nxlog', value: 'nxlog:udp-syslog', label: '[NXLog] UDP syslog listener' },
       { group: 'nxlog', value: 'nxlog:tcp-syslog', label: '[NXLog] TCP syslog listener' },
-      { group: 'beat', value: 'filebeat:file', label: '[FileBeat] file input'},
+      { group: 'beat', value: 'filebeat:file', label: '[FileBeat] file input' },
       { group: 'beat', value: 'winlogbeat:windows-event-log', label: '[WinLogBeat] Windows event log' },
     ];
 
@@ -160,28 +160,29 @@ class EditInputModal extends React.Component {
                    bsStyle={this._fieldError('input-name') ? 'error' : null}
                    help={this._fieldError('input-name') ? this.state.errorMessage : 'Type a name for this input'}
                    autoFocus
-                   required
-            />
-            <Input id={this._getId('input-foward-to')} label="Forward to (Required)"
+                   required />
+            <Input id={this._getId('input-foward-to')}
+                   label="Forward to (Required)"
                    help="Choose the collector output that will forward messages from this input">
               <Select ref="select-forwardto"
                       options={this._formatDropdownOptions()}
                       value={this.state.forwardTo}
                       onChange={this._changeForwardtoDropdown}
-                      placeholder="Forward to output"
-              />
+                      placeholder="Forward to output" />
             </Input>
-            <Input id={this._getId('input-type')} label="Type"
-                  help="Choose the input type you want to configure">
+            <Input id={this._getId('input-type')}
+                   label="Type"
+                   help="Choose the input type you want to configure">
               <Select ref="select-type"
                       options={types.filter(type => type.group === this.props.selectedGroup)}
                       value={this.state.selectedType}
                       onChange={this._changeType}
-                      placeholder="Choose input type..."
-              />
+                      placeholder="Choose input type..." />
             </Input>
-            <EditInputFields type={this.state.selectedType} properties={this.state.properties}
-                             injectProperties={this._injectProperties} errorState={this._changeErrorState}
+            <EditInputFields type={this.state.selectedType}
+                             properties={this.state.properties}
+                             injectProperties={this._injectProperties}
+                             errorState={this._changeErrorState}
                              errorFields={this.state.errorFields} />
           </fieldset>
         </BootstrapModalForm>

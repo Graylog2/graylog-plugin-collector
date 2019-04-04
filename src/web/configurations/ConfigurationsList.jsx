@@ -29,7 +29,7 @@ const ConfigurationsList = createReactClass({
       const tags = configurations
         .map(configuration => configuration.tags)
         .reduce((uniqueTags, currentTags) => {
-          currentTags.forEach(tag => {
+          currentTags.forEach((tag) => {
             if (uniqueTags.indexOf(tag) === -1) {
               uniqueTags.push(tag);
             }
@@ -43,7 +43,7 @@ const ConfigurationsList = createReactClass({
 
   _validConfigurationName(name) {
     // Check if configurations already contain a configuration with the given name.
-    return !this.state.configurations.some((configuration) => configuration.name === name);
+    return !this.state.configurations.some(configuration => configuration.name === name);
   },
 
   _createConfiguration(configuration, callback) {
@@ -84,8 +84,11 @@ const ConfigurationsList = createReactClass({
 
   _collectorConfigurationFormatter(configuration) {
     return (
-      <ConfigurationRow key={configuration.id} configuration={configuration} onUpdate={this._updateConfiguration}
-                        onCopy={this._copyConfiguration} validateConfiguration={this._validConfigurationName}
+      <ConfigurationRow key={configuration.id}
+                        configuration={configuration}
+                        onUpdate={this._updateConfiguration}
+                        onCopy={this._copyConfiguration}
+                        validateConfiguration={this._validConfigurationName}
                         onDelete={this._onDelete} />
     );
   },
@@ -117,8 +120,9 @@ const ConfigurationsList = createReactClass({
                    noDataText="There are no configurations to display, why don't you create one?"
                    filterKeys={filterKeys}>
           <div className="pull-right">
-            <EditConfigurationModal create updateConfiguration={this._createConfiguration}
-                                    validConfigurationName={this._validConfigurationName}/>
+            <EditConfigurationModal create
+                                    updateConfiguration={this._createConfiguration}
+                                    validConfigurationName={this._validConfigurationName} />
           </div>
         </DataTable>
       </div>

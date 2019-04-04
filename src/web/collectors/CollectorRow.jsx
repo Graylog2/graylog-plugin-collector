@@ -78,16 +78,12 @@ const CollectorRow = createReactClass({
 
   _tagsAsBadges(collector) {
     if (collector.node_details.tags) {
-      return collector.node_details.tags.map((tag) =>
-        <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>
-      );
-    } else {
-      return;
+      return collector.node_details.tags.map(tag => <span className="badge configuration-tag configuration-tag-sm" key={this._getId(tag)}>{tag}</span>);
     }
   },
 
   render() {
-    const collector = this.props.collector;
+    const { collector } = this.props;
     const collectorClass = collector.active ? '' : 'greyed-out inactive';
     const style = {};
     const annotation = collector.active ? '' : '(inactive)';
@@ -108,7 +104,8 @@ const CollectorRow = createReactClass({
         </td>
         <td>
           <Label bsStyle={this._labelClassForState(collectorState)}
-                 bsSize="xsmall">{this._textForState(collectorState)}</Label>
+                 bsSize="xsmall">{this._textForState(collectorState)}
+          </Label>
         </td>
         <td>
           {osGlyph}

@@ -67,7 +67,7 @@ class EditOutputModal extends React.Component {
   };
 
   _changeErrorState = (error, message, id) => {
-    var errorFields = this.state.errorFields.slice();
+    const errorFields = this.state.errorFields.slice();
     const index = errorFields.indexOf(id);
     if (error && index == -1) {
       errorFields.push(id);
@@ -75,7 +75,7 @@ class EditOutputModal extends React.Component {
     if (!error && index > -1) {
       errorFields.splice(index, 1);
     }
-    this.setState({error: error, errorMessage: message, errorFields: errorFields});
+    this.setState({ error: error, errorMessage: message, errorFields: errorFields });
   };
 
   _changeName = (event) => {
@@ -92,7 +92,7 @@ class EditOutputModal extends React.Component {
   };
 
   _injectProperties = (key, value) => {
-    const properties = this.state.properties;
+    const { properties } = this.state;
     if (properties) {
       properties[key] = value;
     }
@@ -137,11 +137,12 @@ class EditOutputModal extends React.Component {
                       options={this.props.outputList.filter(type => type.group === this.props.selectedGroup)}
                       value={this.state.selectedType}
                       onChange={this._changeType}
-                      placeholder="Choose output type..."
-              />
+                      placeholder="Choose output type..." />
             </Input>
-            <EditOutputFields type={this.state.selectedType} properties={this.state.properties}
-                              injectProperties={this._injectProperties} errorState={this._changeErrorState}
+            <EditOutputFields type={this.state.selectedType}
+                              properties={this.state.properties}
+                              injectProperties={this._injectProperties}
+                              errorState={this._changeErrorState}
                               errorFields={this.state.errorFields} />
           </fieldset>
         </BootstrapModalForm>

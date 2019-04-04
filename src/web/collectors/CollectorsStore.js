@@ -18,16 +18,17 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(this.sourceUrl));
     promise
       .then(
-        response => {
+        (response) => {
           this.collectors = response.collectors;
           this.trigger({ collectors: this.collectors });
 
           return this.collectors;
         },
-        error => {
+        (error) => {
           UserNotification.error(`Fetching Collectors failed with status: ${error}`,
             'Could not retrieve Collectors');
-        });
+        },
+      );
     CollectorsActions.list.promise(promise);
   },
 
@@ -35,10 +36,11 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}`));
     promise
       .catch(
-        error => {
+        (error) => {
           UserNotification.error(`Fetching Collector failed with status: ${error}`,
             'Could not retrieve Collector');
-        });
+        },
+      );
     CollectorsActions.getCollector.promise(promise);
   },
 
@@ -50,10 +52,11 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetch('PUT', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}/action`), [action]);
     promise
       .catch(
-        error => {
+        (error) => {
           UserNotification.error(`Restarting Collector failed with status: ${error}`,
             'Could not restart Collector');
-        });
+        },
+      );
     CollectorsActions.restartCollectorBackend.promise(promise);
   },
 
@@ -68,7 +71,8 @@ const CollectorsStore = Reflux.createStore({
         (error) => {
           UserNotification.error(`Import collector configuration failed with status: ${error}`,
             'Could not import Configuration');
-        });
+        },
+      );
     CollectorsActions.importCollectorConfiguration.promise(promise);
   },
 
@@ -76,10 +80,11 @@ const CollectorsStore = Reflux.createStore({
     const promise = fetchPeriodically('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${collectorId}/action`));
     promise
       .catch(
-        error => {
+        (error) => {
           UserNotification.error(`Fetching Collector actions failed with status: ${error}`,
             'Could not retrieve Collector actions');
-        });
+        },
+      );
     CollectorsActions.getCollectorActions.promise(promise);
   },
 });

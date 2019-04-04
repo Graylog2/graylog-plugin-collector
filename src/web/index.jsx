@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import webpackEntry from 'webpack-entry';
 
-import packageJson from '../../package.json';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
 import CollectorsPage from 'collectors/CollectorsPage';
@@ -9,6 +8,7 @@ import CollectorsStatusPage from 'collectors/CollectorsStatusPage';
 import ConfigurationsPage from 'configurations/ConfigurationsPage';
 import CollectorConfigurationPage from 'collector-configuration/CollectorConfigurationPage';
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
+import packageJson from '../../package.json';
 
 const manifest = new PluginManifest(packageJson, {
   routes: [
@@ -33,4 +33,3 @@ const manifest = new PluginManifest(packageJson, {
 });
 
 PluginStore.register(manifest);
-

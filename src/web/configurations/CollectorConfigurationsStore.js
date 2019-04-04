@@ -17,16 +17,17 @@ const CollectorConfigurationsStore = Reflux.createStore({
   list() {
     const promise = fetch('GET', URLUtils.qualifyUrl(this.sourceUrl))
       .then(
-        response => {
+        (response) => {
           this.configurations = response.configurations;
           this.trigger({ configurations: this.configurations });
 
           return this.configurations;
         },
-        error => {
+        (error) => {
           UserNotification.error(`Fetching collector configurations failed with status: ${error}`,
             'Could not retrieve configurations');
-        });
+        },
+      );
     CollectorConfigurationsActions.list.promise(promise);
   },
 
@@ -34,10 +35,11 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/tags`));
     promise
       .catch(
-        error => {
+        (error) => {
           UserNotification.error(`Fetching configuration tags failed with status: ${error}`,
             'Could not retrieve tags');
-        });
+        },
+      );
     CollectorConfigurationsActions.listTags.promise(promise);
   },
 
@@ -45,10 +47,11 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch('GET', URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}`));
     promise
       .catch(
-        error => {
+        (error) => {
           UserNotification.error(`Fetching collector configuration failed with status: ${error}`,
             'Could not retrieve configuration');
-        });
+        },
+      );
     CollectorConfigurationsActions.getConfiguration.promise(promise);
   },
 
@@ -198,7 +201,7 @@ const CollectorConfigurationsStore = Reflux.createStore({
     const promise = fetch(method, url, requestSnippet);
     promise
       .then(() => {
-        var action = snippet.id === '' ? 'created' : 'updated';
+        const action = snippet.id === '' ? 'created' : 'updated';
         UserNotification.success(`Configuration snippet "${snippet.name}" successfully ${action}`);
       }, (error) => {
         UserNotification.error(`Saving snippet "${snippet.name}" failed with status: ${error.message}`,
@@ -209,8 +212,8 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   copyConfiguration(configurationId, name) {
-    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/${name}`);
-    let method = 'POST';
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/${name}`);
+    const method = 'POST';
 
     const promise = fetch(method, url);
     promise
@@ -225,49 +228,49 @@ const CollectorConfigurationsStore = Reflux.createStore({
   },
 
   copyOutput(outputId, name, configurationId) {
-    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/outputs/${outputId}/${name}`);
-    let method = 'POST';
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/outputs/${outputId}/${name}`);
+    const method = 'POST';
 
     const promise = fetch(method, url);
     promise
-        .then(() => {
-          UserNotification.success(`Configuration output "${outputId}" successfully copied`);
-        }, (error) => {
-          UserNotification.error(`Saving output "${name}" failed with status: ${error.message}`,
-              'Could not save Output');
-        });
+      .then(() => {
+        UserNotification.success(`Configuration output "${outputId}" successfully copied`);
+      }, (error) => {
+        UserNotification.error(`Saving output "${name}" failed with status: ${error.message}`,
+          'Could not save Output');
+      });
 
     CollectorConfigurationsActions.copyOutput.promise(promise);
   },
 
   copyInput(inputId, name, configurationId) {
-    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/inputs/${inputId}/${name}`);
-    let method = 'POST';
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/inputs/${inputId}/${name}`);
+    const method = 'POST';
 
     const promise = fetch(method, url);
     promise
-        .then(() => {
-          UserNotification.success(`Configuration input "${inputId}" successfully copied`);
-        }, (error) => {
-          UserNotification.error(`Saving input "${name}" failed with status: ${error.message}`,
-              'Could not save Input');
-        });
+      .then(() => {
+        UserNotification.success(`Configuration input "${inputId}" successfully copied`);
+      }, (error) => {
+        UserNotification.error(`Saving input "${name}" failed with status: ${error.message}`,
+          'Could not save Input');
+      });
 
     CollectorConfigurationsActions.copyInput.promise(promise);
   },
 
   copySnippet(snippetId, name, configurationId) {
-    let url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/snippets/${snippetId}/${name}`);
-    let method = 'POST';
+    const url = URLUtils.qualifyUrl(`${this.sourceUrl}/${configurationId}/snippets/${snippetId}/${name}`);
+    const method = 'POST';
 
     const promise = fetch(method, url);
     promise
-        .then(() => {
-          UserNotification.success(`Configuration snippet "${snippetId}" successfully copied`);
-        }, (error) => {
-          UserNotification.error(`Saving snippet "${name}" failed with status: ${error.message}`,
-              'Could not save Output');
-        });
+      .then(() => {
+        UserNotification.success(`Configuration snippet "${snippetId}" successfully copied`);
+      }, (error) => {
+        UserNotification.error(`Saving snippet "${name}" failed with status: ${error.message}`,
+          'Could not save Output');
+      });
 
     CollectorConfigurationsActions.copySnippet.promise(promise);
   },

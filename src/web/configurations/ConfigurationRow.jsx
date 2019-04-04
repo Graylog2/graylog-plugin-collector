@@ -4,10 +4,10 @@ import createReactClass from 'create-react-class';
 import { Button, Label } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+import Routes from 'routing/Routes';
 import EditConfigurationModal from './EditConfigurationModal';
 import CopyConfigurationModal from './CopyConfigurationModal';
 
-import Routes from 'routing/Routes';
 
 const ConfigurationRow = createReactClass({
   displayName: 'ConfigurationRow',
@@ -31,14 +31,14 @@ const ConfigurationRow = createReactClass({
   style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _handleClick() {
-    const configuration = this.props.configuration;
+    const { configuration } = this.props;
     if (window.confirm(`You are about to delete configuration "${configuration.name}". Are you sure?`)) {
       this.props.onDelete(configuration);
     }
   },
 
   render() {
-    const configuration = this.props.configuration;
+    const { configuration } = this.props;
     const tagBadges = configuration.tags.map((tag) => {
       return <span className="badge configuration-tag" key={tag}>{tag}</span>;
     });
