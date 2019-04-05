@@ -21,7 +21,7 @@ const CollectorList = createReactClass({
       filteredRows: undefined,
       sortBy: 'node_id',
       sortDesc: false,
-      sort: (collector) => collector.node_id,
+      sort: collector => collector.node_id,
       showInactive: false,
     };
   },
@@ -47,11 +47,11 @@ const CollectorList = createReactClass({
   },
 
   _setCollectors(collectors) {
-    this.setState({collectors: collectors.collectors});
+    this.setState({ collectors: collectors.collectors });
   },
 
   _bySortField(collector1, collector2) {
-    const sort = this.state.sort;
+    const { sort } = this.state;
     const field1 = sort(collector1);
     const field2 = sort(collector2);
     return (this.state.sortDesc ? naturalSort(field2, field1) : naturalSort(field1, field2));
@@ -66,26 +66,26 @@ const CollectorList = createReactClass({
       <div className="table-responsive">
         <table className="table table-striped collectors-list">
           <thead>
-          <tr>
-            <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeId}>Name</th>
-            <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
+            <tr>
+              <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeId}>Name</th>
+              <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
               Status
-            </th>
-            <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
+              </th>
+              <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
               Operating System
-            </th>
-            <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
-            <th className={this._getTableHeaderClassName('id')} onClick={this.sortById}>
+              </th>
+              <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
+              <th className={this._getTableHeaderClassName('id')} onClick={this.sortById}>
               Collector Id
-            </th>
-            <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortByCollectorVersion}>
+              </th>
+              <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortByCollectorVersion}>
               Collector Version
-            </th>
-            <th className="actions">&nbsp;</th>
-          </tr>
+              </th>
+              <th className="actions">&nbsp;</th>
+            </tr>
           </thead>
           <tbody>
-          {collectors}
+            {collectors}
           </tbody>
         </table>
       </div>
@@ -153,9 +153,8 @@ const CollectorList = createReactClass({
       sort: (collector) => {
         if (collector.status) {
           return collector.status.status;
-        } else {
-          return null;
         }
+        return null;
       },
     });
   },
@@ -202,8 +201,8 @@ const CollectorList = createReactClass({
           <div className="form-inline collectors-filter-form">
             <CollectorFilter label="Filter collectors"
                              data={this.state.collectors}
-                             filterBy={'tags'}
-                             displayKey={'tags'}
+                             filterBy="tags"
+                             displayKey="tags"
                              searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
                              onDataFiltered={this._onFilterChange} />
           </div>

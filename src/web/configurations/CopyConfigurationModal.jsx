@@ -55,28 +55,28 @@ class CopyConfigurationModal extends React.Component {
   render() {
     return (
       <span>
-                <Button onClick={this.openModal}
-                        bsStyle="warning"
-                        bsSize="xsmall">
+        <Button onClick={this.openModal}
+                bsStyle="warning"
+                bsSize="xsmall">
                   Clone
-                </Button>
-                <BootstrapModalForm ref="modal"
-                                    title="Clone"
-                                    onSubmitForm={this._save}
-                                    submitButtonText="Create">
-                  <fieldset>
-                    <Input type="text"
-                           id={this._getId('configuration-name')}
-                           label="Name"
-                           defaultValue={this.state.name}
-                           onChange={this._changeName}
-                           bsStyle={this.state.error ? 'error' : null}
-                           help={this.state.error ? this.state.error_message : 'Type a name for the new configuration'}
-                           autoFocus
-                           required />
-                  </fieldset>
-                </BootstrapModalForm>
-            </span>
+        </Button>
+        <BootstrapModalForm ref="modal"
+                            title="Clone"
+                            onSubmitForm={this._save}
+                            submitButtonText="Create">
+          <fieldset>
+            <Input type="text"
+                   id={this._getId('configuration-name')}
+                   label="Name"
+                   defaultValue={this.state.name}
+                   onChange={this._changeName}
+                   bsStyle={this.state.error ? 'error' : null}
+                   help={this.state.error ? this.state.error_message : 'Type a name for the new configuration'}
+                   autoFocus
+                   required />
+          </fieldset>
+        </BootstrapModalForm>
+      </span>
     );
   }
 }

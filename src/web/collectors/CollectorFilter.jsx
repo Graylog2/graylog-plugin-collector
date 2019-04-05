@@ -161,7 +161,7 @@ class CollectorFilter extends React.Component {
 
     if (this.props.filterSuggestionAccessor) {
       suggestions = this.props.filterSuggestions.map(filterSuggestion => filterSuggestion[this.props.filterSuggestionAccessor].toLocaleLowerCase());
-    } else if (this.props.filterSuggestions.length > 0){
+    } else if (this.props.filterSuggestions.length > 0) {
       suggestions = this.props.filterSuggestions.map(filterSuggestion => filterSuggestion.toLocaleLowerCase());
     } else {
       let filterByValues = [];
@@ -191,7 +191,9 @@ class CollectorFilter extends React.Component {
                           label={this.props.label}
                           displayKey={this.props.displayKey} />
           <Button type="submit" style={{ marginLeft: 5 }}>Filter</Button>
-          <Button type="button" style={{ marginLeft: 5 }} onClick={this._resetFilters}
+          <Button type="button"
+                  style={{ marginLeft: 5 }}
+                  onClick={this._resetFilters}
                   disabled={this.state.filters.count() === 0 && this.state.filterText === ''}>
             Reset
           </Button>

@@ -48,7 +48,7 @@ const EditConfigurationModal = createReactClass({
   },
 
   _save() {
-    const configuration = this.state.configuration;
+    const { configuration } = this.state;
 
     if (!this.state.error) {
       this.props.updateConfiguration(configuration, this._saved);

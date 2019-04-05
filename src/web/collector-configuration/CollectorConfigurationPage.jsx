@@ -5,7 +5,6 @@ import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
-import CollectorConfiguration from './CollectorConfiguration';
 
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 
@@ -13,6 +12,7 @@ import DocsHelper from 'util/DocsHelper';
 import DocumentationLink from 'components/support/DocumentationLink';
 
 import Routes from 'routing/Routes';
+import CollectorConfiguration from './CollectorConfiguration';
 
 const CollectorConfigurationPage = createReactClass({
   displayName: 'CollectorConfigurationPage',
@@ -93,7 +93,8 @@ const CollectorConfigurationPage = createReactClass({
               </LinkContainer>
             </span>
           </PageHeader>
-          <CollectorConfiguration configuration={this.state.configuration} tags={this.state.tags}
+          <CollectorConfiguration configuration={this.state.configuration}
+                                  tags={this.state.tags}
                                   onConfigurationChange={this._reloadConfiguration} />
         </div>
       </DocumentTitle>

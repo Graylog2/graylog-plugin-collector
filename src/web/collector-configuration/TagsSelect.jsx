@@ -23,13 +23,11 @@ class TagsSelect extends React.Component {
       return { value: tag.name, label: tag.name };
     });
     return (
-      <MultiSelect
-        ref="select"
-        options={tagsOptions}
-        value={tagsValue}
-        placeholder="Choose tags..."
-        allowCreate
-      />
+      <MultiSelect ref="select"
+                   options={tagsOptions}
+                   value={tagsValue}
+                   placeholder="Choose tags..."
+                   allowCreate />
     );
   }
 }

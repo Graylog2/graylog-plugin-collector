@@ -39,12 +39,11 @@ class CollapsibleVerbatim extends React.Component {
         <a href="#" onClick={this._onHandleToggle}>{text} verbatim configuration</a>
         <Collapse in={this.state.expanded} timeout={0}>
           <Alert ref="well">
-                <Input type="textarea"
-                       id={this._getId('verbatim')}
-                       label="Add verbatim configuration"
-                       value={this.props.value}
-                       onChange={this.props.onChange('verbatim')}
-                />
+            <Input type="textarea"
+                   id={this._getId('verbatim')}
+                   label="Add verbatim configuration"
+                   value={this.props.value}
+                   onChange={this.props.onChange('verbatim')} />
           </Alert>
         </Collapse>
       </span>
