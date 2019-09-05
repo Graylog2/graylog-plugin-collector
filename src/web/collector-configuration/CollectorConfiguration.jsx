@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
+import { Button, Col, Row, Tabs, Tab } from 'components/graylog';
 import naturalSort from 'javascript-natural-sort';
 
 import { Input } from 'components/bootstrap';

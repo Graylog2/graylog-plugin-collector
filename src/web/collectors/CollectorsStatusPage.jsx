@@ -3,7 +3,7 @@ import React from 'react';
 
 import createReactClass from 'create-react-class';
 
-import { Alert, Row, Col, Button } from 'react-bootstrap';
+import { Alert, Row, Col, Button } from 'components/graylog';
 import { LinkContainer } from 'react-router-bootstrap';
 import Semver from 'semver';
 

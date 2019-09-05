@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Modal, Row } from 'components/graylog';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
