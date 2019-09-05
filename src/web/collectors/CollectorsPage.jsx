@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button, Col, Modal, Row } from 'components/graylog';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
 
+import { Button, Col, Modal, Row } from 'components/graylog';
 import { DocumentTitle, PageHeader } from 'components/common';
 import DocumentationLink from 'components/support/DocumentationLink';
 import { BootstrapModalWrapper } from 'components/bootstrap';

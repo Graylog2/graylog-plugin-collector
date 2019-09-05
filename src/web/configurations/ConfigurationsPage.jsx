@@ -1,13 +1,12 @@
 import React from 'react';
-
-import { Row, Col, Button } from 'components/graylog';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import DocsHelper from 'util/DocsHelper';
-import DocumentationLink from 'components/support/DocumentationLink';
-
-import { DocumentTitle, PageHeader } from 'components/common';
 import Routes from 'routing/Routes';
+import { Row, Col, Button } from 'components/graylog';
+import DocumentationLink from 'components/support/DocumentationLink';
+import { DocumentTitle, PageHeader } from 'components/common';
+
 import ConfigurationsList from './ConfigurationsList';
 
 

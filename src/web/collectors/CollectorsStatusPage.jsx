@@ -1,16 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import createReactClass from 'create-react-class';
-
-import { Alert, Row, Col, Button } from 'components/graylog';
 import { LinkContainer } from 'react-router-bootstrap';
 import Semver from 'semver';
 
+import { Alert, Row, Col, Button } from 'components/graylog';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
+import DocumentationLink from 'components/support/DocumentationLink';
 import StringUtils from 'util/StringUtils';
 import DocsHelper from 'util/DocsHelper';
-import DocumentationLink from 'components/support/DocumentationLink';
 
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';

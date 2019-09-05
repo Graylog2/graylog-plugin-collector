@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import { Button } from 'components/graylog';
 
 class DeleteConfirmButton extends React.Component {

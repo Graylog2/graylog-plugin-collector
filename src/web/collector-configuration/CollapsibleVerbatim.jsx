@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import { Alert, Collapse } from 'components/graylog';
 import { Input } from 'components/bootstrap';
 
