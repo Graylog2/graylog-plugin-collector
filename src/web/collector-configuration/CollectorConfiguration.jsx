@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
 
+import { Button, Col, Row, Tabs, Tab } from 'components/graylog';
 import { Input } from 'components/bootstrap';
 import { DataTable } from 'components/common';
-
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
+
 import CopyOutputModal from './CopyOutputModal';
 import CopyInputModal from './CopyInputModal';
 import CopySnippetModal from './CopySnippetModal';

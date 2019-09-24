@@ -1,9 +1,9 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
-import { Row, Col, Alert, Button } from 'react-bootstrap';
 import naturalSort from 'javascript-natural-sort';
 
+import { Row, Col, Alert, Button } from 'components/graylog';
 import { Spinner } from 'components/common';
 
 import CollectorsStore from './CollectorsStore';

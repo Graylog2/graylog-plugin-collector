@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
-import { Button } from 'react-bootstrap';
+
+import { Button } from 'components/graylog';
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { IfPermitted, ISODurationInput } from 'components/common';
+
 import ObjectUtils from 'util/ObjectUtils';
 import ISODurationUtils from 'util/ISODurationUtils';
 import FormUtils from 'util/FormsUtils';

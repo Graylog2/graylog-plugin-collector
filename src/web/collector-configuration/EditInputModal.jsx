@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import { Select } from 'components/common';
 
+import { Button } from 'components/graylog';
+import { Select } from 'components/common';
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 
 import EditInputFields from './EditInputFields';

@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
-import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+import { Button } from 'components/graylog';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
-
-import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
-
-import DocsHelper from 'util/DocsHelper';
 import DocumentationLink from 'components/support/DocumentationLink';
 
+import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
+import DocsHelper from 'util/DocsHelper';
 import Routes from 'routing/Routes';
+
 import CollectorConfiguration from './CollectorConfiguration';
 
 const CollectorConfigurationPage = createReactClass({
