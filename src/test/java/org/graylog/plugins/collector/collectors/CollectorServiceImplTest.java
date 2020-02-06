@@ -16,15 +16,12 @@
  */
 package org.graylog.plugins.collector.collectors;
 
-import com.lordofthejars.nosqlunit.annotation.CustomComparisonStrategy;
-import com.lordofthejars.nosqlunit.annotation.IgnorePropertyValue;
-import com.lordofthejars.nosqlunit.annotation.ShouldMatchDataSet;
-import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
-import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
-import com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb;
-import com.lordofthejars.nosqlunit.mongodb.MongoFlexibleComparisonStrategy;
-import org.graylog.plugins.collector.database.MongoConnectionRule;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import org.graylog.testing.mongodb.MongoDBFixtures;
+import org.graylog.testing.mongodb.MongoDBInstance;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
+import org.graylog2.database.CollectionName;
 import org.graylog2.shared.bindings.ObjectMapperModule;
 import org.graylog2.shared.bindings.ValidatorModule;
 import org.joda.time.DateTime;
@@ -32,7 +29,6 @@ import org.joda.time.DateTimeZone;
 import org.jukito.JukitoRunner;
 import org.jukito.UseModules;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +36,6 @@ import org.junit.runner.RunWith;
 import javax.validation.Validator;
 import java.util.List;
 
-import static com.lordofthejars.nosqlunit.mongodb.InMemoryMongoDb.InMemoryMongoRuleBuilder.newInMemoryMongoDbRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -49,24 +44,19 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
 @UseModules({ObjectMapperModule.class, ValidatorModule.class})
-@CustomComparisonStrategy(comparisonStrategy = MongoFlexibleComparisonStrategy.class)
 public class CollectorServiceImplTest {
-    @ClassRule
-    public static final InMemoryMongoDb IN_MEMORY_MONGO_DB = newInMemoryMongoDbRule().build();
-
     @Rule
-    public MongoConnectionRule mongoRule = MongoConnectionRule.build("test");
+    public final MongoDBInstance mongodb = MongoDBInstance.createForClass();
 
     private CollectorService collectorService;
 
     @Before
     public void setUp(MongoJackObjectMapperProvider mapperProvider,
                       Validator validator) throws Exception {
-        this.collectorService = new CollectorServiceImpl(mongoRule.getMongoConnection(), mapperProvider, validator);
+        this.collectorService = new CollectorServiceImpl(mongodb.mongoConnection(), mapperProvider, validator);
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void testCountEmptyCollection() throws Exception {
         final long result = this.collectorService.count();
 
@@ -74,7 +64,7 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testCountNonEmptyCollection() throws Exception {
         final long result = this.collectorService.count();
 
@@ -82,19 +72,25 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
-    @ShouldMatchDataSet(location = "collectorsSingleDataset.json")
-    @IgnorePropertyValue(properties = {"_id", "last_seen"})
     public void testSaveFirstRecord() throws Exception {
         final Collector collector = CollectorImpl.create("collectorId", "nodeId", "0.0.1", CollectorNodeDetails.create("DummyOS 1.0", null, null, null, null, null), DateTime.now(DateTimeZone.UTC));
 
         final Collector result = this.collectorService.save(collector);
 
+        final String collectionName = CollectorImpl.class.getAnnotation(CollectionName.class).value();
+        MongoCollection<Document> collection = mongodb.mongoConnection().getMongoDatabase().getCollection(collectionName);
+        Document document = collection.find().first();
+        Document nodeDetails = document.get("node_details", Document.class);
+
         assertNotNull(result);
+        assertEquals("collectorId", document.get("id"));
+        assertEquals("nodeId", document.get("node_id"));
+        assertEquals("0.0.1", document.get("collector_version"));
+        assertEquals("DummyOS 1.0", nodeDetails.get("operating_system"));
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testAll() throws Exception {
         final List<Collector> collectors = this.collectorService.all();
 
@@ -103,7 +99,6 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(loadStrategy = LoadStrategyEnum.DELETE_ALL)
     public void testAllEmptyCollection() throws Exception {
         final List<Collector> collectors = this.collectorService.all();
 
@@ -112,7 +107,7 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testFindById() throws Exception {
         final String collector1id = "collector1id";
 
@@ -123,7 +118,7 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testFindByIdNonexisting() throws Exception {
         final String collector1id = "nonexisting";
 
@@ -133,7 +128,7 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testFindByNodeId() throws Exception {
         final String nodeId = "uniqueid1";
 
@@ -149,7 +144,7 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testFindByNodeIdNonexisting() throws Exception {
         final String nodeId = "nonexisting";
 
@@ -160,14 +155,15 @@ public class CollectorServiceImplTest {
     }
 
     @Test
-    @UsingDataSet(locations = "collectorsMultipleDocuments.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
-    @ShouldMatchDataSet
+    @MongoDBFixtures("collectorsMultipleDocuments.json")
     public void testDestroy() throws Exception {
         final Collector collector = mock(Collector.class);
         when(collector.getId()).thenReturn("collector2id");
 
         final int result = this.collectorService.destroy(collector);
 
+        final String collectionName = CollectorImpl.class.getAnnotation(CollectionName.class).value();
         assertEquals(1, result);
+        assertEquals(2, mongodb.mongoConnection().getMongoDatabase().getCollection(collectionName).count());
     }
 }
