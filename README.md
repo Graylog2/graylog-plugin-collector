@@ -2,7 +2,11 @@
 
 [![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-collector.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-collector)
 
-__Use this paragraph to enter a description of your plugin.__
+Graylog Collector is a lightweight Java application that allows you to forward data from log files to a Graylog cluster. The collector can read local log files and also Windows Events natively, it then can forward the log messages over the network using the [GELF format](https://docs.graylog.org/en/2.5/pages/gelf.html).
+
+
+> :warning: The Graylog Collector Sidecar is deprecated and can be replaced with [Graylog Sidecar](https://docs.graylog.org/en/latest/pages/sidecar.html)
+
 
 **Required Graylog version:** 2.0 and later
 
@@ -30,7 +34,7 @@ dramatically by making use of hot reloading. To do this, do the following:
 Usage
 -----
 
-__Use this paragraph to document the usage of your plugin__
+Please refer to the [Documentation](https://docs.graylog.org/en/2.5/pages/collector.html).
 
 
 Getting started
