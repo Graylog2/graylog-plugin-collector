@@ -44,7 +44,7 @@ const CollectorsStatusPage = createReactClass({
     }
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!css!styles/CollectorStyles.lazy.css'),
 
   _reloadCollector() {
     CollectorsActions.getCollector.triggerPromise(this.props.params.id).then(this._setCollector);

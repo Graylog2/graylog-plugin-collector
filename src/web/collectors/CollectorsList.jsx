@@ -39,7 +39,7 @@ const CollectorList = createReactClass({
     }
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
+  style: require('!css!styles/CollectorStyles.lazy.css'),
   COLLECTOR_DATA_REFRESH: 5 * 1000,
 
   _reloadCollectors() {
