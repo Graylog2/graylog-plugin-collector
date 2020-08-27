@@ -28,7 +28,7 @@ const CollectorRow = createReactClass({
     this.style.unuse();
   },
 
-  style: require('!css!styles/CollectorStyles.lazy.css'),
+  style: require('styles/CollectorStyles.lazy.css'),
 
   _getId(prefixIdName) {
     return prefixIdName + this.props.collector.id;

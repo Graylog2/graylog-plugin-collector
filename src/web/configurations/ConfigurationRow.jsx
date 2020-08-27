@@ -29,7 +29,7 @@ const ConfigurationRow = createReactClass({
     this.style.unuse();
   },
 
-  style: require('!css!styles/CollectorStyles.lazy.css'),
+  style: require('styles/CollectorStyles.lazy.css'),
 
   _handleClick() {
     const { configuration } = this.props;

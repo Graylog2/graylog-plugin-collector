@@ -37,7 +37,7 @@ const CollectorConfigurationPage = createReactClass({
     this.style.unuse();
   },
 
-  style: require('!css!styles/CollectorStyles.lazy.css'),
+  style: require('styles/CollectorStyles.lazy.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.getConfiguration.triggerPromise(this.props.params.id).then(this._setConfiguration);

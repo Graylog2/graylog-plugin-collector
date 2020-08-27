@@ -22,7 +22,7 @@ const ConfigurationsList = createReactClass({
     this.style.unuse();
   },
 
-  style: require('!css!styles/CollectorStyles.lazy.css'),
+  style: require('styles/CollectorStyles.lazy.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {
