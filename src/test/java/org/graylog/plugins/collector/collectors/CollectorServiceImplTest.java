@@ -43,7 +43,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
-@UseModules({ObjectMapperModule.class, ValidatorModule.class})
+@UseModules({ObjectMapperModule.class, ValidatorModule.class, CollectorTestPasswordSecretModule.class})
 public class CollectorServiceImplTest {
     @Rule
     public final MongoDBInstance mongodb = MongoDBInstance.createForClass();
