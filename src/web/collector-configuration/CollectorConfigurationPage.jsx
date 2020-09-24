@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
+import DocsHelper from 'util/DocsHelper';
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
 import { LinkContainer } from 'components/graylog/router';
-
 import { Button } from 'components/graylog';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import DocumentationLink from 'components/support/DocumentationLink';
-
+import withParams from 'routing/withParams';
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
-import DocsHelper from 'util/DocsHelper';
 import Routes from 'routing/Routes';
 
 import CollectorConfiguration from './CollectorConfiguration';
@@ -101,4 +101,4 @@ const CollectorConfigurationPage = createReactClass({
   },
 });
 
-export default CollectorConfigurationPage;
+export default withParams(CollectorConfigurationPage);
