@@ -1,5 +1,5 @@
 import React from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
+import { LinkContainer } from 'components/graylog/router';
 
 import DocsHelper from 'util/DocsHelper';
 import Routes from 'routing/Routes';

@@ -1,9 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router';
-import { LinkContainer } from 'react-router-bootstrap';
-
 import DocsHelper from 'util/DocsHelper';
 
+import React from 'react';
+import { Link, LinkContainer } from 'components/graylog/router';
 import { Button, Col, Modal, Row } from 'components/graylog';
 import { DocumentTitle, PageHeader } from 'components/common';
 import DocumentationLink from 'components/support/DocumentationLink';
@@ -11,7 +9,6 @@ import { BootstrapModalWrapper } from 'components/bootstrap';
 import Routes from 'routing/Routes';
 
 import CollectorList from './CollectorsList';
-
 import style from './CollectorsPage.css';
 
 class CollectorsPage extends React.Component {

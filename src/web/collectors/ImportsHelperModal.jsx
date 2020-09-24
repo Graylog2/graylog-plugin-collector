@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
-
+import { Link } from 'components/graylog/router';
 import { Alert, Button, Modal } from 'components/graylog';
 import BootstrapModalWrapper from 'components/bootstrap/BootstrapModalWrapper';
 import Routes from 'routing/Routes';
