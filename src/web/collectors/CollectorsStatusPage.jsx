@@ -1,22 +1,21 @@
+import StringUtils from 'util/StringUtils';
+import DocsHelper from 'util/DocsHelper';
+
 import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
 import { LinkContainer } from 'components/graylog/router';
 import Semver from 'semver';
-
 import { Alert, Row, Col, Button } from 'components/graylog';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import DocumentationLink from 'components/support/DocumentationLink';
-import StringUtils from 'util/StringUtils';
-import DocsHelper from 'util/DocsHelper';
-
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
 import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
 import CollectorsImportButton from 'collectors/CollectorsImportButton';
 import ImportsHelperModal from 'collectors/ImportsHelperModal';
-
 import Routes from 'routing/Routes';
+import withParams from 'routing/withParams';
 
 const CollectorsStatusPage = createReactClass({
   displayName: 'CollectorsStatusPage',
@@ -39,6 +38,7 @@ const CollectorsStatusPage = createReactClass({
 
   componentWillUnmount() {
     this.style.unuse();
+
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -60,18 +60,21 @@ const CollectorsStatusPage = createReactClass({
 
   _formatSystemStats(stats) {
     if (stats && stats.disks_75 && stats.load_1 >= -1 && stats.cpu_idle >= -1) {
-      const volumes = stats.disks_75.map(volume => <dd key={volume}>{volume}</dd>);
+      const volumes = stats.disks_75.map((volume) => <dd key={volume}>{volume}</dd>);
       const statsFormatted = [];
+
       statsFormatted.push(
         <dt key="cpu-idle-title">CPU Idle:</dt>,
         <dd key="cpu-idle-description">{stats.cpu_idle}%</dd>,
       );
+
       if (stats.load_1 >= 0) {
         statsFormatted.push(
           <dt key="load-title">Load:</dt>,
           <dd key="load-description">{stats.load_1}</dd>,
         );
       }
+
       statsFormatted.push(
         <dt key="disk-title">Volumes > 75%:</dt>,
         volumes,
@@ -84,6 +87,7 @@ const CollectorsStatusPage = createReactClass({
   _formatConfiguration(configuration) {
     if (configuration && configuration.tags && configuration.ip) {
       const tags = configuration.tags.join(', ');
+
       return (
         <div>
           <dl className="deflist">
@@ -103,6 +107,7 @@ const CollectorsStatusPage = createReactClass({
 
   _formatStatus(name, item) {
     let buttons = null;
+
     if (name !== 'Status' && this.state.collector) {
       if (Semver.gte(this.state.collector.collector_version, '0.1.8')) {
         buttons = (
@@ -160,9 +165,11 @@ const CollectorsStatusPage = createReactClass({
     }
 
     let backends = [];
+
     if (this.state.collector.node_details.status) {
       backends = this.state.collector.node_details.status.backends;
     }
+
     const backendStates = Object.keys(backends).map((key) => {
       return this._formatStatus(key, backends[key]);
     });
@@ -237,4 +244,4 @@ const CollectorsStatusPage = createReactClass({
   },
 });
 
-export default CollectorsStatusPage;
+export default withParams(CollectorsStatusPage);
