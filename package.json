@@ -13,7 +13,7 @@
     "graylog"
   ],
   "author": "Graylog, Inc. <hello@graylog.com>",
-  "license": "GPL-3.0",
+  "license": "SSPL-1.0",
   "dependencies": {
     "immutable": "^3.7.5",
     "semver": "^5.6.0"
