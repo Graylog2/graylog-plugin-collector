@@ -56,7 +56,7 @@ const CollectorList = createReactClass({
       filteredRows: undefined,
       sortBy: 'node_id',
       sortDesc: false,
-      sort: collector => collector.node_id,
+      sort: (collector) => collector.node_id,
       showInactive: false,
     };
   },
@@ -69,6 +69,7 @@ const CollectorList = createReactClass({
 
   componentWillUnmount() {
     this.style.unuse();
+
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -203,6 +204,7 @@ const CollectorList = createReactClass({
         if (collector.status) {
           return collector.status.status;
         }
+
         return null;
       },
     });
@@ -210,6 +212,7 @@ const CollectorList = createReactClass({
 
   _formatEmptyListAlert() {
     const showInactiveHint = (this.state.showInactive ? null : ' and/or click on "Include inactive collectors"');
+
     return <Alert>There are no collectors to show. Try adjusting your search filter{showInactiveHint}.</Alert>;
   },
 
