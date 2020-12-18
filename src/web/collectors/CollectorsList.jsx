@@ -18,14 +18,20 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
 import naturalSort from 'javascript-natural-sort';
+import styled from 'styled-components';
 
-import { Row, Col, Alert, Button } from 'components/graylog';
+import { Alert, Button, Col, Row } from 'components/graylog';
 import { Spinner } from 'components/common';
+import { tableCss } from 'components/graylog/Table';
 
 import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
 import CollectorFilter from './CollectorFilter';
+
+const StyledTable = styled.table`
+  ${tableCss}
+`;
 
 const CollectorList = createReactClass({
   displayName: 'CollectorList',
@@ -80,7 +86,7 @@ const CollectorList = createReactClass({
   _formatCollectorList(collectors) {
     return (
       <div className="table-responsive">
-        <table className="table table-striped collectors-list">
+        <StyledTable className="table table-striped collectors-list">
           <thead>
             <tr>
               <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeId}>Name</th>
@@ -103,7 +109,7 @@ const CollectorList = createReactClass({
           <tbody>
             {collectors}
           </tbody>
-        </table>
+        </StyledTable>
       </div>
     );
   },
