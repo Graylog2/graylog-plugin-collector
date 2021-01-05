@@ -20,23 +20,18 @@ import Reflux from 'reflux';
 import naturalSort from 'javascript-natural-sort';
 import styled from 'styled-components';
 
-import { Alert, Button, Col, Row } from 'components/graylog';
+import { Alert, Button, Col, Row, Table } from 'components/graylog';
 import { Icon, Spinner } from 'components/common';
-import { tableCss } from 'components/graylog/Table';
 
 import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
 import CollectorFilter from './CollectorFilter';
 
-const StyledTable = styled.table`
-  ${tableCss}
-`;
-
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(Icon)(({ $isAlwaysVisible }) => `
   margin-left: 5px;
-  visibility: ${(props) => (props.$isAlwaysVisible ? 'visible' : 'hidden')}
-`;
+  visibility: ${$isAlwaysVisible ? 'visible' : 'hidden'}
+`);
 
 const SortableTh = styled.th`
   cursor: pointer;
@@ -62,20 +57,16 @@ const CollectorList = createReactClass({
   },
 
   componentDidMount() {
-    this.style.use();
     this._reloadCollectors();
     this.interval = setInterval(this._reloadCollectors, this.COLLECTOR_DATA_REFRESH);
   },
 
   componentWillUnmount() {
-    this.style.unuse();
-
     if (this.interval) {
       clearInterval(this.interval);
     }
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
   COLLECTOR_DATA_REFRESH: 5 * 1000,
 
   _reloadCollectors() {
@@ -104,7 +95,7 @@ const CollectorList = createReactClass({
   _formatCollectorList(collectors) {
     return (
       <div className="table-responsive">
-        <StyledTable className="table table-striped collectors-list">
+        <Table className="table table-striped collectors-list">
           <thead>
             <tr>
               <SortableTh onClick={this.sortByNodeId}>
@@ -137,7 +128,7 @@ const CollectorList = createReactClass({
           <tbody>
             {collectors}
           </tbody>
-        </StyledTable>
+        </Table>
       </div>
     );
   },
