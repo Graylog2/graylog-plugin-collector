@@ -28,6 +28,11 @@ import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
 import CollectorFilter from './CollectorFilter';
 
+const StyledTable = styled(Table)`
+  margin-top: 15px;
+  margin-bottom: 0px;
+`;
+
 const StyledIcon = styled(Icon)(({ $isAlwaysVisible }) => `
   margin-left: 5px;
   visibility: ${$isAlwaysVisible ? 'visible' : 'hidden'}
@@ -95,7 +100,7 @@ const CollectorList = createReactClass({
   _formatCollectorList(collectors) {
     return (
       <div className="table-responsive">
-        <Table className="table table-striped collectors-list">
+        <StyledTable striped>
           <thead>
             <tr>
               <SortableTh onClick={this.sortByNodeId}>
@@ -128,7 +133,7 @@ const CollectorList = createReactClass({
           <tbody>
             {collectors}
           </tbody>
-        </Table>
+        </StyledTable>
       </div>
     );
   },
@@ -241,14 +246,12 @@ const CollectorList = createReactClass({
               {showOrHideInactive} inactive collectors
             </Button>
           </div>
-          <div className="form-inline collectors-filter-form">
-            <CollectorFilter label="Filter collectors"
-                             data={this.state.collectors}
-                             filterBy="tags"
-                             displayKey="tags"
-                             searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
-                             onDataFiltered={this._onFilterChange} />
-          </div>
+          <CollectorFilter label="Filter collectors"
+                           data={this.state.collectors}
+                           filterBy="tags"
+                           displayKey="tags"
+                           searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
+                           onDataFiltered={this._onFilterChange} />
           {collectorList}
         </Col>
       </Row>
