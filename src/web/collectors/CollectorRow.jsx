@@ -102,7 +102,7 @@ const CollectorRow = createReactClass({
     const { collector } = this.props;
     const collectorClass = collector.active ? '' : 'greyed-out inactive';
     const style = {};
-    const annotation = collector.active ? '' : '(inactive)';
+    const annotation = collector.active ? '' : ' (inactive)';
     const osGlyph = this._getOsGlyph(collector.node_details.operating_system);
     let collectorState = null;
     if (collector.node_details.status) {
