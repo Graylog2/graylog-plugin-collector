@@ -1,10 +1,6 @@
 {
   "name": "CollectorPlugin",
-<<<<<<< HEAD
-  "version": "3.3.1-SNAPSHOT",
-=======
   "version": "4.1.0-SNAPSHOT",
->>>>>>> master
   "description": "",
   "repository": {
     "type": "git",
