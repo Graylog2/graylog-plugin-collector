@@ -1,15 +1,50 @@
+/*
+ * Copyright (C) 2020 Graylog, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by MongoDB, Inc.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Server Side Public License for more details.
+ *
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.mongodb.com/licensing/server-side-public-license>.
+ */
 import React from 'react';
 import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
 import naturalSort from 'javascript-natural-sort';
+import styled from 'styled-components';
 
-import { Row, Col, Alert, Button } from 'components/graylog';
-import { Spinner } from 'components/common';
+import { Alert, Button, Col, Row, Table } from 'components/graylog';
+import { Icon, Spinner } from 'components/common';
 
 import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
 import CollectorRow from './CollectorRow';
 import CollectorFilter from './CollectorFilter';
+
+const StyledTable = styled(Table)`
+  margin-top: 15px;
+  margin-bottom: 0px;
+`;
+
+const StyledIcon = styled(Icon)(({ $isAlwaysVisible }) => `
+  margin-left: 5px;
+  visibility: ${$isAlwaysVisible ? 'visible' : 'hidden'}
+`);
+
+const SortableTh = styled.th`
+  cursor: pointer;
+
+  &:hover ${StyledIcon} {
+    visibility: visible;
+  }
+`;
 
 const CollectorList = createReactClass({
   displayName: 'CollectorList',
@@ -21,25 +56,22 @@ const CollectorList = createReactClass({
       filteredRows: undefined,
       sortBy: 'node_id',
       sortDesc: false,
-      sort: collector => collector.node_id,
+      sort: (collector) => collector.node_id,
       showInactive: false,
     };
   },
 
   componentDidMount() {
-    this.style.use();
     this._reloadCollectors();
     this.interval = setInterval(this._reloadCollectors, this.COLLECTOR_DATA_REFRESH);
   },
 
   componentWillUnmount() {
-    this.style.unuse();
     if (this.interval) {
       clearInterval(this.interval);
     }
   },
 
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
   COLLECTOR_DATA_REFRESH: 5 * 1000,
 
   _reloadCollectors() {
@@ -54,40 +86,54 @@ const CollectorList = createReactClass({
     const { sort } = this.state;
     const field1 = sort(collector1);
     const field2 = sort(collector2);
+
     return (this.state.sortDesc ? naturalSort(field2, field1) : naturalSort(field1, field2));
   },
 
-  _getTableHeaderClassName(field) {
-    return (this.state.sortBy === field ? (this.state.sortDesc ? 'sort-desc' : 'sort-asc') : 'sortable');
+  _getSortingIcon(field) {
+    const { sortBy, sortDesc } = this.state;
+    const name = (sortBy === field ? (sortDesc ? 'sort-amount-up' : 'sort-amount-down') : 'sort');
+
+    return <StyledIcon name={name} fixedWidth $isAlwaysVisible={sortBy === field} />;
   },
 
   _formatCollectorList(collectors) {
     return (
       <div className="table-responsive">
-        <table className="table table-striped collectors-list">
+        <StyledTable striped>
           <thead>
             <tr>
-              <th className={this._getTableHeaderClassName('node_id')} onClick={this.sortByNodeId}>Name</th>
-              <th className={this._getTableHeaderClassName('collector_status')} onClick={this.sortByCollectorStatus}>
-              Status
-              </th>
-              <th className={this._getTableHeaderClassName('operating_system')} onClick={this.sortByOperatingSystem}>
-              Operating System
-              </th>
-              <th className={this._getTableHeaderClassName('last_seen')} onClick={this.sortByLastSeen}>Last Seen</th>
-              <th className={this._getTableHeaderClassName('id')} onClick={this.sortById}>
-              Collector Id
-              </th>
-              <th className={this._getTableHeaderClassName('collector_version')} onClick={this.sortByCollectorVersion}>
-              Collector Version
-              </th>
+              <SortableTh onClick={this.sortByNodeId}>
+                Name
+                {this._getSortingIcon('node_id')}
+              </SortableTh>
+              <SortableTh onClick={this.sortByCollectorStatus}>
+                Status
+                {this._getSortingIcon('collector_status')}
+              </SortableTh>
+              <SortableTh onClick={this.sortByOperatingSystem}>
+                Operating System
+                {this._getSortingIcon('operating_system')}
+              </SortableTh>
+              <SortableTh onClick={this.sortByLastSeen}>
+                Last Seen
+                {this._getSortingIcon('last_seen')}
+              </SortableTh>
+              <SortableTh onClick={this.sortById}>
+                Collector Id
+                {this._getSortingIcon('id')}
+              </SortableTh>
+              <SortableTh onClick={this.sortByCollectorVersion}>
+                Collector Version
+                {this._getSortingIcon('collector_version')}
+              </SortableTh>
               <th className="actions">&nbsp;</th>
             </tr>
           </thead>
           <tbody>
             {collectors}
           </tbody>
-        </table>
+        </StyledTable>
       </div>
     );
   },
@@ -154,6 +200,7 @@ const CollectorList = createReactClass({
         if (collector.status) {
           return collector.status.status;
         }
+
         return null;
       },
     });
@@ -161,6 +208,7 @@ const CollectorList = createReactClass({
 
   _formatEmptyListAlert() {
     const showInactiveHint = (this.state.showInactive ? null : ' and/or click on "Include inactive collectors"');
+
     return <Alert>There are no collectors to show. Try adjusting your search filter{showInactiveHint}.</Alert>;
   },
 
@@ -198,14 +246,12 @@ const CollectorList = createReactClass({
               {showOrHideInactive} inactive collectors
             </Button>
           </div>
-          <div className="form-inline collectors-filter-form">
-            <CollectorFilter label="Filter collectors"
-                             data={this.state.collectors}
-                             filterBy="tags"
-                             displayKey="tags"
-                             searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
-                             onDataFiltered={this._onFilterChange} />
-          </div>
+          <CollectorFilter label="Filter collectors"
+                           data={this.state.collectors}
+                           filterBy="tags"
+                           displayKey="tags"
+                           searchInKeys={['id', 'name', 'operating_system', 'tags', 'status']}
+                           onDataFiltered={this._onFilterChange} />
           {collectorList}
         </Col>
       </Row>

@@ -14,26 +14,16 @@
  * along with this program. If not, see
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
-package org.graylog.plugins.collector;
+package org.graylog.plugins.collector.collectors;
 
-import org.graylog2.plugin.Plugin;
-import org.graylog2.plugin.PluginMetaData;
-import org.graylog2.plugin.PluginModule;
+import com.google.inject.name.Names;
+import org.graylog2.plugin.inject.Graylog2Module;
 
-import java.util.Collection;
-import java.util.Collections;
-
-/**
- * Implement the Plugin interface here.
- */
-public class CollectorPlugin implements Plugin {
-    @Override
-    public PluginMetaData metadata() {
-        return new CollectorMetaData();
-    }
+public class CollectorTestPasswordSecretModule extends Graylog2Module {
+    public static final String TEST_PASSWORD_SECRET = "f9a79178-c949-446d-b0ae-c6d5d9a40ba8";
 
     @Override
-    public Collection<PluginModule> modules() {
-        return Collections.<PluginModule>singleton(new CollectorModule());
+    protected void configure() {
+        bind(String.class).annotatedWith(Names.named("password_secret")).toInstance(TEST_PASSWORD_SECRET);
     }
 }
