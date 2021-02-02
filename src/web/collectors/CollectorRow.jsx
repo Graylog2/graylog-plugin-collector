@@ -22,6 +22,7 @@ import { LinkContainer } from 'components/graylog/router';
 import { Button, Label } from 'components/graylog';
 import Routes from 'routing/Routes';
 import { Timestamp } from 'components/common';
+import style from 'styles/CollectorStyles.lazy.css';
 
 const CollectorRow = createReactClass({
   displayName: 'CollectorRow',
@@ -37,14 +38,12 @@ const CollectorRow = createReactClass({
   },
 
   componentDidMount() {
-    this.style.use();
+    style.use();
   },
 
   componentWillUnmount() {
-    this.style.unuse();
+    style.unuse();
   },
-
-  style: require('styles/CollectorStyles.lazy.css'),
 
   _getId(prefixIdName) {
     return prefixIdName + this.props.collector.id;

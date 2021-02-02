@@ -19,6 +19,7 @@ import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
 
 import { DataTable, Spinner } from 'components/common';
+import style from 'styles/CollectorStyles.lazy.css';
 
 import CollectorConfigurationsStore from './CollectorConfigurationsStore';
 import ConfigurationRow from './ConfigurationRow';
@@ -30,15 +31,13 @@ const ConfigurationsList = createReactClass({
   mixins: [Reflux.connect(CollectorConfigurationsStore)],
 
   componentDidMount() {
-    this.style.use();
+    style.use();
     this._reloadConfiguration();
   },
 
   componentWillUnmount() {
-    this.style.unuse();
+    style.unuse();
   },
-
-  style: require('styles/CollectorStyles.lazy.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.list.triggerPromise().then((configurations) => {

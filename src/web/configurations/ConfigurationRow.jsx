@@ -21,10 +21,10 @@ import { LinkContainer } from 'components/graylog/router';
 
 import { Button } from 'components/graylog';
 import Routes from 'routing/Routes';
+import style from 'styles/CollectorStyles.lazy.css';
 
 import EditConfigurationModal from './EditConfigurationModal';
 import CopyConfigurationModal from './CopyConfigurationModal';
-
 
 const ConfigurationRow = createReactClass({
   displayName: 'ConfigurationRow',
@@ -38,14 +38,12 @@ const ConfigurationRow = createReactClass({
   },
 
   componentDidMount() {
-    this.style.use();
+    style.use();
   },
 
   componentWillUnmount() {
-    this.style.unuse();
+    style.unuse();
   },
-
-  style: require('styles/CollectorStyles.lazy.css'),
 
   _handleClick() {
     const { configuration } = this.props;
