@@ -26,6 +26,7 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import withParams from 'routing/withParams';
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
 import Routes from 'routing/Routes';
+import style from 'styles/CollectorStyles.lazy.css';
 
 import CollectorConfiguration from './CollectorConfiguration';
 
@@ -44,16 +45,14 @@ const CollectorConfigurationPage = createReactClass({
   },
 
   componentDidMount() {
-    this.style.use();
+    style.use();
     this._reloadConfiguration();
     this._loadTags();
   },
 
   componentWillUnmount() {
-    this.style.unuse();
+    style.unuse();
   },
-
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _reloadConfiguration() {
     CollectorConfigurationsActions.getConfiguration.triggerPromise(this.props.params.id).then(this._setConfiguration);

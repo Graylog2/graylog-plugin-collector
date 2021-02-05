@@ -32,6 +32,7 @@ import CollectorsImportButton from 'collectors/CollectorsImportButton';
 import ImportsHelperModal from 'collectors/ImportsHelperModal';
 import Routes from 'routing/Routes';
 import withParams from 'routing/withParams';
+import style from 'styles/CollectorStyles.lazy.css';
 
 const CollectorsStatusPage = createReactClass({
   displayName: 'CollectorsStatusPage',
@@ -47,20 +48,18 @@ const CollectorsStatusPage = createReactClass({
   },
 
   componentDidMount() {
-    this.style.use();
+    style.use();
     this._reloadCollector();
     this.interval = setInterval(this._reloadCollector, 5000);
   },
 
   componentWillUnmount() {
-    this.style.unuse();
+    style.unuse();
 
     if (this.interval) {
       clearInterval(this.interval);
     }
   },
-
-  style: require('!style/useable!css!styles/CollectorStyles.css'),
 
   _reloadCollector() {
     CollectorsActions.getCollector.triggerPromise(this.props.params.id).then(this._setCollector);
