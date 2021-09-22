@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
 
-import { Button } from 'components/graylog';
+import { Button } from 'components/bootstrap';
 import { TypeAheadInput } from 'components/common';
 
 class CollectorFilter extends React.Component {

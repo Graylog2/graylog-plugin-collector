@@ -15,8 +15,8 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 import React from 'react';
-import { Link } from 'components/graylog/router';
-import { Alert, Button, Modal } from 'components/graylog';
+import { Link } from 'components/common/router';
+import { Alert, Button, Modal } from 'components/bootstrap';
 import BootstrapModalWrapper from 'components/bootstrap/BootstrapModalWrapper';
 import Routes from 'routing/Routes';
 

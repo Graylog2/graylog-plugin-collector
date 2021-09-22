@@ -17,7 +17,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Button } from 'components/graylog';
+import { Button } from 'components/bootstrap';
 import { Select } from 'components/common';
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 
