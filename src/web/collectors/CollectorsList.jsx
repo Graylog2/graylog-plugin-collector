@@ -20,7 +20,7 @@ import Reflux from 'reflux';
 import naturalSort from 'javascript-natural-sort';
 import styled from 'styled-components';
 
-import { Alert, Button, Col, Row, Table } from 'components/graylog';
+import { Alert, Button, Col, Row, Table } from 'components/bootstrap';
 import { Icon, Spinner } from 'components/common';
 
 import CollectorsStore from './CollectorsStore';

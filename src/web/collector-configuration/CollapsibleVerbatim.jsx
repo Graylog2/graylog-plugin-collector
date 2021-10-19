@@ -17,7 +17,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Alert, Collapse } from 'components/graylog';
+import { Alert, Collapse } from 'components/bootstrap';
 import { Input } from 'components/bootstrap';
 
 class CollapsibleVerbatim extends React.Component {

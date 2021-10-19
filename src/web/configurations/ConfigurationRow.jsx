@@ -17,9 +17,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
-import { LinkContainer } from 'components/graylog/router';
+import { LinkContainer } from 'components/common/router';
 
-import { Button } from 'components/graylog';
+import { Button } from 'components/bootstrap';
 import Routes from 'routing/Routes';
 import style from 'styles/CollectorStyles.lazy.css';
 

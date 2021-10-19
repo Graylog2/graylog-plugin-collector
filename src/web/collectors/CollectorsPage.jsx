@@ -17,8 +17,8 @@
 import DocsHelper from 'util/DocsHelper';
 
 import React from 'react';
-import { Link, LinkContainer } from 'components/graylog/router';
-import { Button, Col, Modal, Row } from 'components/graylog';
+import { Link, LinkContainer } from 'components/common/router';
+import { Button, Col, Modal, Row } from 'components/bootstrap';
 import { DocumentTitle, PageHeader } from 'components/common';
 import DocumentationLink from 'components/support/DocumentationLink';
 import { BootstrapModalWrapper } from 'components/bootstrap';

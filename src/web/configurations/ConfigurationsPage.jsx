@@ -15,11 +15,11 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 import React from 'react';
-import { LinkContainer } from 'components/graylog/router';
+import { LinkContainer } from 'components/common/router';
 
 import DocsHelper from 'util/DocsHelper';
 import Routes from 'routing/Routes';
-import { Row, Col, Button } from 'components/graylog';
+import { Row, Col, Button } from 'components/bootstrap';
 import DocumentationLink from 'components/support/DocumentationLink';
 import { DocumentTitle, PageHeader } from 'components/common';
 
