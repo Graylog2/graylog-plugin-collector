@@ -15,6 +15,7 @@
   "author": "Graylog, Inc. <hello@graylog.com>",
   "license": "SSPL-1.0",
   "dependencies": {
+    "buffer": "^6.0.3",
     "immutable": "^3.7.5",
     "semver": "^5.6.0"
   },
