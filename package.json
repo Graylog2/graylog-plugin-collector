@@ -17,7 +17,7 @@
   "dependencies": {
     "buffer": "^6.0.3",
     "immutable": "^3.7.5",
-    "semver": "^5.6.0",
+    "semver": "^7.3.7",
     "urijs": "^1.19.10"
   },
   "devDependencies": {
