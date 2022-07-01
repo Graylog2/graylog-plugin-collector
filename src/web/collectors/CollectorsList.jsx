@@ -17,7 +17,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import Reflux from 'reflux';
-import naturalSort from 'javascript-natural-sort';
+import { defaultCompare as naturalSort } from 'logic/DefaultCompare';
 import styled from 'styled-components';
 
 import { Alert, Button, Col, Row, Table } from 'components/bootstrap';
