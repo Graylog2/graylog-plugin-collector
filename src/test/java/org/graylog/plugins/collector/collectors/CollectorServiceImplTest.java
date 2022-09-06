@@ -164,6 +164,6 @@ public class CollectorServiceImplTest {
 
         final String collectionName = CollectorImpl.class.getAnnotation(CollectionName.class).value();
         assertEquals(1, result);
-        assertEquals(2, mongodb.mongoConnection().getMongoDatabase().getCollection(collectionName).count());
+        assertEquals(2, mongodb.mongoConnection().getMongoDatabase().getCollection(collectionName).countDocuments());
     }
 }
