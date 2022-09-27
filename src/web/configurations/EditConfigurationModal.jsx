@@ -98,7 +98,7 @@ const EditConfigurationModal = createReactClass({
         <BootstrapModalForm ref="modal"
                             title={`${this.props.create ? 'Create' : 'Edit'} Configuration ${this.state.configuration.name}`}
                             onSubmitForm={this._save}
-                            submitButtonText="Save">
+                            submitButtonText={`${this.props.create ? 'Create' : 'Update'} configuration`}>
           <fieldset>
             <Input type="text"
                    id={this._getId('configuration-name')}
