@@ -18,13 +18,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
 import { LinkContainer } from 'components/common/router';
-
+import ButtonToolbar from 'components/bootstrap/ButtonToolbar';
+import styled from 'styled-components';
 import { Button } from 'components/bootstrap';
 import Routes from 'routing/Routes';
 import style from 'styles/CollectorStyles.lazy.css';
 
 import EditConfigurationModal from './EditConfigurationModal';
 import CopyConfigurationModal from './CopyConfigurationModal';
+
+const StyledButtonToolbar = styled(ButtonToolbar)`
+  display: flex;
+`
 
 const ConfigurationRow = createReactClass({
   displayName: 'ConfigurationRow',
@@ -69,15 +74,17 @@ const ConfigurationRow = createReactClass({
           {tagBadges}
         </td>
         <td>
-          <Button bsStyle="primary" bsSize="xsmall" onClick={this._handleClick}>
-            Delete
-          </Button>
-          &nbsp;
-          <CopyConfigurationModal id={this.props.configuration.id} validConfigurationName={this.props.validateConfiguration} copyConfiguration={this.props.onCopy} />
-          &nbsp;
-          <EditConfigurationModal configuration={this.props.configuration}
-                                  updateConfiguration={this.props.onUpdate}
-                                  validConfigurationName={this.props.validateConfiguration} />
+          <StyledButtonToolbar>
+            <EditConfigurationModal configuration={this.props.configuration}
+                                    updateConfiguration={this.props.onUpdate}
+                                    validConfigurationName={this.props.validateConfiguration} />
+            <CopyConfigurationModal id={this.props.configuration.id}
+                                    validConfigurationName={this.props.validateConfiguration}
+                                    copyConfiguration={this.props.onCopy} />
+            <Button bsStyle="danger" bsSize="xsmall" onClick={this._handleClick}>
+              Delete
+            </Button>
+          </StyledButtonToolbar>
         </td>
       </tr>
     );

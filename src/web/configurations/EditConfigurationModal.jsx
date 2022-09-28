@@ -89,9 +89,9 @@ const EditConfigurationModal = createReactClass({
 
   render() {
     return (
-      <span>
+      <>
         <Button onClick={this.openModal}
-                bsStyle={this.props.create ? 'success' : 'info'}
+                bsStyle={this.props.create ? 'success' : 'default'}
                 bsSize={this.props.create ? null : 'xsmall'}>
           {this.props.create ? 'Create configuration' : 'Edit'}
         </Button>
@@ -111,7 +111,7 @@ const EditConfigurationModal = createReactClass({
                    required />
           </fieldset>
         </BootstrapModalForm>
-      </span>
+      </>
     );
   },
 });

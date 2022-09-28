@@ -70,7 +70,7 @@ class CopyConfigurationModal extends React.Component {
 
   render() {
     return (
-      <span>
+      <>
         <Button onClick={this.openModal}
                 bsStyle="warning"
                 bsSize="xsmall">
@@ -92,7 +92,7 @@ class CopyConfigurationModal extends React.Component {
                    required />
           </fieldset>
         </BootstrapModalForm>
-      </span>
+      </>
     );
   }
 }
