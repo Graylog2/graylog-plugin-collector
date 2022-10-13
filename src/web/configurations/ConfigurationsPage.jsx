@@ -15,15 +15,14 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 import React from 'react';
-import { LinkContainer } from 'components/common/router';
 
 import DocsHelper from 'util/DocsHelper';
-import Routes from 'routing/Routes';
 import { Row, Col, Button } from 'components/bootstrap';
 import DocumentationLink from 'components/support/DocumentationLink';
 import { DocumentTitle, PageHeader } from 'components/common';
 
 import ConfigurationsList from './ConfigurationsList';
+import CollectorsSubareaNavigation from '../collectors/CollectorsSubareaNavigation';
 
 
 class ConfigurationsPage extends React.Component {
@@ -34,37 +33,26 @@ class ConfigurationsPage extends React.Component {
 
     return (
       <DocumentTitle title="Collector sidecar configurations">
-        <span>
-          <PageHeader title="Collector Sidecar Configurations"
-                      lifecycle="legacy"
-                      lifecycleMessage={lifecycleMessage}>
-            <span>
-              The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
-              manage the Sidecar configurations.
-            </span>
+        <CollectorsSubareaNavigation />
+        <PageHeader title="Collector Sidecar Configurations"
+                    lifecycle="legacy"
+                    lifecycleMessage={lifecycleMessage}>
+          <span>
+            The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
+            manage the Sidecar configurations.
+          </span>
 
-            <span>
-              Read more about the collector sidecar in the{' '}
-              <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
-            </span>
+          <span>
+            Read more about the collector sidecar in the{' '}
+            <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
+          </span>
+        </PageHeader>
 
-            <span>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
-                <Button bsStyle="info">Overview</Button>
-              </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info" className="active">Manage Configurations</Button>
-              </LinkContainer>
-            </span>
-          </PageHeader>
-
-          <Row className="content">
-            <Col md={12}>
-              <ConfigurationsList />
-            </Col>
-          </Row>
-        </span>
+        <Row className="content">
+          <Col md={12}>
+            <ConfigurationsList />
+          </Col>
+        </Row>
       </DocumentTitle>
     );
   }

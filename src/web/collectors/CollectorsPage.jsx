@@ -26,6 +26,7 @@ import Routes from 'routing/Routes';
 
 import CollectorList from './CollectorsList';
 import style from './CollectorsPage.css';
+import CollectorsSubareaNavigation from './CollectorsSubareaNavigation';
 
 class CollectorsPage extends React.Component {
   openModal = () => {
@@ -98,39 +99,28 @@ class CollectorsPage extends React.Component {
 
     return (
       <DocumentTitle title="Collectors">
-        <span>
-          <PageHeader title="Collectors in Cluster"
-                      lifecycle="legacy"
-                      lifecycleMessage={lifecycleMessage}>
-            <span>
-              The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
-            </span>
+        <CollectorsSubareaNavigation />
+        <PageHeader title="Collectors in Cluster"
+                    lifecycle="legacy"
+                    lifecycleMessage={lifecycleMessage}>
+          <span>
+            The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
+          </span>
 
-            <span>
-              There is a new version of Graylog Collector and it is called{' '}
-              <Link to={Routes.SYSTEM.SIDECARS.OVERVIEW}>Graylog Sidecar</Link>.&ensp;
-              <a href="#sidecarnews" onClick={this.openModal}>What&apos;s new?</a>
-            </span>
+          <span>
+            There is a new version of Graylog Collector and it is called{' '}
+            <Link to={Routes.SYSTEM.SIDECARS.OVERVIEW}>Graylog Sidecar</Link>.&ensp;
+            <a href="#sidecarnews" onClick={this.openModal}>What&apos;s new?</a>
+          </span>
+        </PageHeader>
 
-            <span>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
-                <Button bsStyle="info" className="active">Overview</Button>
-              </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info">Manage Configurations</Button>
-              </LinkContainer>
-            </span>
-          </PageHeader>
+        {this.renderModal()}
 
-          {this.renderModal()}
-
-          <Row className="content">
-            <Col md={12}>
-              <CollectorList />
-            </Col>
-          </Row>
-        </span>
+        <Row className="content">
+          <Col md={12}>
+            <CollectorList />
+          </Col>
+        </Row>
       </DocumentTitle>
     );
   }
