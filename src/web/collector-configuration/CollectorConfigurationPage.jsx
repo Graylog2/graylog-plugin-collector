@@ -19,16 +19,14 @@ import DocsHelper from 'util/DocsHelper';
 import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-import { LinkContainer } from 'components/common/router';
-import { Button } from 'components/bootstrap';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
 import DocumentationLink from 'components/support/DocumentationLink';
 import withParams from 'routing/withParams';
 import CollectorConfigurationsActions from 'configurations/CollectorConfigurationsActions';
-import Routes from 'routing/Routes';
 import style from 'styles/CollectorStyles.lazy.css';
 
 import CollectorConfiguration from './CollectorConfiguration';
+import CollectorsPageNavigation from '../collectors/CollectorsPageNavigation';
 
 const CollectorConfigurationPage = createReactClass({
   displayName: 'CollectorConfigurationPage',
@@ -84,33 +82,22 @@ const CollectorConfigurationPage = createReactClass({
 
     return (
       <DocumentTitle title={`Collector ${this.state.configuration.name} configuration`}>
-        <div>
-          <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}
-                      lifecycle="legacy"
-                      lifecycleMessage={lifecycleMessage}>
-            <span>
-              Use this page to review and manage the configuration for this collector.
-            </span>
+        <CollectorsPageNavigation />
+        <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}
+                    lifecycle="legacy"
+                    lifecycleMessage={lifecycleMessage}>
+          <span>
+            Use this page to review and manage the configuration for this collector.
+          </span>
 
-            <span>
-              Read more about collector configurations in the{' '}
-              <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
-            </span>
-
-            <span>
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS')}>
-                <Button bsStyle="info">Overview</Button>
-              </LinkContainer>
-              &nbsp;
-              <LinkContainer to={Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS')}>
-                <Button bsStyle="info" className="active">Manage Configurations</Button>
-              </LinkContainer>
-            </span>
-          </PageHeader>
-          <CollectorConfiguration configuration={this.state.configuration}
-                                  tags={this.state.tags}
-                                  onConfigurationChange={this._reloadConfiguration} />
-        </div>
+          <span>
+            Read more about collector configurations in the{' '}
+            <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
+          </span>
+        </PageHeader>
+        <CollectorConfiguration configuration={this.state.configuration}
+                                tags={this.state.tags}
+                                onConfigurationChange={this._reloadConfiguration} />
       </DocumentTitle>
     );
   },
