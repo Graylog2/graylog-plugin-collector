@@ -102,16 +102,18 @@ class CollectorsPage extends React.Component {
         <CollectorsPageNavigation />
         <PageHeader title="Collectors in Cluster"
                     lifecycle="legacy"
-                    lifecycleMessage={lifecycleMessage}>
-          <span>
-            The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
-          </span>
-
-          <span>
-            There is a new version of Graylog Collector and it is called{' '}
-            <Link to={Routes.SYSTEM.SIDECARS.OVERVIEW}>Graylog Sidecar</Link>.&ensp;
-            <a href="#sidecarnews" onClick={this.openModal}>What&apos;s new?</a>
-          </span>
+                    lifecycleMessage={lifecycleMessage}
+                    documentationLink={{
+                      title: 'Sidecar documentation',
+                      path: DocsHelper.PAGES.COLLECTOR_SIDECAR,
+                    }}>
+           <span>
+              The Graylog collectors can reliably forward contents of log files or Windows EventLog from your servers.
+              <br />
+              There is a new version of Graylog Collector and it is called{' '}
+             <Link to={Routes.SYSTEM.SIDECARS.OVERVIEW}>Graylog Sidecar</Link>.&ensp;
+             <a href="#sidecarnews" onClick={this.openModal}>What&apos;s new?</a>
+            </span>
         </PageHeader>
 
         {this.renderModal()}

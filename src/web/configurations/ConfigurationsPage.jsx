@@ -18,7 +18,6 @@ import React from 'react';
 
 import DocsHelper from 'util/DocsHelper';
 import { Row, Col, Button } from 'components/bootstrap';
-import DocumentationLink from 'components/support/DocumentationLink';
 import { DocumentTitle, PageHeader } from 'components/common';
 
 import ConfigurationsList from './ConfigurationsList';
@@ -36,15 +35,14 @@ class ConfigurationsPage extends React.Component {
         <CollectorsPageNavigation />
         <PageHeader title="Collector Sidecar Configurations"
                     lifecycle="legacy"
-                    lifecycleMessage={lifecycleMessage}>
+                    lifecycleMessage={lifecycleMessage}
+                    documentationLink={{
+                      title: 'Sidecar documentation',
+                      path: DocsHelper.PAGES.COLLECTOR_SIDECAR,
+                    }}>
           <span>
             The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
             manage the Sidecar configurations.
-          </span>
-
-          <span>
-            Read more about the collector sidecar in the{' '}
-            <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
           </span>
         </PageHeader>
 
