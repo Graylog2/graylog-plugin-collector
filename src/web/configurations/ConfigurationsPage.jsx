@@ -23,37 +23,32 @@ import { DocumentTitle, PageHeader } from 'components/common';
 import ConfigurationsList from './ConfigurationsList';
 import CollectorsPageNavigation from '../collectors/CollectorsPageNavigation';
 
+const LifecycleMessage = () => (
+  <span>The Graylog Collector plugin is discontinued and has been superseded by the new Sidecars.</span>
+);
 
-class ConfigurationsPage extends React.Component {
-  render() {
-    const lifecycleMessage = (
-      <span>The Graylog Collector plugin is discontinued and has been superseded by the new Sidecars.</span>
-    );
+const ConfigurationsPage = () => (
+  <DocumentTitle title="Collector sidecar configurations">
+    <CollectorsPageNavigation />
+    <PageHeader title="Collector Sidecar Configurations"
+                lifecycle="legacy"
+                lifecycleMessage={<LifecycleMessage />}
+                documentationLink={{
+                  title: 'Sidecar documentation',
+                  path: DocsHelper.PAGES.COLLECTOR_SIDECAR,
+                }}>
+      <span>
+        The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
+        manage the Sidecar configurations.
+      </span>
+    </PageHeader>
 
-    return (
-      <DocumentTitle title="Collector sidecar configurations">
-        <CollectorsPageNavigation />
-        <PageHeader title="Collector Sidecar Configurations"
-                    lifecycle="legacy"
-                    lifecycleMessage={lifecycleMessage}
-                    documentationLink={{
-                      title: 'Sidecar documentation',
-                      path: DocsHelper.PAGES.COLLECTOR_SIDECAR,
-                    }}>
-          <span>
-            The Collector Sidecar runs next to your favourite log collector and configures it for you. Here you can
-            manage the Sidecar configurations.
-          </span>
-        </PageHeader>
-
-        <Row className="content">
-          <Col md={12}>
-            <ConfigurationsList />
-          </Col>
-        </Row>
-      </DocumentTitle>
-    );
-  }
-}
+    <Row className="content">
+      <Col md={12}>
+        <ConfigurationsList />
+      </Col>
+    </Row>
+  </DocumentTitle>
+);
 
 export default ConfigurationsPage;
