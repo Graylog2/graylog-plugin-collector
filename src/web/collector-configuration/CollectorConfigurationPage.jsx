@@ -85,14 +85,13 @@ const CollectorConfigurationPage = createReactClass({
         <CollectorsPageNavigation />
         <PageHeader title={<span>Collector <em>{this.state.configuration.name}</em> Configuration</span>}
                     lifecycle="legacy"
-                    lifecycleMessage={lifecycleMessage}>
+                    lifecycleMessage={lifecycleMessage}
+                    documentationLink={{
+                      title: 'Sidecar documentation',
+                      path: DocsHelper.PAGES.COLLECTOR_SIDECAR,
+                    }}>
           <span>
             Use this page to review and manage the configuration for this collector.
-          </span>
-
-          <span>
-            Read more about collector configurations in the{' '}
-            <DocumentationLink page={DocsHelper.PAGES.COLLECTOR_SIDECAR} text="Graylog documentation" />.
           </span>
         </PageHeader>
         <CollectorConfiguration configuration={this.state.configuration}

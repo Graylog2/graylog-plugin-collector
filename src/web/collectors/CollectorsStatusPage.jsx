@@ -198,14 +198,13 @@ const CollectorsStatusPage = createReactClass({
         <CollectorsPageNavigation />
         <PageHeader title={<span>Collector Status <em>{this.state.collector.node_id}</em></span>}
                     lifecycle="legacy"
-                    lifecycleMessage={lifecycleMessage}>
+                    lifecycleMessage={lifecycleMessage}
+                    documentationLink={{
+                      title: 'Sidecar documentation',
+                      path: DocsHelper.PAGES.COLLECTOR_SIDECAR,
+                    }}>
           <span>
             A status overview of all running collector backends on this host.
-          </span>
-
-          <span>
-            Read more about collectors and how to set them up in the
-            {' '}<DocumentationLink page={DocsHelper.PAGES.COLLECTOR_STATUS} text="Graylog documentation" />.
           </span>
         </PageHeader>
 
