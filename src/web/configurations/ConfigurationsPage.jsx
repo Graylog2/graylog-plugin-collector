@@ -22,7 +22,7 @@ import DocumentationLink from 'components/support/DocumentationLink';
 import { DocumentTitle, PageHeader } from 'components/common';
 
 import ConfigurationsList from './ConfigurationsList';
-import CollectorsSubareaNavigation from '../collectors/CollectorsSubareaNavigation';
+import CollectorsPageNavigation from '../collectors/CollectorsPageNavigation';
 
 
 class ConfigurationsPage extends React.Component {
@@ -33,7 +33,7 @@ class ConfigurationsPage extends React.Component {
 
     return (
       <DocumentTitle title="Collector sidecar configurations">
-        <CollectorsSubareaNavigation />
+        <CollectorsPageNavigation />
         <PageHeader title="Collector Sidecar Configurations"
                     lifecycle="legacy"
                     lifecycleMessage={lifecycleMessage}>

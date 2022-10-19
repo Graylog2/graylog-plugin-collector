@@ -16,11 +16,11 @@
  */
 import * as React from 'react';
 
-import SubareaNavigation from 'components/common/SubareaNavigation';
+import PageNavigation from 'components/common/PageNavigation';
 import Routes from 'routing/Routes';
 import { Row } from 'components/bootstrap';
 
-const CollectorsSubareaNavigation = () => {
+const CollectorsPageNavigation = () => {
   const NAV_ITEMS = [
     { title: 'Overview', path: Routes.pluginRoute('SYSTEM_COLLECTORS'), exactPathMatch: true },
     { title: 'Manage Configurations', path: Routes.pluginRoute('SYSTEM_COLLECTORS_CONFIGURATIONS') },
@@ -28,9 +28,9 @@ const CollectorsSubareaNavigation = () => {
 
   return (
     <Row>
-      <SubareaNavigation items={NAV_ITEMS} />
+      <PageNavigation items={NAV_ITEMS} />
     </Row>
   )
 };
 
-export default CollectorsSubareaNavigation;
+export default CollectorsPageNavigation;

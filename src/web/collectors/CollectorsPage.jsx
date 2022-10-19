@@ -26,7 +26,7 @@ import Routes from 'routing/Routes';
 
 import CollectorList from './CollectorsList';
 import style from './CollectorsPage.css';
-import CollectorsSubareaNavigation from './CollectorsSubareaNavigation';
+import CollectorsPageNavigation from './CollectorsPageNavigation';
 
 class CollectorsPage extends React.Component {
   openModal = () => {
@@ -99,7 +99,7 @@ class CollectorsPage extends React.Component {
 
     return (
       <DocumentTitle title="Collectors">
-        <CollectorsSubareaNavigation />
+        <CollectorsPageNavigation />
         <PageHeader title="Collectors in Cluster"
                     lifecycle="legacy"
                     lifecycleMessage={lifecycleMessage}>
