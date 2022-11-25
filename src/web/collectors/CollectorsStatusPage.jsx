@@ -90,7 +90,7 @@ const CollectorsStatusPage = createReactClass({
       }
 
       statsFormatted.push(
-        <dt key="disk-title">Volumes > 75%:</dt>,
+        <dt key="disk-title">Volumes &gt; 75%:</dt>,
         volumes,
       );
 
