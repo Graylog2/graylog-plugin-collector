@@ -23,7 +23,6 @@ import createReactClass from 'create-react-class';
 import Semver from 'semver';
 import { Alert, Row, Col } from 'components/bootstrap';
 import { DocumentTitle, PageHeader, Spinner } from 'components/common';
-import DocumentationLink from 'components/support/DocumentationLink';
 import CollectorsActions from 'collectors/CollectorsActions';
 import CollectorsStatusFileList from 'collectors/CollectorsStatusFileList';
 import CollectorsRestartButton from 'collectors/CollectorsRestartButton';
@@ -43,6 +42,7 @@ const CollectorsStatusPage = createReactClass({
   getInitialState() {
     return {
       collector: undefined,
+      showModal: false,
     };
   },
 
@@ -116,7 +116,11 @@ const CollectorsStatusPage = createReactClass({
   },
 
   _importFinished() {
-    this.importsHelperModal.open();
+    this.setState({ showModal: true });
+  },
+
+  _hideImportsHelperModal() {
+    this.setState({ showModal: false });
   },
 
   _formatStatus(name, item) {
@@ -240,7 +244,7 @@ const CollectorsStatusPage = createReactClass({
             </div>
           </Col>
         </Row>
-        <ImportsHelperModal ref={(c) => { this.importsHelperModal = c; }} />
+        <ImportsHelperModal showModal={this.state.showModal} onHide={this._hideImportsHelperModal} />
       </DocumentTitle>
     );
   },
