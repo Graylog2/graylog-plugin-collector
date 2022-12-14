@@ -37,7 +37,7 @@ class CopyInputModal extends React.Component {
       name: '',
       error: false,
       error_message: '',
-      showModal: false
+      showModal: false,
     };
 
     openModal = () => {
