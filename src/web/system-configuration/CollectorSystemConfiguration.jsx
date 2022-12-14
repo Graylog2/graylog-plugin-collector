@@ -56,6 +56,7 @@ const CollectorSystemConfiguration = createReactClass({
   getInitialState() {
     return {
       config: ObjectUtils.clone(this.props.config),
+      showModal: false,
     };
   },
 
@@ -64,11 +65,11 @@ const CollectorSystemConfiguration = createReactClass({
   },
 
   _openModal() {
-    this.refs.configModal.open();
+    this.setState({ showModal: true });
   },
 
   _closeModal() {
-    this.refs.configModal.close();
+    this.setState({ showModal: false });
   },
 
   _resetConfig() {
@@ -136,10 +137,10 @@ const CollectorSystemConfiguration = createReactClass({
           </Button>
         </IfPermitted>
 
-        <BootstrapModalForm ref="configModal"
+        <BootstrapModalForm show={this.state.showModal}
+                            onCancel={this._resetConfig}
                             title="Update Collectors System Configuration"
                             onSubmitForm={this._saveConfig}
-                            onModalClose={this._resetConfig}
                             submitButtonText="Update configuration">
           <fieldset>
             <ISODurationInput id="inactive-threshold-field"
