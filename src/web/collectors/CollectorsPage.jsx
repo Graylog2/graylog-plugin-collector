@@ -29,17 +29,28 @@ import style from './CollectorsPage.css';
 import CollectorsPageNavigation from './CollectorsPageNavigation';
 
 class CollectorsPage extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showModal: false,
+    };
+  }
+
   openModal = () => {
-    this.modal.open();
+    this.setState({ showModal: true });
   };
 
   closeModal = () => {
-    this.modal.close();
+    this.setState({ showModal: false });
   };
 
   renderModal = () => {
     return (
-      <BootstrapModalWrapper ref={(modal) => { this.modal = modal; }} bsSize="large">
+      <BootstrapModalWrapper showModal={this.state.showModal}
+                             onHide={this.closeModal}
+                             bsSize="large">
         <Modal.Header closeButton>
           <Modal.Title>New Graylog Sidecar</Modal.Title>
         </Modal.Header>
