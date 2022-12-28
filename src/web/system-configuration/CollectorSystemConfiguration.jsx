@@ -56,7 +56,7 @@ const CollectorSystemConfiguration = createReactClass({
   getInitialState() {
     return {
       config: ObjectUtils.clone(this.props.config),
-      showModal: false,
+      showConfigModal: false,
     };
   },
 
@@ -65,11 +65,11 @@ const CollectorSystemConfiguration = createReactClass({
   },
 
   _openModal() {
-    this.setState({ showModal: true });
+    this.setState({ showConfigModal: true });
   },
 
   _closeModal() {
-    this.setState({ showModal: false });
+    this.setState({ showConfigModal: false });
   },
 
   _resetConfig() {
@@ -137,7 +137,7 @@ const CollectorSystemConfiguration = createReactClass({
           </Button>
         </IfPermitted>
 
-        <BootstrapModalForm show={this.state.showModal}
+        <BootstrapModalForm show={this.state.showConfigModal}
                             onCancel={this._resetConfig}
                             title="Update Collectors System Configuration"
                             onSubmitForm={this._saveConfig}
