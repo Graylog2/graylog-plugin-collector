@@ -42,7 +42,7 @@ const CollectorsStatusPage = createReactClass({
   getInitialState() {
     return {
       collector: undefined,
-      showModal: false,
+      showConfigModal: false,
     };
   },
 
@@ -116,11 +116,11 @@ const CollectorsStatusPage = createReactClass({
   },
 
   _importFinished() {
-    this.setState({ showModal: true });
+    this.setState({ showConfigModal: true });
   },
 
   _hideImportsHelperModal() {
-    this.setState({ showModal: false });
+    this.setState({ showConfigModal: false });
   },
 
   _formatStatus(name, item) {
@@ -244,7 +244,7 @@ const CollectorsStatusPage = createReactClass({
             </div>
           </Col>
         </Row>
-        <ImportsHelperModal showModal={this.state.showModal} onHide={this._hideImportsHelperModal} />
+        <ImportsHelperModal showModal={this.state.showConfigModal} onHide={this._hideImportsHelperModal} />
       </DocumentTitle>
     );
   },
