@@ -15,6 +15,8 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Link } from 'components/common/router';
 import { Alert, Button, Modal } from 'components/bootstrap';
 import BootstrapModalWrapper from 'components/bootstrap/BootstrapModalWrapper';
