@@ -53,10 +53,11 @@ class EditOutputModal extends React.Component {
     error: false,
     errorMessage: '',
     errorFields: [],
+    showModal: false,
   };
 
   openModal = () => {
-    this.refs.modal.open();
+    this.setState({ showModal: true });
   };
 
   _getId = (prefixIdName) => {
@@ -64,7 +65,7 @@ class EditOutputModal extends React.Component {
   };
 
   _closeModal = () => {
-    this.refs.modal.close();
+    this.setState({ showModal: false });
   };
 
   _saved = () => {
@@ -134,7 +135,8 @@ class EditOutputModal extends React.Component {
                 bsSize={this.props.create ? null : 'xsmall'}>
           {triggerButtonContent}
         </Button>
-        <BootstrapModalForm ref="modal"
+        <BootstrapModalForm show={this.state.showModal}
+                            onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Output ${this.state.name}`}
                             onSubmitForm={this._save}
                             submitButtonText="Save">

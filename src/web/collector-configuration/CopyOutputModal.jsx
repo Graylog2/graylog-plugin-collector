@@ -37,10 +37,11 @@ class CopyOutputModal extends React.Component {
       name: '',
       error: false,
       error_message: '',
+      showModal: false,
     };
 
     openModal = () => {
-      this.refs.modal.open();
+      this.setState({ showModal: true });
     };
 
     _getId = (prefixIdName) => {
@@ -48,7 +49,7 @@ class CopyOutputModal extends React.Component {
     };
 
     _closeModal = () => {
-      this.refs.modal.close();
+      this.setState({ showModal: false });
     };
 
     _saved = () => {
@@ -76,7 +77,8 @@ class CopyOutputModal extends React.Component {
                   bsSize="xsmall">
                   Clone
           </Button>
-          <BootstrapModalForm ref="modal"
+          <BootstrapModalForm show={this.state.showModal}
+                              onCancel={this._closeModal}
                               title="Clone"
                               onSubmitForm={this._save}
                               submitButtonText="Create">

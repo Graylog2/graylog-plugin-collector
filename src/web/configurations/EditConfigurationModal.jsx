@@ -43,15 +43,16 @@ const EditConfigurationModal = createReactClass({
       configuration: ObjectUtils.clone(this.props.configuration),
       error: false,
       error_message: '',
+      showModal: false,
     };
   },
 
   openModal() {
-    this.refs.modal.open();
+    this.setState({ showModal: true });
   },
 
   _closeModal() {
-    this.refs.modal.close();
+    this.setState({ showModal: false });
   },
 
   _getId(prefixIdName) {
@@ -95,7 +96,8 @@ const EditConfigurationModal = createReactClass({
                 bsSize={this.props.create ? null : 'xsmall'}>
           {this.props.create ? 'Create configuration' : 'Edit'}
         </Button>
-        <BootstrapModalForm ref="modal"
+        <BootstrapModalForm show={this.state.showModal}
+                            onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Configuration ${this.state.configuration.name}`}
                             onSubmitForm={this._save}
                             submitButtonText={`${this.props.create ? 'Create' : 'Update'} configuration`}>

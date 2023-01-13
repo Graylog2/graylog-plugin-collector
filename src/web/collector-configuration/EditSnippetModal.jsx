@@ -45,10 +45,11 @@ class EditSnippetModal extends React.Component {
     backend: this.props.backend,
     error: false,
     error_message: '',
+    showModal: false,
   };
 
   openModal = () => {
-    this.refs.modal.open();
+    this.setState({ showModal: true });
   };
 
   _getId = (prefixIdName) => {
@@ -56,7 +57,7 @@ class EditSnippetModal extends React.Component {
   };
 
   _closeModal = () => {
-    this.refs.modal.close();
+    this.setState({ showModal: false });
   };
 
   _saved = () => {
@@ -106,7 +107,8 @@ class EditSnippetModal extends React.Component {
                 bsSize={this.props.create ? null : 'xsmall'}>
           {triggerButtonContent}
         </Button>
-        <BootstrapModalForm ref="modal"
+        <BootstrapModalForm show={this.state.showModal}
+                            onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Snippet ${this.state.name}`}
                             onSubmitForm={this._save}
                             submitButtonText="Save">

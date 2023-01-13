@@ -15,23 +15,18 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Link } from 'components/common/router';
 import { Alert, Button, Modal } from 'components/bootstrap';
 import BootstrapModalWrapper from 'components/bootstrap/BootstrapModalWrapper';
 import Routes from 'routing/Routes';
 
 class ImportsHelperModal extends React.Component {
-  open = () => {
-    this.importsHelperModal.open();
-  };
-
-  hide = () => {
-    this.importsHelperModal.close();
-  };
-
   render() {
     return (
-      <BootstrapModalWrapper ref={(c) => { this.importsHelperModal = c; }}>
+      <BootstrapModalWrapper showModal={this.props.showModal}
+                             onHide={this.props.onHide}>
         <Modal.Header closeButton>
           <Modal.Title><span>Configuration Import</span></Modal.Title>
         </Modal.Header>
@@ -42,11 +37,16 @@ class ImportsHelperModal extends React.Component {
           </Alert>
         </Modal.Body>
         <Modal.Footer>
-          <Button type="button" onClick={this.hide}>Close</Button>
+          <Button type="button" onClick={this.props.onHide}>Close</Button>
         </Modal.Footer>
       </BootstrapModalWrapper>
     );
   }
 }
+
+ImportsHelperModal.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired,
+};
 
 export default ImportsHelperModal;
