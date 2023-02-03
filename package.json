@@ -16,7 +16,7 @@
   "license": "SSPL-1.0",
   "dependencies": {
     "buffer": "^6.0.3",
-    "immutable": "^3.7.5",
+    "immutable": "^4.2.3",
     "semver": "^7.3.8",
     "urijs": "^1.19.10"
   },
