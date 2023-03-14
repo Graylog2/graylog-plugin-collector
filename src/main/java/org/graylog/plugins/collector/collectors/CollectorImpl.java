@@ -25,11 +25,14 @@ import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorS
 import org.graylog2.database.DbEntity;
 import org.joda.time.DateTime;
 
+import static org.graylog.plugins.collector.permissions.CollectorRestPermissions.COLLECTORS_READ;
 import static org.graylog2.database.DbEntity.NO_TITLE;
 
 @AutoValue
 @JsonAutoDetect
-@DbEntity(collection = "collectors", titleField = NO_TITLE)
+@DbEntity(collection = "collectors",
+          titleField = NO_TITLE,
+          readPermission = COLLECTORS_READ)
 public abstract class CollectorImpl implements Collector {
 
     @JsonProperty("id")

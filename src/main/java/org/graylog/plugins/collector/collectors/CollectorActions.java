@@ -30,11 +30,14 @@ import org.mongojack.ObjectId;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static org.graylog.plugins.collector.permissions.CollectorRestPermissions.COLLECTORS_READ;
 import static org.graylog2.database.DbEntity.NO_TITLE;
 
 @AutoValue
 @JsonAutoDetect
-@DbEntity(collection = "collector_actions", titleField = NO_TITLE)
+@DbEntity(collection = "collector_actions",
+          titleField = NO_TITLE,
+          readPermission = COLLECTORS_READ)
 public abstract class CollectorActions {
 
     @JsonProperty("id")

@@ -28,10 +28,13 @@ import org.mongojack.ObjectId;
 import javax.annotation.Nullable;
 
 import static org.graylog.plugins.collector.collectors.CollectorUpload.FIELD_COLLECTOR_NAME;
+import static org.graylog.plugins.collector.permissions.CollectorRestPermissions.COLLECTORS_READ;
 
 @AutoValue
 @JsonAutoDetect
-@DbEntity(collection = "collector_uploads", titleField = FIELD_COLLECTOR_NAME)
+@DbEntity(collection = "collector_uploads",
+          titleField = FIELD_COLLECTOR_NAME,
+          readPermission = COLLECTORS_READ)
 public abstract class CollectorUpload {
     private static final String FIELD_ID = "id";
     private static final String FIELD_COLLECTOR_ID = "collector_id";
