@@ -21,7 +21,7 @@ import org.bson.Document;
 import org.graylog.testing.mongodb.MongoDBFixtures;
 import org.graylog.testing.mongodb.MongoDBInstance;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
-import org.graylog2.database.CollectionName;
+import org.graylog2.database.DbEntity;
 import org.graylog2.shared.bindings.ObjectMapperModule;
 import org.graylog2.shared.bindings.ValidatorModule;
 import org.joda.time.DateTime;
@@ -77,7 +77,7 @@ public class CollectorServiceImplTest {
 
         final Collector result = this.collectorService.save(collector);
 
-        final String collectionName = CollectorImpl.class.getAnnotation(CollectionName.class).value();
+        final String collectionName = CollectorImpl.class.getAnnotation(DbEntity.class).collection();
         MongoCollection<Document> collection = mongodb.mongoConnection().getMongoDatabase().getCollection(collectionName);
         Document document = collection.find().first();
         Document nodeDetails = document.get("node_details", Document.class);
@@ -162,7 +162,7 @@ public class CollectorServiceImplTest {
 
         final int result = this.collectorService.destroy(collector);
 
-        final String collectionName = CollectorImpl.class.getAnnotation(CollectionName.class).value();
+        final String collectionName = CollectorImpl.class.getAnnotation(DbEntity.class).collection();
         assertEquals(1, result);
         assertEquals(2, mongodb.mongoConnection().getMongoDatabase().getCollection(collectionName).countDocuments());
     }

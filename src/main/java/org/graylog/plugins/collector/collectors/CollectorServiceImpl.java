@@ -22,7 +22,7 @@ import com.mongodb.DBCollection;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
 import org.graylog.plugins.collector.collectors.rest.models.requests.CollectorRegistrationRequest;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
-import org.graylog2.database.CollectionName;
+import org.graylog2.database.DbEntity;
 import org.graylog2.database.MongoConnection;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -50,16 +50,16 @@ public class CollectorServiceImpl implements CollectorService {
                                 MongoJackObjectMapperProvider mapperProvider,
                                 Validator validator) {
         this.validator = validator;
-        final String collectionName = CollectorImpl.class.getAnnotation(CollectionName.class).value();
+        final String collectionName = CollectorImpl.class.getAnnotation(DbEntity.class).collection();
         final DBCollection dbCollection = mongoConnection.getDatabase().getCollection(collectionName);
         this.coll = JacksonDBCollection.wrap(dbCollection, CollectorImpl.class, String.class, mapperProvider.get());
         this.coll.createIndex(new BasicDBObject("id", 1), new BasicDBObject("unique", true));
 
-        final String actionCollectionName = CollectorActions.class.getAnnotation(CollectionName.class).value();
+        final String actionCollectionName = CollectorActions.class.getAnnotation(DbEntity.class).collection();
         final DBCollection actionDbCollection = mongoConnection.getDatabase().getCollection(actionCollectionName);
         this.collActions = JacksonDBCollection.wrap(actionDbCollection, CollectorActions.class, String.class, mapperProvider.get());
 
-        final String uploadCollectionName = CollectorUpload.class.getAnnotation(CollectionName.class).value();
+        final String uploadCollectionName = CollectorUpload.class.getAnnotation(DbEntity.class).collection();
         final DBCollection uploadDbCollection = mongoConnection.getDatabase().getCollection(uploadCollectionName);
         this.collUpload = JacksonDBCollection.wrap(uploadDbCollection, CollectorUpload.class, String.class, mapperProvider.get());
     }
@@ -79,8 +79,9 @@ public class CollectorServiceImpl implements CollectorService {
             } else {
                 throw new IllegalArgumentException("Specified object failed validation: " + violations);
             }
-        } else
+        } else {
             throw new IllegalArgumentException("Specified object is not of correct implementation type (" + collector.getClass() + ")!");
+        }
     }
 
     @Override
@@ -107,9 +108,11 @@ public class CollectorServiceImpl implements CollectorService {
     public int destroyExpired(Period period) {
         int count = 0;
         final DateTime threshold = DateTime.now(DateTimeZone.UTC).minus(period);
-        for (Collector collector : all())
-            if (collector.getLastSeen().isBefore(threshold))
+        for (Collector collector : all()) {
+            if (collector.getLastSeen().isBefore(threshold)) {
                 count += destroy(collector);
+            }
+        }
 
         return count;
     }

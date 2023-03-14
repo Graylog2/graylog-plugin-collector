@@ -20,21 +20,23 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
-import org.graylog2.database.CollectionName;
+import org.graylog2.database.DbEntity;
 import org.joda.time.DateTime;
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 import javax.annotation.Nullable;
 
+import static org.graylog.plugins.collector.collectors.CollectorUpload.FIELD_COLLECTOR_NAME;
+
 @AutoValue
 @JsonAutoDetect
-@CollectionName("collector_uploads")
+@DbEntity(collection = "collector_uploads", titleField = FIELD_COLLECTOR_NAME)
 public abstract class CollectorUpload {
     private static final String FIELD_ID = "id";
     private static final String FIELD_COLLECTOR_ID = "collector_id";
     private static final String FIELD_NODE_ID = "node_id";
-    private static final String FIELD_COLLECTOR_NAME = "collector_name";
+    public static final String FIELD_COLLECTOR_NAME = "collector_name";
     private static final String FIELD_RENDERED_CONFIGURATION = "rendered_configuration";
     private static final String FIELD_CREATED = "created";
 

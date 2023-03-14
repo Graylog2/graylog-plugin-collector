@@ -22,12 +22,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import org.graylog.plugins.collector.collectors.rest.models.responses.CollectorSummary;
-import org.graylog2.database.CollectionName;
+import org.graylog2.database.DbEntity;
 import org.joda.time.DateTime;
+
+import static org.graylog2.database.DbEntity.NO_TITLE;
 
 @AutoValue
 @JsonAutoDetect
-@CollectionName("collectors")
+@DbEntity(collection = "collectors", titleField = NO_TITLE)
 public abstract class CollectorImpl implements Collector {
 
     @JsonProperty("id")
@@ -38,9 +40,11 @@ public abstract class CollectorImpl implements Collector {
     @Override
     public abstract String getNodeId();
 
+    @Override
     @JsonProperty("node_details")
     public abstract CollectorNodeDetails getNodeDetails();
 
+    @Override
     @JsonProperty("collector_version")
     public abstract String getCollectorVersion();
 
