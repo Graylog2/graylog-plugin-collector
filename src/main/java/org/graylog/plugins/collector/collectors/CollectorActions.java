@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import org.graylog.plugins.collector.collectors.rest.models.CollectorAction;
-import org.graylog2.database.CollectionName;
+import org.graylog2.database.DbEntity;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.mongojack.Id;
@@ -30,9 +30,14 @@ import org.mongojack.ObjectId;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static org.graylog.plugins.collector.permissions.CollectorRestPermissions.COLLECTORS_READ;
+import static org.graylog2.database.DbEntity.NO_TITLE;
+
 @AutoValue
 @JsonAutoDetect
-@CollectionName("collector_actions")
+@DbEntity(collection = "collector_actions",
+          titleField = NO_TITLE,
+          readPermission = COLLECTORS_READ)
 public abstract class CollectorActions {
 
     @JsonProperty("id")
