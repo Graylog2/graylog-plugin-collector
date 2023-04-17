@@ -99,6 +99,7 @@ const EditConfigurationModal = createReactClass({
         <BootstrapModalForm show={this.state.showModal}
                             onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Configuration ${this.state.configuration.name}`}
+                            data-telemetry-title={`${this.props.create ? 'Create' : 'Edit'} Configuration`}
                             onSubmitForm={this._save}
                             submitButtonText={`${this.props.create ? 'Create' : 'Update'} configuration`}>
           <fieldset>
