@@ -138,6 +138,7 @@ class EditOutputModal extends React.Component {
         <BootstrapModalForm show={this.state.showModal}
                             onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Output ${this.state.name}`}
+                            data-telemetry-title={`${this.props.create ? 'Create' : 'Edit'} Output`}
                             onSubmitForm={this._save}
                             submitButtonText="Save">
           <fieldset>

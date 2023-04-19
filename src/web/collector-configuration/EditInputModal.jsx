@@ -167,6 +167,7 @@ class EditInputModal extends React.Component {
         <BootstrapModalForm show={this.state.showModal}
                             onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Input ${this.state.name}`}
+                            data-telemetry-title={`${this.props.create ? 'Create' : 'Edit'} Input`}
                             onSubmitForm={this._save}
                             submitButtonText="Save">
           <fieldset>

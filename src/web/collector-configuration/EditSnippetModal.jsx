@@ -110,6 +110,7 @@ class EditSnippetModal extends React.Component {
         <BootstrapModalForm show={this.state.showModal}
                             onCancel={this._closeModal}
                             title={`${this.props.create ? 'Create' : 'Edit'} Snippet ${this.state.name}`}
+                            data-telemetry-title={`${this.props.create ? 'Create' : 'Edit'} Snippet`}
                             onSubmitForm={this._save}
                             submitButtonText="Save">
           <fieldset>
