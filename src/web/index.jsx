@@ -17,6 +17,7 @@
 // eslint-disable-next-line no-unused-vars
 import './webpack-entry';
 
+import AppConfig from 'util/AppConfig';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 
 import CollectorsPage from 'collectors/CollectorsPage';
@@ -26,8 +27,8 @@ import CollectorConfigurationPage from 'collector-configuration/CollectorConfigu
 import CollectorSystemConfiguration from 'system-configuration/CollectorSystemConfiguration';
 import packageJson from '../../package.json';
 
-const manifest = new PluginManifest(packageJson, {
-  routes: [
+const manifest = AppConfig.isCloud() ? {} :  new PluginManifest(packageJson, {
+  routes:  [
     { path: '/system/collectors', component: CollectorsPage },
     { path: '/system/collectors/:id/status', component: CollectorsStatusPage },
     { path: '/system/collectors/configurations', component: ConfigurationsPage },
