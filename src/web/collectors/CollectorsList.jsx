@@ -21,7 +21,7 @@ import { defaultCompare as naturalSort } from 'logic/DefaultCompare';
 import styled from 'styled-components';
 
 import { Alert, Button, Col, Row, Table } from 'components/bootstrap';
-import { Icon, Spinner } from 'components/common';
+import { Spinner, SortIcon } from 'components/common';
 
 import CollectorsStore from './CollectorsStore';
 import CollectorsActions from './CollectorsActions';
@@ -33,17 +33,8 @@ const StyledTable = styled(Table)`
   margin-bottom: 0px;
 `;
 
-const StyledIcon = styled(Icon)(({ $isAlwaysVisible }) => `
+const StyledSortIcon = styled(SortIcon)`
   margin-left: 5px;
-  visibility: ${$isAlwaysVisible ? 'visible' : 'hidden'}
-`);
-
-const SortableTh = styled.th`
-  cursor: pointer;
-
-  &:hover ${StyledIcon} {
-    visibility: visible;
-  }
 `;
 
 const CollectorList = createReactClass({
@@ -90,11 +81,10 @@ const CollectorList = createReactClass({
     return (this.state.sortDesc ? naturalSort(field2, field1) : naturalSort(field1, field2));
   },
 
-  _getSortingIcon(field) {
+  _getSortingIcon(field, onChange) {
     const { sortBy, sortDesc } = this.state;
-    const name = (sortBy === field ? (sortDesc ? 'sort-amount-up' : 'sort-amount-down') : 'sort');
-
-    return <StyledIcon name={name} fixedWidth $isAlwaysVisible={sortBy === field} />;
+    const activeDirection = (sortBy === field ? (sortDesc ? 'desc' : 'asc') : null);
+    return <StyledSortIcon activeDirection={activeDirection} ascId='asc' descId='desc' onChange={onChange}/>
   },
 
   _formatCollectorList(collectors) {
@@ -103,30 +93,30 @@ const CollectorList = createReactClass({
         <StyledTable striped>
           <thead>
             <tr>
-              <SortableTh onClick={this.sortByNodeId}>
+              <th>
                 Name
-                {this._getSortingIcon('node_id')}
-              </SortableTh>
-              <SortableTh onClick={this.sortByCollectorStatus}>
+                {this._getSortingIcon('node_id', this.sortByNodeId)}
+              </th>
+              <th>
                 Status
-                {this._getSortingIcon('collector_status')}
-              </SortableTh>
-              <SortableTh onClick={this.sortByOperatingSystem}>
+                {this._getSortingIcon('collector_status', this.sortByCollectorStatus)}
+              </th>
+              <th>
                 Operating System
-                {this._getSortingIcon('operating_system')}
-              </SortableTh>
-              <SortableTh onClick={this.sortByLastSeen}>
+                {this._getSortingIcon('operating_system', this.sortByOperatingSystem)}
+              </th>
+              <th>
                 Last Seen
-                {this._getSortingIcon('last_seen')}
-              </SortableTh>
-              <SortableTh onClick={this.sortById}>
+                {this._getSortingIcon('last_seen', this.sortByLastSeen)}
+              </th>
+              <th>
                 Collector Id
-                {this._getSortingIcon('id')}
-              </SortableTh>
-              <SortableTh onClick={this.sortByCollectorVersion}>
+                {this._getSortingIcon('id', this.sortById)}
+              </th>
+              <th>
                 Collector Version
-                {this._getSortingIcon('collector_version')}
-              </SortableTh>
+                {this._getSortingIcon('collector_version', this.sortByCollectorVersion)}
+              </th>
               <th className="actions">&nbsp;</th>
             </tr>
           </thead>
